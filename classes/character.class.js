@@ -1,7 +1,8 @@
 class Character extends MovableObject {
 
-    constructor(x, y, img) {
-        super(x, y, img);
+    constructor() {
+        super();
+        super.loadImage('assets/img/2_character_pepe/2_walk/W-21.png');
     }
 
     jump() {

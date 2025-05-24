@@ -1,12 +1,16 @@
 class MovableObject {
-    x;
-    y;
+    x = 120;
+    y = 250;
     img;
+    width = 100;
+    height = 150;
 
-    constructor(x, y, img) {
-        this.x = x;
-        this.y = y;
-        this.img = img;
+    constructor() {
+    }
+
+    loadImage(path) {
+        this.img = new Image();
+        this.img.src = path;
     }
 
     moveRight() {
