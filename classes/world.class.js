@@ -1,6 +1,7 @@
 class World {
     charakter = new Character();
     enemies = [new Chicken(200), new Chicken(300), new Chicken(400)];
+    cloud = new Cloud();
     ctx;
     canvas;
 
@@ -17,6 +18,7 @@ class World {
             this.ctx.drawImage(element.img, element.x, element.y, element.width, element.height);
 
         });
+        this.ctx.drawImage(this.cloud.img, this.cloud.x, this.cloud.y, this.cloud.width, this.cloud.height);
         let self = this;
         requestAnimationFrame(function () {
             self.draw();
