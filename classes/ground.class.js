@@ -1,9 +1,9 @@
 class Ground extends MovableObject {
 
-    constructor(img) {
+    constructor(img, x) {
         super();
         super.loadImage(img);
-        this.x = 0;
+        this.x = x;
         this.y = 0;
         this.height = 480;
         this.width = 720;

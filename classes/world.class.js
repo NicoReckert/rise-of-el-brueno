@@ -2,8 +2,8 @@ class World {
     charakter = new Character();
     enemies = [new Chicken(), new Chicken(), new Chicken()];
     clouds = [new Cloud];
-    groundSrc = ['assets/img/5_background/layers/3_third_layer/2.png', 'assets/img/5_background/layers/3_third_layer/1.png', 'assets/img/5_background/layers/2_second_layer/2.png', 'assets/img/5_background/layers/2_second_layer/1.png', 'assets/img/5_background/layers/1_first_layer/2.png', 'assets/img/5_background/layers/1_first_layer/1.png'];
-    grounds = [new Ground(this.groundSrc[0]), new Ground(this.groundSrc[1]), new Ground(this.groundSrc[2]), new Ground(this.groundSrc[3]), new Ground(this.groundSrc[4]), new Ground(this.groundSrc[5])];
+    groundSrc = ['assets/img/5_background/layers/3_third_layer/1.png', 'assets/img/5_background/layers/3_third_layer/2.png', 'assets/img/5_background/layers/2_second_layer/1.png', 'assets/img/5_background/layers/2_second_layer/2.png', 'assets/img/5_background/layers/1_first_layer/1.png', 'assets/img/5_background/layers/1_first_layer/2.png'];
+    grounds = [new Ground(this.groundSrc[0], 0), new Ground(this.groundSrc[2], 0), new Ground(this.groundSrc[4], 0), new Ground(this.groundSrc[1], 721), new Ground(this.groundSrc[3], 721), new Ground(this.groundSrc[5], 721)];
     sky = new Sky();
     ctx;
     canvas;
@@ -32,7 +32,7 @@ class World {
     }
 
     addObject(objectArray) {
-        objectArray.forEach((element) => {
+        objectArray.forEach(element => {
             this.addToWorld(element);
 
         });
