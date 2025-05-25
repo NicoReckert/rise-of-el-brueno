@@ -11,7 +11,7 @@ class Character extends MovableObject {
         'assets/img/2_character_pepe/1_idle/idle/I-9.png',
         'assets/img/2_character_pepe/1_idle/idle/I-10.png'
     ]
-    
+
     walkImages = [
         'assets/img/2_character_pepe/2_walk/W-21.png',
         'assets/img/2_character_pepe/2_walk/W-22.png',
@@ -20,8 +20,13 @@ class Character extends MovableObject {
         'assets/img/2_character_pepe/2_walk/W-25.png',
         'assets/img/2_character_pepe/2_walk/W-26.png'
     ]
+    intervalStand;
     standCount = 0;
+    intervalWalk;
     walkCount = 0;
+    intervalMoveLeft;
+    intervalMoveRight;
+    isFlipped = false;
 
     constructor() {
         super();
@@ -33,8 +38,51 @@ class Character extends MovableObject {
         this.animationStand();
     }
 
+    moveLeft() {
+        if(this.intervalMoveLeft) return;
+        this.isFlipped = true;
+        this.intervalMoveLeft = setInterval(() => {
+            this.x -= 2.5;
+        }, 1000 / 60);
+        clearInterval(this.intervalMoveRight);
+        this.intervalMoveRight = null;
+        clearInterval(this.intervalStand);
+        this.intervalStand = null;
+        clearInterval(this.intervalWalk);
+        this.intervalWalk = null;
+        this.animationWalk();
+    }
+
+    moveRight() {
+        this.isFlipped = false;
+        if(this.intervalMoveRight) return
+        this.intervalMoveRight = setInterval(() => {
+            this.x += 2.5;
+        }, 1000 / 60);
+        clearInterval(this.intervalMoveLeft);
+        this.intervalMoveLeft = null;
+        clearInterval(this.intervalStand);
+        this.intervalStand = null;
+        clearInterval(this.intervalWalk);
+        this.intervalWalk = null;
+        this.animationWalk();
+    }
+
+    moveStop() {
+        clearInterval(this.intervalMoveLeft);
+        this.intervalMoveLeft = null;
+        clearInterval(this.intervalMoveRight);
+        this.intervalMoveRight = null;
+        clearInterval(this.intervalStand);
+        this.intervalStand = null;
+        clearInterval(this.intervalWalk);
+        this.intervalWalk = null;
+        this.animationStand();
+    }
+
     animationStand() {
-        setInterval(() => {
+        if(this.intervalStand) return;
+        this.intervalStand = setInterval(() => {
             let index = this.standCount % this.standImages.length;
             this.img.src = this.standImages[index];
             this.standCount++
@@ -42,7 +90,7 @@ class Character extends MovableObject {
     }
 
     animationWalk() {
-        setInterval(() => {
+        this.intervalWalk = setInterval(() => {
             let index = this.walkCount % this.walkImages.length;
             this.img.src = this.walkImages[index];
             this.walkCount++

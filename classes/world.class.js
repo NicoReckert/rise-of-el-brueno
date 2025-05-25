@@ -8,10 +8,12 @@ class World {
     ctx;
     canvas;
 
-    constructor(canvas) {
+    constructor(canvas, keyboard) {
         this.canvas = canvas;
         this.ctx = canvas.getContext('2d');
         this.draw();
+        this.keyboard = keyboard;
+        this.checkPressKey();
     }
 
     draw() {
@@ -28,7 +30,15 @@ class World {
     }
 
     addToWorld(object) {
-        this.ctx.drawImage(object.img, object.x, object.y, object.width, object.height);
+        if (object.isFlipped) {
+            this.ctx.save();
+            this.ctx.scale(-1, 1);
+            this.ctx.drawImage(object.img, -object.x - object.width, object.y, object.width, object.height);
+            this.ctx.restore();
+        } else {
+            this.ctx.drawImage(object.img, object.x, object.y, object.width, object.height);
+
+        }
     }
 
     addObject(objectArray) {
@@ -36,5 +46,17 @@ class World {
             this.addToWorld(element);
 
         });
+    }
+
+    checkPressKey() {
+        setInterval(() => {
+            if (this.keyboard.LEFT) {
+                this.charakter.moveLeft();
+            } else if (this.keyboard.RIGHT) {
+                this.charakter.moveRight();
+            } else {
+                this.charakter.moveStop();
+            }
+        }, 1000 / 60);
     }
 }
