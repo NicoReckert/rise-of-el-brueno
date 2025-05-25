@@ -2,27 +2,53 @@ class World {
     charakter = new Character();
     enemies = [new Chicken(), new Chicken(), new Chicken()];
     clouds = [new Cloud];
-    groundSrc = ['assets/img/5_background/layers/3_third_layer/1.png', 'assets/img/5_background/layers/3_third_layer/2.png', 'assets/img/5_background/layers/2_second_layer/1.png', 'assets/img/5_background/layers/2_second_layer/2.png', 'assets/img/5_background/layers/1_first_layer/1.png', 'assets/img/5_background/layers/1_first_layer/2.png'];
-    grounds = [new Ground(this.groundSrc[0], 0), new Ground(this.groundSrc[2], 0), new Ground(this.groundSrc[4], 0), new Ground(this.groundSrc[1], 721), new Ground(this.groundSrc[3], 721), new Ground(this.groundSrc[5], 721)];
-    sky = new Sky();
+    groundSrc = [
+        'assets/img/5_background/layers/3_third_layer/1.png',
+        'assets/img/5_background/layers/2_second_layer/1.png',
+        'assets/img/5_background/layers/1_first_layer/1.png',
+        'assets/img/5_background/layers/3_third_layer/2.png',
+        'assets/img/5_background/layers/2_second_layer/2.png',
+        'assets/img/5_background/layers/1_first_layer/2.png'
+    ];
+    grounds = [
+        new Ground(this.groundSrc[3], -719),
+        new Ground(this.groundSrc[4], -719),
+        new Ground(this.groundSrc[5], -719),
+        new Ground(this.groundSrc[0], 0),
+        new Ground(this.groundSrc[1], 0),
+        new Ground(this.groundSrc[2], 0),
+        new Ground(this.groundSrc[3], 719),
+        new Ground(this.groundSrc[4], 719),
+        new Ground(this.groundSrc[5], 719),
+        new Ground(this.groundSrc[0], 1438),
+        new Ground(this.groundSrc[1], 1438),
+        new Ground(this.groundSrc[2], 1438),
+    ];
+    skys = [new Sky(-719), new Sky(0), new Sky(719), new Sky(1438)];
     ctx;
     canvas;
+    camera_x = 0;
 
     constructor(canvas, keyboard) {
         this.canvas = canvas;
         this.ctx = canvas.getContext('2d');
+        this.setWorld();
         this.draw();
         this.keyboard = keyboard;
         this.checkPressKey();
+
     }
 
     draw() {
         this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-        this.addToWorld(this.sky);
+        this.updateCamera();
+        this.ctx.translate(this.camera_x, 0);
+        this.addObject(this.skys);
         this.addObject(this.grounds);
         this.addToWorld(this.charakter);
         this.addObject(this.enemies);
         this.addObject(this.clouds);
+        this.ctx.translate(-this.camera_x, 0);
         let self = this;
         requestAnimationFrame(function () {
             self.draw();
@@ -55,8 +81,21 @@ class World {
             } else if (this.keyboard.RIGHT) {
                 this.charakter.moveRight();
             } else {
-                this.charakter.moveStop();
+                if (this.charakter.isMoving) this.charakter.moveStop();
             }
         }, 1000 / 60);
+    }
+
+    setWorld() {
+        this.charakter.world = this;
+    }
+
+    updateCamera() {
+        let target = -this.charakter.x;
+        this.camera_x = this.lerp(this.camera_x, target, 0.1);
+    }
+
+    lerp(a, b, t) {
+        return a + (b - a) * t;
     }
 }

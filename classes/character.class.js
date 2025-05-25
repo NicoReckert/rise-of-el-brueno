@@ -22,11 +22,12 @@ class Character extends MovableObject {
     ]
     intervalStand;
     standCount = 0;
-    intervalWalk;
+    intervalWalk = null;
     walkCount = 0;
-    intervalMoveLeft;
-    intervalMoveRight;
+    intervalMoveLeft = null;
+    intervalMoveRight = null;
     isFlipped = false;
+    isMoving = false;
 
     constructor() {
         super();
@@ -39,10 +40,12 @@ class Character extends MovableObject {
     }
 
     moveLeft() {
-        if(this.intervalMoveLeft) return;
+        if (this.intervalMoveLeft) return;
         this.isFlipped = true;
+        this.isMoving = true;
         this.intervalMoveLeft = setInterval(() => {
-            this.x -= 2.5;
+            this.x -= 5;
+            this.world.camera_x = -this.x;
         }, 1000 / 60);
         clearInterval(this.intervalMoveRight);
         this.intervalMoveRight = null;
@@ -54,10 +57,12 @@ class Character extends MovableObject {
     }
 
     moveRight() {
+        if (this.intervalMoveRight) return
         this.isFlipped = false;
-        if(this.intervalMoveRight) return
+        this.isMoving = true;
         this.intervalMoveRight = setInterval(() => {
-            this.x += 2.5;
+            this.x += 5;
+            this.world.camera_x = -this.x;
         }, 1000 / 60);
         clearInterval(this.intervalMoveLeft);
         this.intervalMoveLeft = null;
@@ -69,6 +74,7 @@ class Character extends MovableObject {
     }
 
     moveStop() {
+        this.isMoving = false;
         clearInterval(this.intervalMoveLeft);
         this.intervalMoveLeft = null;
         clearInterval(this.intervalMoveRight);
@@ -81,7 +87,8 @@ class Character extends MovableObject {
     }
 
     animationStand() {
-        if(this.intervalStand) return;
+        console.log('ausgeführt');
+        if (this.intervalStand) return;
         this.intervalStand = setInterval(() => {
             let index = this.standCount % this.standImages.length;
             this.img.src = this.standImages[index];
