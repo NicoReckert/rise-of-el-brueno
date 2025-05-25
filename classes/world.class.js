@@ -1,7 +1,10 @@
 class World {
     charakter = new Character();
-    enemies = [new Chicken(200), new Chicken(300), new Chicken(400)];
-    cloud = new Cloud();
+    enemies = [new Chicken(), new Chicken(), new Chicken()];
+    clouds = [new Cloud];
+    groundSrc = ['assets/img/5_background/layers/3_third_layer/2.png', 'assets/img/5_background/layers/3_third_layer/1.png', 'assets/img/5_background/layers/2_second_layer/2.png', 'assets/img/5_background/layers/2_second_layer/1.png', 'assets/img/5_background/layers/1_first_layer/2.png', 'assets/img/5_background/layers/1_first_layer/1.png'];
+    grounds = [new Ground(this.groundSrc[0]), new Ground(this.groundSrc[1]), new Ground(this.groundSrc[2]), new Ground(this.groundSrc[3]), new Ground(this.groundSrc[4]), new Ground(this.groundSrc[5])];
+    sky = new Sky();
     ctx;
     canvas;
 
@@ -13,15 +16,25 @@ class World {
 
     draw() {
         this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-        this.ctx.drawImage(this.charakter.img, this.charakter.x, this.charakter.y, this.charakter.width, this.charakter.height);
-        this.enemies.forEach(element => {
-            this.ctx.drawImage(element.img, element.x, element.y, element.width, element.height);
-
-        });
-        this.ctx.drawImage(this.cloud.img, this.cloud.x, this.cloud.y, this.cloud.width, this.cloud.height);
+        this.addToWorld(this.sky);
+        this.addObject(this.grounds);
+        this.addToWorld(this.charakter);
+        this.addObject(this.enemies);
+        this.addObject(this.clouds);
         let self = this;
         requestAnimationFrame(function () {
             self.draw();
         })
+    }
+
+    addToWorld(object) {
+        this.ctx.drawImage(object.img, object.x, object.y, object.width, object.height);
+    }
+
+    addObject(objectArray) {
+        objectArray.forEach((element) => {
+            this.addToWorld(element);
+
+        });
     }
 }
