@@ -1,5 +1,6 @@
 class Chicken extends MovableObject {
     speed = 0.15;
+    isGameCharakter = true;
     
     walkImages = [
         'assets/img/3_enemies_chicken/chicken_normal/1_walk/1_w.png',

@@ -44,6 +44,7 @@ class Character extends MovableObject {
     isFlipped = false;
     isMoving = false;
     isJumping = false;
+    isGameCharakter = true;
 
     constructor() {
         super();
@@ -112,8 +113,6 @@ class Character extends MovableObject {
         this.intervalWalk = null;
         clearInterval(this.intervalJump);
         this.intervalJump = null;
-        // clearInterval(this.intervalGravity);
-        // this.intervalGravity = null;
     }
 
     animationStand() {

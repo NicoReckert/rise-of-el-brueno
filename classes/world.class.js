@@ -20,11 +20,11 @@ class World {
         // this.updateCamera();
         this.ctx.translate(this.camera_x, 0);
         this.addObject(this.level.sky);
+        this.addObject(this.level.clouds);
         this.addObject(this.level.grounds);
         this.addToWorld(this.charakter);
         this.addObject(this.level.enemies);
         this.addToWorld(this.level.endboss);
-        this.addObject(this.level.clouds);
         this.ctx.translate(-this.camera_x, 0);
         let self = this;
         requestAnimationFrame(function () {
@@ -37,10 +37,21 @@ class World {
             this.ctx.save();
             this.ctx.scale(-1, 1);
             this.ctx.drawImage(object.img, -object.x - object.width, object.y, object.width, object.height);
+            if (!object.isGameCharakter == true) return;
+            this.ctx.beginPath();
+            this.ctx.lineWidth = '3';
+            this.ctx.strokeStyle = 'red';
+            this.ctx.rect(-object.x - object.width, object.y, object.width, object.height);
+            this.ctx.stroke();
             this.ctx.restore();
         } else {
             this.ctx.drawImage(object.img, object.x, object.y, object.width, object.height);
-
+            if (!object.isGameCharakter == true) return;
+            this.ctx.beginPath();
+            this.ctx.lineWidth = '3';
+            this.ctx.strokeStyle = 'red';
+            this.ctx.rect(object.x, object.y, object.width, object.height);
+            this.ctx.stroke();
         }
     }
 
@@ -60,6 +71,8 @@ class World {
             } else if (this.keyboard.UP && !this.charakter.isAboveGround()) {
                 this.charakter.moveJump();
             } else {
+                clearInterval(this.intervalJump);
+                this.intervalJump = null;
                 if (this.charakter.isMoving) this.charakter.moveStop();
             }
         }, 1000 / 60);
