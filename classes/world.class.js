@@ -12,6 +12,7 @@ class World {
         this.draw();
         this.keyboard = keyboard;
         this.checkPressKey();
+        this.checkCollisions();
 
     }
 
@@ -70,6 +71,10 @@ class World {
                 this.charakter.moveRight();
             } else if (this.keyboard.UP && !this.charakter.isAboveGround()) {
                 this.charakter.moveJump();
+            } else if (this.charakter.isDead()) {
+                this.charakter.animationDead();
+            } else if (this.charakter.isHurt()) {
+                this.charakter.animationHurt();
             } else {
                 clearInterval(this.intervalJump);
                 this.intervalJump = null;
@@ -98,4 +103,15 @@ class World {
     // lerp(a, b, t) {
     //     return a + (b - a) * t;
     // }
+
+    checkCollisions() {
+        setInterval(() => {
+            this.level.enemies.forEach(element => {
+                if (this.charakter.isColliding(element)) {
+                    this.charakter.hit();
+                    console.log(this.charakter.energy);
+                }
+            })
+        }, 200);
+    }
 }

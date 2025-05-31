@@ -1,19 +1,18 @@
-class MovableObject {
-    x = 120;
-    y = 250;
-    img;
-    width = 100;
-    height = 150;
+class MovableObject extends DrawableObject {
     speedY = 0;
     acceleration = 2.5;
     intervalGravity = null;
-
-    constructor() {
+    energy = 100;
+    lastHit = 0;
+    offset = {
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0
     }
 
-    loadImage(path) {
-        this.img = new Image();
-        this.img.src = path;
+    constructor() {
+        super();
     }
 
     applyGravity() {
@@ -33,5 +32,31 @@ class MovableObject {
 
     isAboveGround() {
         return this.y < 40.0;
+    }
+
+    isColliding(object) {
+        return this.x + this.width > object.x &&
+            this.y + this.height > object.y &&
+            this.x < object.x + object.width &&
+            this.y < object.y + object.height;
+    }
+
+    hit() {
+        this.energy -= 5;
+        if (this.energy < 0) {
+            this.energy = 0;
+        } else {
+            this.lastHit = new Date().getTime();
+        }
+    }
+
+    isDead() {
+        return this.energy == 0;
+    }
+
+    isHurt() {
+        let timepassed = new Date().getTime() - this.lastHit;
+        timepassed = timepassed / 1000;
+        return timepassed < 1;
     }
 }

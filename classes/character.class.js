@@ -33,14 +33,34 @@ class Character extends MovableObject {
         'assets/img/2_character_pepe/3_jump/J-39.png'
     ]
 
+    deadImages = [
+        'assets/img/2_character_pepe/5_dead/D-51.png',
+        'assets/img/2_character_pepe/5_dead/D-52.png',
+        'assets/img/2_character_pepe/5_dead/D-53.png',
+        'assets/img/2_character_pepe/5_dead/D-54.png',
+        'assets/img/2_character_pepe/5_dead/D-55.png',
+        'assets/img/2_character_pepe/5_dead/D-56.png',
+        'assets/img/2_character_pepe/5_dead/D-57.png'
+    ]
+
+    hurtImages = [
+        'assets/img/2_character_pepe/4_hurt/H-41.png',
+        'assets/img/2_character_pepe/4_hurt/H-42.png',
+        'assets/img/2_character_pepe/4_hurt/H-43.png'
+    ]
+
     intervalStand;
     standCount = 0;
     intervalWalk = null;
     walkCount = 0;
     jumpCount = 0;
+    deadCount = 0;
+    hurtCount = 0;
     intervalMoveLeft = null;
     intervalMoveRight = null;
     intervalJump = null;
+    intervalDead = null;
+    intervalHurt = null;
     isFlipped = false;
     isMoving = false;
     isJumping = false;
@@ -113,6 +133,10 @@ class Character extends MovableObject {
         this.intervalWalk = null;
         clearInterval(this.intervalJump);
         this.intervalJump = null;
+        clearInterval(this.intervalDead);
+        this.intervalDead = null;
+        clearInterval(this.intervalHurt);
+        this.intervalHurt = null;
     }
 
     animationStand() {
@@ -144,6 +168,27 @@ class Character extends MovableObject {
                 this.isMoving = false;
                 this.moveStop();
             }
+        }, 1000 / 8);
+    }
+
+    animationDead() {
+        if (this.intervalDead) return;
+        this.clearAllInterval();
+        this.intervalDead = setInterval(() => {
+            if (this.deadCount === this.deadImages.length) return;
+            let index = this.deadCount % this.deadImages.length;
+            this.img.src = this.deadImages[index];
+            this.deadCount++
+        }, 1000 / 8);
+    }
+
+    animationHurt() {
+        if (this.intervalHurt) return;
+        this.clearAllInterval();
+        this.intervalHurt = setInterval(() => {
+            let index = this.hurtCount % this.hurtImages.length;
+            this.img.src = this.hurtImages[index];
+            this.hurtCount++
         }, 1000 / 8);
     }
 }
