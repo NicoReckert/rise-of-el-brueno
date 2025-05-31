@@ -34,7 +34,7 @@ class Character extends MovableObject {
         super.loadImage('assets/img/2_character_pepe/1_idle/idle/I-1.png');
         this.height = 400;
         this.width = 200;
-        this.x = 10;
+        this.x = 100;
         this.y = 40;
         this.animationStand();
     }
@@ -44,8 +44,10 @@ class Character extends MovableObject {
         this.isFlipped = true;
         this.isMoving = true;
         this.intervalMoveLeft = setInterval(() => {
-            this.x -= 5;
-            this.world.camera_x = -this.x;
+            if (this.x > 0) {
+                this.x -= 5;
+                this.world.camera_x = -this.x + 100;
+            }
         }, 1000 / 60);
         clearInterval(this.intervalMoveRight);
         this.intervalMoveRight = null;
@@ -54,6 +56,7 @@ class Character extends MovableObject {
         clearInterval(this.intervalWalk);
         this.intervalWalk = null;
         this.animationWalk();
+
     }
 
     moveRight() {
@@ -61,8 +64,10 @@ class Character extends MovableObject {
         this.isFlipped = false;
         this.isMoving = true;
         this.intervalMoveRight = setInterval(() => {
-            this.x += 5;
-            this.world.camera_x = -this.x;
+            if (this.x < this.world.level.level_end_x) {
+                this.x += 5;
+                this.world.camera_x = -this.x + 100;
+            }
         }, 1000 / 60);
         clearInterval(this.intervalMoveLeft);
         this.intervalMoveLeft = null;
@@ -87,7 +92,6 @@ class Character extends MovableObject {
     }
 
     animationStand() {
-        console.log('ausgeführt');
         if (this.intervalStand) return;
         this.intervalStand = setInterval(() => {
             let index = this.standCount % this.standImages.length;

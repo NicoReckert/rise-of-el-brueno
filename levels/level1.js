@@ -9,8 +9,16 @@ const groundSrc =
     ]
 
 const level1 = new Level(
-    [new Chicken(), new Chicken(), new Chicken()],
-    [new Cloud],
+    [
+        new Chicken(),
+        new Chicken(),
+        new Chicken()
+
+    ],
+    new Endboss(),
+    [
+        new Cloud
+    ],
     [
         new Ground(groundSrc[3], -719),
         new Ground(groundSrc[4], -719),

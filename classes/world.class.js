@@ -3,10 +3,7 @@ class World {
     ctx;
     canvas;
     camera_x = 0;
-    sky = level1.sky;
-    grounds = level1.grounds;
-    enemies = level1.enemies;
-    clouds = level1.clouds;
+    level = level1;
 
     constructor(canvas, keyboard) {
         this.canvas = canvas;
@@ -20,13 +17,14 @@ class World {
 
     draw() {
         this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-        this.updateCamera();
+        // this.updateCamera();
         this.ctx.translate(this.camera_x, 0);
-        this.addObject(this.sky);
-        this.addObject(this.grounds);
+        this.addObject(this.level.sky);
+        this.addObject(this.level.grounds);
         this.addToWorld(this.charakter);
-        this.addObject(this.enemies);
-        this.addObject(this.clouds);
+        this.addObject(this.level.enemies);
+        this.addToWorld(this.level.endboss);
+        this.addObject(this.level.clouds);
         this.ctx.translate(-this.camera_x, 0);
         let self = this;
         requestAnimationFrame(function () {
@@ -74,14 +72,15 @@ class World {
         this.grounds = level.grounds;
         this.enemies = level.enemies;
         this.clouds = level.clouds;
+        this.endboss = level.endboss;
     }
 
-    updateCamera() {
-        let target = -this.charakter.x;
-        this.camera_x = this.lerp(this.camera_x, target, 0.1);
-    }
+    // updateCamera() {
+    //     let target = -this.charakter.x;
+    //     this.camera_x = this.lerp(this.camera_x, target, 0.1);
+    // }
 
-    lerp(a, b, t) {
-        return a + (b - a) * t;
-    }
+    // lerp(a, b, t) {
+    //     return a + (b - a) * t;
+    // }
 }
