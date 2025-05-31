@@ -20,14 +20,30 @@ class Character extends MovableObject {
         'assets/img/2_character_pepe/2_walk/W-25.png',
         'assets/img/2_character_pepe/2_walk/W-26.png'
     ]
+
+    jumpImages = [
+        'assets/img/2_character_pepe/3_jump/J-31.png',
+        'assets/img/2_character_pepe/3_jump/J-32.png',
+        'assets/img/2_character_pepe/3_jump/J-33.png',
+        'assets/img/2_character_pepe/3_jump/J-34.png',
+        'assets/img/2_character_pepe/3_jump/J-35.png',
+        'assets/img/2_character_pepe/3_jump/J-36.png',
+        'assets/img/2_character_pepe/3_jump/J-37.png',
+        'assets/img/2_character_pepe/3_jump/J-38.png',
+        'assets/img/2_character_pepe/3_jump/J-39.png'
+    ]
+
     intervalStand;
     standCount = 0;
     intervalWalk = null;
     walkCount = 0;
+    jumpCount = 0;
     intervalMoveLeft = null;
     intervalMoveRight = null;
+    intervalJump = null;
     isFlipped = false;
     isMoving = false;
+    isJumping = false;
 
     constructor() {
         super();
@@ -43,18 +59,13 @@ class Character extends MovableObject {
         if (this.intervalMoveLeft) return;
         this.isFlipped = true;
         this.isMoving = true;
+        this.clearAllInterval();
         this.intervalMoveLeft = setInterval(() => {
             if (this.x > 0) {
                 this.x -= 5;
                 this.world.camera_x = -this.x + 100;
             }
         }, 1000 / 60);
-        clearInterval(this.intervalMoveRight);
-        this.intervalMoveRight = null;
-        clearInterval(this.intervalStand);
-        this.intervalStand = null;
-        clearInterval(this.intervalWalk);
-        this.intervalWalk = null;
         this.animationWalk();
 
     }
@@ -63,23 +74,34 @@ class Character extends MovableObject {
         if (this.intervalMoveRight) return
         this.isFlipped = false;
         this.isMoving = true;
+        this.clearAllInterval();
         this.intervalMoveRight = setInterval(() => {
             if (this.x < this.world.level.level_end_x) {
                 this.x += 5;
                 this.world.camera_x = -this.x + 100;
             }
         }, 1000 / 60);
-        clearInterval(this.intervalMoveLeft);
-        this.intervalMoveLeft = null;
-        clearInterval(this.intervalStand);
-        this.intervalStand = null;
-        clearInterval(this.intervalWalk);
-        this.intervalWalk = null;
         this.animationWalk();
     }
 
     moveStop() {
         this.isMoving = false;
+        this.clearAllInterval();
+        this.animationStand();
+    }
+
+    moveJump() {
+        this.clearAllInterval();
+        if (this.intervalJump) return
+        if (this.intervalGravity) return
+        console.log('ausgeführt');
+        this.isMoving = true;
+        this.speedY = 30;
+        this.animationJump();
+        this.applyGravity();
+    }
+
+    clearAllInterval() {
         clearInterval(this.intervalMoveLeft);
         this.intervalMoveLeft = null;
         clearInterval(this.intervalMoveRight);
@@ -88,7 +110,10 @@ class Character extends MovableObject {
         this.intervalStand = null;
         clearInterval(this.intervalWalk);
         this.intervalWalk = null;
-        this.animationStand();
+        clearInterval(this.intervalJump);
+        this.intervalJump = null;
+        // clearInterval(this.intervalGravity);
+        // this.intervalGravity = null;
     }
 
     animationStand() {
@@ -101,6 +126,7 @@ class Character extends MovableObject {
     }
 
     animationWalk() {
+        if (this.intervalWalk) return;
         this.intervalWalk = setInterval(() => {
             let index = this.walkCount % this.walkImages.length;
             this.img.src = this.walkImages[index];
@@ -108,7 +134,18 @@ class Character extends MovableObject {
         }, 1000 / 8);
     }
 
-    jump() {
-
+    animationJump() {
+        if (this.intervalJump) return;
+        this.intervalJump = setInterval(() => {
+            if (this.isAboveGround() || this.speedY > 0) {
+                let index = this.jumpCount % this.jumpImages.length;
+                this.img.src = this.jumpImages[index];
+                this.jumpCount++
+            } else {
+                this.isMoving = false;
+                this.moveStop();
+            }
+        }, 1000 / 8);
     }
 }
+

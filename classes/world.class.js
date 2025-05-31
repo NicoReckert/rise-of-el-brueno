@@ -57,6 +57,8 @@ class World {
                 this.charakter.moveLeft();
             } else if (this.keyboard.RIGHT) {
                 this.charakter.moveRight();
+            } else if (this.keyboard.UP && !this.charakter.isAboveGround()) {
+                this.charakter.moveJump();
             } else {
                 if (this.charakter.isMoving) this.charakter.moveStop();
             }
