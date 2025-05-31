@@ -1,33 +1,12 @@
 class World {
     charakter = new Character();
-    enemies = [new Chicken(), new Chicken(), new Chicken()];
-    clouds = [new Cloud];
-    groundSrc = [
-        'assets/img/5_background/layers/3_third_layer/1.png',
-        'assets/img/5_background/layers/2_second_layer/1.png',
-        'assets/img/5_background/layers/1_first_layer/1.png',
-        'assets/img/5_background/layers/3_third_layer/2.png',
-        'assets/img/5_background/layers/2_second_layer/2.png',
-        'assets/img/5_background/layers/1_first_layer/2.png'
-    ];
-    grounds = [
-        new Ground(this.groundSrc[3], -719),
-        new Ground(this.groundSrc[4], -719),
-        new Ground(this.groundSrc[5], -719),
-        new Ground(this.groundSrc[0], 0),
-        new Ground(this.groundSrc[1], 0),
-        new Ground(this.groundSrc[2], 0),
-        new Ground(this.groundSrc[3], 719),
-        new Ground(this.groundSrc[4], 719),
-        new Ground(this.groundSrc[5], 719),
-        new Ground(this.groundSrc[0], 1438),
-        new Ground(this.groundSrc[1], 1438),
-        new Ground(this.groundSrc[2], 1438),
-    ];
-    skys = [new Sky(-719), new Sky(0), new Sky(719), new Sky(1438)];
     ctx;
     canvas;
     camera_x = 0;
+    sky = level1.sky;
+    grounds = level1.grounds;
+    enemies = level1.enemies;
+    clouds = level1.clouds;
 
     constructor(canvas, keyboard) {
         this.canvas = canvas;
@@ -43,7 +22,7 @@ class World {
         this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
         this.updateCamera();
         this.ctx.translate(this.camera_x, 0);
-        this.addObject(this.skys);
+        this.addObject(this.sky);
         this.addObject(this.grounds);
         this.addToWorld(this.charakter);
         this.addObject(this.enemies);
@@ -88,6 +67,13 @@ class World {
 
     setWorld() {
         this.charakter.world = this;
+    }
+
+    setLevel(level) {
+        this.sky = level.sky;
+        this.grounds = level.grounds;
+        this.enemies = level.enemies;
+        this.clouds = level.clouds;
     }
 
     updateCamera() {
