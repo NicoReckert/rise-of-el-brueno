@@ -15,3 +15,8 @@ window.addEventListener('keydown', (event) => {
 window.addEventListener('keyup', (event) => {
     keyboard.setKeyFalse(event.key);
 });
+
+function setFullscreen() {
+    canvas = document.getElementById('canvas');
+    canvas.requestFullscreen({ navigationUI: "hide" });
+}
