@@ -49,7 +49,7 @@ class Character extends MovableObject {
         'assets/img/2_character_pepe/4_hurt/H-43.png'
     ]
 
-    intervalStand;
+    intervalStand = null;
     standCount = 0;
     intervalWalk = null;
     walkCount = 0;

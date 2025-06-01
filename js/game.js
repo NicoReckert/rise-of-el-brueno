@@ -8,7 +8,7 @@ function init() {
     world.setLevel(level1);
 }
 
-window.addEventListener('keydown', (event) => { 
+window.addEventListener('keydown', (event) => {
     keyboard.setKeyTrue(event.key);
 });
 
