@@ -17,6 +17,6 @@ window.addEventListener('keyup', (event) => {
 });
 
 function setFullscreen() {
-    canvas = document.getElementById('canvas');
+    canvas = document.getElementById('all-content');
     canvas.requestFullscreen({ navigationUI: "hide" });
 }

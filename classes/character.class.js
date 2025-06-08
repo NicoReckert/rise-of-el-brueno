@@ -88,7 +88,6 @@ class Character extends MovableObject {
             }
         }, 1000 / 60);
         this.animationWalk();
-
     }
 
     moveRight() {
@@ -193,3 +192,36 @@ class Character extends MovableObject {
     }
 }
 
+// this.extractFramesCentered('assets/img/Walk.png', 128, 128, 8).then((frames) => {
+//             this.walkImages = frames;
+//             this.loadImage(this.walkImages[0]);
+//             this.animationWalk();
+//         });
+// extractFramesCentered(src, frameW, frameH, count, row = 0, pad = 30) {
+//         return new Promise((resolve) => {
+//             const img = new Image();
+//             const frames = [];
+//             const canvas = document.createElement('canvas');
+//             const ctx = canvas.getContext('2d');
+
+//             canvas.width = frameW + pad * 2;
+//             canvas.height = frameH;
+
+//             img.onload = () => {
+//                 for (let i = 0; i < count; i++) {
+//                     ctx.clearRect(0, 0, canvas.width, canvas.height);
+//                     ctx.drawImage(
+//                         img,
+//                         i * frameW, row * frameH,
+//                         frameW, frameH,
+//                         pad, 0,
+//                         frameW, frameH
+//                     );
+//                     frames.push(canvas.toDataURL());
+//                 }
+//                 resolve(frames);
+//             };
+
+//             img.src = src;
+//         });
+//     }

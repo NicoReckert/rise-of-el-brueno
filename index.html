@@ -9,10 +9,21 @@
 </head>
 
 <body onload="init()">
-    <h1>El Pollo Loco</h1>
-    <canvas id="canvas" width="720" height="480"></canvas>
-    <button id="button" onclick="setFullscreen()">Fullscreen</button>
-
+    <div class="all-content" id="all-content">
+        <h1>El Pollo Loco</h1>
+        <div class="canvas-button-box" id="canvas-button-box">
+            <div class="move-button-box">
+                <button class="move-button" id="left-button">⇐</button>
+                <button class="move-button" id="right-button">⇒</button>
+            </div>
+            <canvas id="canvas" width="720" height="480"></canvas>
+            <div class="move-button-box">
+                <button class="move-button" id="jump-button">⇧</button>
+                <button class="move-button" id="throw-button">↗</button>
+                <button class="fullscreen-button" onclick="setFullscreen()">🗖</button>
+            </div>
+        </div>
+    </div>
     <script src="classes/drawable-object.class.js"></script>
     <script src="classes/movable-object.class.js"></script>
     <script src="classes/status-bar.class.js"></script>
