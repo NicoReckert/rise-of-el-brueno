@@ -10,6 +10,7 @@ class MovableObject extends DrawableObject {
         right: 0,
         bottom: 0
     }
+    isFlying = false;
 
     constructor() {
         super();
@@ -18,11 +19,11 @@ class MovableObject extends DrawableObject {
     applyGravity() {
         if (this.intervalGravity) return;
         this.intervalGravity = setInterval(() => {
-            if (this.isAboveGround() || this.speedY > 0) {
+            if (!this.isFlying && this.isAboveGround() || this.speedY > 0) {
                 this.y -= this.speedY;
                 this.speedY -= this.acceleration;
             } else {
-                this.y = 40;
+                this.y = 130;
                 this.speedY = 0;
                 clearInterval(this.intervalGravity);
                 this.intervalGravity = null;
@@ -34,7 +35,7 @@ class MovableObject extends DrawableObject {
         if (this instanceof ThrowableObject) {
             return true
         } else {
-            return this.y < 40.0;
+            return this.y < 130.0;
         }
     }
 

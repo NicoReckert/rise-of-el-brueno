@@ -6,6 +6,8 @@ class World {
     level = level1;
     statusBar = new StatusBar();
     throwableObjects = [];
+    jetPackMusic = document.getElementById('jet-pack-music');
+    jetPackSound = document.getElementById('jet-pack-sound');
 
     constructor(canvas, keyboard) {
         this.canvas = canvas;
@@ -75,8 +77,14 @@ class World {
                 this.charakter.moveLeft();
             } else if (this.keyboard.RIGHT) {
                 this.charakter.moveRight();
-            } else if (this.keyboard.UP && !this.charakter.isAboveGround()) {
+            } else if (this.keyboard.UP && !this.charakter.isAboveGround() && !this.charakter.isFlying) {
                 this.charakter.moveJump();
+            } else if (this.keyboard.UP && this.charakter.isAboveGround() && this.charakter.isFlying) {
+                this.charakter.moveUp();
+            } else if (this.keyboard.J) {
+                this.charakter.moveFly();
+                this.jetPackMusic.play();
+                this.jetPackSound.play();
             } else if (this.charakter.isDead()) {
                 this.charakter.animationDead();
             } else if (this.charakter.isHurt()) {

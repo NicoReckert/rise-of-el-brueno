@@ -1,4 +1,5 @@
 class Character extends MovableObject {
+
     standImages = [
         'assets/img/2_character_pepe/1_idle/idle/I-1.png',
         'assets/img/2_character_pepe/1_idle/idle/I-2.png',
@@ -49,6 +50,10 @@ class Character extends MovableObject {
         'assets/img/2_character_pepe/4_hurt/H-43.png'
     ]
 
+    jetPackImages = [
+        'assets/img/Pepe_Jetpack.png'
+    ]
+
     intervalStand = null;
     standCount = 0;
     intervalWalk = null;
@@ -58,6 +63,7 @@ class Character extends MovableObject {
     hurtCount = 0;
     intervalMoveLeft = null;
     intervalMoveRight = null;
+    intervalMoveUp = null;
     intervalJump = null;
     intervalDead = null;
     intervalHurt = null;
@@ -69,10 +75,10 @@ class Character extends MovableObject {
     constructor() {
         super();
         super.loadImage('assets/img/2_character_pepe/1_idle/idle/I-1.png');
-        this.height = 400;
-        this.width = 200;
+        this.height = 300;
+        this.width = 130;
         this.x = 100;
-        this.y = 40;
+        this.y = 130;
         this.animationStand();
     }
 
@@ -83,10 +89,11 @@ class Character extends MovableObject {
         this.clearAllInterval();
         this.intervalMoveLeft = setInterval(() => {
             if (this.x > 0) {
-                this.x -= 5;
+                this.x -= 10;
                 this.world.camera_x = -this.x + 100;
             }
         }, 1000 / 60);
+        if (this.isFlying) return;
         this.animationWalk();
     }
 
@@ -97,11 +104,35 @@ class Character extends MovableObject {
         this.clearAllInterval();
         this.intervalMoveRight = setInterval(() => {
             if (this.x < this.world.level.level_end_x) {
-                this.x += 5;
+                this.x += 10;
                 this.world.camera_x = -this.x + 100;
             }
         }, 1000 / 60);
+        if (this.isFlying) return;
         this.animationWalk();
+    }
+
+    moveUp() {
+        console.log('klappt');
+        if (this.intervalMoveUp) return
+        this.isMoving = true;
+        
+            if (this.y > -60) {
+                this.y -= 5;
+                console.log(this.y);
+            }
+        
+    }
+
+    moveDown() {
+        if (this.intervalMoveDown) return
+        this.isMoving = true;
+        this.clearAllInterval();
+        this.intervalMoveDown = setInterval(() => {
+            if (this.y < 130) {
+                this.y += 5;
+            }
+        }, 1000 / 60);
     }
 
     moveStop() {
@@ -111,14 +142,20 @@ class Character extends MovableObject {
     }
 
     moveJump() {
-        this.clearAllInterval();
-        if (this.intervalJump) return
-        if (this.intervalGravity) return
-        console.log('ausgeführt');
+        // this.clearAllInterval();
+        // if (this.intervalJump) return
+        // if (this.intervalGravity) return
         this.isMoving = true;
         this.speedY = 30;
-        this.animationJump();
         this.applyGravity();
+        this.animationJump();
+    }
+
+    moveFly() {
+        this.clearAllInterval();
+        this.isFlying = true;
+        this.y = 120;
+        super.loadImage(this.jetPackImages[0]);
     }
 
     clearAllInterval() {
@@ -157,17 +194,20 @@ class Character extends MovableObject {
     }
 
     animationJump() {
+        console.log(this.speedY);
         if (this.intervalJump) return;
         this.intervalJump = setInterval(() => {
             if (this.isAboveGround() || this.speedY > 0) {
+                console.log('geklappt');
                 let index = this.jumpCount % this.jumpImages.length;
                 this.img.src = this.jumpImages[index];
                 this.jumpCount++
             } else {
+                this.clearAllInterval();
                 this.isMoving = false;
                 this.moveStop();
             }
-        }, 1000 / 8);
+        }, 1000 / 60);
     }
 
     animationDead() {

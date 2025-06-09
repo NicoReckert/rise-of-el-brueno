@@ -2,7 +2,9 @@ class Keyboard {
     LEFT = false;
     RIGHT = false;
     UP = false;
+    DOWN = false
     D = false;
+    J = false;
 
     constructor() {
         this.mobileButtonMakeTrueOrFalse();
@@ -11,15 +13,19 @@ class Keyboard {
     setKeyFalse(key) {
         if (key === 'ArrowLeft') this.LEFT = false;
         if (key === 'ArrowRight') this.RIGHT = false;
-        if (key === 'ArrowRight') this.SPACE = false;
+        if (key === 'ArrowUp') this.UP = false;
+        if (key === 'ArrowDown') this.DOWN = false;
         if (key === 'd') this.D = false;
+        // if (key === 'j') this.J = false;
     }
 
     setKeyTrue(key) {
         if (key === 'ArrowLeft') this.LEFT = true;
         if (key === 'ArrowRight') this.RIGHT = true;
         if (key === 'ArrowUp') this.UP = true;
+        if (key === 'ArrowDown') this.DOWN = true;
         if (key === 'd') this.D = true;
+        if (key === 'j') this.J = true;
     }
 
     mobileButtonMakeTrueOrFalse() {
