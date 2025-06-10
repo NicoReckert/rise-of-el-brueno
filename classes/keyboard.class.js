@@ -47,6 +47,15 @@ class Keyboard {
         document.getElementById('jump-button').addEventListener('touchend', () => {
             this.UP = false;
         });
+        document.getElementById('down-button').addEventListener('touchstart', () => {
+            this.DOWN = true;
+        });
+        document.getElementById('jet-pack-button').addEventListener('touchstart', () => {
+            this.J = true;
+        });
+        document.getElementById('down-button').addEventListener('touchend', () => {
+            this.DOWN = false;
+        });
         document.getElementById('throw-button').addEventListener('touchstart', () => {
             this.D = true;
         });

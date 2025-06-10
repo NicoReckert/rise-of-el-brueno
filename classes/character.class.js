@@ -86,14 +86,16 @@ class Character extends MovableObject {
         if (this.intervalMoveLeft) return;
         this.isFlipped = true;
         this.isMoving = true;
-        this.clearAllInterval();
+        // this.clearAllInterval();
+        clearInterval(this.intervalMoveRight);
+        clearInterval(this.intervalStand);
         this.intervalMoveLeft = setInterval(() => {
             if (this.x > 0) {
                 this.x -= 10;
                 this.world.camera_x = -this.x + 100;
             }
         }, 1000 / 60);
-        if (this.isFlying) return;
+        if (this.isFlying || this.isJumping) return;
         this.animationWalk();
     }
 
@@ -101,38 +103,39 @@ class Character extends MovableObject {
         if (this.intervalMoveRight) return
         this.isFlipped = false;
         this.isMoving = true;
-        this.clearAllInterval();
+        // this.clearAllInterval();
+        clearInterval(this.intervalMoveLeft);
+        clearInterval(this.intervalStand);
         this.intervalMoveRight = setInterval(() => {
             if (this.x < this.world.level.level_end_x) {
                 this.x += 10;
                 this.world.camera_x = -this.x + 100;
             }
         }, 1000 / 60);
-        if (this.isFlying) return;
+        if (this.isFlying || this.isJumping) return;
         this.animationWalk();
     }
 
     moveUp() {
-        console.log('klappt');
         if (this.intervalMoveUp) return
         this.isMoving = true;
-        
-            if (this.y > -60) {
-                this.y -= 5;
-                console.log(this.y);
-            }
-        
+        if (this.y > -60) {
+            this.y -= 10;
+        }
+
     }
 
     moveDown() {
+        console.log(this.y);
         if (this.intervalMoveDown) return
         this.isMoving = true;
-        this.clearAllInterval();
-        this.intervalMoveDown = setInterval(() => {
-            if (this.y < 130) {
-                this.y += 5;
-            }
-        }, 1000 / 60);
+        if (this.y + 10 < 130) {
+            this.y += 10;
+        } else {
+            this.isFlying = false;
+            this.y = 130;
+            this.moveStop();
+        }
     }
 
     moveStop() {
@@ -145,14 +148,17 @@ class Character extends MovableObject {
         // this.clearAllInterval();
         // if (this.intervalJump) return
         // if (this.intervalGravity) return
+        clearInterval(this.intervalWalk);
+        this.isJumping = true;
         this.isMoving = true;
         this.speedY = 30;
-        this.applyGravity();
         this.animationJump();
+        this.applyGravity();
     }
 
     moveFly() {
         this.clearAllInterval();
+        if (this.isFlying) return;
         this.isFlying = true;
         this.y = 120;
         super.loadImage(this.jetPackImages[0]);
@@ -194,20 +200,19 @@ class Character extends MovableObject {
     }
 
     animationJump() {
-        console.log(this.speedY);
         if (this.intervalJump) return;
         this.intervalJump = setInterval(() => {
             if (this.isAboveGround() || this.speedY > 0) {
-                console.log('geklappt');
                 let index = this.jumpCount % this.jumpImages.length;
                 this.img.src = this.jumpImages[index];
                 this.jumpCount++
             } else {
                 this.clearAllInterval();
                 this.isMoving = false;
+                this.isJumping = false;
                 this.moveStop();
             }
-        }, 1000 / 60);
+        }, 1000 / 9);
     }
 
     animationDead() {

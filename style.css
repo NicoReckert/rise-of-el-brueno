@@ -36,7 +36,7 @@ body {
 
 canvas {
   background-color: black;
-  display: block;
+  display: none;
 }
 
 .canvas-button-box {
@@ -90,6 +90,52 @@ canvas {
   background-color: orangered;
 }
 
+.overlay-startscreen {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  /* padding-right: 65px;
+  padding-top: 37px; */
+}
+
+.startscreen {
+  background-image: url("assets/img/9_intro_outro_screens/start/startscreen_1.png");
+  background-position: center center;
+  background-repeat: no-repeat;
+  background-size: 119% auto;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
+}
+
+.start-button {
+  font-size: 32px;
+  font-weight: bold;
+  border-radius: 16px;
+  margin-bottom: 24px;
+  width: 159px;
+  background-color: orange;
+  border: 2px solid orangered;
+}
+
+.start-button:hover {
+  background-color: orangered;
+  border: 2px solid orange;
+}
+
+.start-button:active {
+  background-color: rgb(255, 17, 0);
+  border: 2px solid rgb(255, 204, 0);
+}
+
 @media only screen and (max-width: 850px) {
   canvas {
     width: 100%;
@@ -123,6 +169,10 @@ canvas {
 
 @media only screen and (max-height: 850px) {
   canvas {
+    height: 100dvh;
+  }
+
+  .startscreen {
     height: 100dvh;
   }
 

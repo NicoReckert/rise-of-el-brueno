@@ -6,15 +6,20 @@ class World {
     level = level1;
     statusBar = new StatusBar();
     throwableObjects = [];
+    backgroundMusic = document.getElementById('background-music');
     jetPackMusic = document.getElementById('jet-pack-music');
     jetPackSound = document.getElementById('jet-pack-sound');
 
     constructor(canvas, keyboard) {
         this.canvas = canvas;
         this.ctx = canvas.getContext('2d');
+        this.keyboard = keyboard;
+        this.listenStartButton();
+    }
+
+    startGame() {
         this.setWorld();
         this.draw();
-        this.keyboard = keyboard;
         this.checkPressKey();
         this.checkCollisions();
         this.checkThrowObjects();
@@ -27,6 +32,7 @@ class World {
         this.addObject(this.level.sky);
         this.addObject(this.level.clouds);
         this.addObject(this.level.grounds);
+        this.addObject(this.level.towns);
         this.ctx.translate(-this.camera_x, 0);
         this.addToWorld(this.statusBar);
         this.ctx.translate(this.camera_x, 0);
@@ -81,8 +87,24 @@ class World {
                 this.charakter.moveJump();
             } else if (this.keyboard.UP && this.charakter.isAboveGround() && this.charakter.isFlying) {
                 this.charakter.moveUp();
+            } else if (this.keyboard.DOWN && this.charakter.isAboveGround() && this.charakter.isFlying) {
+                if (this.charakter.y + 10 == 130) {
+                    this.keyboard.J = false;
+                    this.charakter.isFlying = false;
+                    this.jetPackMusic.pause();
+                    this.jetPackMusic.currentTime = 0;
+                    this.jetPackSound.pause();
+                    this.jetPackSound.currentTime = 0;
+                    this.backgroundMusic.play();
+                    this.charakter.y = 130;
+                    this.charakter.moveStop();
+                } else {
+                    this.charakter.moveDown();
+                }
             } else if (this.keyboard.J) {
                 this.charakter.moveFly();
+                this.backgroundMusic.pause();
+                this.backgroundMusic.currentTime = 0;
                 this.jetPackMusic.play();
                 this.jetPackSound.play();
             } else if (this.charakter.isDead()) {
@@ -90,8 +112,10 @@ class World {
             } else if (this.charakter.isHurt()) {
                 this.charakter.animationHurt();
             } else {
+                if (this.charakter.isJumping) return;
                 clearInterval(this.intervalJump);
                 this.intervalJump = null;
+                this.charakter.jumpCount = 0;
                 if (this.charakter.isMoving) this.charakter.moveStop();
             }
         }, 1000 / 60);
@@ -136,5 +160,15 @@ class World {
                 this.throwableObjects.push(bottle);
             }
         }, 200);
+    }
+
+    listenStartButton() {
+        document.getElementById('start-button').addEventListener('click', () => {
+            this.startGame();
+            document.getElementById('overlay-startscreen').style.display = 'none';
+            document.getElementById('canvas').style.display = 'block';
+            document.getElementById('background-music').play();
+            setFullscreen();
+        });
     }
 }

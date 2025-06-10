@@ -15,20 +15,30 @@
             <div class="move-button-box">
                 <button class="move-button" id="left-button">⇐</button>
                 <button class="move-button" id="right-button">⇒</button>
+                <button class="move-button" id="jet-pack-button">J</button>
             </div>
             <canvas id="canvas" width="720" height="480"></canvas>
             <div class="move-button-box">
                 <button class="move-button" id="jump-button">⇧</button>
+                <button class="move-button" id="down-button">⇩</button>
                 <button class="move-button" id="throw-button">↗</button>
                 <button class="fullscreen-button" onclick="setFullscreen()">🗖</button>
             </div>
         </div>
+        <audio id="background-music" loop>
+            <source src="assets/audio/background-music.mp3" type="audio/mpeg">
+        </audio>
         <audio id="jet-pack-music" loop>
             <source src="assets/audio/jet-pack-music.mp3" type="audio/mpeg">
         </audio>
         <audio id="jet-pack-sound">
             <source src="assets/audio/jet-pack-sound.mp3" type="audio/mpeg">
         </audio>
+    </div>
+    <div class="overlay-startscreen" id="overlay-startscreen">
+        <div class="startscreen">
+            <button class="start-button" id="start-button">Start</button>
+        </div>
     </div>
     <script src="classes/drawable-object.class.js"></script>
     <script src="classes/movable-object.class.js"></script>
@@ -37,6 +47,7 @@
     <script src="classes/chicken.class.js"></script>
     <script src="classes/cloud.class.js"></script>
     <script src="classes/ground.class.js"></script>
+    <script src="classes/town.class.js"></script>
     <script src="classes/sky.class.js"></script>
     <script src="classes/throwable-object.class.js"></script>
     <script src="classes/world.class.js"></script>
