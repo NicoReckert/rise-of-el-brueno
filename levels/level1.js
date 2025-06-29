@@ -21,7 +21,7 @@ const townSrc =
         'assets/img/hühnerstall.png'
     ]
 
-const level1 = new Level(
+const level1 = new Level1(
     [
         // new Chicken(),
         // new Chicken(),

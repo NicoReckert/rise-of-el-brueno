@@ -107,7 +107,7 @@ class Character extends MovableObject {
         clearInterval(this.intervalMoveLeft);
         clearInterval(this.intervalStand);
         this.intervalMoveRight = setInterval(() => {
-            if (this.x < this.world.level.level_end_x) {
+            if (this.x < this.world.level1.level_end_x) {
                 this.x += 10;
                 this.world.camera_x = -this.x + 100;
             }

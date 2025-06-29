@@ -5,7 +5,9 @@ class World {
     ctx;
     canvas;
     camera_x = 0;
-    level = level1;
+    level1 = level1;
+    level2 = level2;
+    level3 = scene2;
     statusBar = new StatusBar();
     throwableObjects = [];
     backgroundMusic = document.getElementById('background-music');
@@ -20,41 +22,62 @@ class World {
         this.keyboard = keyboard;
         this.listenStartButton();
     }
+    scene = 2;
+    inStall = false;
 
     startGame() {
         this.setWorld();
         this.draw();
         this.checkPressKey();
-        this.checkCollisions();
+        // this.checkCollisions();
         this.checkThrowObjects();
-        this.npc2.animationStand();
-        this.npc2.isNpcFlipped = true;
+        // this.npc2.animationStand();
+        // this.npc2.isNpcFlipped = true;
     }
 
     draw() {
+        if (this.charakter.x == 1800) {
+            this.scene = 3;
+            this.charakter.x = 100;
+        } 
+        if(this.charakter.x < 5) {
+            this.scene = 2;
+            this.charakter.x = 1790;
+        } 
+        if (this.scene == 2) {
+            this.scene2();
+        } else {
+            this.scene3();
+        }
+        requestAnimationFrame(() => {
+            this.draw();
+        })
+    }
+
+    scene1() {
         this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
         // this.updateCamera();
         this.ctx.translate(this.camera_x, 0);
-        this.addObject(this.level.sky);
-        this.addObject(this.level.clouds);
-        this.addObject(this.level.grounds);
-        this.addToWorld(this.level.towns[0]);
-        this.addToWorld(this.level.towns[1]);
-        this.addToWorld(this.level.towns[2]);
-        this.addToWorld(this.level.towns[6]);
-        this.addToWorld(this.level.towns[7]);
-        this.addToWorld(this.level.towns[8]);
+        this.addObject(this.level1.sky);
+        this.addObject(this.level1.clouds);
+        this.addObject(this.level1.grounds);
+        this.addToWorld(this.level1.towns[0]);
+        this.addToWorld(this.level1.towns[1]);
+        this.addToWorld(this.level1.towns[2]);
+        this.addToWorld(this.level1.towns[6]);
+        this.addToWorld(this.level1.towns[7]);
+        this.addToWorld(this.level1.towns[8]);
         // this.ctx.drawImage(this.video, 0, 0, 1000, 480);
         // this.video.play();
-        this.addToWorld(this.level.towns[4]);
+        this.addToWorld(this.level1.towns[4]);
         this.ctx.translate(-this.camera_x, 0);
         this.addToWorld(this.statusBar);
         this.ctx.translate(this.camera_x, 0);
         this.addToWorld(this.npc1);
         this.addToWorld(this.npc2);
         this.addToWorld(this.charakter);
-        this.addToWorld(this.level.towns[3]);
-        this.addToWorld(this.level.towns[5]);
+        this.addToWorld(this.level1.towns[3]);
+        this.addToWorld(this.level1.towns[5]);
         if (this.charakter.x === 1650) {
             // this.drawSpeechBubble(this.ctx, "Ich bin Brünö ein Hühnerexperte, Compadre Amigo!", this.charakter);
             this.bubble.update(performance.now());
@@ -63,17 +86,44 @@ class World {
             this.bubble2.draw(this.ctx);
         }
         this.addObject(this.throwableObjects);
-        this.addObject(this.level.enemies);
-        this.addToWorld(this.level.endboss);
+        this.addObject(this.level1.enemies);
+        this.addToWorld(this.level1.endboss);
         this.ctx.translate(-this.camera_x, 0);
         // let self = this;
-        requestAnimationFrame(() => {
-            this.draw();
-            this.charakter.playSpeakSound();
-            if (this.charakter.x == 1650) {
-                this.npc2.walkToPosition();
-            }
-        })
+    }
+
+    scene2() {
+        this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+        // this.updateCamera();
+        this.ctx.translate(this.camera_x, 0);
+        this.addObject(this.level2.sky);
+        this.addObject(this.level2.clouds);
+        this.addObject(this.level2.grounds);
+        this.addToWorld(this.level2.towns[0]);
+        this.addToWorld(this.level2.towns[1]);
+        this.addToWorld(this.level2.towns[2]);
+        this.ctx.translate(-this.camera_x, 0);
+        this.addToWorld(this.statusBar);
+        this.ctx.translate(this.camera_x, 0);
+        this.addToWorld(this.charakter);
+        this.addObject(this.throwableObjects);
+        this.ctx.translate(-this.camera_x, 0);
+        // let self = this;
+    }
+
+    scene3() {
+        this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+        // this.updateCamera();
+        this.ctx.translate(this.camera_x, 0);
+        this.addObject(this.level3.grounds);
+        this.addObject(this.level3.towns);
+        this.ctx.translate(-this.camera_x, 0);
+        this.addToWorld(this.statusBar);
+        this.ctx.translate(this.camera_x, 0);
+        this.addToWorld(this.charakter);
+        this.addObject(this.throwableObjects);
+        this.ctx.translate(-this.camera_x, 0);
+        // let self = this;
     }
 
     addToWorld(object) {
