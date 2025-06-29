@@ -11,7 +11,14 @@ const groundSrc =
 const townSrc =
     [
         'assets/img/town1.png',
-        'assets/img/town2.png'
+        'assets/img/town2.png',
+        'assets/img/door.png',
+        'assets/img/door2.png',
+        'assets/img/door3.png',
+        'assets/img/door4.png',
+        'assets/img/bauernhof1.png',
+        'assets/img/bauernhof2.png',
+        'assets/img/hühnerstall.png'
     ]
 
 const level1 = new Level(
@@ -63,7 +70,14 @@ const level1 = new Level(
 
     [
         new Town(townSrc[0], 1438, -125, 800, 650),
-        new Town(townSrc[1], 2203, -189, 800, 750)
+        new Town(townSrc[1], 2203, -189, 800, 750),
+        new Town(townSrc[2], 5500, 25, 600, 500),
+        new Town(townSrc[3], 5500, 25, 600, 500),
+        new Town(townSrc[4], 100, 25, 400, 500),
+        new Town(townSrc[5], 100, 25, 400, 500),
+        new Town(townSrc[6], 800, -90, 800, 500),
+        new Town(townSrc[7], 1365, 165, 400, 300),
+        new Town(townSrc[8], 500, 0, 500, 500)
     ],
 
     [

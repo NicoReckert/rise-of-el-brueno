@@ -149,11 +149,13 @@ class Character extends MovableObject {
         // if (this.intervalJump) return
         // if (this.intervalGravity) return
         clearInterval(this.intervalWalk);
+        this, this.intervalWalk = null;
         this.isJumping = true;
         this.isMoving = true;
         this.speedY = 30;
         this.animationJump();
         this.applyGravity();
+
     }
 
     moveFly() {
@@ -235,7 +237,17 @@ class Character extends MovableObject {
             this.hurtCount++
         }, 1000 / 8);
     }
+
+    playSpeakSound() {
+        if (this.x == 1650) {
+            document.getElementById('speak-sound').play();
+        }
+    }
 }
+
+
+
+
 
 // this.extractFramesCentered('assets/img/Walk.png', 128, 128, 8).then((frames) => {
 //             this.walkImages = frames;

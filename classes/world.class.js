@@ -1,5 +1,7 @@
 class World {
     charakter = new Character();
+    npc1 = new Npc(1750, 130, 130, 300);
+    npc2 = new Npc(2500, 170, 180, 250);
     ctx;
     canvas;
     camera_x = 0;
@@ -9,7 +11,9 @@ class World {
     backgroundMusic = document.getElementById('background-music');
     jetPackMusic = document.getElementById('jet-pack-music');
     jetPackSound = document.getElementById('jet-pack-sound');
-
+    bubble = new SpeechBubble("Ich bin Brünö ein Hühnerexperte, Compadre Amigo!", this.charakter, performance.now());
+    bubble2 = new SpeechBubble("Ich bin Aria und wir haben große Probleme mit motierten Hühnern", this.npc2, performance.now());
+    video = document.getElementById('portal-video');
     constructor(canvas, keyboard) {
         this.canvas = canvas;
         this.ctx = canvas.getContext('2d');
@@ -23,6 +27,8 @@ class World {
         this.checkPressKey();
         this.checkCollisions();
         this.checkThrowObjects();
+        this.npc2.animationStand();
+        this.npc2.isNpcFlipped = true;
     }
 
     draw() {
@@ -32,23 +38,46 @@ class World {
         this.addObject(this.level.sky);
         this.addObject(this.level.clouds);
         this.addObject(this.level.grounds);
-        this.addObject(this.level.towns);
+        this.addToWorld(this.level.towns[0]);
+        this.addToWorld(this.level.towns[1]);
+        this.addToWorld(this.level.towns[2]);
+        this.addToWorld(this.level.towns[6]);
+        this.addToWorld(this.level.towns[7]);
+        this.addToWorld(this.level.towns[8]);
+        // this.ctx.drawImage(this.video, 0, 0, 1000, 480);
+        // this.video.play();
+        this.addToWorld(this.level.towns[4]);
         this.ctx.translate(-this.camera_x, 0);
         this.addToWorld(this.statusBar);
         this.ctx.translate(this.camera_x, 0);
+        this.addToWorld(this.npc1);
+        this.addToWorld(this.npc2);
         this.addToWorld(this.charakter);
+        this.addToWorld(this.level.towns[3]);
+        this.addToWorld(this.level.towns[5]);
+        if (this.charakter.x === 1650) {
+            // this.drawSpeechBubble(this.ctx, "Ich bin Brünö ein Hühnerexperte, Compadre Amigo!", this.charakter);
+            this.bubble.update(performance.now());
+            this.bubble.draw(this.ctx);
+            this.bubble2.update(performance.now());
+            this.bubble2.draw(this.ctx);
+        }
         this.addObject(this.throwableObjects);
         this.addObject(this.level.enemies);
         this.addToWorld(this.level.endboss);
         this.ctx.translate(-this.camera_x, 0);
-        let self = this;
-        requestAnimationFrame(function () {
-            self.draw();
+        // let self = this;
+        requestAnimationFrame(() => {
+            this.draw();
+            this.charakter.playSpeakSound();
+            if (this.charakter.x == 1650) {
+                this.npc2.walkToPosition();
+            }
         })
     }
 
     addToWorld(object) {
-        if (object.isFlipped) {
+        if (object.isFlipped || object.isNpcFlipped) {
             this.ctx.save();
             this.ctx.scale(-1, 1);
             this.ctx.drawImage(object.img, -object.x - object.width, object.y, object.width, object.height);
@@ -169,6 +198,43 @@ class World {
             document.getElementById('canvas').style.display = 'block';
             document.getElementById('background-music').play();
             setFullscreen();
+            this.charakter.playSpeakSound();
         });
+    }
+
+    drawSpeechBubble(ctx, text, target) {
+        const padding = 10;
+        const fontSize = 16;
+        const maxWidth = 200;
+
+        ctx.font = `${fontSize}px Arial`;
+        const textMetrics = ctx.measureText(text);
+        const bubbleWidth = Math.min(maxWidth, textMetrics.width + padding * 2);
+        const bubbleHeight = fontSize + padding * 2;
+
+        // Position über dem Kopf des Charakters
+        const x = target.x + target.width / 2 - bubbleWidth / 2;
+        const y = target.y - bubbleHeight + 80; // 20px über dem Kopf
+
+        // Sprechblasenrechteck
+        ctx.beginPath();
+        ctx.roundRect(x, y, bubbleWidth, bubbleHeight, 10);
+        ctx.fillStyle = 'white';
+        ctx.fill();
+        ctx.strokeStyle = 'black';
+        ctx.stroke();
+
+        // Pfeil zur Figur
+        ctx.beginPath();
+        ctx.moveTo(target.x + target.width / 2 - 5, y + bubbleHeight);
+        ctx.lineTo(target.x + target.width / 2 + 5, y + bubbleHeight);
+        ctx.lineTo(target.x + target.width / 2, y + bubbleHeight + 10);
+        ctx.closePath();
+        ctx.fill();
+        ctx.stroke();
+
+        // Text
+        ctx.fillStyle = 'black';
+        ctx.fillText(text, x + padding, y + fontSize);
     }
 }
