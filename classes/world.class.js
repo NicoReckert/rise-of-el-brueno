@@ -115,6 +115,7 @@ class World {
         this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
         // this.updateCamera();
         this.ctx.translate(this.camera_x, 0);
+        this.addObject(this.level3.sky);
         this.addObject(this.level3.grounds);
         this.addObject(this.level3.towns);
         this.ctx.translate(-this.camera_x, 0);

@@ -80,11 +80,25 @@ const level2 = new Level2(
 
 const scene2 = new Scene(
     [
-        new Ground(groundSrc2[6], -719),
-        new Ground(groundSrc2[6], 0),
-        new Ground(groundSrc2[6], 719),
+        // new Ground(groundSrc2[6], -719),
+        // new Ground(groundSrc2[6], 0),
+        // new Ground(groundSrc2[6], 719),
+        new Ground(groundSrc2[3], -719),
+        new Ground(groundSrc2[4], -719),
+        new Ground(groundSrc2[5], -719),
+        new Ground(groundSrc2[0], 0),
+        new Ground(groundSrc2[1], 0),
+        new Ground(groundSrc2[2], 0),
+        new Ground(groundSrc2[3], 719),
+        new Ground(groundSrc2[4], 719),
+        new Ground(groundSrc2[5], 719),
     ],
     [   
         new Town(townSrc2[3], 0, 20, 720, 480)
+    ],
+    [
+        new Sky(-719),
+        new Sky(0),
+        new Sky(719)
     ]
 );

@@ -105,10 +105,10 @@ canvas {
 }
 
 .startscreen {
-  background-image: url("assets/img/9_intro_outro_screens/start/startscreen_1.png");
+  background-image: url("assets/img/startscreen.png");
   background-position: center center;
   background-repeat: no-repeat;
-  background-size: 119% auto;
+  background-size: 70% auto;
   width: 100%;
   height: 100%;
   display: flex;
