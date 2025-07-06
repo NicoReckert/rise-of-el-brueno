@@ -1,7 +1,7 @@
 class Level1 extends Level {
     
 
-    constructor(enemies, endboss, clouds, grounds, towns, sky, coins) {
+    constructor(enemies, endboss, clouds, grounds, towns, sky, coins, bottles) {
         super();
         this.enemies = enemies;
         this.endboss = endboss;
@@ -10,5 +10,6 @@ class Level1 extends Level {
         this.towns = towns;
         this.sky = sky;
         this.coins = coins;
+        this.bottles = bottles;
     }
 }

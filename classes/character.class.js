@@ -84,6 +84,7 @@ class Character extends MovableObject {
         this.offset.left = 20;
         this.offset.right = 40;
         this.offset.bottom = 15;
+        this.speedX = 10;
     }
 
     moveLeft() {
@@ -95,7 +96,7 @@ class Character extends MovableObject {
         clearInterval(this.intervalStand);
         this.intervalMoveLeft = setInterval(() => {
             if (this.x > 0) {
-                this.x -= 10;
+                this.x -= this.speedX;
                 this.world.camera_x = -this.x + 100;
             }
         }, 1000 / 60);
@@ -112,7 +113,7 @@ class Character extends MovableObject {
         clearInterval(this.intervalStand);
         this.intervalMoveRight = setInterval(() => {
             if (this.x < this.world.level1.level_end_x) {
-                this.x += 10;
+                this.x += this.speedX;
                 this.world.camera_x = -this.x + 100;
             }
         }, 1000 / 60);
@@ -247,6 +248,11 @@ class Character extends MovableObject {
             document.getElementById('speak-sound').play();
         }
     }
+
+    bounce() {
+        this.speedY = 10; // kleiner Rücksprung nach oben
+    }
+
 }
 
 

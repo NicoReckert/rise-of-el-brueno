@@ -7,6 +7,7 @@ class Level {
     towns;
     level_end_x = 6409;
     coins;
+    bottles;
 
     constructor() {
 

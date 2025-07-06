@@ -70,6 +70,7 @@ class World {
         this.addToWorld(this.bottleBar);
         this.ctx.translate(this.camera_x, 0);
         this.addObject(this.level1.coins);
+        this.addObject(this.level1.bottles);
         this.addToWorld(this.charakter);
         this.addObject(this.throwableObjects);
         this.addObject(this.level1.enemies);
@@ -259,87 +260,158 @@ class World {
 
     checkCollisions() {
         setInterval(() => {
-            // this.level1.enemies.forEach(element => {
-            //     if (this.charakter.isColliding(element)) {
-            //         this.charakter.hit();
-            //         this.statusBar.setPercentage(this.charakter.energy);
-            //     }
-            // })
-            this.level1.coins.forEach((element, index) => {
-                if (this.charakter.isColliding(element)) {
-                    this.coinBar.percentage = this.coinBar.percentage == 100 ? this.coinBar.percentage + 0 : this.coinBar.percentage + 20;
-                    this.coinBar.setPercentage(this.coinBar.percentage);
-                    this.level1.coins.splice(index, 1);
+            this.level1.enemies.forEach(element => {
+                if (this.charakter.isColliding(element) && !element.isDead) {
+                    this.charakter.hit();
+                    this.statusBar.setPercentage(this.charakter.energy);
                 }
+                if (this.charakter.isColliding(element) && !this.charakter.isJumpOn(element) && !element.isDead) {
+                if (this.charakter.speedX > 0 && this.charakter.x < element.x) {
+                    this.charakter.speedX = 0; // Bewegung nach rechts stoppen
+                } else if (this.charakter.speedX < 0 && this.charakter.x > element.x) {
+                    this.charakter.speedX = 0; // Bewegung nach links stoppen
+                }else {
+                    this.charakter.speedX = 10;
+                }
+            }
+            })
+            // for (let i = 0; i < this.level1.enemies.length; i++) {
+            //     const enemy = this.level1.enemies[i];
+            //     if (this.charakter.isJumpOn(enemy)) {
+            //         if(enemy.isDead) return;
+            //         enemy.death(); 
+            //         enemy.isDead = true;
+            //         this.playChickenDeathSound();
+            //         this.charakter.bounce(); 
+            //         setTimeout(() => {
+            //             this.level1.enemies.splice(i, 1);
+            //         }, 2000);
+            //     }
+            // }
+
+            
+
+            for (let i = this.level1.enemies.length - 1; i >= 0; i--) {
+                const enemy = this.level1.enemies[i];
+                if (this.charakter.isJumpOn(enemy)) {
+                    if (enemy.isDead) continue;
+
+                    enemy.death();
+                    enemy.isDead = true;
+                    this.playChickenDeathSound();
+                    this.charakter.bounce();
+
+                    // Speichere Index in Closure
+                    const removeIndex = i;
+                    setTimeout(() => {
+                        this.level1.enemies.splice(removeIndex, 1);
+                    }, 2000);
+                }
+            }
 
 
-        })
-        // for (let i = this.level1.coins.length - 1; i >= 0; i--) {
-        //     const coin = this.level1.coins[i];
-        //     if (this.charakter.isColliding(coin)) {
-        //         this.level1.coins.splice(i, 1);
-        //                             this.coinBar.percentage = this.coinBar.percentage == 100 ? this.coinBar.percentage + 0 : this.coinBar.percentage + 20;
+            // this.level1.coins.forEach((element, index) => {
+            //     if (this.charakter.isColliding(element)) {
+            //         this.coinBar.percentage = this.coinBar.percentage == 100 ? this.coinBar.percentage + 0 : this.coinBar.percentage + 20;
+            //         this.coinBar.setPercentage(this.coinBar.percentage);
+            //         this.level1.coins.splice(index, 1);
+            //     }
 
-                // this.coinBar.percentage = Math.min(this.coinBar.percentage + 20, 100);
-        //         this.coinBar.setPercentage(this.coinBar.percentage);
-        //     }
-        // }
-    }, 200);
-}
 
-checkThrowObjects() {
-    setInterval(() => {
-        if (this.keyboard.D) {
-            let bottle = new ThrowableObject(this.charakter.x + 50, this.charakter.y + 200);
-            this.throwableObjects.push(bottle);
-        }
-    }, 200);
-}
+            // })
+            for (let i = this.level1.coins.length - 1; i >= 0; i--) {
+                const coin = this.level1.coins[i];
+                if (this.charakter.isColliding(coin)) {
+                    this.level1.coins.splice(i, 1);
+                    // this.coinBar.percentage = this.coinBar.percentage == 100 ? this.coinBar.percentage + 0 : this.coinBar.percentage + 20;
+                    // document.getElementById('coin-sound').play();
+                    this.playCoinSound();
+                    this.coinBar.percentage = Math.min(this.coinBar.percentage + 20, 100);
+                    this.coinBar.setPercentage(this.coinBar.percentage);
+                }
+            }
+            for (let i = this.level1.bottles.length - 1; i >= 0; i--) {
+                const bottle = this.level1.bottles[i];
+                if (this.charakter.isColliding(bottle)) {
+                    this.level1.bottles.splice(i, 1);
+                    // this.coinBar.percentage = this.coinBar.percentage == 100 ? this.coinBar.percentage + 0 : this.coinBar.percentage + 20;
+                    // document.getElementById('coin-sound').play();
+                    this.playBottleSound();
+                    this.bottleBar.percentage = Math.min(this.bottleBar.percentage + 20, 100);
+                    this.bottleBar.setPercentage(this.bottleBar.percentage);
+                }
+            }
+        }, 1000 / 60);
+    }
 
-listenStartButton() {
-    document.getElementById('start-button').addEventListener('click', () => {
-        this.startGame();
-        document.getElementById('overlay-startscreen').style.display = 'none';
-        document.getElementById('canvas').style.display = 'block';
-        document.getElementById('background-music').play();
-        setFullscreen();
-        this.charakter.playSpeakSound();
-    });
-}
+    checkThrowObjects() {
+        setInterval(() => {
+            if (this.keyboard.D) {
+                let bottle = new ThrowableObject(this.charakter.x + 50, this.charakter.y + 200);
+                this.throwableObjects.push(bottle);
+            }
+        }, 200);
+    }
 
-drawSpeechBubble(ctx, text, target) {
-    const padding = 10;
-    const fontSize = 16;
-    const maxWidth = 200;
+    listenStartButton() {
+        document.getElementById('start-button').addEventListener('click', () => {
+            this.startGame();
+            document.getElementById('overlay-startscreen').style.display = 'none';
+            document.getElementById('canvas').style.display = 'block';
+            document.getElementById('background-music').play();
+            setFullscreen();
+            this.charakter.playSpeakSound();
+        });
+    }
 
-    ctx.font = `${fontSize}px Arial`;
-    const textMetrics = ctx.measureText(text);
-    const bubbleWidth = Math.min(maxWidth, textMetrics.width + padding * 2);
-    const bubbleHeight = fontSize + padding * 2;
+    drawSpeechBubble(ctx, text, target) {
+        const padding = 10;
+        const fontSize = 16;
+        const maxWidth = 200;
 
-    // Position über dem Kopf des Charakters
-    const x = target.x + target.width / 2 - bubbleWidth / 2;
-    const y = target.y - bubbleHeight + 80; // 20px über dem Kopf
+        ctx.font = `${fontSize}px Arial`;
+        const textMetrics = ctx.measureText(text);
+        const bubbleWidth = Math.min(maxWidth, textMetrics.width + padding * 2);
+        const bubbleHeight = fontSize + padding * 2;
 
-    // Sprechblasenrechteck
-    ctx.beginPath();
-    ctx.roundRect(x, y, bubbleWidth, bubbleHeight, 10);
-    ctx.fillStyle = 'white';
-    ctx.fill();
-    ctx.strokeStyle = 'black';
-    ctx.stroke();
+        // Position über dem Kopf des Charakters
+        const x = target.x + target.width / 2 - bubbleWidth / 2;
+        const y = target.y - bubbleHeight + 80; // 20px über dem Kopf
 
-    // Pfeil zur Figur
-    ctx.beginPath();
-    ctx.moveTo(target.x + target.width / 2 - 5, y + bubbleHeight);
-    ctx.lineTo(target.x + target.width / 2 + 5, y + bubbleHeight);
-    ctx.lineTo(target.x + target.width / 2, y + bubbleHeight + 10);
-    ctx.closePath();
-    ctx.fill();
-    ctx.stroke();
+        // Sprechblasenrechteck
+        ctx.beginPath();
+        ctx.roundRect(x, y, bubbleWidth, bubbleHeight, 10);
+        ctx.fillStyle = 'white';
+        ctx.fill();
+        ctx.strokeStyle = 'black';
+        ctx.stroke();
 
-    // Text
-    ctx.fillStyle = 'black';
-    ctx.fillText(text, x + padding, y + fontSize);
-}
+        // Pfeil zur Figur
+        ctx.beginPath();
+        ctx.moveTo(target.x + target.width / 2 - 5, y + bubbleHeight);
+        ctx.lineTo(target.x + target.width / 2 + 5, y + bubbleHeight);
+        ctx.lineTo(target.x + target.width / 2, y + bubbleHeight + 10);
+        ctx.closePath();
+        ctx.fill();
+        ctx.stroke();
+
+        // Text
+        ctx.fillStyle = 'black';
+        ctx.fillText(text, x + padding, y + fontSize);
+    }
+
+    playCoinSound() {
+        const sound = new Audio('assets/audio/coin2.mp3');
+        sound.play();
+    }
+
+    playBottleSound() {
+        const sound = new Audio('assets/audio/bottle-clink1.mp3');
+        sound.play();
+    }
+
+    playChickenDeathSound() {
+        const sound = new Audio('assets/audio/chicken-death.mp3');
+        sound.play();
+    }
 }
