@@ -6,6 +6,7 @@ class Level {
     endboss;
     towns;
     level_end_x = 6409;
+    coins;
 
     constructor() {
 

@@ -80,6 +80,10 @@ class Character extends MovableObject {
         this.x = 100;
         this.y = 130;
         this.animationStand();
+        this.offset.top = 130;
+        this.offset.left = 20;
+        this.offset.right = 40;
+        this.offset.bottom = 15;
     }
 
     moveLeft() {

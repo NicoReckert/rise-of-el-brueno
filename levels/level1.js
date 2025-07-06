@@ -92,5 +92,13 @@ const level1 = new Level1(
         new Sky(5033),
         new Sky(5752),
         new Sky(6471)
+    ],
+    [
+        new Coin(),
+        new Coin(),
+        new Coin(),
+        new Coin(),
+        new Coin(),
+        new Coin()
     ]
 );
