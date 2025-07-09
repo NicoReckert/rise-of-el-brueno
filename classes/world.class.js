@@ -8,6 +8,7 @@ class World {
     level1 = level1;
     level2 = level2;
     level3 = scene2;
+    endbossMusicIsPlayed = false;
     statusBar = new LifeEnergyCharakterBar();
     statusBar2 = new LifeEnergyBossBar();
     coinBar = new CoinBar();
@@ -416,6 +417,7 @@ class World {
                     if (bottle.isColliding(this.level1.endboss, 0, 50) && !this.level1.endboss.isDead) {
                         if (!bottle.isBrokenSound) {
                             this.playBottelBrokenSound();
+                            this.level1.endboss.animationHurt();
                             bottle.isBrokenSound = true;
                             bottle.animationBrokenBottle();
                             this.level1.endboss.energy = this.level1.endboss.energy - 20;
@@ -432,6 +434,14 @@ class World {
 
                 }
             }
+            if (this.charakter.x >= 1050 && this.charakter.x <= 1250) {
+                if (this.endbossMusicIsPlayed) return;
+                document.getElementById('background-music').pause();
+                this.playEndbossMusic();
+                this.playEndbossAlarmSound();
+                this.level1.endboss.animationHurt();
+                this.endbossMusicIsPlayed = true;
+            }
         }, 1000 / 60);
     }
 
@@ -447,6 +457,7 @@ class World {
                     bottle.charakterIsFlipped = true;
                 }
                 this.throwableObjects.push(bottle);
+                this.playBottelThrowSound();
                 this.bottleBar.percentage = Math.min(this.bottleBar.percentage - 20, 100);
                 this.bottleBar.setPercentage(this.bottleBar.percentage);
                 this.charakter.throwableBottels != 0 ? this.charakter.throwableBottels -= 1 : this.charakter.throwableBottels -= 0;
@@ -505,27 +516,42 @@ class World {
     }
 
     playCoinSound() {
-        const sound = new Audio('assets/audio/coin2.mp3');
+        const sound = new Audio('./assets/audio/coin2.mp3');
         sound.play();
     }
 
     playBottleSound() {
-        const sound = new Audio('assets/audio/bottle-clink1.mp3');
+        const sound = new Audio('./assets/audio/bottle-clink1.mp3');
         sound.play();
     }
 
     playChickenDeathSound() {
-        const sound = new Audio('assets/audio/chicken-death.mp3');
+        const sound = new Audio('./assets/audio/chicken-death.mp3');
         sound.play();
     }
 
     playEmptyBottelsSound() {
-        const sound = new Audio('assets/audio/empty-bottels2.mp3');
+        const sound = new Audio('./assets/audio/empty-bottels2.mp3');
         sound.play();
     }
 
     playBottelBrokenSound() {
-        const sound = new Audio('assets/audio/bottle-shattering1.mp3');
+        const sound = new Audio('./assets/audio/bottle-shattering1.mp3');
+        sound.play();
+    }
+
+    playBottelThrowSound() {
+        const sound = new Audio('./assets/audio/throw2.mp3');
+        sound.play();
+    }
+
+    playEndbossMusic() {
+        const sound = new Audio('./assets/audio/endboss-music.mp3');
+        sound.play();
+    }
+
+    playEndbossAlarmSound() {
+        const sound = new Audio('./assets/audio/endboss-alarm.mp3');
         sound.play();
     }
 }

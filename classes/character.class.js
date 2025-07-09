@@ -141,7 +141,6 @@ class Character extends MovableObject {
     }
 
     moveDown() {
-        console.log(this.y);
         if (this.intervalMoveDown) return
         this.isMoving = true;
         if (this.y + 10 < 130) {

@@ -10,14 +10,13 @@ class Bottle extends MovableObject {
     constructor() {
         super();
         this.randomImage = this.bottleImages[Math.floor(Math.random() * this.bottleImages.length)];
-        console.log(this.randomImage);
         super.loadImage(this.randomImage);
         this.x = 200 + Math.random() * 1000;
         this.y = 343;
         this.height = 80;
         this.width = 80;
         this.offset.top = 12;
-        if (this.randomImage != "assets/img/6_salsa_bottle/1_salsa_bottle_on_ground.png") {
+        if (this.randomImage != "./assets/img/6_salsa_bottle/1_salsa_bottle_on_ground.png") {
             this.offset.left = 24;
             this.offset.right = 25;
         } else {

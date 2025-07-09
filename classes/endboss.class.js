@@ -22,6 +22,13 @@ class Endboss extends MovableObject {
             './assets/img/4_enemie_boss_chicken/1_walk/G4.png',
         ]
 
+    hurtImages =
+        [
+            './assets/img/4_enemie_boss_chicken/4_hurt/G21.png',
+            './assets/img/4_enemie_boss_chicken/4_hurt/G22.png',
+            './assets/img/4_enemie_boss_chicken/4_hurt/G23.png'
+        ]
+
     deadImages =
         [
             './assets/img/4_enemie_boss_chicken/5_dead/G24.png',
@@ -31,9 +38,11 @@ class Endboss extends MovableObject {
 
     idleCount = 0;
     walkCount = 0;
+    hurtCount = 0;
     deadCount = 0;
     intervalIdle = null;
     intervalWalk = null;
+    intervalHurt = null;
     intervalDead = null;
     intervalMoveDownAfterDead = null;
 
@@ -63,7 +72,7 @@ class Endboss extends MovableObject {
             let index = this.idleCount % this.idleImages.length;
             this.img.src = this.idleImages[index];
             this.idleCount++
-        }, 1000 / 8);
+        }, 1000 / 4);
     }
 
     animationWalk() {
@@ -71,6 +80,26 @@ class Endboss extends MovableObject {
             let index = this.walkCount % this.walkImages.length;
             this.img.src = this.walkImages[index];
             this.walkCount++
+        }, 1000 / 8);
+    }
+
+    animationHurt() {
+        if (this.intervalHurt) return;
+        clearInterval(this.intervalIdle);
+        clearInterval(this.intervalWalk);
+        this.intervalIdle = null;
+        this.intervalWalk = null;
+        this.intervalHurt = setInterval(() => {
+            if (this.hurtCount != 4) {
+                let index = this.hurtCount % this.hurtImages.length;
+                this.img.src = this.hurtImages[index];
+                this.hurtCount++
+            } else {
+                clearInterval(this.intervalHurt);
+                this.intervalHurt = null;
+                this.hurtCount = 0;
+                this.animationIdle();
+            }
         }, 1000 / 8);
     }
 
