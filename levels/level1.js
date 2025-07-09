@@ -1,24 +1,24 @@
 const groundSrc =
     [
-        'assets/img/5_background/layers/3_third_layer/1.png',
-        'assets/img/5_background/layers/2_second_layer/1.png',
-        'assets/img/5_background/layers/1_first_layer/1.png',
-        'assets/img/5_background/layers/3_third_layer/2.png',
-        'assets/img/5_background/layers/2_second_layer/2.png',
-        'assets/img/5_background/layers/1_first_layer/2.png'
+        './assets/img/5_background/layers/3_third_layer/1.png',
+        './assets/img/5_background/layers/2_second_layer/1.png',
+        './assets/img/5_background/layers/1_first_layer/1.png',
+        './assets/img/5_background/layers/3_third_layer/2.png',
+        './assets/img/5_background/layers/2_second_layer/2.png',
+        './assets/img/5_background/layers/1_first_layer/2.png'
     ]
 
 const townSrc =
     [
-        'assets/img/town1.png',
-        'assets/img/town2.png',
-        'assets/img/door.png',
-        'assets/img/door2.png',
-        'assets/img/door3.png',
-        'assets/img/door4.png',
-        'assets/img/bauernhof1.png',
-        'assets/img/bauernhof2.png',
-        'assets/img/hühnerstall.png'
+        './assets/img/town1.png',
+        './assets/img/town2.png',
+        './assets/img/door.png',
+        './assets/img/door2.png',
+        './assets/img/door3.png',
+        './assets/img/door4.png',
+        './assets/img/bauernhof1.png',
+        './assets/img/bauernhof2.png',
+        './assets/img/hühnerstall.png'
     ]
 
 const level1 = new Level1(

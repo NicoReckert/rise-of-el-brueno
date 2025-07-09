@@ -40,7 +40,7 @@ class MovableObject extends DrawableObject {
         }
     }
 
-    isColliding(object) {
+    isColliding(object, collidingToleranceTop, collidingToleranceLeft) {
         const a_left = this.x + this.offset.left;
         const a_right = this.x + this.width - this.offset.right;
         const a_top = this.y + this.offset.top;
@@ -51,9 +51,9 @@ class MovableObject extends DrawableObject {
         const b_top = object.y + object.offset.top;
         const b_bottom = object.y + object.height - object.offset.bottom;
 
-        return a_right > b_left &&
+        return a_right > b_left + collidingToleranceLeft &&
             a_left < b_right &&
-            a_bottom > b_top &&
+            a_bottom > b_top + collidingToleranceTop &&
             a_top < b_bottom;
     }
 

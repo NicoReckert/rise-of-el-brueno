@@ -1,20 +1,20 @@
 const groundSrc2 =
     [
-        'assets/img/5_background/layers/3_third_layer/1.png',
-        'assets/img/5_background/layers/2_second_layer/1.png',
-        'assets/img/5_background/layers/1_first_layer/1.png',
-        'assets/img/5_background/layers/3_third_layer/2.png',
-        'assets/img/5_background/layers/2_second_layer/2.png',
-        'assets/img/5_background/layers/1_first_layer/2.png',
-        'assets/img/holz_hintergrund.png'
+        './assets/img/5_background/layers/3_third_layer/1.png',
+        './assets/img/5_background/layers/2_second_layer/1.png',
+        './assets/img/5_background/layers/1_first_layer/1.png',
+        './assets/img/5_background/layers/3_third_layer/2.png',
+        './assets/img/5_background/layers/2_second_layer/2.png',
+        './assets/img/5_background/layers/1_first_layer/2.png',
+        './assets/img/holz_hintergrund.png'
     ]
 
 const townSrc2 =
     [
-        'assets/img/bauernhof1.png',
-        'assets/img/bauernhof2.png',
-        'assets/img/Hühnerstall 2.png',
-        'assets/img/Hühnerstall innen.png'
+        './assets/img/bauernhof1.png',
+        './assets/img/bauernhof2.png',
+        './assets/img/Hühnerstall 2.png',
+        './assets/img/Hühnerstall innen.png'
     ]
 
 const level2 = new Level2(

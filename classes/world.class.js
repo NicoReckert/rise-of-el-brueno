@@ -9,6 +9,7 @@ class World {
     level2 = level2;
     level3 = scene2;
     statusBar = new LifeEnergyCharakterBar();
+    statusBar2 = new LifeEnergyBossBar();
     coinBar = new CoinBar();
     bottleBar = new BottleBar();
     throwableObjects = [];
@@ -66,15 +67,18 @@ class World {
         this.addObject(this.level1.grounds);
         this.ctx.translate(-this.camera_x, 0);
         this.addToWorld(this.statusBar);
+        this.addToWorld(this.statusBar2);
         this.addToWorld(this.coinBar);
         this.addToWorld(this.bottleBar);
         this.ctx.translate(this.camera_x, 0);
         this.addObject(this.level1.coins);
         this.addObject(this.level1.bottles);
         this.addToWorld(this.charakter);
-        this.addObject(this.throwableObjects);
         this.addObject(this.level1.enemies);
-        this.addToWorld(this.level1.endboss);
+        if (!this.level1.endboss.isUnderTheGround) {
+            this.addToWorld(this.level1.endboss);
+        }
+        this.addObject(this.throwableObjects);
         this.ctx.translate(-this.camera_x, 0);
     }
 
@@ -157,32 +161,32 @@ class World {
             this.ctx.scale(-1, 1);
             this.ctx.drawImage(object.img, -object.x - object.width, object.y, object.width, object.height);
             if (!object.isGameCharakter == true) return;
-            this.ctx.beginPath();
-            this.ctx.lineWidth = '3';
-            this.ctx.strokeStyle = 'red';
-            this.ctx.rect(-object.x - object.width, object.y, object.width, object.height);
-            this.ctx.stroke();
+            // this.ctx.beginPath();
+            // this.ctx.lineWidth = '3';
+            // this.ctx.strokeStyle = 'red';
+            // this.ctx.rect(-object.x - object.width, object.y, object.width, object.height);
+            // this.ctx.stroke();
 
-            this.ctx.beginPath();
-            this.ctx.lineWidth = '3';
-            this.ctx.strokeStyle = 'blue';
-            this.ctx.rect(-object.x - object.width, object.y, object.width, object.height);
-            this.ctx.stroke();
+            // this.ctx.beginPath();
+            // this.ctx.lineWidth = '3';
+            // this.ctx.strokeStyle = 'blue';
+            // this.ctx.rect(-object.x - object.width, object.y, object.width, object.height);
+            // this.ctx.stroke();
             this.ctx.restore();
         } else {
             this.ctx.drawImage(object.img, object.x, object.y, object.width, object.height);
             if (!object.isGameCharakter == true) return;
-            this.ctx.beginPath();
-            this.ctx.lineWidth = '3';
-            this.ctx.strokeStyle = 'red';
-            this.ctx.rect(object.x, object.y, object.width, object.height);
-            this.ctx.stroke();
+            // this.ctx.beginPath();
+            // this.ctx.lineWidth = '3';
+            // this.ctx.strokeStyle = 'red';
+            // this.ctx.rect(object.x, object.y, object.width, object.height);
+            // this.ctx.stroke();
 
-            this.ctx.beginPath();
-            this.ctx.lineWidth = '3';
-            this.ctx.strokeStyle = 'blue';
-            this.ctx.rect(object.x + object.offset.left, object.y + object.offset.top, object.width - object.offset.left - object.offset.right, object.height - object.offset.top - object.offset.bottom);
-            this.ctx.stroke();
+            // this.ctx.beginPath();
+            // this.ctx.lineWidth = '3';
+            // this.ctx.strokeStyle = 'blue';
+            // this.ctx.rect(object.x + object.offset.left, object.y + object.offset.top, object.width - object.offset.left - object.offset.right, object.height - object.offset.top - object.offset.bottom);
+            // this.ctx.stroke();
         }
     }
 
@@ -261,19 +265,19 @@ class World {
     checkCollisions() {
         setInterval(() => {
             this.level1.enemies.forEach(element => {
-                if (this.charakter.isColliding(element) && !element.isDead) {
+                if (this.charakter.isColliding(element, 0, 0) && !element.isDead) {
                     this.charakter.hit();
                     this.statusBar.setPercentage(this.charakter.energy);
                 }
-                if (this.charakter.isColliding(element) && !this.charakter.isJumpOn(element) && !element.isDead) {
-                if (this.charakter.speedX > 0 && this.charakter.x < element.x) {
-                    this.charakter.speedX = 0; // Bewegung nach rechts stoppen
-                } else if (this.charakter.speedX < 0 && this.charakter.x > element.x) {
-                    this.charakter.speedX = 0; // Bewegung nach links stoppen
-                }else {
-                    this.charakter.speedX = 10;
+                if (this.charakter.isColliding(element, 0, 0) && !this.charakter.isJumpOn(element) && !element.isDead) {
+                    if (this.charakter.speedX > 0 && this.charakter.x < element.x) {
+                        this.charakter.speedX = 0; // Bewegung nach rechts stoppen
+                    } else if (this.charakter.speedX < 0 && this.charakter.x > element.x) {
+                        this.charakter.speedX = 0; // Bewegung nach links stoppen
+                    } else {
+                        this.charakter.speedX = 10;
+                    }
                 }
-            }
             })
             // for (let i = 0; i < this.level1.enemies.length; i++) {
             //     const enemy = this.level1.enemies[i];
@@ -289,7 +293,7 @@ class World {
             //     }
             // }
 
-            
+
 
             for (let i = this.level1.enemies.length - 1; i >= 0; i--) {
                 const enemy = this.level1.enemies[i];
@@ -321,7 +325,7 @@ class World {
             // })
             for (let i = this.level1.coins.length - 1; i >= 0; i--) {
                 const coin = this.level1.coins[i];
-                if (this.charakter.isColliding(coin)) {
+                if (this.charakter.isColliding(coin, 0, 0)) {
                     this.level1.coins.splice(i, 1);
                     // this.coinBar.percentage = this.coinBar.percentage == 100 ? this.coinBar.percentage + 0 : this.coinBar.percentage + 20;
                     // document.getElementById('coin-sound').play();
@@ -332,13 +336,100 @@ class World {
             }
             for (let i = this.level1.bottles.length - 1; i >= 0; i--) {
                 const bottle = this.level1.bottles[i];
-                if (this.charakter.isColliding(bottle)) {
+                if (this.charakter.isColliding(bottle, 0, 0)) {
                     this.level1.bottles.splice(i, 1);
                     // this.coinBar.percentage = this.coinBar.percentage == 100 ? this.coinBar.percentage + 0 : this.coinBar.percentage + 20;
                     // document.getElementById('coin-sound').play();
                     this.playBottleSound();
                     this.bottleBar.percentage = Math.min(this.bottleBar.percentage + 20, 100);
                     this.bottleBar.setPercentage(this.bottleBar.percentage);
+                    this.charakter.throwableBottels != 5 ? this.charakter.throwableBottels += 1 : this.charakter.throwableBottels += 0;
+                }
+            }
+            // this.level1.enemies.forEach(enemy => {
+            //     if (bottle.isColliding(enemy) && !enemy.isDead) {
+            //         enemy.death();
+            //         enemy.isDead = true;
+            //         this.playChickenDeathSound();
+            //         this.level1.bottles.splice(i, 1); // Flasche zerstört
+            //     }
+            // });
+
+            if (this.level1.endboss.y >= 450 && this.level1.endboss.isDead) {
+                clearInterval(this.level1.endboss.intervalMoveDownAfterDead);
+                this.level1.endboss.isUnderTheGround = true;
+            }
+
+            for (let i = this.throwableObjects.length - 1; i >= 0; i--) {
+                const bottle = this.throwableObjects[i];
+
+                if (!bottle.isBrokenAnimation && bottle.isBrokenAnimationDone) {
+                    this.throwableObjects.splice(i, 1);
+                    this.charakter.isThrowing = false;
+                    bottle.isBrokenSound = false;
+                    continue;
+                }
+
+                // 💥 Kollision mit Boden
+                if (bottle.y + bottle.height >= 420) {
+                    if (!bottle.isBrokenSound) {
+                        this.playBottelBrokenSound();
+                        bottle.animationBrokenBottle();
+                        clearInterval(bottle.intervalMoveBottle);
+                        clearInterval(bottle.intervalGravity);
+                        bottle.isBrokenSound = true;
+                    }
+                    if (!bottle.isBrokenAnimation) {
+                        this.throwableObjects.splice(i, 1);
+                        this.charakter.isThrowing = false;
+                        bottle.isBrokenSound = false;
+                    }
+                    continue;
+                }
+
+                // 💥 Kollision mit Gegner
+                if (!bottle.isBrokenAnimation) {
+                    for (let j = 0; j < this.level1.enemies.length; j++) {
+                        const enemy = this.level1.enemies[j];
+
+                        if (bottle.isColliding(enemy, 50, 0) && !enemy.isDead) {
+                            if (!bottle.isBrokenSound) {
+                                this.playBottelBrokenSound();
+                                bottle.isBrokenSound = true;
+                                bottle.animationBrokenBottle();
+                                enemy.death();
+                                enemy.isDead = true;
+                                this.playChickenDeathSound();
+                                clearInterval(bottle.intervalMoveBottle);
+                                clearInterval(bottle.intervalGravity);
+                                // Speichere Index in Closure
+                                const removeEnemyIndex = j;
+                                setTimeout(() => {
+                                    this.level1.enemies.splice(removeEnemyIndex, 1);
+                                }, 2000);
+                                break;
+                            }
+                        }
+
+
+                    }
+                    if (bottle.isColliding(this.level1.endboss, 0, 50) && !this.level1.endboss.isDead) {
+                        if (!bottle.isBrokenSound) {
+                            this.playBottelBrokenSound();
+                            bottle.isBrokenSound = true;
+                            bottle.animationBrokenBottle();
+                            this.level1.endboss.energy = this.level1.endboss.energy - 20;
+                            this.statusBar2.setPercentage(this.level1.endboss.energy);
+                            clearInterval(bottle.intervalMoveBottle);
+                            clearInterval(bottle.intervalGravity);
+                            if (this.level1.endboss.energy <= 0) {
+                                this.level1.endboss.isDead = true;
+                                this.level1.endboss.animationDead();
+                            }
+                            break;
+                        }
+                    }
+
                 }
             }
         }, 1000 / 60);
@@ -346,9 +437,22 @@ class World {
 
     checkThrowObjects() {
         setInterval(() => {
-            if (this.keyboard.D) {
-                let bottle = new ThrowableObject(this.charakter.x + 50, this.charakter.y + 200);
+            if (this.keyboard.D && this.charakter.throwableBottels != 0 && !this.charakter.isThrowing) {
+                let bottle;
+                if (!this.charakter.isFlipped) {
+                    bottle = new ThrowableObject(this.charakter.x + 35, this.charakter.y + 150);
+                    bottle.charakterIsFlipped = false;
+                } else {
+                    bottle = new ThrowableObject(this.charakter.x - 35, this.charakter.y + 150);
+                    bottle.charakterIsFlipped = true;
+                }
                 this.throwableObjects.push(bottle);
+                this.bottleBar.percentage = Math.min(this.bottleBar.percentage - 20, 100);
+                this.bottleBar.setPercentage(this.bottleBar.percentage);
+                this.charakter.throwableBottels != 0 ? this.charakter.throwableBottels -= 1 : this.charakter.throwableBottels -= 0;
+                this.charakter.isThrowing = true;
+            } else if (this.keyboard.D && this.charakter.throwableBottels == 0) {
+                this.playEmptyBottelsSound();
             }
         }, 200);
     }
@@ -412,6 +516,16 @@ class World {
 
     playChickenDeathSound() {
         const sound = new Audio('assets/audio/chicken-death.mp3');
+        sound.play();
+    }
+
+    playEmptyBottelsSound() {
+        const sound = new Audio('assets/audio/empty-bottels2.mp3');
+        sound.play();
+    }
+
+    playBottelBrokenSound() {
+        const sound = new Audio('assets/audio/bottle-shattering1.mp3');
         sound.play();
     }
 }

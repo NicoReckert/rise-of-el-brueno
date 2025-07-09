@@ -1,57 +1,57 @@
 class Character extends MovableObject {
 
     standImages = [
-        'assets/img/2_character_pepe/1_idle/idle/I-1.png',
-        'assets/img/2_character_pepe/1_idle/idle/I-2.png',
-        'assets/img/2_character_pepe/1_idle/idle/I-3.png',
-        'assets/img/2_character_pepe/1_idle/idle/I-4.png',
-        'assets/img/2_character_pepe/1_idle/idle/I-5.png',
-        'assets/img/2_character_pepe/1_idle/idle/I-6.png',
-        'assets/img/2_character_pepe/1_idle/idle/I-7.png',
-        'assets/img/2_character_pepe/1_idle/idle/I-8.png',
-        'assets/img/2_character_pepe/1_idle/idle/I-9.png',
-        'assets/img/2_character_pepe/1_idle/idle/I-10.png'
+        './assets/img/2_character_pepe/1_idle/idle/I-1.png',
+        './assets/img/2_character_pepe/1_idle/idle/I-2.png',
+        './assets/img/2_character_pepe/1_idle/idle/I-3.png',
+        './assets/img/2_character_pepe/1_idle/idle/I-4.png',
+        './assets/img/2_character_pepe/1_idle/idle/I-5.png',
+        './assets/img/2_character_pepe/1_idle/idle/I-6.png',
+        './assets/img/2_character_pepe/1_idle/idle/I-7.png',
+        './assets/img/2_character_pepe/1_idle/idle/I-8.png',
+        './assets/img/2_character_pepe/1_idle/idle/I-9.png',
+        './assets/img/2_character_pepe/1_idle/idle/I-10.png'
     ]
 
     walkImages = [
-        'assets/img/2_character_pepe/2_walk/W-21.png',
-        'assets/img/2_character_pepe/2_walk/W-22.png',
-        'assets/img/2_character_pepe/2_walk/W-23.png',
-        'assets/img/2_character_pepe/2_walk/W-24.png',
-        'assets/img/2_character_pepe/2_walk/W-25.png',
-        'assets/img/2_character_pepe/2_walk/W-26.png'
+        './assets/img/2_character_pepe/2_walk/W-21.png',
+        './assets/img/2_character_pepe/2_walk/W-22.png',
+        './assets/img/2_character_pepe/2_walk/W-23.png',
+        './assets/img/2_character_pepe/2_walk/W-24.png',
+        './assets/img/2_character_pepe/2_walk/W-25.png',
+        './assets/img/2_character_pepe/2_walk/W-26.png'
     ]
 
     jumpImages = [
-        'assets/img/2_character_pepe/3_jump/J-31.png',
-        'assets/img/2_character_pepe/3_jump/J-32.png',
-        'assets/img/2_character_pepe/3_jump/J-33.png',
-        'assets/img/2_character_pepe/3_jump/J-34.png',
-        'assets/img/2_character_pepe/3_jump/J-35.png',
-        'assets/img/2_character_pepe/3_jump/J-36.png',
-        'assets/img/2_character_pepe/3_jump/J-37.png',
-        'assets/img/2_character_pepe/3_jump/J-38.png',
-        'assets/img/2_character_pepe/3_jump/J-39.png'
+        './assets/img/2_character_pepe/3_jump/J-31.png',
+        './assets/img/2_character_pepe/3_jump/J-32.png',
+        './assets/img/2_character_pepe/3_jump/J-33.png',
+        './assets/img/2_character_pepe/3_jump/J-34.png',
+        './assets/img/2_character_pepe/3_jump/J-35.png',
+        './assets/img/2_character_pepe/3_jump/J-36.png',
+        './assets/img/2_character_pepe/3_jump/J-37.png',
+        './assets/img/2_character_pepe/3_jump/J-38.png',
+        './assets/img/2_character_pepe/3_jump/J-39.png'
     ]
 
     deadImages = [
-        'assets/img/2_character_pepe/5_dead/D-51.png',
-        'assets/img/2_character_pepe/5_dead/D-52.png',
-        'assets/img/2_character_pepe/5_dead/D-53.png',
-        'assets/img/2_character_pepe/5_dead/D-54.png',
-        'assets/img/2_character_pepe/5_dead/D-55.png',
-        'assets/img/2_character_pepe/5_dead/D-56.png',
-        'assets/img/2_character_pepe/5_dead/D-57.png'
+        './assets/img/2_character_pepe/5_dead/D-51.png',
+        './assets/img/2_character_pepe/5_dead/D-52.png',
+        './assets/img/2_character_pepe/5_dead/D-53.png',
+        './assets/img/2_character_pepe/5_dead/D-54.png',
+        './assets/img/2_character_pepe/5_dead/D-55.png',
+        './assets/img/2_character_pepe/5_dead/D-56.png',
+        './assets/img/2_character_pepe/5_dead/D-57.png'
     ]
 
     hurtImages = [
-        'assets/img/2_character_pepe/4_hurt/H-41.png',
-        'assets/img/2_character_pepe/4_hurt/H-42.png',
-        'assets/img/2_character_pepe/4_hurt/H-43.png'
+        './assets/img/2_character_pepe/4_hurt/H-41.png',
+        './assets/img/2_character_pepe/4_hurt/H-42.png',
+        './assets/img/2_character_pepe/4_hurt/H-43.png'
     ]
 
     jetPackImages = [
-        'assets/img/Pepe_Jetpack.png'
+        './assets/img/Pepe_Jetpack.png'
     ]
 
     intervalStand = null;
@@ -70,11 +70,13 @@ class Character extends MovableObject {
     isFlipped = false;
     isMoving = false;
     isJumping = false;
+    isThrowing = false;
     isGameCharakter = true;
+    throwableBottels = 0;
 
     constructor() {
         super();
-        super.loadImage('assets/img/2_character_pepe/1_idle/idle/I-1.png');
+        super.loadImage('./assets/img/2_character_pepe/1_idle/idle/I-1.png');
         this.height = 300;
         this.width = 130;
         this.x = 100;
@@ -98,6 +100,7 @@ class Character extends MovableObject {
             if (this.x > 0) {
                 this.x -= this.speedX;
                 this.world.camera_x = -this.x + 100;
+                // this.updateCameraSmooth();
             }
         }, 1000 / 60);
         if (this.isFlying || this.isJumping) return;
@@ -115,10 +118,17 @@ class Character extends MovableObject {
             if (this.x < this.world.level1.level_end_x) {
                 this.x += this.speedX;
                 this.world.camera_x = -this.x + 100;
+                // this.updateCameraSmooth();
             }
         }, 1000 / 60);
         if (this.isFlying || this.isJumping) return;
         this.animationWalk();
+    }
+
+    updateCameraSmooth() {
+        const offset = this.isFlipped ? 600 : 0;
+        const targetX = -this.x + offset;
+        this.world.camera_x += (targetX - this.world.camera_x) * 0.08; // je kleiner 0.1, desto weicher
     }
 
     moveUp() {
@@ -157,7 +167,7 @@ class Character extends MovableObject {
         this, this.intervalWalk = null;
         this.isJumping = true;
         this.isMoving = true;
-        this.speedY = 30;
+        this.speedY = 23;
         this.animationJump();
         this.applyGravity();
 
@@ -259,7 +269,7 @@ class Character extends MovableObject {
 
 
 
-// this.extractFramesCentered('assets/img/Walk.png', 128, 128, 8).then((frames) => {
+// this.extractFramesCentered('./assets/img/Walk.png', 128, 128, 8).then((frames) => {
 //             this.walkImages = frames;
 //             this.loadImage(this.walkImages[0]);
 //             this.animationWalk();

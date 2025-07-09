@@ -25,7 +25,7 @@ body {
   justify-content: center;
   align-items: center;
   flex-direction: column;
-  background-image: url(assets/img/game-background.jpg);
+  background-image: url(./assets/img/game-background.jpg);
   background-position: center center;
   background-repeat: no-repeat;
   background-size: cover;
@@ -105,7 +105,7 @@ canvas {
 }
 
 .startscreen {
-  background-image: url("assets/img/startscreen.png");
+  background-image: url("./assets/img/startscreen.png");
   background-position: center center;
   background-repeat: no-repeat;
   background-size: 70% auto;

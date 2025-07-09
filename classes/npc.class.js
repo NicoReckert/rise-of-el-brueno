@@ -13,15 +13,15 @@ class Npc extends MovableObject {
 
     constructor(x, y, width, height) {
         super();
-        super.loadImage('assets/img/NPC-1.png');
+        super.loadImage('./assets/img/NPC-1.png');
         this.x = x;
         this.y = y;
         this.width = width;
         this.height = height;
-        this.extractFramesSimple('assets/img/Girl_2/Idle.png', 128, 128, 7).then(frames => {
+        this.extractFramesSimple('./assets/img/Girl_2/Idle.png', 128, 128, 7).then(frames => {
             this.standImages = frames;
         });
-        this.extractFramesSimple('assets/img/Girl_2/Walk.png', 128, 128, 12).then(frames => {
+        this.extractFramesSimple('./assets/img/Girl_2/Walk.png', 128, 128, 12).then(frames => {
             this.walkImages = frames;
         });
     }
