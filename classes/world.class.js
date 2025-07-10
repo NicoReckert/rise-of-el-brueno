@@ -463,7 +463,7 @@ class World {
             } else if (this.keyboard.D && this.charakter.throwableBottels == 0) {
                 this.playEmptyBottelsSound();
             }
-        }, 200);
+        }, 120);
     }
 
     listenStartButton() {

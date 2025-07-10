@@ -264,10 +264,6 @@ class Character extends MovableObject {
 
 }
 
-
-
-
-
 // this.extractFramesCentered('./assets/img/Walk.png', 128, 128, 8).then((frames) => {
 //             this.walkImages = frames;
 //             this.loadImage(this.walkImages[0]);
