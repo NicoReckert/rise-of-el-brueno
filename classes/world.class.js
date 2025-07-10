@@ -8,6 +8,7 @@ class World {
     level1 = level1;
     level2 = level2;
     level3 = scene2;
+    endbossMusic;
     endbossMusicIsPlayed = false;
     statusBar = new LifeEnergyCharakterBar();
     statusBar2 = new LifeEnergyBossBar();
@@ -25,6 +26,8 @@ class World {
         this.ctx = canvas.getContext('2d');
         this.keyboard = keyboard;
         this.listenStartButton();
+        this.endbossMusic = new Audio('./assets/audio/endboss-music.mp3');
+
     }
     scene = 2;
     inStall = false;
@@ -216,7 +219,11 @@ class World {
                     this.jetPackMusic.currentTime = 0;
                     this.jetPackSound.pause();
                     this.jetPackSound.currentTime = 0;
-                    this.backgroundMusic.play();
+                    if (this.endbossMusicIsPlayed) {
+                        this.playEndbossMusic("play")
+                    } else {
+                        this.backgroundMusic.play();
+                    }
                     this.charakter.y = 130;
                     this.charakter.moveStop();
                 } else {
@@ -226,6 +233,7 @@ class World {
                 this.charakter.moveFly();
                 this.backgroundMusic.pause();
                 this.backgroundMusic.currentTime = 0;
+                this.playEndbossMusic("stop");
                 this.jetPackMusic.play();
                 this.jetPackSound.play();
             } else if (this.charakter.isDead()) {
@@ -331,7 +339,7 @@ class World {
             }
             for (let i = this.level1.bottles.length - 1; i >= 0; i--) {
                 const bottle = this.level1.bottles[i];
-                if (this.charakter.isColliding(bottle, 0, 0)) {
+                if (this.charakter.isColliding(bottle, 0, 0) && this.bottleBar.percentage != 100) {
                     this.level1.bottles.splice(i, 1);
                     // this.coinBar.percentage = this.coinBar.percentage == 100 ? this.coinBar.percentage + 0 : this.coinBar.percentage + 20;
                     // document.getElementById('coin-sound').play();
@@ -427,7 +435,7 @@ class World {
             if (this.charakter.x >= 1050 && this.charakter.x <= 1250) {
                 if (this.endbossMusicIsPlayed) return;
                 document.getElementById('background-music').pause();
-                this.playEndbossMusic();
+                this.playEndbossMusic("play");
                 this.playEndbossAlarmSound();
                 this.level1.endboss.animationHurt();
                 this.endbossMusicIsPlayed = true;
@@ -535,9 +543,17 @@ class World {
         sound.play();
     }
 
-    playEndbossMusic() {
-        const sound = new Audio('./assets/audio/endboss-music.mp3');
-        sound.play();
+    playEndbossMusic(state) {
+        switch (state) {
+            case "play":
+                this.endbossMusic.play();
+                break;
+
+            case "stop":
+                this.endbossMusic.pause();
+                this.endbossMusic.currentTime = 0;
+                break;
+        }
     }
 
     playEndbossAlarmSound() {

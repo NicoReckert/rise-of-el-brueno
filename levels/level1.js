@@ -106,6 +106,9 @@ const level1 = new Level1(
         new Bottle(),
         new Bottle(),
         new Bottle(),
+        new Bottle(),
+        new Bottle(),
+        new Bottle(),
         new Bottle()
     ]
 );
