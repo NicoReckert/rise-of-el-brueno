@@ -1,6 +1,7 @@
 class Endboss extends MovableObject {
     speed = 0.15;
     isGameCharakter = true;
+    isHurt = false;
     isDead = false;
     isUnderTheGround = false;
     idleImages =
@@ -89,6 +90,7 @@ class Endboss extends MovableObject {
         clearInterval(this.intervalWalk);
         this.intervalIdle = null;
         this.intervalWalk = null;
+        this.isHurt = true;
         this.intervalHurt = setInterval(() => {
             if (this.hurtCount != 4) {
                 let index = this.hurtCount % this.hurtImages.length;
@@ -98,7 +100,10 @@ class Endboss extends MovableObject {
                 clearInterval(this.intervalHurt);
                 this.intervalHurt = null;
                 this.hurtCount = 0;
-                this.animationIdle();
+                this.isHurt = false;
+                if (!this.isDead) {
+                    this.animationIdle();
+                }
             }
         }, 1000 / 8);
     }
@@ -110,6 +115,7 @@ class Endboss extends MovableObject {
         this.intervalIdle = null;
         this.intervalWalk = null;
         this.intervalDead = setInterval(() => {
+            if (this.isHurt) return;
             if (this.deadCount != 3) {
                 let index = this.deadCount % this.deadImages.length;
                 this.img.src = this.deadImages[index];

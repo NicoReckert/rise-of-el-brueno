@@ -272,14 +272,15 @@ class World {
                 }
                 if (this.charakter.isColliding(element, 0, 0) && !this.charakter.isJumpOn(element) && !element.isDead) {
                     if (this.charakter.speedX > 0 && this.charakter.x < element.x) {
-                        this.charakter.speedX = 0; // Bewegung nach rechts stoppen
+                        this.charakter.speedX = 0;
                     } else if (this.charakter.speedX < 0 && this.charakter.x > element.x) {
-                        this.charakter.speedX = 0; // Bewegung nach links stoppen
+                        this.charakter.speedX = 0;
                     } else {
                         this.charakter.speedX = 10;
                     }
                 }
             })
+
             // for (let i = 0; i < this.level1.enemies.length; i++) {
             //     const enemy = this.level1.enemies[i];
             //     if (this.charakter.isJumpOn(enemy)) {
@@ -294,19 +295,14 @@ class World {
             //     }
             // }
 
-
-
             for (let i = this.level1.enemies.length - 1; i >= 0; i--) {
                 const enemy = this.level1.enemies[i];
                 if (this.charakter.isJumpOn(enemy)) {
                     if (enemy.isDead) continue;
-
                     enemy.death();
                     enemy.isDead = true;
                     this.playChickenDeathSound();
                     this.charakter.bounce();
-
-                    // Speichere Index in Closure
                     const removeIndex = i;
                     setTimeout(() => {
                         this.level1.enemies.splice(removeIndex, 1);
@@ -314,16 +310,14 @@ class World {
                 }
             }
 
-
             // this.level1.coins.forEach((element, index) => {
             //     if (this.charakter.isColliding(element)) {
             //         this.coinBar.percentage = this.coinBar.percentage == 100 ? this.coinBar.percentage + 0 : this.coinBar.percentage + 20;
             //         this.coinBar.setPercentage(this.coinBar.percentage);
             //         this.level1.coins.splice(index, 1);
             //     }
-
-
             // })
+
             for (let i = this.level1.coins.length - 1; i >= 0; i--) {
                 const coin = this.level1.coins[i];
                 if (this.charakter.isColliding(coin, 0, 0)) {
@@ -371,7 +365,6 @@ class World {
                     continue;
                 }
 
-                // 💥 Kollision mit Boden
                 if (bottle.y + bottle.height >= 420) {
                     if (!bottle.isBrokenSound) {
                         this.playBottelBrokenSound();
@@ -388,7 +381,6 @@ class World {
                     continue;
                 }
 
-                // 💥 Kollision mit Gegner
                 if (!bottle.isBrokenAnimation) {
                     for (let j = 0; j < this.level1.enemies.length; j++) {
                         const enemy = this.level1.enemies[j];
@@ -403,7 +395,6 @@ class World {
                                 this.playChickenDeathSound();
                                 clearInterval(bottle.intervalMoveBottle);
                                 clearInterval(bottle.intervalGravity);
-                                // Speichere Index in Closure
                                 const removeEnemyIndex = j;
                                 setTimeout(() => {
                                     this.level1.enemies.splice(removeEnemyIndex, 1);
@@ -411,13 +402,12 @@ class World {
                                 break;
                             }
                         }
-
-
                     }
                     if (bottle.isColliding(this.level1.endboss, 0, 50) && !this.level1.endboss.isDead) {
                         if (!bottle.isBrokenSound) {
                             this.playBottelBrokenSound();
                             this.level1.endboss.animationHurt();
+                            this.level1.endboss.isHurt = true;
                             bottle.isBrokenSound = true;
                             bottle.animationBrokenBottle();
                             this.level1.endboss.energy = this.level1.endboss.energy - 20;
