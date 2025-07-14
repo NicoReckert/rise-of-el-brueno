@@ -1,5 +1,7 @@
 class World {
     charakter = new Character();
+    chickenBasket = new ChickenBasket(this.charakter.x + 38, this.charakter.y + 228);
+    chickenInBasket = new ChickenInBasket(this.chickenBasket.x, this.chickenBasket.y - 20);
     npc1 = new Npc(1750, 130, 130, 300);
     npc2 = new Npc(2500, 170, 180, 250);
     ctx;
@@ -57,9 +59,33 @@ class World {
         //     this.scene3();
         // }
         this.scene1();
-        requestAnimationFrame(() => {
+        requestAnimationFrame((timestamp) => {
             this.draw();
-        })
+            this.checkPressKey();
+            this.charakter.updateState();
+            this.charakter.updateAnimation(timestamp);
+            if (this.charakter.isJumping) {
+                this.charakter.applyGravity(timestamp);
+            }
+            this.throwableObjects?.forEach(bottle => {
+                bottle.updateState(timestamp);
+                bottle.updateAnimation(timestamp);
+                bottle.applyGravity2(timestamp);
+            });
+            const basketWobble = Math.sin(Date.now() / 100) * 0.5;
+            if (this.charakter.isJumping) {
+                this.chickenBasket.setCoordinates(this.charakter.x + 38, this.charakter.y + 220);
+            } else if (this.charakter.isMovingLeft || this.charakter.isMovingRight) {
+                this.chickenBasket.setCoordinates(this.charakter.x + 38, this.charakter.y + 228 + basketWobble);
+            } else if (this.charakter.isFlipped) {
+                this.chickenBasket.setCoordinates(this.charakter.x + 38 + 17.5, this.charakter.y + 228 + basketWobble);
+            } else {
+                this.chickenBasket.setCoordinates(this.charakter.x + 38, this.charakter.y + 228);
+            }
+            this.chickenInBasket.setCoordinates(this.chickenBasket.x, this.chickenBasket.y - 20);
+            this.chickenInBasket.chickenAttack(this.charakter.x);
+            this.chickenInBasket.updateReturnFlight();
+        });
     }
 
     scene1() {
@@ -78,6 +104,9 @@ class World {
         this.addObject(this.level1.coins);
         this.addObject(this.level1.bottles);
         this.addToWorld(this.charakter);
+        this.addToWorld(this.chickenBasket);
+        this.addToWorld(this.chickenInBasket);
+
         this.addObject(this.level1.enemies);
         if (!this.level1.endboss.isUnderTheGround) {
             this.addToWorld(this.level1.endboss);
@@ -202,52 +231,64 @@ class World {
     }
 
     checkPressKey() {
-        setInterval(() => {
-            if (this.keyboard.LEFT) {
-                this.charakter.moveLeft();
-            } else if (this.keyboard.RIGHT) {
-                this.charakter.moveRight();
-            } else if (this.keyboard.UP && !this.charakter.isAboveGround() && !this.charakter.isFlying) {
-                this.charakter.moveJump();
-            } else if (this.keyboard.UP && this.charakter.isAboveGround() && this.charakter.isFlying) {
-                this.charakter.moveUp();
-            } else if (this.keyboard.DOWN && this.charakter.isAboveGround() && this.charakter.isFlying) {
-                if (this.charakter.y + 10 == 130) {
-                    this.keyboard.J = false;
-                    this.charakter.isFlying = false;
-                    this.jetPackMusic.pause();
-                    this.jetPackMusic.currentTime = 0;
-                    this.jetPackSound.pause();
-                    this.jetPackSound.currentTime = 0;
-                    if (this.endbossMusicIsPlayed) {
-                        this.playEndbossMusic("play")
-                    } else {
-                        this.backgroundMusic.play();
-                    }
-                    this.charakter.y = 130;
-                    this.charakter.moveStop();
+        this.charakter.isMovingLeft = false;
+        this.charakter.isMovingRight = false;
+        if (this.keyboard.LEFT) {
+            this.charakter.isMovingLeft = true;
+        }
+        if (this.keyboard.RIGHT) {
+            this.charakter.isMovingRight = true;
+        }
+        if (this.keyboard.UP && !this.charakter.isAboveGround() && !this.charakter.isFlying && !this.charakter.isJumping) {
+            this.charakter.isJumping = true;
+            this.charakter.speedY = 23;
+        }
+        if (this.keyboard.UP && this.charakter.isAboveGround() && this.charakter.isFlying) {
+            this.charakter.moveUp();
+        }
+        if (this.keyboard.DOWN && this.charakter.isAboveGround() && this.charakter.isFlying) {
+            if (this.charakter.y + 10 == 130) {
+                this.keyboard.J = false;
+                this.charakter.isFlying = false;
+                this.jetPackMusic.pause();
+                this.jetPackMusic.currentTime = 0;
+                this.jetPackSound.pause();
+                this.jetPackSound.currentTime = 0;
+                if (this.endbossMusicIsPlayed) {
+                    this.playEndbossMusic("play")
                 } else {
-                    this.charakter.moveDown();
+                    this.backgroundMusic.play();
                 }
-            } else if (this.keyboard.J) {
-                this.charakter.moveFly();
-                this.backgroundMusic.pause();
-                this.backgroundMusic.currentTime = 0;
-                this.playEndbossMusic("stop");
-                this.jetPackMusic.play();
-                this.jetPackSound.play();
-            } else if (this.charakter.isDead()) {
-                this.charakter.animationDead();
-            } else if (this.charakter.isHurt()) {
-                this.charakter.animationHurt();
+                this.charakter.y = 130;
+                this.charakter.moveStop();
             } else {
-                if (this.charakter.isJumping) return;
-                clearInterval(this.intervalJump);
-                this.intervalJump = null;
-                this.charakter.jumpCount = 0;
-                if (this.charakter.isMoving) this.charakter.moveStop();
+                this.charakter.moveDown();
             }
-        }, 1000 / 60);
+        }
+        if (this.keyboard.J) {
+            this.charakter.moveFly();
+            this.backgroundMusic.pause();
+            this.backgroundMusic.currentTime = 0;
+            this.playEndbossMusic("stop");
+            this.jetPackMusic.play();
+            this.jetPackSound.play();
+        }
+        if (this.charakter.isDead) {
+            this.charakter.animationDead();
+        }
+        // if (this.charakter.isHurt) {
+        //     this.charakter.animationHurt();
+        // }
+        // else {
+        //     if (this.charakter.isJumping) return;
+        //     clearInterval(this.intervalJump);
+        //     this.intervalJump = null;
+        //     this.charakter.jumpCount = 0;
+        //     if (this.charakter.isMoving) this.charakter.moveStop();
+        // }
+        if (this.keyboard.S && !this.chickenInBasket.isAttack && this.chickenInBasket.isIdle) {
+            this.chickenInBasket.isAttack = true;
+        }
     }
 
     setWorld() {
@@ -376,10 +417,13 @@ class World {
                 if (bottle.y + bottle.height >= 420) {
                     if (!bottle.isBrokenSound) {
                         this.playBottelBrokenSound();
-                        bottle.animationBrokenBottle();
-                        clearInterval(bottle.intervalMoveBottle);
-                        clearInterval(bottle.intervalGravity);
+                        bottle.isBroken = true;
+                        bottle.isThrow = false;
+                        bottle.isGravity = false;
+                        bottle.isBrokenAnimation = true;
                         bottle.isBrokenSound = true;
+                        bottle.isMovingLeft = false;
+                        bottle.isMovingRight = false;
                     }
                     if (!bottle.isBrokenAnimation) {
                         this.throwableObjects.splice(i, 1);
@@ -397,7 +441,10 @@ class World {
                             if (!bottle.isBrokenSound) {
                                 this.playBottelBrokenSound();
                                 bottle.isBrokenSound = true;
-                                bottle.animationBrokenBottle();
+                                bottle.isBroken = true;
+                                bottle.isThrow = false;
+                                bottle.isGravity = false;
+                                bottle.isBrokenAnimation = true;
                                 enemy.death();
                                 enemy.isDead = true;
                                 this.playChickenDeathSound();
@@ -417,11 +464,12 @@ class World {
                             this.level1.endboss.animationHurt();
                             this.level1.endboss.isHurt = true;
                             bottle.isBrokenSound = true;
-                            bottle.animationBrokenBottle();
+                            bottle.isBroken = true;
+                            bottle.isThrow = false;
+                            bottle.isGravity = false;
+                            bottle.isBrokenAnimation = true;
                             this.level1.endboss.energy = this.level1.endboss.energy - 20;
                             this.statusBar2.setPercentage(this.level1.endboss.energy);
-                            clearInterval(bottle.intervalMoveBottle);
-                            clearInterval(bottle.intervalGravity);
                             if (this.level1.endboss.energy <= 0) {
                                 this.level1.endboss.isDead = true;
                                 this.level1.endboss.animationDead();
@@ -431,6 +479,7 @@ class World {
                     }
 
                 }
+
             }
             if (this.charakter.x >= 1050 && this.charakter.x <= 1250) {
                 if (this.endbossMusicIsPlayed) return;
@@ -439,6 +488,34 @@ class World {
                 this.playEndbossAlarmSound();
                 this.level1.endboss.animationHurt();
                 this.endbossMusicIsPlayed = true;
+            }
+
+            for (let j = 0; j < this.level1.enemies.length; j++) {
+                const enemy = this.level1.enemies[j];
+                if (this.chickenInBasket.isColliding(enemy, 25, 0) && !enemy.isDead) {
+                    this.chickenInBasket.isAttack = false;
+                    this.chickenInBasket.isIdle = true;
+                    enemy.death();
+                    enemy.isDead = true;
+                    this.playChickenDeathSound();
+                    const removeEnemyIndex = j;
+                    setTimeout(() => {
+                        this.level1.enemies.splice(removeEnemyIndex, 1);
+                    }, 2000);
+                    break;
+                }
+            }
+            if (this.chickenInBasket.isColliding(this.level1.endboss, 0, 80) && !this.level1.endboss.isDead) {
+                this.chickenInBasket.isAttack = false;
+                this.chickenInBasket.isIdle = true;
+                this.level1.endboss.animationHurt();
+                this.level1.endboss.isHurt = true;
+                this.level1.endboss.energy = this.level1.endboss.energy - 5;
+                this.statusBar2.setPercentage(this.level1.endboss.energy);
+                if (this.level1.endboss.energy <= 0) {
+                    this.level1.endboss.isDead = true;
+                    this.level1.endboss.animationDead();
+                }
             }
         }, 1000 / 60);
     }
@@ -449,9 +526,19 @@ class World {
                 let bottle;
                 if (!this.charakter.isFlipped) {
                     bottle = new ThrowableObject(this.charakter.x + 35, this.charakter.y + 150);
+                    bottle.isMovingRight = true;
+                    bottle.isThrow = true;
+                    bottle.isBroken = false;
+                    bottle.speedY = 30;
+                    bottle.isGravity = true;
                     bottle.charakterIsFlipped = false;
                 } else {
                     bottle = new ThrowableObject(this.charakter.x - 35, this.charakter.y + 150);
+                    bottle.isMovingLeft = true;
+                    bottle.isThrow = true;
+                    bottle.isBroken = false;
+                    bottle.speedY = 30;
+                    bottle.isGravity = true;
                     bottle.charakterIsFlipped = true;
                 }
                 this.throwableObjects.push(bottle);

@@ -1,5 +1,7 @@
 class Character extends MovableObject {
 
+
+
     standImages = [
         './assets/img/2_character_pepe/1_idle/idle/I-1.png',
         './assets/img/2_character_pepe/1_idle/idle/I-2.png',
@@ -69,10 +71,16 @@ class Character extends MovableObject {
     intervalHurt = null;
     isFlipped = false;
     isMoving = false;
-    isJumping = false;
+    isMovingLeft = false;
+    isMovingRight = false;
+    isDead = false;
+    isHurt = false;
+    isJumping;
     isThrowing = false;
     isGameCharakter = true;
     throwableBottels = 0;
+
+
 
     constructor() {
         super();
@@ -81,187 +89,310 @@ class Character extends MovableObject {
         this.width = 130;
         this.x = 100;
         this.y = 130;
-        this.animationStand();
+        // this.startMainLoop()
         this.offset.top = 130;
         this.offset.left = 20;
         this.offset.right = 40;
         this.offset.bottom = 15;
         this.speedX = 10;
-    }
+        this.isJumping = false;
 
-    moveLeft() {
-        if (this.intervalMoveLeft) return;
-        this.isFlipped = true;
-        this.isMoving = true;
-        // this.clearAllInterval();
-        clearInterval(this.intervalMoveRight);
-        clearInterval(this.intervalStand);
-        this.intervalMoveLeft = setInterval(() => {
-            if (this.x > 0) {
-                this.x -= this.speedX;
-                this.world.camera_x = -this.x + 100;
-                // this.updateCameraSmooth();
-            }
-        }, 1000 / 60);
-        if (this.isFlying || this.isJumping) return;
-        this.animationWalk();
-    }
-
-    moveRight() {
-        if (this.intervalMoveRight) return
-        this.isFlipped = false;
-        this.isMoving = true;
-        // this.clearAllInterval();
-        clearInterval(this.intervalMoveLeft);
-        clearInterval(this.intervalStand);
-        this.intervalMoveRight = setInterval(() => {
-            if (this.x < this.world.level1.level_end_x) {
-                this.x += this.speedX;
-                this.world.camera_x = -this.x + 100;
-                // this.updateCameraSmooth();
-            }
-        }, 1000 / 60);
-        if (this.isFlying || this.isJumping) return;
-        this.animationWalk();
-    }
-
-    updateCameraSmooth() {
-        const offset = this.isFlipped ? 600 : 0;
-        const targetX = -this.x + offset;
-        this.world.camera_x += (targetX - this.world.camera_x) * 0.08; // je kleiner 0.1, desto weicher
-    }
-
-    moveUp() {
-        if (this.intervalMoveUp) return
-        this.isMoving = true;
-        if (this.y > -60) {
-            this.y -= 10;
-        }
+        this.lastFrameTime = 0;        // Timestamp des letzten Framewechsels
+        this.currentAnimation = 'stand';
+        this.frameInterval = 1000 / 2.5; // Standard: 5 FPS
+        this.frameIndex = 0;
 
     }
 
-    moveDown() {
-        if (this.intervalMoveDown) return
-        this.isMoving = true;
-        if (this.y + 10 < 130) {
-            this.y += 10;
-        } else {
-            this.isFlying = false;
-            this.y = 130;
-            this.moveStop();
-        }
-    }
+    // moveLeft() {
+    //     if (this.intervalMoveLeft) return;
+    //     this.isFlipped = true;
+    //     this.isMoving = true;
+    //     // this.clearAllInterval();
+    //     clearInterval(this.intervalMoveRight);
+    //     clearInterval(this.intervalStand);
+    //     this.intervalMoveLeft = setInterval(() => {
+    //         if (this.x > 0) {
+    //             this.x -= this.speedX;
+    //             this.world.camera_x = -this.x + 100;
+    //             // this.updateCameraSmooth();
+    //         }
+    //     }, 1000 / 60);
+    //     if (this.isFlying || this.isJumping) return;
+    //     this.animationWalk();
+    // }
 
-    moveStop() {
-        this.isMoving = false;
-        this.clearAllInterval();
-        this.animationStand();
-    }
+    // moveRight() {
+    //     if (this.intervalMoveRight) return
+    //     this.isFlipped = false;
+    //     this.isMoving = true;
+    //     // this.clearAllInterval();
+    //     clearInterval(this.intervalMoveLeft);
+    //     clearInterval(this.intervalStand);
+    //     this.intervalMoveRight = setInterval(() => {
+    //         if (this.x < this.world.level1.level_end_x) {
+    //             this.x += this.speedX;
+    //             this.world.camera_x = -this.x + 100;
+    //             // this.updateCameraSmooth();
+    //         }
+    //     }, 1000 / 60);
+    //     if (this.isFlying || this.isJumping) return;
+    //     this.animationWalk();
+    // }
 
-    moveJump() {
-        // this.clearAllInterval();
-        // if (this.intervalJump) return
-        // if (this.intervalGravity) return
-        clearInterval(this.intervalWalk);
-        this, this.intervalWalk = null;
-        this.isJumping = true;
-        this.isMoving = true;
-        this.speedY = 23;
-        this.animationJump();
-        this.applyGravity();
+    // updateCameraSmooth() {
+    //     const offset = this.isFlipped ? 600 : 0;
+    //     const targetX = -this.x + offset;
+    //     this.world.camera_x += (targetX - this.world.camera_x) * 0.08; // je kleiner 0.1, desto weicher
+    // }
 
-    }
+    // moveUp() {
+    //     if (this.intervalMoveUp) return
+    //     this.isMoving = true;
+    //     if (this.y > -60) {
+    //         this.y -= 10;
+    //     }
 
-    moveFly() {
-        this.clearAllInterval();
-        if (this.isFlying) return;
-        this.isFlying = true;
-        this.y = 120;
-        super.loadImage(this.jetPackImages[0]);
-    }
+    // }
 
-    clearAllInterval() {
-        clearInterval(this.intervalMoveLeft);
-        this.intervalMoveLeft = null;
-        clearInterval(this.intervalMoveRight);
-        this.intervalMoveRight = null;
-        clearInterval(this.intervalStand);
-        this.intervalStand = null;
-        clearInterval(this.intervalWalk);
-        this.intervalWalk = null;
-        clearInterval(this.intervalJump);
-        this.intervalJump = null;
-        clearInterval(this.intervalDead);
-        this.intervalDead = null;
-        clearInterval(this.intervalHurt);
-        this.intervalHurt = null;
-    }
+    // moveDown() {
+    //     if (this.intervalMoveDown) return
+    //     this.isMoving = true;
+    //     if (this.y + 10 < 130) {
+    //         this.y += 10;
+    //     } else {
+    //         this.isFlying = false;
+    //         this.y = 130;
+    //         this.moveStop();
+    //     }
+    // }
 
-    animationStand() {
-        if (this.intervalStand) return;
-        this.intervalStand = setInterval(() => {
-            let index = this.standCount % this.standImages.length;
-            this.img.src = this.standImages[index];
-            this.standCount++
-        }, 400);
-    }
+    // moveStop() {
+    //     this.isMoving = false;
+    //     this.clearAllInterval();
+    //     this.animationStand();
+    // }
 
-    animationWalk() {
-        if (this.intervalWalk) return;
-        this.intervalWalk = setInterval(() => {
-            let index = this.walkCount % this.walkImages.length;
-            this.img.src = this.walkImages[index];
-            this.walkCount++
-        }, 1000 / 8);
-    }
+    // moveJump() {
+    //     // this.clearAllInterval();
+    //     // if (this.intervalJump) return
+    //     // if (this.intervalGravity) return
+    //     clearInterval(this.intervalWalk);
+    //     this, this.intervalWalk = null;
+    //     this.isJumping = true;
+    //     this.isMoving = true;
+    //     this.speedY = 23;
+    //     this.animationJump();
+    //     this.applyGravity();
 
-    animationJump() {
-        if (this.intervalJump) return;
-        this.intervalJump = setInterval(() => {
-            if (this.isAboveGround() || this.speedY > 0) {
-                let index = this.jumpCount % this.jumpImages.length;
-                this.img.src = this.jumpImages[index];
-                this.jumpCount++
-            } else {
-                this.clearAllInterval();
-                this.isMoving = false;
-                this.isJumping = false;
-                this.moveStop();
-            }
-        }, 1000 / 9);
-    }
+    // }
 
-    animationDead() {
-        if (this.intervalDead) return;
-        this.clearAllInterval();
-        this.intervalDead = setInterval(() => {
-            if (this.deadCount === this.deadImages.length) return;
-            let index = this.deadCount % this.deadImages.length;
-            this.img.src = this.deadImages[index];
-            this.deadCount++
-        }, 1000 / 8);
-    }
+    // moveFly() {
+    //     this.clearAllInterval();
+    //     if (this.isFlying) return;
+    //     this.isFlying = true;
+    //     this.y = 120;
+    //     super.loadImage(this.jetPackImages[0]);
+    // }
 
-    animationHurt() {
-        if (this.intervalHurt) return;
-        this.clearAllInterval();
-        this.intervalHurt = setInterval(() => {
-            let index = this.hurtCount % this.hurtImages.length;
-            this.img.src = this.hurtImages[index];
-            this.hurtCount++
-        }, 1000 / 8);
-    }
+    // clearAllInterval() {
+    //     clearInterval(this.intervalMoveLeft);
+    //     this.intervalMoveLeft = null;
+    //     clearInterval(this.intervalMoveRight);
+    //     this.intervalMoveRight = null;
+    //     clearInterval(this.intervalStand);
+    //     this.intervalStand = null;
+    //     clearInterval(this.intervalWalk);
+    //     this.intervalWalk = null;
+    //     clearInterval(this.intervalJump);
+    //     this.intervalJump = null;
+    //     clearInterval(this.intervalDead);
+    //     this.intervalDead = null;
+    //     clearInterval(this.intervalHurt);
+    //     this.intervalHurt = null;
+    // }
 
-    playSpeakSound() {
-        if (this.x == 1650) {
-            document.getElementById('speak-sound').play();
-        }
-    }
+    // animationStand() {
+    //     if (this.intervalStand) return;
+    //     this.intervalStand = setInterval(() => {
+    //         let index = this.standCount % this.standImages.length;
+    //         this.img.src = this.standImages[index];
+    //         this.standCount++
+    //     }, 400);
+    // }
+
+    // animationWalk() {
+    //     if (this.intervalWalk) return;
+    //     this.intervalWalk = setInterval(() => {
+    //         let index = this.walkCount % this.walkImages.length;
+    //         this.img.src = this.walkImages[index];
+    //         this.walkCount++
+    //     }, 1000 / 8);
+    // }
+
+    // animationJump() {
+    //     if (this.intervalJump) return;
+    //     this.intervalJump = setInterval(() => {
+    //         if (this.isAboveGround() || this.speedY > 0) {
+    //             let index = this.jumpCount % this.jumpImages.length;
+    //             this.img.src = this.jumpImages[index];
+    //             this.jumpCount++
+    //         } else {
+    //             this.clearAllInterval();
+    //             this.isMoving = false;
+    //             this.isJumping = false;
+    //             this.moveStop();
+    //         }
+    //     }, 1000 / 9);
+    // }
+
+    // animationDead() {
+    //     if (this.intervalDead) return;
+    //     this.clearAllInterval();
+    //     this.intervalDead = setInterval(() => {
+    //         if (this.deadCount === this.deadImages.length) return;
+    //         let index = this.deadCount % this.deadImages.length;
+    //         this.img.src = this.deadImages[index];
+    //         this.deadCount++
+    //     }, 1000 / 8);
+    // }
+
+    // animationHurt() {
+    //     if (this.intervalHurt) return;
+    //     this.clearAllInterval();
+    //     this.intervalHurt = setInterval(() => {
+    //         let index = this.hurtCount % this.hurtImages.length;
+    //         this.img.src = this.hurtImages[index];
+    //         this.hurtCount++
+    //     }, 1000 / 8);
+    // }
+
+    // playSpeakSound() {
+    //     if (this.x == 1650) {
+    //         document.getElementById('speak-sound').play();
+    //     }
+    // }
 
     bounce() {
         this.speedY = 10; // kleiner Rücksprung nach oben
     }
 
+    updateState() {
+        // 1. Bewegung (immer erlaubt, auch beim Springen)
+        if (this.isMovingLeft) {
+            this.isFlipped = true;
+            if (this.x > 0) {
+                this.x -= this.speedX;
+                this.world.camera_x = -this.x + 100;
+            }
+        } else if (this.isMovingRight) {
+            this.isFlipped = false;
+            if (this.x < this.world.level1.level_end_x) {
+                this.x += this.speedX;
+                this.world.camera_x = -this.x + 100;
+            }
+        }
+
+        // 2. Animation (nach Priorität)
+        if (this.isDead) {
+            this.currentAnimation = 'dead';
+            this.frameInterval = 1000 / 6;
+        } else if (this.isJumping) {
+            this.currentAnimation = 'jump';
+            this.frameInterval = 1000 / 10;
+        } else if (this.isMovingLeft || this.isMovingRight) {
+            this.currentAnimation = 'walk';
+            this.frameInterval = 1000 / 8;
+        } else {
+            this.currentAnimation = 'stand';
+            this.frameInterval = 1000 / 2.5;
+        }
+    }
+
+
+    updateState2() {
+        if (this.isJumping) {
+            this.currentAnimation = 'jump';
+            this.frameInterval = 1000 / 10; // jump: 10 FPS
+            return;
+        }
+        if (this.isDead) {
+            this.currentAnimation = 'dead';
+            this.frameInterval = 1000 / 6; // dead: 6 FPS
+            return;
+        }
+        if (this.isMovingLeft) {
+            this.currentAnimation = 'walk';
+            this.frameInterval = 1000 / 8; // walk: 8 FPS
+            this.isFlipped = true;
+            if (this.x > 0) {
+                this.x -= this.speedX;
+                this.world.camera_x = -this.x + 100;
+            }
+        } else if (this.isMovingRight) {
+            this.currentAnimation = 'walk';
+            this.frameInterval = 1000 / 8; // walk: 8 FPS
+            this.isFlipped = false;
+            if (this.x < this.world.level1.level_end_x) {
+                this.x += this.speedX;
+                this.world.camera_x = -this.x + 100;
+            }
+        }
+        else {
+            this.currentAnimation = 'stand';
+            this.frameInterval = 1000 / 2.5; // idle: 5 FPS
+        }
+    }
+
+    // updateAnimation() {
+    //     this.frameTimer += 1000 / 60;
+
+    //     if (this.frameTimer >= this.frameInterval) {
+    //         let animationFrames = this.getAnimationFrames(this.currentAnimation);
+    //         this.img.src = animationFrames[this.imageIndex % animationFrames.length];
+    //         this.imageIndex++;
+    //         this.frameTimer = 0;
+    //     }
+    // }
+
+    updateAnimation(timestamp) {
+        if (!this.lastFrameTime) this.lastFrameTime = timestamp;
+
+        const deltaTime = timestamp - this.lastFrameTime;
+
+        if (deltaTime > this.frameInterval) {
+            let images = this.getAnimationImages(this.currentAnimation);
+
+            if (images && images.length > 0) {
+                this.img.src = images[this.frameIndex % images.length];
+                this.frameIndex++;
+                this.lastFrameTime = timestamp;
+            }
+        }
+    }
+
+
+    // getAnimationFrames(name) {
+    //     switch (name) {
+    //         case 'stand': return this.standImages;
+    //         case 'walk': return this.walkImages;
+    //         case 'jump': return this.jumpImages;
+    //         case 'dead': return this.deadImages;
+    //         case 'hurt': return this.hurtImages;
+    //         default: return [this.standImages[0]];
+    //     }
+    // }
+
+    getAnimationImages(state) {
+        switch (state) {
+            case 'walk': return this.walkImages;
+            case 'jump': return this.jumpImages;
+            case 'dead': return this.deadImages;
+            case 'hurt': return this.hurtImages;
+            case 'stand':
+            default: return this.standImages;
+        }
+    }
 }
 
 // this.extractFramesCentered('./assets/img/Walk.png', 128, 128, 8).then((frames) => {

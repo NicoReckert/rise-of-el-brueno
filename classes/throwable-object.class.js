@@ -10,6 +10,11 @@ class ThrowableObject extends MovableObject {
     isBrokenAnimationDone = false;
     isBrokenSound = false;
     charakterIsFlipped = false
+    isMovingLeft = false;
+    isMovingRight = false;
+
+    speedY = 0;
+    acceleration = 2.5;
 
 
     throwBottleImages = [
@@ -35,11 +40,25 @@ class ThrowableObject extends MovableObject {
         this.width = 80;
         this.height = 100;
         super.loadImage('./assets/img/6_salsa_bottle/bottle_rotation/1_bottle_rotation.png');
-        this.throw();
+        // this.throw();
         this.offset.top = 14;
         this.offset.left = 10;
         this.offset.right = 10;
         this.offset.bottom = 11;
+
+        this.lastFrameTime = 0;
+        this.currentAnimation = 'throw';
+        this.frameInterval = 1000 / 15;
+        this.frameIndex = 0;
+
+        this.lastGravityUpdate = 0;
+        this.gravityInterval = 1000 / 10;
+
+        this.lastMovingUpdate = 0;
+        this.movingInterval = 1000 / 80;
+
+        this.isGravity = false;
+        this.lastAnimation = null;
     }
 
     animationThrowBottle() {
@@ -69,16 +88,85 @@ class ThrowableObject extends MovableObject {
         }, 1000 / 10);
     }
 
-    throw() {
-        this.speedY = 30;
-        this.applyGravity();
-        this.animationThrowBottle();
-        this.intervalMoveBottle = setInterval(() => {
-            if (!this.charakterIsFlipped) {
-                this.x += 10;
-            } else {
+    // throw() {
+    //     this.isGravity = true;
+    //     this.speedY = 30;
+    // this.applyGravity();
+    // }
+
+
+    updateState(timestamp) {
+        if (!this.lastMovingUpdate) this.lastMovingUpdate = timestamp;
+
+        const deltaTime = timestamp - this.lastMovingUpdate;
+
+        if (deltaTime > this.movingInterval && !this.isBroken) {
+            if (this.isMovingLeft) {
                 this.x -= 10;
+            } else if (this.isMovingRight) {
+                this.x += 10;
             }
-        }, 25);
+            this.lastMovingUpdate = timestamp;
+        }
+
+        if (this.isThrow) {
+            this.currentAnimation = 'throw';
+            this.frameInterval = 1000 / 15;
+        } else if (this.isBroken) {
+            this.currentAnimation = 'broken';
+            this.frameInterval = 1000 / 10;
+        }
     }
+
+    getAnimationImages(state) {
+        switch (state) {
+            case 'broken': return this.brokenBottleImages;
+            case 'throw': return this.throwBottleImages;
+        }
+    }
+
+    updateAnimation(timestamp) {
+        if (!this.lastFrameTime) this.lastFrameTime = timestamp;
+
+        const deltaTime = timestamp - this.lastFrameTime;
+
+        if (this.currentAnimation !== this.lastAnimation) {
+            this.frameIndex = 0;
+            this.lastAnimation = this.currentAnimation;
+        }
+
+        if (deltaTime > this.frameInterval) {
+            let images = this.getAnimationImages(this.currentAnimation);
+
+            if (images && images.length > 0) {
+                const framePath = images[this.frameIndex % images.length];
+                this.loadImage(framePath);
+                this.frameIndex++;
+                this.lastFrameTime = timestamp;
+                console.log(this.frameIndex);
+            }
+
+            if (this.currentAnimation === 'broken' &&
+                this.frameIndex >= images.length) {
+                console.log('index in if: ' + this.frameIndex)
+                this.isBrokenAnimation = false;
+                this.isBrokenAnimationDone = true;
+            }
+        }
+    }
+
+    applyGravity2(timestamp) {
+        if (!this.isGravity) return;
+        if (!this.lastGravityUpdate) this.lastGravityUpdate = timestamp;
+        const deltaTime = (timestamp - this.lastGravityUpdate) / 1000;
+            if (this.isAboveGround() || this.speedY > 0) {
+                this.y -= this.speedY * deltaTime * 30;
+                this.speedY -= this.acceleration * deltaTime * 30;
+            } else {
+                this.speedY = 0;
+            }
+            this.lastGravityUpdate = timestamp;
+    }
+
+
 }

@@ -15,21 +15,32 @@ class MovableObject extends DrawableObject {
 
     constructor() {
         super();
+        this.lastGravityUpdate = 0;
+        this.gravityInterval = 1000 / 25;
     }
 
-    applyGravity() {
-        if (this.intervalGravity) return;
-        this.intervalGravity = setInterval(() => {
+    applyGravity(timestamp) {
+        if (!this.lastGravityUpdate) this.lastGravityUpdate = timestamp;
+
+        const deltaTime = timestamp - this.lastGravityUpdate;
+
+        if (deltaTime > this.gravityInterval) {
+
             if (!this.isFlying && this.isAboveGround() || this.speedY > 0) {
                 this.y -= this.speedY;
                 this.speedY -= this.acceleration;
+                if (this.y >= 130) {
+                    this.y = 130;
+                    this.speedY = 0;
+                    this.isJumping = false;
+
+                }
             } else {
-                this.y = 130;
                 this.speedY = 0;
-                clearInterval(this.intervalGravity);
-                this.intervalGravity = null;
+                this.isJumping = false;
             }
-        }, 1000 / 25);
+            this.lastGravityUpdate = timestamp;
+        }
     }
 
     isAboveGround() {

@@ -5,6 +5,7 @@ class Keyboard {
     DOWN = false
     D = false;
     J = false;
+    S = false;
 
     constructor() {
         this.mobileButtonMakeTrueOrFalse();
@@ -17,6 +18,8 @@ class Keyboard {
         if (key === 'ArrowDown') this.DOWN = false;
         if (key === 'd') this.D = false;
         // if (key === 'j') this.J = false;
+        if (key === 's') this.S = false;
+
     }
 
     setKeyTrue(key) {
@@ -26,6 +29,7 @@ class Keyboard {
         if (key === 'ArrowDown') this.DOWN = true;
         if (key === 'd') this.D = true;
         if (key === 'j') this.J = true;
+        if (key === 's') this.S = true;
     }
 
     mobileButtonMakeTrueOrFalse() {
