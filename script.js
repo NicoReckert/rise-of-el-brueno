@@ -6,7 +6,8 @@ let titleSoundIsPlayed = false;
 function startVideo() {
     let video = document.getElementById('background-video');
     video.play();
-    video.playbackRate = 0.8;
+    video.playbackRate = 1.0;
+    video.loop = true;
     titleMusic.play();
     titleMusic2.load();
 }
@@ -26,5 +27,8 @@ titleMusic.addEventListener('timeupdate', () => {
         titleSound.play();
         document.getElementById('h1').classList.add('animation');
         titleSoundIsPlayed = true;
+        setTimeout(() => {
+            document.getElementById('h1').classList.remove('before-animation');
+        }, 800);
     }
 });

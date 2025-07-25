@@ -22,20 +22,24 @@ body {
 
 h1 {
   font-family: 'Adventure', cursive;
-  font-size: 200px;
+  font-size: 160px;
   font-weight: bolder;
   text-shadow:
-    0 0 15px rgba(255, 200, 0, 0.8),
-    6px 6px 0 #712400;
+    0 0 8px rgba(255, 200, 0, 0.8),
+    3px 3px 0 #712400;
   letter-spacing: 5px;
-  line-height: 1.2;
+  line-height: 1.12;
   color: #FFB700;
-  -webkit-text-stroke: 8px #712400;
+  -webkit-text-stroke: 4px #712400;
   transform: scaleX(1.2);
   margin-top: 48px;
   display: inline-block;
-  filter: drop-shadow(6px 6px 0 #2a0000);
+  filter: drop-shadow(8px 4px 0 #2a0000);
+}
 
+.before-animation {
+  transform: translateX(100vw);
+  opacity: 0;
 }
 
 .animation {
@@ -73,6 +77,7 @@ h1 {
   background-size: cover;
   width: 100%;
   height: 100%;
+  overflow-x: hidden;
   flex: 1;
 }
 
@@ -163,6 +168,10 @@ canvas {
 
 .button-play {
   z-index: 5;
+  position: absolute;
+  top: 0;
+  left: 0px;
+  opacity: 0.4;
 }
 
 .background-video {
@@ -171,18 +180,42 @@ canvas {
   left: 50%;
   min-width: 100%;
   min-height: 100%;
-  width: auto;
-  height: auto;
+  width: 100%;
+  height: 100%;
   z-index: -1;
   transform: translate(-50%, -50%);
   object-fit: cover;
   /* filter: brightness(0.6); */
 
-  filter: contrast(170%) saturate(160%) sepia(10%) grayscale(5%);
+  /* filter: contrast(170%) saturate(160%) sepia(10%) grayscale(5%); */
   /* image-rendering: pixelated;  */
   opacity: 1.0;
   /* filter: drop-shadow(50px 50px 50px 50px black); */
   /* filter: hue-rotate(-30deg) saturate(80%) brightness(110%); */
+}
+
+.img-box {
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
+  width: 100%;
+}
+
+.bruno-img {
+  width: 350px;
+  object-fit: cover;
+}
+
+.kuecken-img {
+  width: 120px;
+  object-fit: cover;
+  transform: translateX(30px);
+}
+
+.huhn-img {
+  width: 200px;
+  object-fit: cover;
+  padding-left: 10px;
 }
 
 .start-button {
@@ -233,9 +266,29 @@ canvas {
 
   h1 {
     /* display: none; */
-    font-size: 64px;
+    font-size: 51px;
     -webkit-text-stroke: 3px #712400;
+    margin-top: 0px;
+    text-shadow:
+      0 0 8px rgba(255, 200, 0, 0.8),
+      2px 2px 0 #712400;
+    -webkit-text-stroke: 3px #712400;
+    filter: drop-shadow(4px 2px 0 #2a0000);
   }
+
+  .bruno-img {
+    width: 110px;
+  }
+
+  .kuecken-img {
+    width: 25px;
+    transform: translateX(15px);
+  }
+
+  .huhn-img {
+    width: 60px;
+  }
+
 }
 
 @media only screen and (max-height: 850px) {
