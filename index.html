@@ -7,11 +7,18 @@
     <title>Rise of El Brünö</title>
     <link rel="icon" type="image/x-icon" href="./assets/img/favicon.png">
     <link rel="stylesheet" href="./style.css">
+    <link rel="stylesheet" href="./css/font.css">
 </head>
 
 <body onload="init()">
+    <h1 id="h1">RISE OF <p></p> EL BRÜNÖ</h1>
+    <video autoplay loop muted class="background-video" id="background-video">
+    <source src="assets/videos/177847-858853154_tiny.mp4" type="video/mp4">
+    Dein Browser unterstützt kein HTML5-Video.
+  </video>
+  <button class="button-play" onclick="startVideo()">start video</button>
     <div class="all-content" id="all-content">
-        <h1>Rise of El Brünö</h1>
+        <!-- <h1>Rise of El Brünö</h1> -->
         <div class="canvas-button-box" id="canvas-button-box">
             <div class="move-button-box">
                 <button class="move-button" id="left-button">⇐</button>
@@ -47,7 +54,9 @@
         <div class="startscreen">
             <button class="start-button" id="start-button">Start</button>
         </div>
+
     </div>
+
     <script src="./classes/drawable-object.class.js"></script>
     <script src="./classes/movable-object.class.js"></script>
     <script src="./classes/status-bar.class.js"></script>

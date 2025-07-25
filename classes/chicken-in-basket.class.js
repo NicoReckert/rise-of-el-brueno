@@ -20,28 +20,27 @@ class ChickenInBasket extends MovableObject {
         this.startY = 0;
         this.returnStart = false;
         this.isReturning = false;
+        this.justLanded = false;
         this.returnProgress = 0;
     }
 
     setCoordinates(x, y) {
-        if (!this.isAttack) {
-            this.x = x;
-            this.y = y;
-        }
+        this.x = x;
+        this.y = y;
+
     }
 
-    chickenAttack(charakterX) {
-        if ((charakterX - this.x) >= -300 && this.isAttack) {
+    chickenAttack(charakterX, charakterY, basketX, basketY) {
+        if (this.isAttack && this.x <= this.attackStartX + 300) {
             console.log(charakterX - this.x);
             this.x += this.speedX;
-        } else {
+        } else if (this.isAttack) {
             this.isAttack = false;
-            this.isReturning = false;
             this.startReturn(
                 this.x,
                 this.y,
-                this.charakter.x + 20,
-                this.charakter.y + 90
+                basketX,
+                basketY
             );
         }
     }
@@ -58,23 +57,37 @@ class ChickenInBasket extends MovableObject {
     updateReturnFlight() {
         if (!this.isReturning) return;
 
-        this.returnProgress += 0.02; // Geschwindigkeit
+        this.returnProgress += 0.02;
 
         if (this.returnProgress >= 1) {
             this.returnProgress = 1;
             this.isReturning = false;
             this.isIdle = true;
+            this.justLanded = true;
+
+            // direkt an Ziel setzen
+            this.x = this.endX;
+            this.y = this.endY;
+
+            setTimeout(() => {
+                this.justLanded = false;
+            }, 200);
+
             return;
         }
 
-        // Bogenbewegung mit Quadratischer Bézier-Kurve
         const t = this.returnProgress;
-        const cx = (this.startX + this.endX) / 2 - 50; // Kontrollpunkt (hinter Charakter)
-        const cy = this.startY - 80; // Kontrollpunkt (Höhe)
+        const easeOut = t => 1 - Math.pow(1 - t, 2);
+        const smoothT = easeOut(t);
 
-        // Quadratische Bézier-Formel
-        this.x = (1 - t) ** 2 * this.startX + 2 * (1 - t) * t * cx + t ** 2 * this.endX;
-        this.y = (1 - t) ** 2 * this.startY + 2 * (1 - t) * t * cy + t ** 2 * this.endY;
+        const cx = (this.startX + this.endX) / 2 - 40;
+        const cy = Math.min(this.startY, this.endY) - 100;
+
+        this.x = (1 - smoothT) ** 2 * this.startX + 2 * (1 - smoothT) * smoothT * cx + smoothT ** 2 * this.endX;
+        this.y = (1 - smoothT) ** 2 * this.startY + 2 * (1 - smoothT) * smoothT * cy + smoothT ** 2 * this.endY;
+
+        console.log('➡ Rückflug:', this.returnProgress.toFixed(2), 'Pos:', this.x.toFixed(0), this.y.toFixed(0));
     }
+
 
 }

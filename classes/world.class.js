@@ -64,6 +64,8 @@ class World {
             this.checkPressKey();
             this.charakter.updateState();
             this.charakter.updateAnimation(timestamp);
+            this.level1.endboss.updateState();
+            this.level1.endboss.updateAnimation(timestamp);
             if (this.charakter.isJumping) {
                 this.charakter.applyGravity(timestamp);
             }
@@ -82,9 +84,16 @@ class World {
             } else {
                 this.chickenBasket.setCoordinates(this.charakter.x + 38, this.charakter.y + 228);
             }
-            this.chickenInBasket.setCoordinates(this.chickenBasket.x, this.chickenBasket.y - 20);
-            this.chickenInBasket.chickenAttack(this.charakter.x);
-            this.chickenInBasket.updateReturnFlight();
+            if (this.chickenInBasket.isIdle && !this.chickenInBasket.isReturning && !this.chickenInBasket.justLanded) {
+                this.chickenInBasket.setCoordinates(
+                    this.chickenBasket.x,
+                    this.chickenBasket.y - 20
+                )
+            };
+            this.chickenInBasket.chickenAttack(this.charakter.x, this.charakter.y, this.chickenInBasket.x, this.chickenInBasket.y - 20);
+            if (this.chickenInBasket.isReturning) {
+                this.chickenInBasket.updateReturnFlight();
+            }
         });
     }
 
@@ -286,8 +295,10 @@ class World {
         //     this.charakter.jumpCount = 0;
         //     if (this.charakter.isMoving) this.charakter.moveStop();
         // }
-        if (this.keyboard.S && !this.chickenInBasket.isAttack && this.chickenInBasket.isIdle) {
+        if (this.keyboard.S && this.chickenInBasket.isIdle && !this.chickenInBasket.isReturning && !this.chickenInBasket.justLanded) {
             this.chickenInBasket.isAttack = true;
+            this.chickenInBasket.isIdle = false;
+            this.chickenInBasket.attackStartX = this.chickenInBasket.x;
         }
     }
 
@@ -414,7 +425,7 @@ class World {
                     continue;
                 }
 
-                if (bottle.y + bottle.height >= 420) {
+                if (bottle.y + bottle.height >= 430) {
                     if (!bottle.isBrokenSound) {
                         this.playBottelBrokenSound();
                         bottle.isBroken = true;
@@ -461,7 +472,6 @@ class World {
                     if (bottle.isColliding(this.level1.endboss, 0, 50) && !this.level1.endboss.isDead) {
                         if (!bottle.isBrokenSound) {
                             this.playBottelBrokenSound();
-                            this.level1.endboss.animationHurt();
                             this.level1.endboss.isHurt = true;
                             bottle.isBrokenSound = true;
                             bottle.isBroken = true;
@@ -472,7 +482,6 @@ class World {
                             this.statusBar2.setPercentage(this.level1.endboss.energy);
                             if (this.level1.endboss.energy <= 0) {
                                 this.level1.endboss.isDead = true;
-                                this.level1.endboss.animationDead();
                             }
                             break;
                         }

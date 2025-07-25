@@ -1,0 +1,47 @@
+@font-face {
+    font-display: swap;
+    font-family: 'Adventure';
+    src: url('../assets/fonts/Adventure.otf') format('opentype');
+    font-style: normal;
+    font-weight: 100 900;
+}
+
+@font-face {
+    font-display: swap;
+    font-family: 'LuckiestGuy';
+    src: url('../assets/fonts/LuckiestGuy-Regular.ttf') format('truetype');
+    font-style: normal;
+    font-weight: 100 900;
+}
+
+@font-face {
+    font-display: swap;
+    font-family: 'Bangers';
+    src: url('../assets/fonts/Bangers-Regular.ttf') format('truetype');
+    font-style: normal;
+    font-weight: 100 900;
+}
+
+@font-face {
+    font-display: swap;
+    font-family: 'Anton';
+    src: url('../assets/fonts/Anton-Regular.ttf') format('truetype');
+    font-style: normal;
+    font-weight: 100 900;
+}
+
+@font-face {
+    font-display: swap;
+    font-family: 'SigmarOne';
+    src: url('../assets/fonts/SigmarOne-Regular.ttf') format('truetype');
+    font-style: normal;
+    font-weight: 100 900;
+}
+
+@font-face {
+    font-display: swap;
+    font-family: 'LilitaOne';
+    src: url('../assets/fonts/LilitaOne-Regular.ttf') format('truetype');
+    font-style: normal;
+    font-weight: 100 900;
+}
