@@ -71,6 +71,9 @@ class World {
             if (this.charakter.isJumping) {
                 this.charakter.applyGravity(timestamp);
             }
+            if (this.level1.endboss.isJumping) {
+                this.level1.endboss.applyGravityBoss(timestamp);
+            }
             this.throwableObjects?.forEach(bottle => {
                 bottle.updateState(timestamp);
                 bottle.updateAnimation(timestamp);
@@ -96,6 +99,7 @@ class World {
             if (this.chickenInBasket.isReturning) {
                 this.chickenInBasket.updateReturnFlight();
             }
+            this.endbossReaction();
         });
     }
 
@@ -661,5 +665,39 @@ class World {
     playEndbossAlarmSound() {
         this.endbossAlarmSound = new Audio('./assets/audio/endboss-alarm.mp3');
         this.endbossAlarmSound.play();
+    }
+
+    endbossReaction() {
+        const boss = this.level1.endboss;
+        const player = this.charakter;
+        const distance = Math.abs((player.x + player.width / 2) - (boss.x + boss.width / 2));
+
+        if (distance < 200 && !boss.isDead) {
+            // Wenn noch nicht springt, dann Starte den Sprung
+            if (!boss.isJumping) {
+                boss.speedY = 20;
+                boss.isJumping = true;
+            }
+            if (player.x < boss.x) {
+                boss.isMovingLeft = true;
+                boss.isMovingRight = false;
+            } else {
+                boss.isMovingRight = true;
+                boss.isMovingLeft = false;
+            }
+        } else if (distance < 500 && !boss.isDead) {
+            boss.isJumping = false; // Nur laufen
+            if (player.x < boss.x) {
+                boss.isMovingLeft = true;
+                boss.isMovingRight = false;
+            } else {
+                boss.isMovingRight = true;
+                boss.isMovingLeft = false;
+            }
+        } else {
+            boss.isMovingLeft = false;
+            boss.isMovingRight = false;
+            boss.isJumping = false;
+        }
     }
 }

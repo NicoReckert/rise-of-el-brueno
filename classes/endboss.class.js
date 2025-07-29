@@ -1,5 +1,6 @@
 class Endboss extends MovableObject {
-    speed = 0.15;
+    speedX = 1;
+    speedY = 0;
     isGameCharakter = true;
     isHurt = false;
     isDead = false;
@@ -130,6 +131,30 @@ class Endboss extends MovableObject {
     //     }, 1000 / 8);
     // }
 
+    applyGravityBoss(timestamp) {
+        if (!this.lastGravityUpdate) this.lastGravityUpdate = timestamp;
+
+        const deltaTime = timestamp - this.lastGravityUpdate;
+
+        if (deltaTime > this.gravityInterval) {
+
+            if (this.isJumping || this.y < -35 || this.speedY > 0) {
+                this.y -= this.speedY;
+                this.speedY -= this.acceleration;
+                if (this.y >= -35) {
+                    this.y = -35;
+                    this.speedY = 0;
+                    this.isJumping = false;
+
+                }
+            } else {
+                this.speedY = 0;
+                this.isJumping = false;
+            }
+            this.lastGravityUpdate = timestamp;
+        }
+    }
+
     moveDownAfterDead() {
         this.intervalMoveDownAfterDead = setInterval(() => {
             clearInterval(this.intervalDead);
@@ -139,20 +164,20 @@ class Endboss extends MovableObject {
     }
 
     updateState() {
-        if(this.isDeadAnimationReady && !this.isUnderTheGround){
+        if (this.isDeadAnimationReady && !this.isUnderTheGround) {
             this.y += 3;
         }
-        
+
         if (this.isMovingLeft) {
-            this.isFlipped = true;
+            this.isFlipped = false;
             if (this.x > 0) {
                 this.x -= this.speedX;
             }
         } else if (this.isMovingRight) {
-            this.isFlipped = false;
-            if (this.x < this.world.level1.level_end_x) {
-                this.x += this.speedX;
-            }
+            this.isFlipped = true;
+            // if (this.x < this.world.level1_end_x) {
+            this.x += this.speedX;
+            // }
         }
 
         if (this.isDead) {
