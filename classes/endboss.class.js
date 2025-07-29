@@ -3,6 +3,7 @@ class Endboss extends MovableObject {
     isGameCharakter = true;
     isHurt = false;
     isDead = false;
+    isDeadAnimationReady = false;
     isMovingLeft = false;
     isMovingRight = false;
     isJumping = false;
@@ -28,6 +29,9 @@ class Endboss extends MovableObject {
 
     hurtImages =
         [
+            './assets/img/4_enemie_boss_chicken/4_hurt/G21.png',
+            './assets/img/4_enemie_boss_chicken/4_hurt/G22.png',
+            './assets/img/4_enemie_boss_chicken/4_hurt/G23.png',
             './assets/img/4_enemie_boss_chicken/4_hurt/G21.png',
             './assets/img/4_enemie_boss_chicken/4_hurt/G22.png',
             './assets/img/4_enemie_boss_chicken/4_hurt/G23.png'
@@ -135,6 +139,10 @@ class Endboss extends MovableObject {
     }
 
     updateState() {
+        if(this.isDeadAnimationReady && !this.isUnderTheGround){
+            this.y += 3;
+        }
+        
         if (this.isMovingLeft) {
             this.isFlipped = true;
             if (this.x > 0) {
@@ -148,11 +156,21 @@ class Endboss extends MovableObject {
         }
 
         if (this.isDead) {
-            this.currentAnimation = 'dead';
-            this.frameInterval = 1000 / 8;
+            if (!this.isDeadAnimationReady) {
+                this.currentAnimation = 'dead';
+                this.frameInterval = 1000 / 8;
+            } else {
+                this.currentAnimation = null;
+            }
+            return;
+
         } else if (this.isHurt) {
             this.currentAnimation = 'hurt';
             this.frameInterval = 1000 / 8;
+            if (this.frameIndex >= this.hurtImages.length) {
+                this.isHurt = false;
+                this.frameIndex = 0;
+            }
         } else if (this.isJumping) {
             this.currentAnimation = 'jump';
             this.frameInterval = 1000 / 10;
@@ -171,7 +189,7 @@ class Endboss extends MovableObject {
             case 'hurt': return this.hurtImages;
             case 'jump': return this.jumpImages;
             case 'walk': return this.walkImages;
-            default: return this.idleImages;
+            case 'idle': return this.idleImages;
         }
     }
 
@@ -187,6 +205,11 @@ class Endboss extends MovableObject {
                 this.img.src = images[this.frameIndex % images.length];
                 this.frameIndex++;
                 this.lastFrameTime = timestamp;
+            }
+            if (this.currentAnimation === 'dead' && this.frameIndex >= this.deadImages.length) {
+                this.isDeadAnimationReady = true;
+                this.frameIndex = 0;
+                this.img.src = './assets/img/4_enemie_boss_chicken/5_dead/G26.png'
             }
         }
     }

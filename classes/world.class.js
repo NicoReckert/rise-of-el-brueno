@@ -11,7 +11,9 @@ class World {
     level2 = level2;
     level3 = scene2;
     endbossMusic;
+    endbossAlarmSound;
     endbossMusicIsPlayed = false;
+    endbossAlarmSoundIsPlayed = false;
     statusBar = new LifeEnergyCharakterBar();
     statusBar2 = new LifeEnergyBossBar();
     coinBar = new CoinBar();
@@ -473,6 +475,7 @@ class World {
                         if (!bottle.isBrokenSound) {
                             this.playBottelBrokenSound();
                             this.level1.endboss.isHurt = true;
+                            this.level1.endboss.frameIndex = 0;
                             bottle.isBrokenSound = true;
                             bottle.isBroken = true;
                             bottle.isThrow = false;
@@ -482,6 +485,7 @@ class World {
                             this.statusBar2.setPercentage(this.level1.endboss.energy);
                             if (this.level1.endboss.energy <= 0) {
                                 this.level1.endboss.isDead = true;
+                                this.level1.endboss.frameIndex = 0;
                             }
                             break;
                         }
@@ -491,12 +495,14 @@ class World {
 
             }
             if (this.charakter.x >= 1050 && this.charakter.x <= 1250) {
-                if (this.endbossMusicIsPlayed) return;
+                if (this.endbossMusicIsPlayed || this.endbossAlarmSoundIsPlayed) return;
                 document.getElementById('background-music').pause();
+                console.log('wird ausgeführt');
                 this.playEndbossMusic("play");
                 this.playEndbossAlarmSound();
-                this.level1.endboss.animationHurt();
+                // this.level1.endboss.animationHurt();
                 this.endbossMusicIsPlayed = true;
+                this.endbossAlarmSoundIsPlayed = true;
             }
 
             for (let j = 0; j < this.level1.enemies.length; j++) {
@@ -653,7 +659,7 @@ class World {
     }
 
     playEndbossAlarmSound() {
-        const sound = new Audio('./assets/audio/endboss-alarm.mp3');
-        sound.play();
+        this.endbossAlarmSound = new Audio('./assets/audio/endboss-alarm.mp3');
+        this.endbossAlarmSound.play();
     }
 }
