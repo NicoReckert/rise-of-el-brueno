@@ -70,10 +70,11 @@ class World {
     }
 
     farmScene(timestamp) {
+        this.renderCameraX = Math.round(this.camera_x);
         this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
         // this.updateCamera();
         this.ctx.save();
-        this.ctx.translate(-this.camera_x, 0);
+        this.ctx.translate(-this.renderCameraX, 0);
         this.addObject(this.farmLevel.sky);
         this.addObject(this.farmLevel.clouds);
         this.addObject(this.farmLevel.grounds);
@@ -82,7 +83,7 @@ class World {
         this.ctx.restore();
         this.addToWorld(this.statusBar);
         this.ctx.save();
-        this.ctx.translate(-this.camera_x, 0);
+        this.ctx.translate(-this.renderCameraX, 0);
         this.addToWorld(this.charakter);
         if (this.charakter.x > 1550 && this.charakter.x < 1700) {
             if (!this.bubbleFarm.startTime) {
@@ -105,7 +106,7 @@ class World {
         this.ctx.restore();
         this.checkPressKey();
         // this.checkCollisions();
-        this.charakter.updateState();
+        this.charakter.updateState(timestamp);
         this.charakter.updateAnimation(timestamp);
         if (this.charakter.isJumping) {
             this.charakter.applyGravity(timestamp);
@@ -283,10 +284,11 @@ class World {
     }
 
     stallScene(timestamp) {
+        this.renderCameraX = Math.round(this.camera_x);
         this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
         // this.updateCamera();
         this.ctx.save();
-        this.ctx.translate(-this.camera_x, 0);
+        this.ctx.translate(-this.renderCameraX, 0);
         this.addObject(this.scene2.sky);
         // this.addObject(this.scene2.clouds);
         this.addObject(this.scene2.grounds);
@@ -295,7 +297,7 @@ class World {
         // this.ctx.translate(-this.camera_x, 0);
         this.addToWorld(this.statusBar);
         this.ctx.save();
-        this.ctx.translate(-this.camera_x, 0);
+        this.ctx.translate(-this.renderCameraX, 0);
         this.addToWorld(this.charakter);
         // this.ctx.translate(-this.camera_x, 0);
         if (this.charakter.x > 0 && this.charakter.x < 150) {
@@ -319,7 +321,7 @@ class World {
 
         this.checkPressKey();
         // this.checkCollisions();
-        this.charakter.updateState();
+        this.charakter.updateState(timestamp);
         this.charakter.updateAnimation(timestamp);
         if (this.charakter.isJumping) {
             this.charakter.applyGravity(timestamp);
@@ -372,7 +374,7 @@ class World {
         // let self = this;
     }
 
-    addToWorld(object) {
+    addToWorld2(object) {
         if (object.isFlipped || object.isNpcFlipped) {
             this.ctx.save();
             this.ctx.scale(-1, 1);
@@ -406,6 +408,25 @@ class World {
             // this.ctx.stroke();
         }
     }
+
+
+    addToWorld(object) {
+    if (object.isFlipped || object.isNpcFlipped) {
+        this.ctx.save();
+        this.ctx.scale(-1, 1);
+        const drawX = Math.round(-object.x - object.width);
+        const drawY = Math.round(object.y);
+        this.ctx.drawImage(object.img, drawX, drawY, object.width, object.height);
+        if (!object.isGameCharakter == true) return;
+        this.ctx.restore();
+    } else {
+        const drawX = Math.round(object.x);
+        const drawY = Math.round(object.y);
+        this.ctx.drawImage(object.img, drawX, drawY, object.width, object.height);
+        if (!object.isGameCharakter == true) return;
+    }
+}
+
 
     addObject(objectArray) {
         objectArray.forEach(element => {

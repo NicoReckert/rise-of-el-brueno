@@ -278,18 +278,25 @@ class Character extends MovableObject {
         this.speedY = 10; // kleiner Rücksprung nach oben
     }
 
-    updateState() {
+    updateState(timestamp) {
         // 1. Bewegung (immer erlaubt, auch beim Springen)
+
+        if (!this.lastUpdateTime) this.lastUpdateTime = timestamp;
+        const deltaTime = (timestamp - this.lastUpdateTime) / 1000; // in Sekunden
+        this.lastUpdateTime = timestamp;
+
+        const movementSpeed = this.speedX * deltaTime * 60; // normalisiere auf 60FPS Verhalten
+
         if (this.isMovingLeft) {
             this.isFlipped = true;
             if (this.x > 0) {
-                this.x -= this.speedX;
+                this.x -= movementSpeed;
                 this.world.camera_x = this.x - 100;
             }
         } else if (this.isMovingRight) {
             this.isFlipped = false;
             if (this.x < this.world.farmLevel.level_end_x) {
-                this.x += this.speedX;
+                this.x += movementSpeed;
                 this.world.camera_x = this.x - 100;
             }
         }
