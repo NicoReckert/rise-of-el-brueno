@@ -6,6 +6,7 @@ class Keyboard {
     D = false;
     J = false;
     S = false;
+    F = false;
 
     constructor() {
         this.mobileButtonMakeTrueOrFalse();
@@ -19,7 +20,6 @@ class Keyboard {
         if (key === 'd') this.D = false;
         // if (key === 'j') this.J = false;
         if (key === 's') this.S = false;
-
     }
 
     setKeyTrue(key) {
@@ -30,6 +30,7 @@ class Keyboard {
         if (key === 'd') this.D = true;
         if (key === 'j') this.J = true;
         if (key === 's') this.S = true;
+        if (key === 'f') this.F = true;
     }
 
     mobileButtonMakeTrueOrFalse() {
@@ -65,6 +66,9 @@ class Keyboard {
         });
         document.getElementById('throw-button').addEventListener('touchend', () => {
             this.D = false;
+        });
+        document.getElementById('action-button').addEventListener('touchstart', () => {
+            this.F = true;
         });
     }
 }

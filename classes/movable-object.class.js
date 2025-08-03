@@ -12,6 +12,7 @@ class MovableObject extends DrawableObject {
         bottom: 0
     }
     isFlying = false;
+    isLanding = false;
 
     constructor() {
         super();
@@ -33,7 +34,7 @@ class MovableObject extends DrawableObject {
                     this.y = 130;
                     this.speedY = 0;
                     this.isJumping = false;
-
+                    this.isLanding = true;
                 }
             } else {
                 this.speedY = 0;

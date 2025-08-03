@@ -1,31 +1,11 @@
 class World {
-    charakter = new Character();
-    chickenBasket = new ChickenBasket(this.charakter.x + 38, this.charakter.y + 228);
-    chickenInBasket = new ChickenInBasket(this.chickenBasket.x, this.chickenBasket.y - 20);
-    npc1 = new Npc(1750, 130, 130, 300);
-    npc2 = new Npc(2500, 170, 180, 250);
+
     ctx;
     canvas;
-    camera_x = 0;
-    level1 = level1;
-    level2 = level2;
-    level3 = scene2;
-    endbossMusic;
-    endbossAlarmSound;
-    endbossMusicIsPlayed = false;
-    endbossAlarmSoundIsPlayed = false;
-    statusBar = new LifeEnergyCharakterBar();
-    statusBar2 = new LifeEnergyBossBar();
-    coinBar = new CoinBar();
-    bottleBar = new BottleBar();
-    throwableObjects = [];
-    endbossAttack = new EndbossAttack();
-    backgroundMusic = document.getElementById('background-music');
-    jetPackMusic = document.getElementById('jet-pack-music');
-    jetPackSound = document.getElementById('jet-pack-sound');
-    bubble = new SpeechBubble("Ich bin Brünö ein Hühnerexperte, Compadre Amigo!", this.charakter, performance.now());
-    bubble2 = new SpeechBubble("Ich bin Aria und wir haben große Probleme mit motierten Hühnern", this.npc2, performance.now());
-    video = document.getElementById('portal-video');
+    currentScene = 'farmScene';
+
+
+
     constructor(canvas, keyboard) {
         this.canvas = canvas;
         this.ctx = canvas.getContext('2d');
@@ -36,21 +16,31 @@ class World {
         this.lastThrowCheck = 0;
         this.throwCheckDelay = 120;
 
+        this.lastStepCheck = 0;
+        this.stepCheckDelay = 400;
+
     }
     scene = 2;
     inStall = false;
 
     startGame() {
+        this.farmSceneSetup();
         this.setWorld();
         this.draw();
-        this.checkPressKey();
-        this.checkCollisions();
-        this.checkThrowObjects();
+        // this.checkPressKey();
+        // this.checkCollisions();
+        // this.checkThrowObjects();
         // this.npc2.animationStand();
         // this.npc2.isNpcFlipped = true;
     }
 
-    draw() {
+    changeSetup() {
+        this.inStallSetup();
+        this.setWorld
+        this.draw();
+    }
+
+    draw(timestamp) {
         // if (this.charakter.x == 1800) {
         //     this.scene = 3;
         //     this.charakter.x = 100;
@@ -64,59 +54,92 @@ class World {
         // } else {
         //     this.scene3();
         // }
-        this.scene1();
-        requestAnimationFrame((timestamp) => {
-            this.draw();
-            this.checkPressKey();
-            this.checkCollisions();
-            this.checkThrowObjects(timestamp);
-            this.charakter.updateState();
-            this.charakter.updateAnimation(timestamp);
-            this.level1.endboss.updateState();
-            this.level1.endboss.updateAnimation(timestamp);
-            this.endbossAttack.updateState();
-            this.endbossAttack.updateAnimation(timestamp);
-            this.level1.enemies.forEach(enemy => {
-                enemy.updateState();
-                enemy.updateAnimation(timestamp);
-            });
+        // this.scene1(timestamp);
+        switch (this.currentScene) {
+            case 'farmScene':
+                this.farmScene(timestamp);
+                break;
 
-            if (this.charakter.isJumping) {
-                this.charakter.applyGravity(timestamp);
-            }
-            if (this.level1.endboss.isJumping) {
-                this.level1.endboss.applyGravityBoss(timestamp);
-            }
-            this.throwableObjects?.forEach(bottle => {
-                bottle.updateState(timestamp);
-                bottle.updateAnimation(timestamp);
-                bottle.applyGravity2(timestamp);
-            });
-            const basketWobble = Math.sin(Date.now() / 100) * 0.5;
-            if (this.charakter.isJumping) {
-                this.chickenBasket.setCoordinates(this.charakter.x + 38, this.charakter.y + 220);
-            } else if (this.charakter.isMovingLeft || this.charakter.isMovingRight) {
-                this.chickenBasket.setCoordinates(this.charakter.x + 38, this.charakter.y + 228 + basketWobble);
-            } else if (this.charakter.isFlipped) {
-                this.chickenBasket.setCoordinates(this.charakter.x + 38 + 17.5, this.charakter.y + 228 + basketWobble);
-            } else {
-                this.chickenBasket.setCoordinates(this.charakter.x + 38, this.charakter.y + 228);
-            }
-            if (this.chickenInBasket.isIdle && !this.chickenInBasket.isReturning && !this.chickenInBasket.justLanded) {
-                this.chickenInBasket.setCoordinates(
-                    this.chickenBasket.x,
-                    this.chickenBasket.y - 20
-                )
-            };
-            this.chickenInBasket.chickenAttack(this.charakter.x, this.charakter.y, this.chickenInBasket.x, this.chickenInBasket.y - 20);
-            if (this.chickenInBasket.isReturning) {
-                this.chickenInBasket.updateReturnFlight();
-            }
-            this.endbossReaction();
+            case 'stallScene':
+                this.stallScene(timestamp);
+                break;
+        }
+        requestAnimationFrame((timestamp) => {
+            this.draw(timestamp);
         });
     }
 
-    scene1() {
+    farmScene(timestamp) {
+        this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+        // this.updateCamera();
+        this.ctx.save();
+        this.ctx.translate(-this.camera_x, 0);
+        this.addObject(this.farmLevel.sky);
+        this.addObject(this.farmLevel.clouds);
+        this.addObject(this.farmLevel.grounds);
+        this.addObject(this.farmLevel.towns);
+        // this.ctx.translate(-this.camera_x, 0);
+        this.ctx.restore();
+        this.addToWorld(this.statusBar);
+        this.ctx.save();
+        this.ctx.translate(-this.camera_x, 0);
+        this.addToWorld(this.charakter);
+        if (this.charakter.x > 1550 && this.charakter.x < 1700) {
+            if (!this.bubbleFarm.startTime) {
+                this.bubbleFarm.start(); // Jetzt beginnt das Schreiben
+            }
+            this.bubbleFarm.update(performance.now());
+            this.bubbleFarm.draw(this.ctx);
+            if (!this.isNotificationPlay) {
+                this.notificationSound.currentTime = 0;
+                this.notificationSound.play();
+                this.isNotificationPlay = true;
+            }
+            // this.bubbleFarm = new SpeechBubble("In den Hühnerstall gehen? {F} drücken!", this.charakter, performance.now());
+            // this.drawSpeechBubble(this.ctx, "In den Hühnerstall gehen? {F} drücken!", this.charakter);
+        } else {
+            this.isNotificationPlay = false;
+            this.bubbleFarm.startTime = null;
+        }
+        // this.ctx.translate(-this.camera_x, 0);
+        this.ctx.restore();
+        this.checkPressKey();
+        // this.checkCollisions();
+        this.charakter.updateState();
+        this.charakter.updateAnimation(timestamp);
+        if (this.charakter.isJumping) {
+            this.charakter.applyGravity(timestamp);
+        }
+        this.stepSoundCharakter(timestamp);
+        this.landingSoundCharakter();
+        if (this.keyboard.F && this.charakter.x > 1550 && this.charakter.x < 1700) {
+            this.inStallSetup();
+            this.currentScene = 'stallScene';
+            this.keyboard.F = false;
+            farmLevel.level_end_x = 500;
+        }
+        console.log(this.camera_x);
+    }
+
+    farmSceneSetup() {
+        this.farmLevel = farmLevel;
+        this.charakter = new Character();
+        this.camera_x = 0;
+        this.statusBar = new LifeEnergyCharakterBar();
+        this.farmMusic = new Audio('./assets/audio/farm-music.mp3');
+        this.farmMusic.play();
+        this.farmMusic.loop = true;
+        this.farmMusic.volume = 0.6;
+        this.footStepSound = new Audio('./assets/audio/footstep-sound.mp3');
+        this.jumpSound = new Audio('./assets/audio/jump-sound2.mp3');
+        this.landingSound = new Audio('./assets/audio/landing-sound.mp3');
+        this.bubbleFarm = new SpeechBubble("In den Hühnerstall gehen? {F} drücken!", this.charakter, performance.now());
+        this.notificationSound = new Audio('./assets/audio/notification-sound.mp3');
+        this.notificationSound.volume = 0.5;
+        this.isNotificationPlay = false;
+    }
+
+    scene1(timestamp) {
         this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
         // this.updateCamera();
         this.ctx.translate(this.camera_x, 0);
@@ -142,6 +165,83 @@ class World {
         this.addToWorld(this.endbossAttack);
         this.addObject(this.throwableObjects);
         this.ctx.translate(-this.camera_x, 0);
+
+
+
+        this.checkPressKey();
+        this.checkCollisions();
+        this.checkThrowObjects(timestamp);
+        this.charakter.updateState();
+        this.charakter.updateAnimation(timestamp);
+        this.level1.endboss.updateState();
+        this.level1.endboss.updateAnimation(timestamp);
+        this.endbossAttack.updateState();
+        this.endbossAttack.updateAnimation(timestamp);
+        this.level1.enemies.forEach(enemy => {
+            enemy.updateState();
+            enemy.updateAnimation(timestamp);
+        });
+
+        if (this.charakter.isJumping) {
+            this.charakter.applyGravity(timestamp);
+        }
+        if (this.level1.endboss.isJumping) {
+            this.level1.endboss.applyGravityBoss(timestamp);
+        }
+        this.throwableObjects?.forEach(bottle => {
+            bottle.updateState(timestamp);
+            bottle.updateAnimation(timestamp);
+            bottle.applyGravity2(timestamp);
+        });
+        const basketWobble = Math.sin(Date.now() / 100) * 0.5;
+        if (this.charakter.isJumping) {
+            this.chickenBasket.setCoordinates(this.charakter.x + 38, this.charakter.y + 220);
+        } else if (this.charakter.isMovingLeft || this.charakter.isMovingRight) {
+            this.chickenBasket.setCoordinates(this.charakter.x + 38, this.charakter.y + 228 + basketWobble);
+        } else if (this.charakter.isFlipped) {
+            this.chickenBasket.setCoordinates(this.charakter.x + 38 + 17.5, this.charakter.y + 228 + basketWobble);
+        } else {
+            this.chickenBasket.setCoordinates(this.charakter.x + 38, this.charakter.y + 228);
+        }
+        if (this.chickenInBasket.isIdle && !this.chickenInBasket.isReturning && !this.chickenInBasket.justLanded) {
+            this.chickenInBasket.setCoordinates(
+                this.chickenBasket.x,
+                this.chickenBasket.y - 20
+            )
+        };
+        this.chickenInBasket.chickenAttack(this.charakter.x, this.charakter.y, this.chickenInBasket.x, this.chickenInBasket.y - 20);
+        if (this.chickenInBasket.isReturning) {
+            this.chickenInBasket.updateReturnFlight();
+        }
+        this.endbossReaction();
+
+    }
+
+    scene1Setup() {
+        this.charakter = new Character();
+        this.chickenBasket = new ChickenBasket(this.charakter.x + 38, this.charakter.y + 228);
+        this.chickenInBasket = new ChickenInBasket(this.chickenBasket.x, this.chickenBasket.y - 20);
+        this.npc1 = new Npc(1750, 130, 130, 300);
+        this.npc2 = new Npc(2500, 170, 180, 250);
+        this.camera_x = 0;
+        this.level1 = level1;
+
+        this.endbossMusic;
+        this.endbossAlarmSound;
+        this.endbossMusicIsPlayed = false;
+        this.endbossAlarmSoundIsPlayed = false;
+        this.statusBar = new LifeEnergyCharakterBar();
+        this.statusBar2 = new LifeEnergyBossBar();
+        this.coinBar = new CoinBar();
+        this.bottleBar = new BottleBar();
+        this.throwableObjects = [];
+        this.endbossAttack = new EndbossAttack();
+        this.backgroundMusic = document.getElementById('background-music');
+        this.jetPackMusic = document.getElementById('jet-pack-music');
+        this.jetPackSound = document.getElementById('jet-pack-sound');
+        this.bubble = new SpeechBubble("Ich bin Brünö ein Hühnerexperte, Compadre Amigo!", this.charakter, performance.now());
+        this.bubble2 = new SpeechBubble("Ich bin Aria und wir haben große Probleme mit motierten Hühnern", this.npc2, performance.now());
+        this.video = document.getElementById('portal-video');
     }
 
     scene1_1() {
@@ -182,23 +282,78 @@ class World {
         // let self = this;
     }
 
-    scene2() {
+    stallScene(timestamp) {
         this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
         // this.updateCamera();
-        this.ctx.translate(this.camera_x, 0);
-        this.addObject(this.level2.sky);
-        this.addObject(this.level2.clouds);
-        this.addObject(this.level2.grounds);
-        this.addToWorld(this.level2.towns[0]);
-        this.addToWorld(this.level2.towns[1]);
-        this.addToWorld(this.level2.towns[2]);
+        this.ctx.save();
         this.ctx.translate(-this.camera_x, 0);
+        this.addObject(this.scene2.sky);
+        // this.addObject(this.scene2.clouds);
+        this.addObject(this.scene2.grounds);
+        this.addToWorld(this.scene2.towns[0]);
+        this.ctx.restore();
+        // this.ctx.translate(-this.camera_x, 0);
         this.addToWorld(this.statusBar);
-        this.ctx.translate(this.camera_x, 0);
-        this.addToWorld(this.charakter);
-        this.addObject(this.throwableObjects);
+        this.ctx.save();
         this.ctx.translate(-this.camera_x, 0);
+        this.addToWorld(this.charakter);
+        // this.ctx.translate(-this.camera_x, 0);
+        if (this.charakter.x > 0 && this.charakter.x < 150) {
+            if (!this.bubbleStall.startTime) {
+                this.bubbleStall.start();
+            }
+            this.bubbleStall.update(performance.now());
+            this.bubbleStall.draw(this.ctx);
+            if (!this.isNotificationPlay) {
+                this.notificationSound.currentTime = 0;
+                this.notificationSound.play();
+                this.isNotificationPlay = true;
+            }
+            // this.bubbleFarm = new SpeechBubble("In den Hühnerstall gehen? {F} drücken!", this.charakter, performance.now());
+            // this.drawSpeechBubble(this.ctx, "In den Hühnerstall gehen? {F} drücken!", this.charakter);
+        } else {
+            this.isNotificationPlay = false;
+            this.bubbleStall.startTime = null;
+        }
+        this.ctx.restore();
+
+        this.checkPressKey();
+        // this.checkCollisions();
+        this.charakter.updateState();
+        this.charakter.updateAnimation(timestamp);
+        if (this.charakter.isJumping) {
+            this.charakter.applyGravity(timestamp);
+        }
+        this.stepSoundCharakter(timestamp);
+        this.landingSoundCharakter();
+        if (this.keyboard.F && this.charakter.x > 0 && this.charakter.x < 150) {
+            // this.farmSceneSetup();
+            this.currentScene = 'farmScene';
+            console.log(this.camera_x);
+            this.charakter.x = 1620;
+            this.camera_x = this.charakter.x - 100;
+            this.keyboard.F = false;
+            farmLevel.level_end_x = 6409;
+        }
+
         // let self = this;
+    }
+
+    inStallSetup() {
+        this.scene2 = scene2;
+        // this.charakter = new Character();
+        this.camera_x = 0;
+        this.charakter.x = 100;
+        this.bubbleStall = new SpeechBubble("Den Hühnerstall verlassen? {F} drücken!", this.charakter, performance.now());
+        // this.statusBar = new LifeEnergyCharakterBar();
+        // this.farmMusic = new Audio('./assets/audio/farm-music.mp3');
+        // this.farmMusic.play();
+        // this.farmMusic.loop = true;
+        // this.farmMusic.volume = 0.6;
+        // this.footStepSound = new Audio('./assets/audio/footstep-sound.mp3');
+        // this.jumpSound = new Audio('./assets/audio/jump-sound2.mp3');
+        // this.landingSound = new Audio('./assets/audio/landing-sound.mp3');
+        // this.bubbleFarm = new SpeechBubble("In den Hühnerstall gehen? {F} drücken!", this.charakter, performance.now());
     }
 
     scene3() {
@@ -271,6 +426,7 @@ class World {
         if (this.keyboard.UP && !this.charakter.isAboveGround() && !this.charakter.isFlying && !this.charakter.isJumping) {
             this.charakter.isJumping = true;
             this.charakter.speedY = 23;
+            this.jumpSound.play();
         }
         if (this.keyboard.UP && this.charakter.isAboveGround() && this.charakter.isFlying) {
             this.charakter.moveUp();
@@ -592,9 +748,9 @@ class World {
             this.startGame();
             document.getElementById('overlay-startscreen').style.display = 'none';
             document.getElementById('canvas').style.display = 'block';
-            document.getElementById('background-music').play();
+            // document.getElementById('background-music').play();
             setFullscreen();
-            this.charakter.playSpeakSound();
+            // this.charakter.playSpeakSound();
         });
     }
 
@@ -715,4 +871,88 @@ class World {
             boss.isJumping = false;
         }
     }
+
+    stepSoundCharakter(timestamp) {
+        if (timestamp - this.lastStepCheck < this.stepCheckDelay) return;
+        this.lastStepCheck = timestamp;
+        if ((this.charakter.isMovingLeft || this.charakter.isMovingRight) && !this.charakter.isJumping && !this.charakter.isFlying) {
+            this.footStepSound.currentTime = 0;
+            this.footStepSound.play();
+        }
+    }
+
+    landingSoundCharakter() {
+        if (this.charakter.isLanding) {
+            this.landingSound.currentTime = 0;
+            this.landingSound.play();
+            this.charakter.isLanding = false;
+        }
+    }
+
+    drawSpeechBubble2(ctx, text, charakter) {
+        console.log('wird ausgeführt')
+        const padding = 10;
+        const fontSize = 16;
+        const tailSize = 10;
+
+        ctx.save();
+        ctx.font = `${fontSize}px sans-serif`;
+
+        const textWidth = ctx.measureText(text).width;
+        const bubbleWidth = textWidth + padding * 2;
+        const bubbleHeight = fontSize + padding * 2;
+
+        // Position der Bubble relativ zur Figur
+
+        const x = charakter.x + charakter.width / 2 - bubbleWidth / 2;
+        const y = charakter.y - 50;
+
+        // Schatten
+        ctx.shadowColor = "rgba(0,0,0,0.2)";
+        ctx.shadowBlur = 4;
+
+        // Sprechblasen-Hintergrund
+        ctx.fillStyle = "rgba(255, 255, 255, 0.9)";
+        ctx.strokeStyle = "#333";
+        ctx.lineWidth = 2;
+
+        // Hauptrechteck mit abgerundeten Ecken
+        ctx.beginPath();
+        this.roundRect(ctx, x, y, bubbleWidth, bubbleHeight, 10);
+        ctx.fill();
+        ctx.stroke();
+
+        // "Pfeil" unten
+        ctx.beginPath();
+        ctx.moveTo(x + bubbleWidth / 2 - tailSize, y + bubbleHeight);
+        ctx.lineTo(x + bubbleWidth / 2, y + bubbleHeight + tailSize);
+        ctx.lineTo(x + bubbleWidth / 2 + tailSize, y + bubbleHeight);
+        ctx.closePath();
+        ctx.fill();
+        ctx.stroke();
+
+        // Text
+        ctx.fillStyle = "#000";
+        ctx.fillText(text, x + padding, y + fontSize + 2);
+
+        ctx.restore();
+    }
+
+    roundRect(ctx, x, y, width, height, radius) {
+        ctx.beginPath();
+        ctx.moveTo(x + radius, y);
+        ctx.lineTo(x + width - radius, y);
+        ctx.quadraticCurveTo(x + width, y, x + width, y + radius);
+        ctx.lineTo(x + width, y + height - radius);
+        ctx.quadraticCurveTo(x + width, y + height, x + width - radius, y + height);
+        ctx.lineTo(x + radius, y + height);
+        ctx.quadraticCurveTo(x, y + height, x, y + height - radius);
+        ctx.lineTo(x, y + radius);
+        ctx.quadraticCurveTo(x, y, x + radius, y);
+        ctx.closePath();
+
+    }
+
+
+
 }

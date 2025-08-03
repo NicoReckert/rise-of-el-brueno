@@ -251,6 +251,7 @@ canvas {
   }
 
   .move-button-box {
+    display: flex;
     gap: 6px;
     flex-direction: column;
   }

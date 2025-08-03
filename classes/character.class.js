@@ -96,6 +96,7 @@ class Character extends MovableObject {
         this.offset.bottom = 15;
         this.speedX = 10;
         this.isJumping = false;
+        this.isLanding = false;
 
         this.lastFrameTime = 0;        // Timestamp des letzten Framewechsels
         this.currentAnimation = 'stand';
@@ -283,13 +284,13 @@ class Character extends MovableObject {
             this.isFlipped = true;
             if (this.x > 0) {
                 this.x -= this.speedX;
-                this.world.camera_x = -this.x + 100;
+                this.world.camera_x = this.x - 100;
             }
         } else if (this.isMovingRight) {
             this.isFlipped = false;
-            if (this.x < this.world.level1.level_end_x) {
+            if (this.x < this.world.farmLevel.level_end_x) {
                 this.x += this.speedX;
-                this.world.camera_x = -this.x + 100;
+                this.world.camera_x = this.x - 100;
             }
         }
 

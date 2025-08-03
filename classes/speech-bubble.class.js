@@ -1,15 +1,34 @@
 class SpeechBubble {
-    constructor(text, target, startTime) {
+    constructor(text, target) {
         this.fullText = text;
         this.displayedText = '';
         this.target = target;
-        this.startTime = startTime;
-        this.charDelay = 50; // ms pro Buchstabe
+        this.startTime = null;
+        this.charDelay = 45; // ms pro Buchstabe
+        this.speechSound = new Audio('./assets/audio/speech-sound5.mp3');
+        this.speechSound.volume = 0.5;
+        this.lastCharCount = 0;
+    }
+
+    start() {
+        this.startTime = performance.now();
+        this.displayedText = '';
+        this.lastCharCount = 0;
     }
 
     update(currentTime) {
         const elapsed = currentTime - this.startTime;
         const charsToShow = Math.floor(elapsed / this.charDelay);
+
+        const char = this.fullText.charAt(charsToShow - 1);
+        if (charsToShow > this.lastCharCount && charsToShow <= this.fullText.length) {
+            if (char !== ' ' && /[aeiouäöü]/i.test(char) && charsToShow % 2 === 0) {
+                this.speechSound.currentTime = 0.01;
+                this.speechSound.play();
+            }
+            this.lastCharCount = charsToShow;
+        }
+
         this.displayedText = this.fullText.slice(0, charsToShow);
     }
 
@@ -18,7 +37,7 @@ class SpeechBubble {
         const fontSize = 16;
         const maxWidth = 250;
 
-        ctx.font = `${fontSize}px Arial`;
+        ctx.font = `${fontSize}px Adventure`;
 
         // Mehrzeiliger Text
         const words = this.displayedText.split(' ');
@@ -46,8 +65,8 @@ class SpeechBubble {
         // Blase zeichnen (oval mit Pfeil)
         ctx.beginPath();
         ctx.fillStyle = 'white';
-        ctx.strokeStyle = 'black';
-        ctx.lineWidth = 3;
+        ctx.strokeStyle = 'orangered';
+        ctx.lineWidth = 2;
         ctx.roundRect?.(x, y, bubbleWidth, bubbleHeight, 20);
         ctx.fill();
         ctx.stroke();
@@ -56,7 +75,7 @@ class SpeechBubble {
         ctx.beginPath();
         ctx.moveTo(this.target.x + this.target.width / 2 - 10, y + bubbleHeight);
         ctx.lineTo(this.target.x + this.target.width / 2 + 10, y + bubbleHeight);
-        ctx.lineTo(this.target.x + this.target.width / 2, y + bubbleHeight + 20);
+        ctx.lineTo(this.target.x + this.target.width / 2, y + bubbleHeight + 30);
         ctx.closePath();
         ctx.fill();
         ctx.stroke();
