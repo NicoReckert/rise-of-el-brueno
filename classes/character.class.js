@@ -56,6 +56,20 @@ class Character extends MovableObject {
         './assets/img/Pepe_Jetpack.png'
     ]
 
+    streichelImages = [
+        'assets/img/2_character_pepe/6_streicheln/image_1.png',
+        'assets/img/2_character_pepe/6_streicheln/image_2.png',
+        'assets/img/2_character_pepe/6_streicheln/image_3.png',
+        'assets/img/2_character_pepe/6_streicheln/image_4.png',
+        'assets/img/2_character_pepe/6_streicheln/image_5.png',
+        'assets/img/2_character_pepe/6_streicheln/image_6.png',
+        'assets/img/2_character_pepe/6_streicheln/image_7.png',
+        'assets/img/2_character_pepe/6_streicheln/image_8.png',
+    ]
+
+
+
+
     intervalStand = null;
     standCount = 0;
     intervalWalk = null;
@@ -77,6 +91,7 @@ class Character extends MovableObject {
     isHurt = false;
     isJumping;
     isThrowing = false;
+    isStreicheln = false;
     isGameCharakter = true;
     throwableBottels = 0;
 
@@ -308,6 +323,9 @@ class Character extends MovableObject {
         } else if (this.isJumping) {
             this.currentAnimation = 'jump';
             this.frameInterval = 1000 / 10;
+        } else if (this.isStreicheln) {
+            this.currentAnimation = 'streicheln';
+            this.frameInterval = 1000 / 4;
         } else if (this.isMovingLeft || this.isMovingRight) {
             this.currentAnimation = 'walk';
             this.frameInterval = 1000 / 8;
@@ -397,6 +415,7 @@ class Character extends MovableObject {
             case 'jump': return this.jumpImages;
             case 'dead': return this.deadImages;
             case 'hurt': return this.hurtImages;
+            case 'streicheln': return this.streichelImages;
             case 'stand':
             default: return this.standImages;
         }

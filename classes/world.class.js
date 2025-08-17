@@ -299,6 +299,7 @@ class World {
         this.ctx.save();
         this.ctx.translate(-this.renderCameraX, 0);
         this.addToWorld(this.charakter);
+        this.addToWorld(this.chickenNpc);
         // this.ctx.translate(-this.camera_x, 0);
         if (this.charakter.x > 0 && this.charakter.x < 150) {
             if (!this.bubbleStall.startTime) {
@@ -323,6 +324,9 @@ class World {
         // this.checkCollisions();
         this.charakter.updateState(timestamp);
         this.charakter.updateAnimation(timestamp);
+        this.chickenNpc.updateState();
+        this.chickenNpc.updateAnimation(timestamp);
+
         if (this.charakter.isJumping) {
             this.charakter.applyGravity(timestamp);
         }
@@ -338,6 +342,13 @@ class World {
             farmLevel.level_end_x = 6409;
         }
 
+        if(this.charakter.x > 340 && this.charakter.x < 380) {
+            this.charakter.isStreicheln = true;
+            this.charakter.height = 200;
+            this.charakter.y = 200;
+            this.charakter.width = 150;
+        }
+
         // let self = this;
     }
 
@@ -347,6 +358,7 @@ class World {
         this.camera_x = 0;
         this.charakter.x = 100;
         this.bubbleStall = new SpeechBubble("Den Hühnerstall verlassen? {F} drücken!", this.charakter, performance.now());
+        this.chickenNpc = new NotMovableNpc();
         // this.statusBar = new LifeEnergyCharakterBar();
         // this.farmMusic = new Audio('./assets/audio/farm-music.mp3');
         // this.farmMusic.play();
@@ -411,21 +423,21 @@ class World {
 
 
     addToWorld(object) {
-    if (object.isFlipped || object.isNpcFlipped) {
-        this.ctx.save();
-        this.ctx.scale(-1, 1);
-        const drawX = Math.round(-object.x - object.width);
-        const drawY = Math.round(object.y);
-        this.ctx.drawImage(object.img, drawX, drawY, object.width, object.height);
-        if (!object.isGameCharakter == true) return;
-        this.ctx.restore();
-    } else {
-        const drawX = Math.round(object.x);
-        const drawY = Math.round(object.y);
-        this.ctx.drawImage(object.img, drawX, drawY, object.width, object.height);
-        if (!object.isGameCharakter == true) return;
+        if (object.isFlipped || object.isNpcFlipped) {
+            this.ctx.save();
+            this.ctx.scale(-1, 1);
+            const drawX = Math.round(-object.x - object.width);
+            const drawY = Math.round(object.y);
+            this.ctx.drawImage(object.img, drawX, drawY, object.width, object.height);
+            if (!object.isGameCharakter == true) return;
+            this.ctx.restore();
+        } else {
+            const drawX = Math.round(object.x);
+            const drawY = Math.round(object.y);
+            this.ctx.drawImage(object.img, drawX, drawY, object.width, object.height);
+            if (!object.isGameCharakter == true) return;
+        }
     }
-}
 
 
     addObject(objectArray) {

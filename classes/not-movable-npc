@@ -1,0 +1,57 @@
+class NotMovableNpc extends MovableObject {
+    idleImages = [
+        './assets/img/3_enemies_chicken/chicken_normal/4_sit/image_2.png',
+        './assets/img/3_enemies_chicken/chicken_normal/4_sit/image_3.png',
+        './assets/img/3_enemies_chicken/chicken_normal/4_sit/image_4.png',
+        './assets/img/3_enemies_chicken/chicken_normal/4_sit/image_5.png',
+        './assets/img/3_enemies_chicken/chicken_normal/4_sit/image_6.png',
+        './assets/img/3_enemies_chicken/chicken_normal/4_sit/image_7.png',
+        './assets/img/3_enemies_chicken/chicken_normal/4_sit/image_8.png',
+        './assets/img/3_enemies_chicken/chicken_normal/4_sit/image_9.png',
+        './assets/img/3_enemies_chicken/chicken_normal/4_sit/image_10.png'
+    ]
+
+    constructor() {
+        super();
+        super.loadImage('./assets/img/3_enemies_chicken/chicken_normal/3_sit/image_3.png');
+        this.height = 150;
+        this.width = 150;
+        this.x = 355;
+        this.y = 220;
+        this.lastFrameTime = 0;
+        this.currentAnimation = 'idle';
+        this.frameInterval = 1000 / 4;
+        this.frameIndex = 0;
+        this.isFlipped = true;
+        this.isGameCharakter = true;
+    }
+
+    updateState() {
+        this.currentAnimation = 'idle';
+        this.frameInterval = 1000 / 4;
+    }
+
+
+    updateAnimation(timestamp) {
+        if (!this.lastFrameTime) this.lastFrameTime = timestamp;
+
+        const deltaTime = timestamp - this.lastFrameTime;
+
+        if (deltaTime > this.frameInterval) {
+            let images = this.getAnimationImages(this.currentAnimation);
+
+            if (images && images.length > 0) {
+                this.img.src = images[this.frameIndex % images.length];
+                this.frameIndex++;
+                this.lastFrameTime = timestamp;
+            }
+        }
+    }
+
+    getAnimationImages(state) {
+        switch (state) {
+            case 'idle': return this.idleImages;
+        }
+    }
+
+}
