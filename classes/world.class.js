@@ -85,6 +85,12 @@ class World {
         this.ctx.save();
         this.ctx.translate(-this.renderCameraX, 0);
         this.addToWorld(this.charakter);
+        this.addToWorld(this.cowNpc);
+        this.addToWorld(this.birdNpc);
+        this.addToWorld(this.pondNpc);
+        this.addToWorld(this.treeNpc);
+
+
         if (this.charakter.x > 1550 && this.charakter.x < 1700) {
             if (!this.bubbleFarm.startTime) {
                 this.bubbleFarm.start(); // Jetzt beginnt das Schreiben
@@ -113,6 +119,17 @@ class World {
         }
         this.stepSoundCharakter(timestamp);
         this.landingSoundCharakter();
+        this.cowNpc.updateState();
+        this.cowNpc.updateAnimation(timestamp);
+        this.birdNpc.updateState();
+        this.birdNpc.updateAnimation(timestamp);
+        this.pondNpc.updateState();
+        this.pondNpc.updateAnimation(timestamp);
+        this.treeNpc.updateState();
+        this.treeNpc.updateAnimation(timestamp);
+
+
+
         if (this.keyboard.F && this.charakter.x > 1550 && this.charakter.x < 1700) {
             this.inStallSetup();
             this.currentScene = 'stallScene';
@@ -125,6 +142,11 @@ class World {
     farmSceneSetup() {
         this.farmLevel = farmLevel;
         this.charakter = new Character();
+        this.cowNpc = new NotMovableNpc('cow', 200, 200, 1200, 255);
+        this.birdNpc = new NotMovableNpc('bird', 80, 80, 1180, 73);
+        this.pondNpc = new NotMovableNpc('pond', 500, 600, 150, 120);
+        this.treeNpc = new NotMovableNpc('tree', 450, 450, 500, 20);
+        this.pondNpc.isFlipped = false;
         this.camera_x = 0;
         this.statusBar = new LifeEnergyCharakterBar();
         this.farmMusic = new Audio('./assets/audio/farm-music.mp3');
@@ -342,7 +364,7 @@ class World {
             farmLevel.level_end_x = 6409;
         }
 
-        if(this.charakter.x > 340 && this.charakter.x < 380) {
+        if (this.charakter.x > 340 && this.charakter.x < 380) {
             this.charakter.isStreicheln = true;
             this.charakter.height = 200;
             this.charakter.y = 200;
@@ -358,7 +380,7 @@ class World {
         this.camera_x = 0;
         this.charakter.x = 100;
         this.bubbleStall = new SpeechBubble("Den Hühnerstall verlassen? {F} drücken!", this.charakter, performance.now());
-        this.chickenNpc = new NotMovableNpc();
+        this.chickenNpc = new NotMovableNpc('chicken');
         // this.statusBar = new LifeEnergyCharakterBar();
         // this.farmMusic = new Audio('./assets/audio/farm-music.mp3');
         // this.farmMusic.play();
