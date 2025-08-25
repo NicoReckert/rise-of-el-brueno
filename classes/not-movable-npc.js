@@ -36,13 +36,11 @@ class NotMovableNpc extends MovableObject {
         {
             idle:
                 [
+                    './assets/img/npcs/pond/idle/image_1.png',
                     './assets/img/npcs/pond/idle/image_2.png',
                     './assets/img/npcs/pond/idle/image_3.png',
                     './assets/img/npcs/pond/idle/image_4.png',
-                    './assets/img/npcs/pond/idle/image_5.png',
-                    './assets/img/npcs/pond/idle/image_6.png',
-                    './assets/img/npcs/pond/idle/image_7.png',
-                    './assets/img/npcs/pond/idle/image_8.png'
+                    './assets/img/npcs/pond/idle/image_5.png'
                 ]
         }
 

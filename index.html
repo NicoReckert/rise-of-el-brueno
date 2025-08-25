@@ -11,13 +11,7 @@
 </head>
 
 <body onload="init()">
-    <video autoplay loop muted playsinline preload="auto" class="background-video" id="background-video">
-        <source src="assets/videos/background-video3.mp4" type="video/mp4">
-        Dein Browser unterstützt kein HTML5-Video.
-    </video>
     <div class="all-content" id="all-content">
-
-        <!-- <h1>Rise of El Brünö</h1> -->
         <div class="canvas-button-box" id="canvas-button-box">
             <div class="move-button-box">
                 <button class="move-button" id="left-button">⇐</button>
@@ -48,37 +42,62 @@
         <audio id="coin-sound">
             <source src="./assets/audio/coin2.mp3" type="audio/mpeg">
         </audio>
-        <video id="portal-video" src="./assets/img/246171_medium.mp4" style="display: none;"></video>
     </div>
-    <div class="overlay-startscreen" id="overlay-startscreen">
-        <button class="button-play" onclick="startVideo()">startVid</button>
-        <h1 id="h1" class="before-animation">RISE OF <p></p> EL BRÜNÖ</h1>
+    <div class="overlay-startscreen opacity-none" id="overlay-startscreen">
+        <video muted playsinline preload="auto" class="background-video" id="background-video">
+            <source src="assets/videos/background-video3.mp4" type="video/mp4">
+            Dein Browser unterstützt kein HTML5-Video.
+        </video>
 
+        <!-- <button class="button-play" onclick="startVideo()">startVid</button> -->
+        <div class="title-dragon-box">
+            <div class="dragon-img-box">
+                <img class="dragon" src="./assets/img/Roter Drache mit scharfen Zähnen.png" alt="">
+            </div>
+            <h1 id="h1" class="before-animation">RISE OF<br>EL BRÜNÖ</h1>
+        </div>
         <div class="img-div-box">
             <div class="img-box">
-                <img class="kuecken-img" src="./assets/img/Kücken.png" alt="">
-                <img class="bruno-img" src="./assets/img/Brünö.png" alt="">
-                <img class="huhn-img" src="./assets/img/huhn.png" alt="">
+                <div class="earth-video-box">
+                    <video class="earth-video" src="./assets/videos/1393-147055573_small.mp4" autoplay loop muted
+                        playsinline preload="auto" disablepictureinpicture
+                        controlslist="nodownload nofullscreen noremoteplayback"></video>
+                </div>
+                <div class="img-box2">
+                    <img class="kuecken-img" src="./assets/img/Kücken.png" alt="">
+                    <img class="bruno-img" src="./assets/img/Brünö.png" alt="">
+                    <img class="huhn-img" src="./assets/img/huhn.png" alt="">
+                </div>
+                <div class="portal-video-box">
+                    <video class="portal-video" src="./assets/videos/27238-362769967_medium.mp4" autoplay loop muted
+                        playsinline preload="auto" disablepictureinpicture
+                        controlslist="nodownload nofullscreen noremoteplayback"></video>
+                </div>
             </div>
-            <!-- <div class="ground"></div> -->
-            <video class="earth-video" src="./assets/videos/1393-147055573_small.mp4" autoplay loop muted playsinline
-                preload="auto" disablepictureinpicture controlslist="nodownload nofullscreen noremoteplayback"></video>
-            <video class="portal-video" src="./assets/videos/27238-362769967_medium.mp4" autoplay loop muted playsinline
-                preload="auto" disablepictureinpicture controlslist="nodownload nofullscreen noremoteplayback"></video>
             <video class="thunder-video" src="./assets/videos/166697-835224043_medium.mp4" autoplay loop muted
                 playsinline preload="auto" disablepictureinpicture
                 controlslist="nodownload nofullscreen noremoteplayback"></video>
-            <img class="dragon" src="./assets/img/Roter Drache mit scharfen Zähnen.png" alt="">
             <img class="dragon2" src="./assets/img/black-dragon-8808269_1280.png" alt="">
             <img class="dragon2 red-glow" src="./assets/img/black-dragon-8808269_1280.png" alt="">
-
+            <div class="startscreen">
+                <button class="start-button" id="start-button">Start</button>
+                <button class="start-button" id="menu-button">Menü</button>
+            </div>
         </div>
-        <div class="startscreen">
-            <button class="start-button" id="start-button">Start</button>
-            <button class="start-button" id="menu-button">Menü</button>
-        </div>
-
     </div>
+    <div class="overlay-start-initialisation" id="overlay-start-initialisation">
+        <button class="welcome-button" id="welcome-button" onclick="startVideo(); playHoverSound()">Start Game</button>
+        <video muted autoplay loop playsinline preload="auto" class="start-initialisation-video">
+            <source src="assets/videos/214405_medium.mp4" type="video/mp4">
+            Dein Browser unterstützt kein HTML5-Video.
+        </video>
+        <video muted playsinline preload="auto" class="start-initialisation-video2 opacity-none" id="start-initialisation-video2">
+            <source src="assets/videos/Vorspann2.mp4" type="video/mp4">
+            Dein Browser unterstützt kein HTML5-Video.
+        </video>
+    </div>
+
+
 
     <script src="./classes/drawable-object.class.js"></script>
     <script src="./classes/movable-object.class.js"></script>

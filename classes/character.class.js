@@ -102,7 +102,7 @@ class Character extends MovableObject {
         super.loadImage('./assets/img/2_character_pepe/1_idle/idle/I-1.png');
         this.height = 300;
         this.width = 130;
-        this.x = 100;
+        this.x = 1000;
         this.y = 130;
         // this.startMainLoop()
         this.offset.top = 130;
@@ -297,24 +297,28 @@ class Character extends MovableObject {
         // 1. Bewegung (immer erlaubt, auch beim Springen)
 
         if (!this.lastUpdateTime) this.lastUpdateTime = timestamp;
-        const deltaTime = (timestamp - this.lastUpdateTime) / 1000; // in Sekunden
+        const deltaTime = (timestamp - this.lastUpdateTime) / 1000;
         this.lastUpdateTime = timestamp;
 
-        const movementSpeed = this.speedX * deltaTime * 60; // normalisiere auf 60FPS Verhalten
+        const movementSpeed = this.speedX * deltaTime * 60;
 
         if (this.isMovingLeft) {
             this.isFlipped = true;
-            if (this.x > 0) {
+            if (this.x > 440) {
                 this.x -= movementSpeed;
-                this.world.camera_x = this.x - 100;
+                this.world.camera_x += ((this.x - 500) - this.world.camera_x) * 0.1;
             }
         } else if (this.isMovingRight) {
             this.isFlipped = false;
             if (this.x < this.world.farmLevel.level_end_x) {
                 this.x += movementSpeed;
-                this.world.camera_x = this.x - 100;
+                this.world.camera_x += ((this.x - 100) - this.world.camera_x) * 0.1;
             }
         }
+
+        // Kamera auf Levelgrenzen begrenzen
+        this.world.camera_x = Math.max(0, Math.min(this.world.camera_x, this.world.farmLevel.level_end_x - 720));
+
 
         // 2. Animation (nach Priorität)
         if (this.isDead) {

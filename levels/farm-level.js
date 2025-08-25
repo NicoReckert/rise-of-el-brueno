@@ -56,7 +56,7 @@ const farmLevel = new Level2(
     ],
 
     [
-        new Town(townSrcFarm[0], 800, -42, 600, 450),
+        new Town(townSrcFarm[0], 800, -280, 900, 900), // 800, -42, 600, 450
         new Town(townSrcFarm[1], 1290, 84, 300, 400),
         new Town(townSrcFarm[2], 1600, 70, 400, 400),
     ],

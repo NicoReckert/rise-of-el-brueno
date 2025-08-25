@@ -84,11 +84,33 @@ class World {
         this.addToWorld(this.statusBar);
         this.ctx.save();
         this.ctx.translate(-this.renderCameraX, 0);
-        this.addToWorld(this.charakter);
+
         this.addToWorld(this.cowNpc);
         this.addToWorld(this.birdNpc);
-        this.addToWorld(this.pondNpc);
         this.addToWorld(this.treeNpc);
+        this.addToWorld(this.charakter);
+        this.addToWorld(this.pondNpc);
+        this.ctx.restore();
+
+
+        // this.ctx.fillStyle = 'rgba(10, 10, 40, 0.7)'; // dunkles Nachtblau
+// this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+
+let gradient = this.ctx.createRadialGradient(
+    this.charakter.x - this.camera_x + 50, 
+    this.charakter.y + 180, 
+    0, 
+    this.charakter.x - this.camera_x + 50, 
+    this.charakter.y + 180, 
+    200 // Radius des Lichtkegels
+);
+gradient.addColorStop(0, 'rgba(255,255,255,0.4)');    // Licht in der Mitte
+gradient.addColorStop(1, 'rgba(10,10,40,0.8)'); // Dunkel außen
+
+this.ctx.fillStyle = gradient;
+this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+
+
 
 
         if (this.charakter.x > 1550 && this.charakter.x < 1700) {
@@ -144,10 +166,10 @@ class World {
         this.charakter = new Character();
         this.cowNpc = new NotMovableNpc('cow', 200, 200, 1200, 255);
         this.birdNpc = new NotMovableNpc('bird', 80, 80, 1180, 73);
-        this.pondNpc = new NotMovableNpc('pond', 500, 600, 150, 120);
-        this.treeNpc = new NotMovableNpc('tree', 450, 450, 500, 20);
+        this.pondNpc = new NotMovableNpc('pond', 500, 600, -28, 80);//500, 600, 150, 120
+        this.treeNpc = new NotMovableNpc('tree', 450, 450, 500, 10);
         this.pondNpc.isFlipped = false;
-        this.camera_x = 0;
+        this.camera_x = 800;
         this.statusBar = new LifeEnergyCharakterBar();
         this.farmMusic = new Audio('./assets/audio/farm-music.mp3');
         this.farmMusic.play();
@@ -799,13 +821,16 @@ class World {
     }
 
     listenStartButton() {
-        document.getElementById('start-button').addEventListener('click', () => {
+        document.getElementById('welcome-button').addEventListener('click', () => {
             this.startGame();
             document.getElementById('overlay-startscreen').style.display = 'none';
+            document.getElementById('overlay-start-initialisation').style.display = 'none';
             document.getElementById('canvas').style.display = 'block';
             // document.getElementById('background-music').play();
             setFullscreen();
             // this.charakter.playSpeakSound();
+            titleMusic.pause();
+            titleMusic2.pause();
         });
     }
 
