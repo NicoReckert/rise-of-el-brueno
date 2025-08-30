@@ -17,7 +17,7 @@ const townSrc2 =
         './assets/img/Hühnerstall innen.png'
     ]
 
-const level2 = new Level2(
+const level2 = new Level(
     [
         new Cloud
     ],
@@ -78,7 +78,7 @@ const level2 = new Level2(
     ]
 );
 
-const scene2 = new Scene(
+const scene2 = new Level(
     [
         // new Ground(groundSrc2[6], -719),
         // new Ground(groundSrc2[6], 0),
