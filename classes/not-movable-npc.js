@@ -74,21 +74,67 @@ class NotMovableNpc extends MovableObject {
                 ]
         }
 
+    drohne =
+        {
+            idle:
+                [
+                    './assets/img/drohne/image_1.png',
+                    './assets/img/drohne/image_2.png',
+                    './assets/img/drohne/image_3.png',
+                    './assets/img/drohne/image_4.png',
+                    './assets/img/drohne/image_5.png',
+                    './assets/img/drohne/image_6.png',
+                    './assets/img/drohne/image_7.png',
+                    './assets/img/drohne/image_8.png',
+                    './assets/img/drohne/image_9.png',
+                    './assets/img/drohne/image_10.png'
+                ],
+
+                hypno:
+                [
+                    // './assets/img/drohne/hypno/image_1.png',
+                    // './assets/img/drohne/hypno/image_2.png',
+                    './assets/img/drohne/hypno/image_3.png',
+                    './assets/img/drohne/hypno/image_4.png',
+                    './assets/img/drohne/hypno/image_5.png',
+                    './assets/img/drohne/hypno/image_6.png',
+                    './assets/img/drohne/hypno/image_7.png',
+                    './assets/img/drohne/hypno/image_8.png',
+                    './assets/img/drohne/hypno/image_9.png',
+                    './assets/img/drohne/hypno/image_10.png',
+                    './assets/img/drohne/hypno/image_11.png',
+                    './assets/img/drohne/hypno/image_12.png',
+                    './assets/img/drohne/hypno/image_13.png',
+                    './assets/img/drohne/hypno/image_14.png',
+                    './assets/img/drohne/hypno/image_15.png',
+                    './assets/img/drohne/hypno/image_16.png',
+                    './assets/img/drohne/hypno/image_17.png',
+                    './assets/img/drohne/hypno/image_18.png',
+                    './assets/img/drohne/hypno/image_19.png',
+                    './assets/img/drohne/hypno/image_20.png'
+                ]
+        }
+
+
+
+
     allNpcs =
         {
             bird: this.bird,
             cow: this.cow,
             pond: this.pond,
             chicken: this.chicken,
-            tree: this.tree
+            tree: this.tree,
+            drohne: this.drohne
         }
 
     idleImages = [];
+    hypnoImages = [];
 
     constructor(currentNpc, height = 150, width = 150, x = 355, y = 220) {
         super();
         this.loadImgFromCurrentNpc(currentNpc);
-        super.loadImage('./assets/img/3_enemies_chicken/chicken_normal/3_sit/image_3.png');
+        super.loadImage(this.idleImages[0]);
         this.height = height; // 150
         this.width = width; // 150
         this.x = x; // 355
@@ -103,11 +149,12 @@ class NotMovableNpc extends MovableObject {
 
     loadImgFromCurrentNpc(currentNpc) {
         this.idleImages = this.allNpcs[currentNpc].idle;
+        this.hypnoImages = this.allNpcs[currentNpc].hypno;
     }
 
     updateState() {
         this.currentAnimation = 'idle';
-        this.frameInterval = 1000 / 4;
+        this.frameInterval = 1000 / 7;
     }
 
 
@@ -130,6 +177,7 @@ class NotMovableNpc extends MovableObject {
     getAnimationImages(state) {
         switch (state) {
             case 'idle': return this.idleImages;
+            case 'hypno': return this.hypnoImages;
         }
     }
 
