@@ -18,13 +18,19 @@ class World {
 
         this.lastStepCheck = 0;
         this.stepCheckDelay = 400;
+        this.charakter = new Character();
+        this.footStepSound = new Audio('./assets/audio/footstep-sound.mp3');
+        this.jumpSound = new Audio('./assets/audio/jump-sound2.mp3');
+        this.landingSound = new Audio('./assets/audio/landing-sound.mp3');
+        this.camera_x = 0;
 
     }
     scene = 2;
     inStall = false;
 
     startGame() {
-        this.farmSceneSetup();
+        this.farmLevelSetup = new FarmLevelSetup(this);
+        this.farmLevelController = new FarmLevelController(this.farmLevelSetup);
         this.setWorld();
         this.draw();
         // this.checkPressKey();
@@ -57,7 +63,8 @@ class World {
         // this.scene1(timestamp);
         switch (this.currentScene) {
             case 'farmScene':
-                this.farmScene(timestamp);
+                this.farmLevelController.update(timestamp);
+                // this.farmScene(timestamp);
                 break;
 
             case 'stallScene':
@@ -67,237 +74,6 @@ class World {
         requestAnimationFrame((timestamp) => {
             this.draw(timestamp);
         });
-    }
-
-    farmScene(timestamp) {
-        this.renderCameraX = Math.round(this.camera_x);
-        this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-
-
-        // let shakeX = 0;
-        // let shakeY = 0;
-        // if (this.shakeIntensity > 0) {
-        //     shakeX = Math.round((Math.random() - 0.5) * this.shakeIntensity);
-        //     shakeY = Math.round((Math.random() - 0.5) * this.shakeIntensity);
-        // this.shakeIntensity *= 0.993; // Dämpfung, Beben hört langsam auf
-        // }
-
-        // this.ctx.save();
-        // this.ctx.translate(shakeX, shakeY);
-
-
-
-        // this.updateCamera();
-        this.ctx.save();
-        this.ctx.translate(-this.renderCameraX, 0);
-        this.addObject(this.farmLevel.sky);
-        this.addObject(this.farmLevel.clouds);
-        this.addObject(this.farmLevel.grounds);
-        this.addObject(this.farmLevel.towns);
-        // this.ctx.translate(-this.camera_x, 0);
-        this.ctx.restore();
-        this.addToWorld(this.statusBar);
-        this.ctx.save();
-        this.ctx.translate(-this.renderCameraX, 0);
-
-        if (!this.isGameCharakterInHouse) {
-            this.addToWorld(this.cowNpc);
-            this.addToWorld(this.birdNpc);
-        }
-        this.addToWorld(this.treeNpc);
-        if (!this.isGameCharakterInHouse) {
-            this.addToWorld(this.charakter);
-        }
-        this.addToWorld(this.pondNpc);
-
-
-        // this.ctx.fillStyle = 'rgba(10, 10, 40, 0.7)'; // dunkles Nachtblau
-        // this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
-
-
-
-
-
-
-        if (this.charakter.x > 1550 && this.charakter.x < 1700) {
-            if (!this.bubbleFarm.startTime) {
-                this.bubbleFarm.start(); // Jetzt beginnt das Schreiben
-            }
-            this.bubbleFarm.update(performance.now());
-            this.bubbleFarm.draw(this.ctx);
-            if (!this.isNotificationPlay) {
-                this.notificationSound.currentTime = 0;
-                this.notificationSound.play();
-                this.isNotificationPlay = true;
-            }
-            // this.bubbleFarm = new SpeechBubble("In den Hühnerstall gehen? {F} drücken!", this.charakter, performance.now());
-            // this.drawSpeechBubble(this.ctx, "In den Hühnerstall gehen? {F} drücken!", this.charakter);
-        } else {
-            this.isNotificationPlay = false;
-            this.bubbleFarm.startTime = null;
-        }
-        // this.ctx.translate(-this.camera_x, 0);
-
-        if (this.charakter.x > 1000 && this.charakter.x < 1100) {
-            if (!this.bubbleFarm2.startTime) {
-                this.bubbleFarm2.start(); // Jetzt beginnt das Schreiben
-            }
-            this.bubbleFarm2.update(performance.now());
-            this.bubbleFarm2.draw(this.ctx);
-            if (!this.isNotificationPlay) {
-                this.notificationSound.currentTime = 0;
-                this.notificationSound.play();
-                this.isNotificationPlay = true;
-            }
-        } else {
-            this.isNotificationPlay = false;
-            this.bubbleFarm2.startTime = null;
-        }
-        this.ctx.restore();
-
-        this.ctx.save();
-        this.ctx.translate(-this.renderCameraX, 0);
-
-        if (this.isGameCharakterInHouse) {
-            if (!this.timeGoInHouse) {
-                this.timeGoInHouse = performance.now();
-            }
-
-            this.timeElapsed = performance.now() - this.timeGoInHouse;
-
-            if (this.timeElapsed >= 5000) {
-
-                if (this.darknessLevel < this.maxDarkness) {
-                    this.darknessLevel += 0.005; // Geschwindigkeit der Verdunkelung
-                }
-
-                if (this.volumeLevel > this.minVolumeLevel) {
-                    this.volumeLevel = Math.max(this.volumeLevel - 0.005, this.minVolumeLevel);
-                    this.farmMusic.volume = this.volumeLevel;
-                }
-
-                let gradient = this.ctx.createRadialGradient(
-                    this.charakter.x - this.camera_x + 50,
-                    this.charakter.y + 180,
-                    0,
-                    this.charakter.x - this.camera_x + 50,
-                    this.charakter.y + 180,
-                    200 // Radius des Lichtkegels
-                );
-                // gradient.addColorStop(0, 'rgba(255,255,255,0.4)');    // Licht in der Mitte
-                gradient.addColorStop(1, `rgba(10,10,40,${this.darknessLevel})`); // Dunkel außen
-
-                this.ctx.fillStyle = gradient;
-                this.ctx.fillRect(0, 0, this.canvas.width * 9, this.canvas.height);
-            }
-
-            if (this.timeElapsed >= 8000 && !this.isYawning) {
-                this.isYawning = true;
-                this.farmMusic.pause();
-                this.eveningSound.play();
-                this.yawningSound.play();
-            }
-
-            if (this.timeElapsed >= 12000 && !this.isYawning) {
-                this.isYawning = true;
-                this.farmMusic.pause();
-                this.eveningSound.play();
-                this.yawningSound.play();
-            }
-
-            if (this.timeElapsed >= 15000 && !this.isSnore) {
-                this.isSnore = true;
-                this.snoringSound.play();
-                this.camera_x = this.drohneNpc.x;
-            }
-
-            this.addToWorld(this.drohneNpc);
-            //     this.nightMusic.play();
-            //     this.drohneSound.play();
-        }
-
-        this.ctx.restore();
-
-
-        this.checkPressKey();
-        // this.checkCollisions();
-        this.charakter.updateState(timestamp);
-        this.charakter.updateAnimation(timestamp);
-        if (this.charakter.isJumping) {
-            this.charakter.applyGravity(timestamp);
-        }
-        this.stepSoundCharakter(timestamp);
-        this.landingSoundCharakter();
-        this.cowNpc.updateState();
-        this.cowNpc.updateAnimation(timestamp);
-        this.birdNpc.updateState();
-        this.birdNpc.updateAnimation(timestamp);
-        this.pondNpc.updateState();
-        this.pondNpc.updateAnimation(timestamp);
-        this.treeNpc.updateState();
-        this.treeNpc.updateAnimation(timestamp);
-        this.drohneNpc.updateState();
-        this.drohneNpc.updateAnimation(timestamp);
-
-
-
-
-        if (this.keyboard.F && this.charakter.x > 1550 && this.charakter.x < 1700) {
-            this.inStallSetup();
-            this.currentScene = 'stallScene';
-            this.keyboard.F = false;
-            farmLevel.level_end_x = 500;
-        }
-
-        if (this.keyboard.F && this.charakter.x > 1000 && this.charakter.x < 1100) {
-            this.isGameCharakterInHouse = true;
-            this.keyboard.F = false;
-            this.isNotificationPlay = false;
-            this.bubbleFarm2.startTime = null;
-        }
-        // console.log(this.camera_x);
-    }
-
-    farmSceneSetup() {
-        this.farmLevel = farmLevel;
-        this.charakter = new Character();
-        this.cowNpc = new NotMovableNpc('cow', 200, 200, 1200, 255);
-        this.birdNpc = new NotMovableNpc('bird', 80, 80, 1180, 73);
-        this.pondNpc = new NotMovableNpc('pond', 500, 600, -28, 80);//500, 600, 150, 120
-        this.treeNpc = new NotMovableNpc('tree', 450, 450, 500, 10);
-        this.drohneNpc = new NotMovableNpc('drohne', 300, 300, 1500, -50);
-        this.pondNpc.isFlipped = false;
-        this.camera_x = 800;
-        this.statusBar = new LifeEnergyCharakterBar();
-        this.farmMusic = new Audio('./assets/audio/farm-music.mp3');
-        this.farmMusic.play();
-        this.farmMusic.loop = true;
-        this.farmMusic.volume = 0.6;
-        this.footStepSound = new Audio('./assets/audio/footstep-sound.mp3');
-        this.jumpSound = new Audio('./assets/audio/jump-sound2.mp3');
-        this.landingSound = new Audio('./assets/audio/landing-sound.mp3');
-        this.bubbleFarm = new SpeechBubble("In den Hühnerstall gehen? {F} drücken!", this.charakter, performance.now());
-        this.bubbleFarm2 = new SpeechBubble("Ins Haus gehen? {F} drücken!", this.charakter, performance.now());
-        this.notificationSound = new Audio('./assets/audio/notification-sound.mp3');
-        this.notificationSound.volume = 0.5;
-        this.isNotificationPlay = false;
-        this.isGameCharakterInHouse = false;
-        this.nightMusic = new Audio('./assets/audio/night-music.mp3');
-        this.drohneSound = new Audio('./assets/audio/drohne-sound.mp3');
-        this.drohneHypnoSound = new Audio('./assets/audio/drohne-sound2.mp3');
-        // this.shakeIntensity = 2;
-        this.darknessLevel = 0;
-        this.maxDarkness = 0.9;
-        this.timeGoInHouse;
-        this.timeElapsed;
-        this.eveningSound = new Audio('./assets/audio/evening-sound.mp3');
-        this.yawningSound = new Audio('./assets/audio/yawning-sound.mp3');
-        this.snoringSound = new Audio('./assets/audio/snoring-sound.mp3');
-        this.volumeLevel = 0.6;
-        this.minVolumeLevel = 0;
-        this.isYawning = false;
-        this.isSnore = false;
-
     }
 
     scene1(timestamp) {
@@ -583,7 +359,12 @@ class World {
 
 
     addToWorld(object) {
-        if (object.isFlipped || object.isNpcFlipped) {
+        if (!object || !object.img) return;
+
+        const flipped = object.isFlipped ?? false;
+        const flippedNPC = object.isNpcFlipped ?? false;
+
+        if (flipped || flippedNPC) {
             this.ctx.save();
             this.ctx.scale(-1, 1);
             const drawX = Math.round(-object.x - object.width);
@@ -595,7 +376,7 @@ class World {
             const drawX = Math.round(object.x);
             const drawY = Math.round(object.y);
             this.ctx.drawImage(object.img, drawX, drawY, object.width, object.height);
-            if (!object.isGameCharakter == true) return;
+            // if (!object.isGameCharakter == true) return;
         }
     }
 
@@ -1072,9 +853,8 @@ class World {
         if (timestamp - this.lastStepCheck < this.stepCheckDelay) return;
         this.lastStepCheck = timestamp;
         if ((this.charakter.isMovingLeft || this.charakter.isMovingRight) && !this.charakter.isJumping && !this.charakter.isFlying) {
-            this.footStepSound.currentTime = 0;
             this.footStepSound.play();
-        }
+            }
     }
 
     landingSoundCharakter() {

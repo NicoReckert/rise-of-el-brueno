@@ -310,14 +310,14 @@ class Character extends MovableObject {
             }
         } else if (this.isMovingRight) {
             this.isFlipped = false;
-            if (this.x < this.world.farmLevel.level_end_x) {
+            if (this.x < this.world.farmLevelSetup.farmLevel.level_end_x) {
                 this.x += movementSpeed;
                 this.world.camera_x += ((this.x - 100) - this.world.camera_x) * 0.1;
             }
         }
 
         // Kamera auf Levelgrenzen begrenzen
-        this.world.camera_x = Math.max(0, Math.min(this.world.camera_x, this.world.farmLevel.level_end_x - 720));
+        this.world.camera_x = Math.max(0, Math.min(this.world.camera_x, this.world.farmLevelSetup.farmLevel.level_end_x - 720));
 
 
         // 2. Animation (nach Priorität)
