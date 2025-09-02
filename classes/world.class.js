@@ -23,7 +23,7 @@ class World {
         this.jumpSound = new Audio('./assets/audio/jump-sound2.mp3');
         this.landingSound = new Audio('./assets/audio/landing-sound.mp3');
         this.camera_x = 0;
-
+        
     }
     scene = 2;
     inStall = false;
@@ -450,6 +450,9 @@ class World {
             this.chickenInBasket.isIdle = false;
             this.chickenInBasket.attackStartX = this.chickenInBasket.x;
         }
+        if (this.keyboard.T) {
+            this.farmLevelController.taskWindow.toggle();
+        }
     }
 
     setWorld() {
@@ -724,7 +727,7 @@ class World {
             document.getElementById('overlay-start-initialisation').style.display = 'none';
             document.getElementById('canvas').style.display = 'block';
             // document.getElementById('background-music').play();
-            setFullscreen();
+            // setFullscreen();
             // this.charakter.playSpeakSound();
             titleMusic.pause();
             titleMusic2.pause();
@@ -854,7 +857,7 @@ class World {
         this.lastStepCheck = timestamp;
         if ((this.charakter.isMovingLeft || this.charakter.isMovingRight) && !this.charakter.isJumping && !this.charakter.isFlying) {
             this.footStepSound.play();
-            }
+        }
     }
 
     landingSoundCharakter() {

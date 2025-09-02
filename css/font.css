@@ -45,3 +45,19 @@
     font-style: normal;
     font-weight: 100 900;
 }
+
+@font-face {
+    font-display: swap;
+    font-family: 'Nunito';
+    src: url('../assets/fonts/Nunito.ttf') format('truetype');
+    font-style: normal;
+    font-weight: 100 900;
+}
+
+@font-face {
+    font-display: swap;
+    font-family: 'Nunito-Italic';
+    src: url('../assets/fonts/Nunito-Italic.ttf') format('truetype');
+    font-style: normal;
+    font-weight: 100 900;
+}

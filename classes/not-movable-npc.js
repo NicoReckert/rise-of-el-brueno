@@ -5,8 +5,18 @@ class NotMovableNpc extends MovableObject {
             idle:
                 [
                     './assets/img/npcs/bird/idle/image_1.png',
+                    './assets/img/npcs/bird/idle/image_1.png',
+                    './assets/img/npcs/bird/idle/image_1.png',
+                    './assets/img/npcs/bird/idle/image_1.png',
+                    './assets/img/npcs/bird/idle/image_1.png',
+                    './assets/img/npcs/bird/idle/image_1.png',
                     './assets/img/npcs/bird/idle/image_2.png',
                     './assets/img/npcs/bird/idle/image_3.png',
+                    './assets/img/npcs/bird/idle/image_4.png',
+                    './assets/img/npcs/bird/idle/image_4.png',
+                    './assets/img/npcs/bird/idle/image_4.png',
+                    './assets/img/npcs/bird/idle/image_4.png',
+                    './assets/img/npcs/bird/idle/image_4.png',
                     './assets/img/npcs/bird/idle/image_4.png',
                     './assets/img/npcs/bird/idle/image_5.png',
                     './assets/img/npcs/bird/idle/image_6.png',
@@ -29,6 +39,14 @@ class NotMovableNpc extends MovableObject {
                     './assets/img/npcs/cow/idle/image_8.png',
                     './assets/img/npcs/cow/idle/image_9.png',
                     './assets/img/npcs/cow/idle/image_10.png'
+                ],
+                walk:
+                [
+                    './assets/img/npcs/cow/walk2/image_6.png',
+                    './assets/img/npcs/cow/walk2/image_5.png',
+                    './assets/img/npcs/cow/walk2/image_4.png',
+                    './assets/img/npcs/cow/walk2/image_3.png',
+                    './assets/img/npcs/cow/walk2/image_2.png'
                 ]
         }
 
@@ -71,6 +89,12 @@ class NotMovableNpc extends MovableObject {
                     './assets/img/3_enemies_chicken/chicken_normal/4_sit/image_8.png',
                     './assets/img/3_enemies_chicken/chicken_normal/4_sit/image_9.png',
                     './assets/img/3_enemies_chicken/chicken_normal/4_sit/image_10.png'
+                ],
+            walk:
+                [
+                    './assets/img/3_enemies_chicken/chicken_normal/5_hypno/1_w.png',
+                    './assets/img/3_enemies_chicken/chicken_normal/5_hypno/2_w.png',
+                    './assets/img/3_enemies_chicken/chicken_normal/5_hypno/3_w.png'
                 ]
         }
 
@@ -90,7 +114,7 @@ class NotMovableNpc extends MovableObject {
                     './assets/img/drohne/image_10.png'
                 ],
 
-                hypno:
+            hypno:
                 [
                     // './assets/img/drohne/hypno/image_1.png',
                     // './assets/img/drohne/hypno/image_2.png',
@@ -115,6 +139,47 @@ class NotMovableNpc extends MovableObject {
                 ]
         }
 
+    cowHypno =
+        {
+            idle:
+                [
+                    './assets/img/npcs/cow/idle/image_1.png',
+                    './assets/img/npcs/cow/idle/image_2.png',
+                    './assets/img/npcs/cow/idle/image_3.png',
+                    './assets/img/npcs/cow/idle/image_4.png',
+                    './assets/img/npcs/cow/idle/image_5.png',
+                    './assets/img/npcs/cow/idle/image_6.png',
+                    './assets/img/npcs/cow/idle/image_7.png',
+                    './assets/img/npcs/cow/idle/image_8.png',
+                    './assets/img/npcs/cow/idle/image_9.png',
+                    './assets/img/npcs/cow/idle/image_10.png'
+                ],
+
+            walk:
+                [
+                    './assets/img/npcs/cow/hypno2/image_6.png',
+                    './assets/img/npcs/cow/hypno2/image_5.png',
+                    './assets/img/npcs/cow/hypno2/image_4.png',
+                    './assets/img/npcs/cow/hypno2/image_3.png',
+                    './assets/img/npcs/cow/hypno2/image_2.png'
+                ]
+        }
+
+    chickHypno =
+        {
+            idle:
+                [
+                    './assets/img/3_enemies_chicken/chicken_small/3_walk_hypno/1_w.png'
+                ],
+
+            walk:
+                [
+                    './assets/img/3_enemies_chicken/chicken_small/3_walk_hypno/1_w.png',
+                    './assets/img/3_enemies_chicken/chicken_small/3_walk_hypno/2_w.png',
+                    './assets/img/3_enemies_chicken/chicken_small/3_walk_hypno/3_w.png'
+                ]
+        }
+
 
 
 
@@ -125,11 +190,14 @@ class NotMovableNpc extends MovableObject {
             pond: this.pond,
             chicken: this.chicken,
             tree: this.tree,
-            drohne: this.drohne
+            drohne: this.drohne,
+            cowHypno: this.cowHypno,
+            chickHypno: this.chickHypno
         }
 
     idleImages = [];
     hypnoImages = [];
+    walkImages = [];
 
     constructor(currentNpc, height = 150, width = 150, x = 355, y = 220) {
         super();
@@ -141,22 +209,35 @@ class NotMovableNpc extends MovableObject {
         this.y = y; // 220
         this.lastFrameTime = 0;
         this.currentAnimation = 'idle';
-        this.frameInterval = 1000 / 4;
+        this.frameInterval = 1000 / 5;
         this.frameIndex = 0;
         this.isFlipped = true;
         this.isGameCharakter = true;
     }
 
     loadImgFromCurrentNpc(currentNpc) {
-        this.idleImages = this.allNpcs[currentNpc].idle;
-        this.hypnoImages = this.allNpcs[currentNpc].hypno;
+        this.idleImages = this.allNpcs[currentNpc].idle || [];
+        this.hypnoImages = this.allNpcs[currentNpc].hypno || [];
+        this.walkImages = this.allNpcs[currentNpc].walk || [];
     }
 
-    updateState() {
-        this.currentAnimation = 'idle';
-        this.frameInterval = 1000 / 7;
-    }
+    updateState(state, frameInterval = 1000 / 5) {
+        switch (state) {
+            case 'idle':
+                this.currentAnimation = 'idle';
+                this.frameInterval = frameInterval;
+                break;
+            case 'walk':
+                this.currentAnimation = 'walk';
+                this.frameInterval = frameInterval;
+                break;
+            case 'hypno':
+                this.currentAnimation = 'hypno';
+                this.frameInterval = frameInterval;
+                break;
+        }
 
+    }
 
     updateAnimation(timestamp) {
         if (!this.lastFrameTime) this.lastFrameTime = timestamp;
@@ -178,6 +259,7 @@ class NotMovableNpc extends MovableObject {
         switch (state) {
             case 'idle': return this.idleImages;
             case 'hypno': return this.hypnoImages;
+            case 'walk': return this.walkImages;
         }
     }
 

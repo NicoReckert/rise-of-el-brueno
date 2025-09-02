@@ -57,14 +57,81 @@ class Character extends MovableObject {
     ]
 
     streichelImages = [
-        'assets/img/2_character_pepe/6_streicheln/image_1.png',
-        'assets/img/2_character_pepe/6_streicheln/image_2.png',
-        'assets/img/2_character_pepe/6_streicheln/image_3.png',
-        'assets/img/2_character_pepe/6_streicheln/image_4.png',
-        'assets/img/2_character_pepe/6_streicheln/image_5.png',
-        'assets/img/2_character_pepe/6_streicheln/image_6.png',
-        'assets/img/2_character_pepe/6_streicheln/image_7.png',
-        'assets/img/2_character_pepe/6_streicheln/image_8.png',
+        './assets/img/2_character_pepe/6_streicheln/image_1.png',
+        './assets/img/2_character_pepe/6_streicheln/image_2.png',
+        './assets/img/2_character_pepe/6_streicheln/image_3.png',
+        './assets/img/2_character_pepe/6_streicheln/image_4.png',
+        './assets/img/2_character_pepe/6_streicheln/image_5.png',
+        './assets/img/2_character_pepe/6_streicheln/image_6.png',
+        './assets/img/2_character_pepe/6_streicheln/image_7.png',
+        './assets/img/2_character_pepe/6_streicheln/image_8.png'
+    ]
+
+    kneelDownAndCryImages = [
+        // './assets/img/2_character_pepe/7_kneel-down-and-cry/image_1.png',
+        './assets/img/2_character_pepe/7_kneel-down-and-cry/image_2.png',
+        './assets/img/2_character_pepe/7_kneel-down-and-cry/image_3.png',
+        './assets/img/2_character_pepe/7_kneel-down-and-cry/image_4.png',
+        './assets/img/2_character_pepe/7_kneel-down-and-cry/image_5.png',
+        './assets/img/2_character_pepe/7_kneel-down-and-cry/image_6.png',
+        // './assets/img/2_character_pepe/7_kneel-down-and-cry/image_7.png',
+        './assets/img/2_character_pepe/7_kneel-down-and-cry/image_8.png',
+        './assets/img/2_character_pepe/7_kneel-down-and-cry/image_9.png',
+        './assets/img/2_character_pepe/7_kneel-down-and-cry/image_10.png'
+    ]
+
+    cryImages = [
+        // './assets/img/2_character_pepe/7_kneel-down-and-cry/image_5.png',
+        // './assets/img/2_character_pepe/7_kneel-down-and-cry/image_6.png',
+        // './assets/img/2_character_pepe/7_kneel-down-and-cry/image_7.png',
+        './assets/img/2_character_pepe/7_kneel-down-and-cry/image_8.png',
+        './assets/img/2_character_pepe/7_kneel-down-and-cry/image_9.png',
+        './assets/img/2_character_pepe/7_kneel-down-and-cry/image_10.png'
+    ]
+
+    standUpAndLookDeterminedImages = [
+        './assets/img/2_character_pepe/8_stand_up_look_determined/image_1.png',
+        './assets/img/2_character_pepe/8_stand_up_look_determined/image_2.png',
+        './assets/img/2_character_pepe/8_stand_up_look_determined/image_3.png',
+        './assets/img/2_character_pepe/8_stand_up_look_determined/image_4.png',
+        './assets/img/2_character_pepe/8_stand_up_look_determined/image_5.png',
+        './assets/img/2_character_pepe/8_stand_up_look_determined/image_6.png',
+        './assets/img/2_character_pepe/8_stand_up_look_determined/image_7.png',
+        './assets/img/2_character_pepe/8_stand_up_look_determined/image_8.png',
+        './assets/img/2_character_pepe/8_stand_up_look_determined/image_9.png',
+        './assets/img/2_character_pepe/8_stand_up_look_determined/image_10.png'
+    ]
+
+    lookDeterminedImages = [
+        './assets/img/2_character_pepe/8_stand_up_look_determined/image_8.png',
+        './assets/img/2_character_pepe/8_stand_up_look_determined/image_9.png',
+        './assets/img/2_character_pepe/8_stand_up_look_determined/image_10.png'
+    ]
+
+    lookDeterminedStandUpImages = [
+        './assets/img/2_character_pepe/10/image_1.png',
+        './assets/img/2_character_pepe/10/image_2.png',
+        './assets/img/2_character_pepe/10/image_3.png',
+        './assets/img/2_character_pepe/10/image_4.png',
+        './assets/img/2_character_pepe/10/image_5.png',
+        './assets/img/2_character_pepe/10/image_6.png',
+        './assets/img/2_character_pepe/10/image_7.png',
+        './assets/img/2_character_pepe/10/image_8.png',
+        './assets/img/2_character_pepe/10/image_9.png',
+        './assets/img/2_character_pepe/10/image_10.png',
+        './assets/img/2_character_pepe/10/image_11.png',
+        './assets/img/2_character_pepe/10/image_12.png',
+        './assets/img/2_character_pepe/10/image_13.png',
+        './assets/img/2_character_pepe/10/image_14.png',
+        './assets/img/2_character_pepe/10/image_15.png'
+    ]
+
+    strongDeterminedImages = [
+        // './assets/img/2_character_pepe/10/image_11.png',
+        './assets/img/2_character_pepe/10/image_12.png',
+        './assets/img/2_character_pepe/10/image_13.png',
+        './assets/img/2_character_pepe/10/image_14.png',
+        './assets/img/2_character_pepe/10/image_15.png'
     ]
 
 
@@ -100,10 +167,10 @@ class Character extends MovableObject {
     constructor() {
         super();
         super.loadImage('./assets/img/2_character_pepe/1_idle/idle/I-1.png');
-        this.height = 300;
-        this.width = 130;
+        this.height = 300; // 183 für voidless.dev sprite - 300 * 0.61
+        this.width = 130; // 158 für voidless.dev sprite - 130 * 1.216
         this.x = 1000;
-        this.y = 130;
+        this.y = 130; // 247 für voidless.dev sprite - 130 * 1.9
         // this.startMainLoop()
         this.offset.top = 130;
         this.offset.left = 20;
@@ -112,6 +179,9 @@ class Character extends MovableObject {
         this.speedX = 10;
         this.isJumping = false;
         this.isLanding = false;
+        this.isKneelAndCry = false;
+        this.isStandUpAndLookDetermined = false;
+        this.isLookDeterminedAndStandUp = false;
 
         this.lastFrameTime = 0;        // Timestamp des letzten Framewechsels
         this.currentAnimation = 'stand';
@@ -322,21 +392,58 @@ class Character extends MovableObject {
 
         // 2. Animation (nach Priorität)
         if (this.isDead) {
-            this.currentAnimation = 'dead';
+            this.setAnimation('dead')
+            // this.currentAnimation = 'dead';
             this.frameInterval = 1000 / 6;
         } else if (this.isJumping) {
+            // this.setAnimation('jump')
             this.currentAnimation = 'jump';
             this.frameInterval = 1000 / 10;
         } else if (this.isStreicheln) {
-            this.currentAnimation = 'streicheln';
+            this.setAnimation('streicheln')
+            // this.currentAnimation = 'streicheln';
             this.frameInterval = 1000 / 4;
+        } else if (this.isKneelAndCry) {
+            if (this.currentAnimation !== 'cry') {
+                this.setAnimation('kneel-and-cry');
+                this.frameInterval = 1000 / 5;
+                // this.setPropertiesVoidless();
+            }
+        } else if (this.isStandUpAndLookDetermined) {
+            if (this.currentAnimation !== 'look-determined') {
+                this.setAnimation('stand-up-and-look-determined');
+                this.frameInterval = 1000 / 6;
+                // this.setPropertiesVoidless();
+            }
+        } else if (this.isLookDeterminedAndStandUp) {
+            if (this.currentAnimation !== 'strong-determined') {
+                this.setAnimation('look-determined-and-stand-up');
+                this.frameInterval = 1000 / 6;
+                // this.setPropertiesVoidless();
+            }
         } else if (this.isMovingLeft || this.isMovingRight) {
-            this.currentAnimation = 'walk';
+            this.setAnimation('walk');
+            // this.currentAnimation = 'walk';
             this.frameInterval = 1000 / 8;
         } else {
-            this.currentAnimation = 'stand';
+            this.setAnimation('stand');
+            // this.currentAnimation = 'stand';
             this.frameInterval = 1000 / 2.5;
+            // this.setPropertiesNormal();
         }
+
+    }
+
+    setPropertiesNormal() {
+        this.width = 130;
+        this.height = 300;
+        this.y = 130;
+    }
+
+    setPropertiesVoidless() {
+        this.width = 158;
+        this.height = 183;
+        this.y = 247;
     }
 
 
@@ -387,7 +494,6 @@ class Character extends MovableObject {
 
     updateAnimation(timestamp) {
         if (!this.lastFrameTime) this.lastFrameTime = timestamp;
-
         const deltaTime = timestamp - this.lastFrameTime;
 
         if (deltaTime > this.frameInterval) {
@@ -395,8 +501,38 @@ class Character extends MovableObject {
 
             if (images && images.length > 0) {
                 this.img.src = images[this.frameIndex % images.length];
+                if (this.deferSizeUpdate) {
+                    if (['kneel-and-cry', 'stand-up-and-look-determined', 'cry', 'look-determined', 'look-determined-and-stand-up', 'strong-determined'].includes(this.currentAnimation)) {
+                        this.width = 158;
+                        this.height = 183;
+                        this.y = 247;
+                    } else {
+                        this.width = 130;
+                        this.height = 300;
+                        this.y = 130;
+                    }
+                    this.deferSizeUpdate = false;
+                }
                 this.frameIndex++;
-                this.lastFrameTime = timestamp;
+            }
+            this.lastFrameTime = timestamp;
+            if (this.frameIndex >= images.length && (this.currentAnimation == 'kneel-and-cry' || this.currentAnimation == 'stand-up-and-look-determined' || this.currentAnimation == 'look-determined-and-stand-up')) {
+                this.animationFinished = true;
+                switch (this.currentAnimation) {
+                    case 'stand-up-and-look-determined':
+                        this.setAnimation('look-determined');
+                        this.frameInterval = 1000 / 3;
+                        break;
+                    case 'kneel-and-cry':
+                        this.setAnimation('cry');
+                        // this.frameInterval = 1000 / 3;
+                        break;
+                    case 'look-determined-and-stand-up':
+                        this.setAnimation('strong-determined');
+                        this.frameInterval = 1000 / 4;
+                        break;
+                }
+
             }
         }
     }
@@ -420,11 +556,28 @@ class Character extends MovableObject {
             case 'dead': return this.deadImages;
             case 'hurt': return this.hurtImages;
             case 'streicheln': return this.streichelImages;
+            case 'kneel-and-cry': return this.kneelDownAndCryImages;
+            case 'cry': return this.cryImages;
+            case 'stand-up-and-look-determined': return this.standUpAndLookDeterminedImages;
+            case 'look-determined': return this.lookDeterminedImages;
+            case 'look-determined-and-stand-up': return this.lookDeterminedStandUpImages;
+            case 'strong-determined': return this.strongDeterminedImages;
             case 'stand':
             default: return this.standImages;
         }
     }
+
+    setAnimation(newAnimation) {
+        if (this.currentAnimation !== newAnimation) {
+            this.currentAnimation = newAnimation;
+            this.frameIndex = 0;          // Frame-Index zurücksetzen
+            this.animationFinished = false; // Flag zurücksetzen
+            this.lastFrameTime = null;     // Timer zurücksetzen
+            this.deferSizeUpdate = true;
+        }
+    }
 }
+
 
 // this.extractFramesCentered('./assets/img/Walk.png', 128, 128, 8).then((frames) => {
 //             this.walkImages = frames;

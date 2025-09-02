@@ -694,11 +694,11 @@ canvas {
     gap: 6px;
   }
 
-  /* .move-button-box {
+  .move-button-box {
     display: flex;
     gap: 6px;
     flex-direction: column;
-  } */
+  }
 
   .move-button {
     width: 42px;

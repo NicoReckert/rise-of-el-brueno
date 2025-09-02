@@ -13,33 +13,34 @@ class FarmLevelController {
         this.footStepSound = this.setup.world.footStepSound;
         this.jumpSound = this.setup.world.jumpSound;
         this.landingSound = this.setup.world.landingSound;
+        this.tasks = [
+            "Aufgabe 1 erledigen",
+            "Aufgabe 2 prüfen",
+            "Aufgabe 3 starten"
+        ];
+        this.taskWindow = new TaskWindow(this.tasks);
     }
 
-    // let shakeX = 0;
-    // let shakeY = 0;
-    // if (this.shakeIntensity > 0) {
-    //     shakeX = Math.round((Math.random() - 0.5) * this.shakeIntensity);
-    //     shakeY = Math.round((Math.random() - 0.5) * this.shakeIntensity);
-    // this.shakeIntensity *= 0.993; // Dämpfung, Beben hört langsam auf
-    // }
-
-    // this.ctx.save();
-    // this.ctx.translate(shakeX, shakeY);
-
-
-
-    // this.updateCamera();
     update(timestamp) {
         this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
         this.updateCamera();
+        this.handleEarthquake();
         this.renderBackgrounds();
         this.renderStatusBar();
         this.renderNPCsAndCharacter();
+
+        this.taskWindow.update();
+        this.taskWindow.draw(this.ctx);
+
         this.handleSpeechBubble();
         this.updateHouseEffects();
         this.updateCharacter(timestamp);
         this.updateNPCs(timestamp);
         this.handleInteractions();
+        this.drawDroneAndMoveCamera();
+        this.playDroneHypnoSound();
+        this.droneGo();
+        this.ctx.restore();
     }
 
     updateCamera() {
@@ -59,13 +60,16 @@ class FarmLevelController {
     }
 
     renderStatusBar() {
+        if (this.setup.isGameCharakterInHouse) {
+            return;
+        }
         this.addToWorld(this.setup.statusBar);
     }
 
     renderNPCsAndCharacter() {
         this.ctx.save();
         this.ctx.translate(-this.renderCameraX, 0);
-        if (!this.setup.isGameCharakterInHouse) {
+        if (!this.setup.isGameCharakterInHouse && !this.setup.isGameCharakterOutHouse) {
             this.addToWorld(this.setup.npcs.cow);
             this.addToWorld(this.setup.npcs.bird);
         }
@@ -78,6 +82,9 @@ class FarmLevelController {
     }
 
     handleSpeechBubble() {
+        if (this.setup.isGameCharakterInHouse || this.setup.isGameCharakterOutHouse) {
+            return;
+        }
         this.ctx.save();
         this.ctx.translate(-this.renderCameraX, 0);
         if (this.charakter.x > 1550 && this.charakter.x < 1700) {
@@ -116,6 +123,9 @@ class FarmLevelController {
     }
 
     updateCharacter(timestamp) {
+        if (this.setup.isGameCharakterInHouse) {
+            return;
+        }
         this.checkPressKey();
         this.charakter.updateState(timestamp);
         this.charakter.updateAnimation(timestamp);
@@ -125,7 +135,7 @@ class FarmLevelController {
     }
 
     updateNPCs(timestamp) {
-        const npcs = ['cow', 'bird', 'pond', 'tree', 'drohne'];
+        const npcs = ['cow', 'bird', 'pond', 'tree', 'drohne', 'chicken', 'cowHypno', 'chickHypno'];
         npcs.forEach(name => {
             this.setup.npcs[name].updateState(timestamp);
             this.setup.npcs[name].updateAnimation(timestamp);
@@ -157,6 +167,12 @@ class FarmLevelController {
             }
             this.setup.timeElapsed = performance.now() - this.setup.timeGoInHouse;
         }
+        if (this.setup.isGameCharakterOutHouse) {
+            if (!this.setup.timeGoOutHouse) {
+                this.setup.timeGoOutHouse = performance.now();
+            }
+            this.setup.timeElapsed = performance.now() - this.setup.timeGoOutHouse;
+        }
         this.adjustDarknessAndVolume();
         this.playYawningAndSnoreSounds();
         this.ctx.restore();
@@ -165,8 +181,14 @@ class FarmLevelController {
     adjustDarknessAndVolume() {
         if (this.setup.timeElapsed >= 5000) {
 
-            if (this.setup.darknessLevel < this.setup.maxDarkness) {
-                this.setup.darknessLevel += 0.005; // Geschwindigkeit der Verdunkelung
+            if (this.setup.isNight) {
+                if (this.setup.darknessLevel < this.setup.maxDarkness) {
+                    this.setup.darknessLevel += 0.005; // Geschwindigkeit der Verdunkelung
+                }
+            } else {
+                if (this.setup.darknessLevel > 0) {
+                    this.setup.darknessLevel -= 0.005;
+                }
             }
 
             if (this.setup.volumeLevel > this.setup.minVolumeLevel) {
@@ -186,7 +208,7 @@ class FarmLevelController {
             gradient.addColorStop(1, `rgba(10,10,40,${this.setup.darknessLevel})`); // Dunkel außen
 
             this.ctx.fillStyle = gradient;
-            this.ctx.fillRect(0, 0, this.canvas.width * 9, this.canvas.height);
+            this.ctx.fillRect(0, this.canvas.height, this.canvas.width * 9, -this.canvas.height * 2);
         }
     }
 
@@ -211,8 +233,251 @@ class FarmLevelController {
             this.camera_x = this.setup.npcs.drohne.x;
         }
 
-        this.addToWorld(this.setup.npcs.drohne);
+
         //     this.nightMusic.play();
         //     this.drohneSound.play();
+    }
+
+    drawDroneAndMoveCamera() {
+        if (this.setup.timeElapsed >= 27000) {
+            if (!this.setup.isGameCharakterOutHouse) {
+                this.ctx.save();
+                this.ctx.translate(-this.renderCameraX, 0);
+                this.addToWorld(this.setup.npcs.drohne);
+                this.ctx.restore();
+            }
+            if (!this.setup.droneIsGo) {
+                if (this.setup.world.camera_x <= this.setup.npcs.drohne.x - 300) {
+                    this.setup.world.camera_x += 10;
+                } else {
+                    if (this.setup.npcs.drohne.x >= 1500) {
+                        this.setup.npcs.drohne.x -= 5;
+                        this.setup.world.camera_x += ((this.setup.npcs.drohne.x - 300) - this.setup.world.camera_x) * 0.1;
+                    }
+                    if (!this.setup.droneSoundIsPlaying) {
+                        this.setup.sounds.drohneSound.loop = true;
+                        this.setup.sounds.drohneSound.play();
+                        this.setup.droneSoundIsPlaying = true;
+                    }
+                    if (!this.setup.nightMusicIsPlaying) {
+                        this.setup.sounds.nightMusic.loop = true;
+                        this.setup.sounds.nightMusic.volume = 0.6;
+                        this.setup.sounds.nightMusic.play();
+                        this.setup.nightMusicIsPlaying = true;
+                    }
+                }
+            }
+
+        }
+    }
+
+    playDroneHypnoSound() {
+        if (this.setup.timeElapsed >= 49000) {
+            this.setup.sounds.drohneSound.pause();
+            if (!this.setup.droneHypnoSoundIsPlaying) {
+                this.setup.sounds.drohneHypnoSound.loop = true;
+                this.setup.sounds.drohneHypnoSound.play();
+                this.setup.droneHypnoSoundIsPlaying = true;
+            }
+            this.setup.npcs.drohne.updateState('hypno', 1000 / 7);
+            if (!this.setup.isGameCharakterOutHouse) {
+                this.ctx.save();
+                this.ctx.translate(-this.renderCameraX, 0);
+                this.addToWorld(this.setup.npcs.chicken);
+                this.addToWorld(this.setup.npcs.cowHypno);
+                this.addToWorld(this.setup.npcs.chickHypno);
+                this.ctx.restore();
+
+                this.setup.npcs.chicken.updateState('walk', 1000 / 7);
+                this.setup.npcs.cowHypno.updateState('walk', 1000 / 5);
+                this.setup.npcs.chickHypno.updateState('walk', 1000 / 7);
+                if (this.setup.npcs.chicken.x < 2500) {
+                    this.setup.npcs.chicken.x += 1.5;
+                }
+                if (this.setup.npcs.cowHypno.x < 2500) {
+                    this.setup.npcs.cowHypno.x += 1.5;
+                }
+                if (this.setup.npcs.chickHypno.x < 2500) {
+                    this.setup.npcs.chickHypno.x += 1.5;
+                }
+            }
+        }
+    }
+
+    droneGo() {
+        if (this.setup.timeElapsed >= 75000) {
+            this.setup.npcs.drohne.updateState('idle', 1000 / 7);
+            this.setup.sounds.drohneHypnoSound.pause();
+            this.setup.sounds.drohneSound.play();
+            this.setup.droneIsGo = true;
+            if (this.setup.npcs.drohne.x <= 2000) {
+                this.setup.npcs.drohne.x += 5;
+            }
+        }
+        this.soundAndMusicStop();
+    }
+
+    soundAndMusicStop() {
+        if (this.setup.timeElapsed >= 83000) {
+            if (this.setup.volumeLevel2 > this.setup.minVolumeLevel) {
+                this.setup.volumeLevel2 = Math.max(this.setup.volumeLevel2 - 0.002, this.setup.minVolumeLevel);
+                this.setup.sounds.drohneSound.volume = this.setup.volumeLevel2;
+                this.setup.sounds.nightMusic.volume = this.setup.volumeLevel2;
+            }
+        }
+        this.makeLight();
+    }
+
+    makeLight() {
+        if (this.setup.timeElapsed >= 86000 && this.setup.timeElapsed < 86500) {
+            this.setup.isNight = false;
+            this.setup.sounds.sadMusic.play();
+        }
+        this.cameraGo();
+    }
+
+    cameraGo() {
+        if (this.setup.timeElapsed >= 90000) {
+            this.setup.sounds.eveningSound.pause();
+            this.setup.sounds.drohneSound.pause();
+            this.setup.sounds.nightMusic.pause();
+            if (!this.setup.isGameCharakterOutHouse) {
+                if (this.setup.world.camera_x > 800) {
+                    this.setup.world.camera_x -= 3;
+                } else {
+                    this.setup.isGameCharakterInHouse = false;
+                    this.setup.isGameCharakterOutHouse = true;
+                }
+            }
+        }
+        this.charBubbles();
+    }
+
+    charBubbles() {
+        if (!this.setup.isGameCharakterOutHouse) return;
+        if (this.setup.timeElapsed >= 4000 && this.setup.timeElapsed <= 9000) {
+            this.ctx.save();
+            this.ctx.translate(-this.renderCameraX, 0);
+            if (!this.setup.speechBubbles.bubbleFarm3.startTime) {
+                this.setup.speechBubbles.bubbleFarm3.start();
+            }
+            this.setup.speechBubbles.bubbleFarm3.update(performance.now());
+            this.setup.speechBubbles.bubbleFarm3.draw(this.ctx);
+            this.ctx.restore();
+        }
+        this.charBubbles2();
+    }
+
+    charBubbles2() {
+        if (!this.setup.isGameCharakterOutHouse) return;
+        if (this.setup.timeElapsed >= 9000 && this.setup.timeElapsed <= 14000) {
+            this.ctx.save();
+            this.ctx.translate(-this.renderCameraX, 0);
+            if (!this.setup.speechBubbles.bubbleFarm4.startTime) {
+                this.setup.speechBubbles.bubbleFarm4.start();
+            }
+            this.setup.speechBubbles.bubbleFarm4.update(performance.now());
+            this.setup.speechBubbles.bubbleFarm4.draw(this.ctx);
+            this.ctx.restore();
+        }
+        this.charBubbles3();
+    }
+
+    charBubbles3() {
+        if (!this.setup.isGameCharakterOutHouse) return;
+        if (this.setup.timeElapsed >= 14000 && this.setup.timeElapsed <= 30000) {
+            this.ctx.save();
+            this.ctx.translate(-this.renderCameraX, 0);
+            if (!this.setup.speechBubbles.bubbleFarm5.startTime) {
+                this.setup.speechBubbles.bubbleFarm5.start();
+            }
+            this.setup.speechBubbles.bubbleFarm5.update(performance.now());
+            this.setup.speechBubbles.bubbleFarm5.draw(this.ctx, 40);
+            this.ctx.restore();
+        }
+        this.changeState();
+    }
+
+    changeState() {
+        if (!this.setup.isGameCharakterOutHouse) return;
+        if (this.setup.timeElapsed >= 16000 && this.setup.timeElapsed <= 30500) {
+            this.charakter.isKneelAndCry = true;
+        }
+        this.changeState2()
+    }
+
+    changeState2() {
+        if (!this.setup.isGameCharakterOutHouse) return;
+        if (this.setup.timeElapsed >= 35000 && this.setup.timeElapsed <= 35500) {
+            this.charakter.isKneelAndCry = false;
+            this.charakter.isStandUpAndLookDetermined = true;
+        }
+        this.charBubbles4();
+    }
+
+    charBubbles4() {
+        if (!this.setup.isGameCharakterOutHouse) return;
+        if (this.setup.timeElapsed >= 36000 && this.setup.timeElapsed <= 41000) {
+            this.ctx.save();
+            this.ctx.translate(-this.renderCameraX, 0);
+            if (!this.setup.speechBubbles.bubbleFarm6.startTime) {
+                this.setup.speechBubbles.bubbleFarm6.start();
+            }
+            this.setup.speechBubbles.bubbleFarm6.update(performance.now());
+            this.setup.speechBubbles.bubbleFarm6.draw(this.ctx, 0);
+            this.ctx.restore();
+        }
+        this.charBubbles5();
+    }
+
+    charBubbles5() {
+        if (!this.setup.isGameCharakterOutHouse) return;
+        if (this.setup.timeElapsed >= 41000 && this.setup.timeElapsed <= 46000) {
+            this.ctx.save();
+            this.ctx.translate(-this.renderCameraX, 0);
+            if (!this.setup.speechBubbles.bubbleFarm7.startTime) {
+                this.setup.speechBubbles.bubbleFarm7.start();
+            }
+            this.setup.speechBubbles.bubbleFarm7.update(performance.now());
+            this.setup.speechBubbles.bubbleFarm7.draw(this.ctx, 0);
+            this.ctx.restore();
+        }
+        this.charBubbles6();
+    }
+
+    charBubbles6() {
+        if (!this.setup.isGameCharakterOutHouse) return;
+        if (this.setup.timeElapsed >= 46000 && this.setup.timeElapsed <= 51000) {
+            this.ctx.save();
+            this.ctx.translate(-this.renderCameraX, 0);
+            if (!this.setup.speechBubbles.bubbleFarm8.startTime) {
+                this.setup.speechBubbles.bubbleFarm8.start();
+            }
+            this.setup.speechBubbles.bubbleFarm8.update(performance.now());
+            this.setup.speechBubbles.bubbleFarm8.draw(this.ctx, 0);
+            this.ctx.restore();
+            this.charakter.isStandUpAndLookDetermined = false;
+            this.charakter.isLookDeterminedAndStandUp = true;
+        }
+
+    }
+
+
+    handleEarthquake() {
+        if (this.setup.timeElapsed >= 20000) {
+            let shakeX = 0;
+            let shakeY = 0;
+            if (this.setup.shakeIntensity > 0) {
+                shakeX = Math.round((Math.random() - 0.5) * this.setup.shakeIntensity);
+                shakeY = Math.round((Math.random() - 0.5) * this.setup.shakeIntensity);
+                this.setup.shakeIntensity *= 0.9955; // Dämpfung, Beben hört langsam auf
+                if (!this.setup.earthquakeSoundIsPlaying) {
+                    this.setup.sounds.earthquakeSound.play();
+                    this.setup.earthquakeSoundIsPlaying = true;
+                }
+            }
+            this.ctx.save();
+            this.ctx.translate(shakeX, shakeY);
+        }
     }
 }
