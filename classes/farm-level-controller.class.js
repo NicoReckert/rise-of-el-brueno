@@ -14,6 +14,7 @@ class FarmLevelController {
     }
 
     update(timestamp) {
+        this.setup.sounds.farmMusic.play();
         this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
         this.updateCamera();
         this.handleEarthquake();
@@ -134,10 +135,11 @@ class FarmLevelController {
 
     handleInteractions() {
         if (this.keyboard.F && this.charakter.x > 1550 && this.charakter.x < 1700) {
-            this.inStallSetup();
-            this.currentScene = 'stallScene';
+            this.world.inStallSetup();
+            this.world.currentScene = 'stallScene';
             this.keyboard.F = false;
             this.setup.farmLevel.level_end_x = 500;
+            this.world.charakter.level_start_x = 80;
         }
 
         if (this.keyboard.F && this.charakter.x > 1000 && this.charakter.x < 1100) {

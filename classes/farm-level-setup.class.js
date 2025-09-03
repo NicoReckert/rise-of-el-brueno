@@ -40,7 +40,6 @@ class FarmLevelSetup {
             bubbleFarm7: new SpeechBubble("Und wenn ich die ganze Welt nach euch absuchen muss !!!", this.world.charakter, performance.now()),
             bubbleFarm8: new SpeechBubble("Haltet durch !!!", this.world.charakter, performance.now())
         };
-        this.sounds.farmMusic.play();
         this.sounds.farmMusic.loop = true;
         this.sounds.farmMusic.volume = 0.6;
         this.sounds.notificationSound.volume = 0.5;

@@ -56,12 +56,18 @@ class Character extends MovableObject {
         './assets/img/Pepe_Jetpack.png'
     ]
 
-    streichelImages = [
+    caressImages = [
         './assets/img/2_character_pepe/6_streicheln/image_1.png',
         './assets/img/2_character_pepe/6_streicheln/image_2.png',
         './assets/img/2_character_pepe/6_streicheln/image_3.png',
         './assets/img/2_character_pepe/6_streicheln/image_4.png',
         './assets/img/2_character_pepe/6_streicheln/image_5.png',
+        './assets/img/2_character_pepe/6_streicheln/image_6.png',
+        './assets/img/2_character_pepe/6_streicheln/image_7.png',
+        './assets/img/2_character_pepe/6_streicheln/image_8.png'
+    ]
+
+    caressImages2 = [
         './assets/img/2_character_pepe/6_streicheln/image_6.png',
         './assets/img/2_character_pepe/6_streicheln/image_7.png',
         './assets/img/2_character_pepe/6_streicheln/image_8.png'
@@ -158,7 +164,7 @@ class Character extends MovableObject {
     isHurt = false;
     isJumping;
     isThrowing = false;
-    isStreicheln = false;
+    isCaress = false;
     isGameCharakter = true;
     throwableBottels = 0;
 
@@ -187,6 +193,7 @@ class Character extends MovableObject {
         this.currentAnimation = 'stand';
         this.frameInterval = 1000 / 2.5; // Standard: 5 FPS
         this.frameIndex = 0;
+        this.level_start_x = 440;
 
     }
 
@@ -374,7 +381,7 @@ class Character extends MovableObject {
 
         if (this.isMovingLeft) {
             this.isFlipped = true;
-            if (this.x > 440) {
+            if (this.x > this.level_start_x) {
                 this.x -= movementSpeed;
                 this.world.camera_x += ((this.x - 500) - this.world.camera_x) * 0.1;
             }
@@ -399,10 +406,12 @@ class Character extends MovableObject {
             // this.setAnimation('jump')
             this.currentAnimation = 'jump';
             this.frameInterval = 1000 / 10;
-        } else if (this.isStreicheln) {
-            this.setAnimation('streicheln')
-            // this.currentAnimation = 'streicheln';
-            this.frameInterval = 1000 / 4;
+        } else if (this.isCaress) {
+            if (this.currentAnimation !== 'caress2') {
+                this.setAnimation('caress')
+                // this.currentAnimation = 'streicheln';
+                this.frameInterval = 1000 / 4;
+            }
         } else if (this.isKneelAndCry) {
             if (this.currentAnimation !== 'cry') {
                 this.setAnimation('kneel-and-cry');
@@ -502,7 +511,7 @@ class Character extends MovableObject {
             if (images && images.length > 0) {
                 this.img.src = images[this.frameIndex % images.length];
                 if (this.deferSizeUpdate) {
-                    if (['kneel-and-cry', 'stand-up-and-look-determined', 'cry', 'look-determined', 'look-determined-and-stand-up', 'strong-determined'].includes(this.currentAnimation)) {
+                    if (['kneel-and-cry', 'stand-up-and-look-determined', 'cry', 'look-determined', 'look-determined-and-stand-up', 'strong-determined', 'caress', 'caress2'].includes(this.currentAnimation)) {
                         this.width = 158;
                         this.height = 183;
                         this.y = 247;
@@ -516,7 +525,7 @@ class Character extends MovableObject {
                 this.frameIndex++;
             }
             this.lastFrameTime = timestamp;
-            if (this.frameIndex >= images.length && (this.currentAnimation == 'kneel-and-cry' || this.currentAnimation == 'stand-up-and-look-determined' || this.currentAnimation == 'look-determined-and-stand-up')) {
+            if (this.frameIndex >= images.length && (this.currentAnimation == 'kneel-and-cry' || this.currentAnimation == 'stand-up-and-look-determined' || this.currentAnimation == 'look-determined-and-stand-up' || this.currentAnimation == 'caress')) {
                 this.animationFinished = true;
                 switch (this.currentAnimation) {
                     case 'stand-up-and-look-determined':
@@ -529,6 +538,10 @@ class Character extends MovableObject {
                         break;
                     case 'look-determined-and-stand-up':
                         this.setAnimation('strong-determined');
+                        this.frameInterval = 1000 / 4;
+                        break;
+                    case 'caress':
+                        this.setAnimation('caress2');
                         this.frameInterval = 1000 / 4;
                         break;
                 }
@@ -555,7 +568,8 @@ class Character extends MovableObject {
             case 'jump': return this.jumpImages;
             case 'dead': return this.deadImages;
             case 'hurt': return this.hurtImages;
-            case 'streicheln': return this.streichelImages;
+            case 'caress': return this.caressImages;
+            case 'caress2': return this.caressImages2;
             case 'kneel-and-cry': return this.kneelDownAndCryImages;
             case 'cry': return this.cryImages;
             case 'stand-up-and-look-determined': return this.standUpAndLookDeterminedImages;

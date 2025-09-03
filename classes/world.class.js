@@ -23,8 +23,13 @@ class World {
         this.jumpSound = new Audio('./assets/audio/jump-sound2.mp3');
         this.landingSound = new Audio('./assets/audio/landing-sound.mp3');
         this.camera_x = 0;
-        
+
+        this.lastTime = performance.now();
+        this.intro = new IntroScreen(this.ctx, this.canvas);
+        this.chapterSound = new Audio('./assets/audio/chapter-sound1.mp3');
+        this.isChapterSoundPlayed = false;
     }
+
     scene = 2;
     inStall = false;
 
@@ -61,15 +66,28 @@ class World {
         //     this.scene3();
         // }
         // this.scene1(timestamp);
-        switch (this.currentScene) {
-            case 'farmScene':
-                this.farmLevelController.update(timestamp);
-                // this.farmScene(timestamp);
-                break;
 
-            case 'stallScene':
-                this.stallScene(timestamp);
-                break;
+        const deltaTime = timestamp - this.lastTime;
+        this.lastTime = timestamp;
+        if (!this.intro.done) {
+            this.intro.update(deltaTime);
+            this.intro.draw();
+            if (!this.isChapterSoundPlayed) {
+                this.chapterSound.play();
+                this.isChapterSoundPlayed = true;
+            }
+        } else {
+            switch (this.currentScene) {
+
+                case 'farmScene':
+                    this.farmLevelController.update(timestamp);
+                    // this.farmScene(timestamp);
+                    break;
+
+                case 'stallScene':
+                    this.stallScene(timestamp);
+                    break;
+            }
         }
         requestAnimationFrame((timestamp) => {
             this.draw(timestamp);
@@ -244,9 +262,9 @@ class World {
             this.bubbleStall.update(performance.now());
             this.bubbleStall.draw(this.ctx);
             if (!this.isNotificationPlay) {
-                this.notificationSound.currentTime = 0;
-                this.notificationSound.play();
-                this.isNotificationPlay = true;
+                this.farmLevelSetup.sounds.notificationSound.currentTime = 0;
+                this.farmLevelSetup.sounds.notificationSound.play();
+                this.farmLevelSetup.isNotificationPlay = true;
             }
             // this.bubbleFarm = new SpeechBubble("In den Hühnerstall gehen? {F} drücken!", this.charakter, performance.now());
             // this.drawSpeechBubble(this.ctx, "In den Hühnerstall gehen? {F} drücken!", this.charakter);
@@ -269,20 +287,17 @@ class World {
         this.stepSoundCharakter(timestamp);
         this.landingSoundCharakter();
         if (this.keyboard.F && this.charakter.x > 0 && this.charakter.x < 150) {
-            // this.farmSceneSetup();
             this.currentScene = 'farmScene';
-            console.log(this.camera_x);
             this.charakter.x = 1620;
             this.camera_x = this.charakter.x - 100;
             this.keyboard.F = false;
             farmLevel.level_end_x = 6409;
+            this.charakter.level_start_x = 440;
+
         }
 
         if (this.charakter.x > 340 && this.charakter.x < 380) {
-            this.charakter.isStreicheln = true;
-            this.charakter.height = 200;
-            this.charakter.y = 200;
-            this.charakter.width = 150;
+            this.charakter.isCaress = true;
         }
 
         // let self = this;
