@@ -422,8 +422,8 @@ class Character extends MovableObject {
                 // this.setPropertiesVoidless();
             }
         } else if (this.isMovingLeft || this.isMovingRight) {
-            this.setAnimation('walk');
-            // this.currentAnimation = 'walk';
+            // this.setAnimation('walk');
+            this.currentAnimation = 'walk';
             this.frameInterval = 1000 / 8;
         } else {
             this.setAnimation('stand');

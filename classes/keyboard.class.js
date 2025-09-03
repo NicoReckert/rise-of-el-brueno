@@ -21,6 +21,7 @@ class Keyboard {
         if (key === 'd') this.D = false;
         // if (key === 'j') this.J = false;
         if (key === 's') this.S = false;
+        if (key === 'f') this.F = false;
         if (key === 't') this.T = false;
     }
 

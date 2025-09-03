@@ -450,8 +450,13 @@ class World {
             this.chickenInBasket.isIdle = false;
             this.chickenInBasket.attackStartX = this.chickenInBasket.x;
         }
-        if (this.keyboard.T) {
-            this.farmLevelController.taskWindow.toggle();
+
+        if (this.keyboard.T && !this.farmLevelSetup.tKeyPressed) {
+            this.farmLevelSetup.taskWindow.toggle();
+            this.farmLevelSetup.tKeyPressed = true;
+        }
+        if (!this.keyboard.T) {
+            this.farmLevelSetup.tKeyPressed = false;
         }
     }
 
@@ -856,6 +861,7 @@ class World {
         if (timestamp - this.lastStepCheck < this.stepCheckDelay) return;
         this.lastStepCheck = timestamp;
         if ((this.charakter.isMovingLeft || this.charakter.isMovingRight) && !this.charakter.isJumping && !this.charakter.isFlying) {
+            this.footStepSound.currentTime = 0;
             this.footStepSound.play();
         }
     }

@@ -1,24 +1,16 @@
 class FarmLevelController {
     constructor(setup) {
         this.setup = setup;
-        this.ctx = this.setup.world.ctx;
-        this.canvas = this.setup.world.canvas;
-        this.addObject = this.setup.world.addObject;
-        this.addToWorld = this.setup.world.addToWorld;
-        this.charakter = this.setup.world.charakter;
-        this.checkPressKey = this.setup.world.checkPressKey;
-        this.keyboard = this.setup.world.keyboard;
-        this.stepSoundCharakter = this.setup.world.stepSoundCharakter;
-        this.landingSoundCharakter = this.setup.world.landingSoundCharakter;
-        this.footStepSound = this.setup.world.footStepSound;
-        this.jumpSound = this.setup.world.jumpSound;
-        this.landingSound = this.setup.world.landingSound;
-        this.tasks = [
-            "Aufgabe 1 erledigen",
-            "Aufgabe 2 prüfen",
-            "Aufgabe 3 starten"
-        ];
-        this.taskWindow = new TaskWindow(this.tasks);
+        this.world = setup.world;
+        this.ctx = this.world.ctx;
+        this.canvas = this.world.canvas;
+        this.addObject = this.world.addObject.bind(this.world);
+        this.addToWorld = this.world.addToWorld.bind(this.world);
+        this.charakter = this.world.charakter;
+        this.checkPressKey = this.world.checkPressKey.bind(this.world);
+        this.keyboard = this.world.keyboard;
+        this.stepSoundCharakter = this.world.stepSoundCharakter.bind(this.world);
+        this.landingSoundCharakter = this.world.landingSoundCharakter.bind(this.world);
     }
 
     update(timestamp) {
@@ -28,10 +20,8 @@ class FarmLevelController {
         this.renderBackgrounds();
         this.renderStatusBar();
         this.renderNPCsAndCharacter();
-
-        this.taskWindow.update();
-        this.taskWindow.draw(this.ctx);
-
+        this.setup.taskWindow.update();
+        this.setup.taskWindow.draw(this.ctx);
         this.handleSpeechBubble();
         this.updateHouseEffects();
         this.updateCharacter(timestamp);

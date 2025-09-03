@@ -1,16 +1,15 @@
 class TaskWindow {
-    constructor(tasks = [], width = 300, height = 200) {
+    constructor(canvas, tasks = [], width = 300, height = 200) {
         this.tasks = tasks.map(text => ({ text, done: false }));
         this.width = width;
         this.height = height;
         this.padding = 15;
+        this.canvas = canvas;
 
         // Startposition: links außerhalb des Bildschirms
         this.x = -this.width;
-        this.targetX = 50; // Endposition links unten
-        this.y = window.innerHeight - this.height - 50;
-
-        this.isOpen = true; // Direkt sichtbar für Test
+        this.targetX = 5; // Endposition links unten
+        this.y = this.canvas.height - this.height - 50;
         this.speed = 15; // Slidegeschwindigkeit px/frame
     }
 
@@ -22,7 +21,7 @@ class TaskWindow {
         if (this.tasks[index]) this.tasks[index].done = true;
     }
 
-    update(timestamp) {
+    update() {
         if (this.isOpen && this.x < this.targetX) {
             this.x += this.speed;
             if (this.x > this.targetX) this.x = this.targetX;
@@ -51,19 +50,21 @@ class TaskWindow {
 
         // Aufgaben-Text
         ctx.fillStyle = "white";
-        ctx.font = `bold ${fontSize}px Nunito`;
+        ctx.font = `${fontSize}px Nunito-Italic`;
         let offsetY = this.y + this.padding + fontSize;
 
         for (let task of this.tasks) {
             ctx.fillText(task.text, this.x + this.padding, offsetY);
 
             if (task.done) {
-                const textWidth = ctx.measureText(task.text).width;
+                const textMetrics = ctx.measureText(task.text);
+                const textMiddle = offsetY - textMetrics.actualBoundingBoxAscent / 2;
+
                 ctx.beginPath();
                 ctx.strokeStyle = "white";
                 ctx.lineWidth = 2;
-                ctx.moveTo(this.x + this.padding, offsetY - fontSize / 2);
-                ctx.lineTo(this.x + this.padding + textWidth, offsetY - fontSize / 2);
+                ctx.moveTo(this.x + this.padding, textMiddle);
+                ctx.lineTo(this.x + this.padding + textMetrics.width, textMiddle);
                 ctx.stroke();
             }
 

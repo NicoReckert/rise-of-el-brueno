@@ -64,5 +64,12 @@ class FarmLevelSetup {
         this.droneIsGo = false;
         this.isNight = true;
         this.isGameCharakterOutHouse = false;
+        this.tasks = [
+            "1. Gehe in den Hühnerstall",
+            "2. Bringe Lola zur Grasfläche",
+            "Aufgabe 3 starten"
+        ];
+        this.taskWindow = new TaskWindow(this.world.canvas, this.tasks);
+        this.tKeyPressed = false;
     }
 }
