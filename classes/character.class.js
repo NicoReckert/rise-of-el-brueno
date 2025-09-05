@@ -57,20 +57,20 @@ class Character extends MovableObject {
     ]
 
     caressImages = [
-        './assets/img/2_character_pepe/6_streicheln/image_1.png',
-        './assets/img/2_character_pepe/6_streicheln/image_2.png',
-        './assets/img/2_character_pepe/6_streicheln/image_3.png',
-        './assets/img/2_character_pepe/6_streicheln/image_4.png',
-        './assets/img/2_character_pepe/6_streicheln/image_5.png',
-        './assets/img/2_character_pepe/6_streicheln/image_6.png',
-        './assets/img/2_character_pepe/6_streicheln/image_7.png',
-        './assets/img/2_character_pepe/6_streicheln/image_8.png'
+        './assets/img/2_character_pepe/6_caress/image_1.png',
+        './assets/img/2_character_pepe/6_caress/image_2.png',
+        './assets/img/2_character_pepe/6_caress/image_3.png',
+        './assets/img/2_character_pepe/6_caress/image_4.png',
+        './assets/img/2_character_pepe/6_caress/image_5.png',
+        './assets/img/2_character_pepe/6_caress/image_6.png',
+        './assets/img/2_character_pepe/6_caress/image_7.png',
+        './assets/img/2_character_pepe/6_caress/image_8.png'
     ]
 
     caressImages2 = [
-        './assets/img/2_character_pepe/6_streicheln/image_6.png',
-        './assets/img/2_character_pepe/6_streicheln/image_7.png',
-        './assets/img/2_character_pepe/6_streicheln/image_8.png'
+        './assets/img/2_character_pepe/6_caress/image_6.png',
+        './assets/img/2_character_pepe/6_caress/image_7.png',
+        './assets/img/2_character_pepe/6_caress/image_8.png'
     ]
 
     kneelDownAndCryImages = [
@@ -164,9 +164,9 @@ class Character extends MovableObject {
     isHurt = false;
     isJumping;
     isThrowing = false;
-    isCaress = false;
     isGameCharakter = true;
     throwableBottels = 0;
+    isCaress = false;
 
 
 
@@ -188,7 +188,6 @@ class Character extends MovableObject {
         this.isKneelAndCry = false;
         this.isStandUpAndLookDetermined = false;
         this.isLookDeterminedAndStandUp = false;
-
         this.lastFrameTime = 0;        // Timestamp des letzten Framewechsels
         this.currentAnimation = 'stand';
         this.frameInterval = 1000 / 2.5; // Standard: 5 FPS
@@ -410,7 +409,7 @@ class Character extends MovableObject {
             if (this.currentAnimation !== 'caress2') {
                 this.setAnimation('caress')
                 // this.currentAnimation = 'streicheln';
-                this.frameInterval = 1000 / 4;
+                this.frameInterval = 1000 / 6;
             }
         } else if (this.isKneelAndCry) {
             if (this.currentAnimation !== 'cry') {
@@ -515,10 +514,20 @@ class Character extends MovableObject {
                         this.width = 158;
                         this.height = 183;
                         this.y = 247;
+                        this.offset.top = 13;
+                        this.offset.left = 33;
+                        this.offset.right = 55;
+                        this.offset.bottom = 15;
+
                     } else {
                         this.width = 130;
                         this.height = 300;
                         this.y = 130;
+                        this.offset.top = 130;
+                        this.offset.left = 20;
+                        this.offset.right = 40;
+                        this.offset.bottom = 15;
+
                     }
                     this.deferSizeUpdate = false;
                 }
@@ -542,7 +551,7 @@ class Character extends MovableObject {
                         break;
                     case 'caress':
                         this.setAnimation('caress2');
-                        this.frameInterval = 1000 / 4;
+                        this.frameInterval = 1000 / 6;
                         break;
                 }
 

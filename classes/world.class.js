@@ -28,6 +28,13 @@ class World {
         this.intro = new IntroScreen(this.ctx, this.canvas);
         this.chapterSound = new Audio('./assets/audio/chapter-sound1.mp3');
         this.isChapterSoundPlayed = false;
+        this.isKeysStopp = false;
+
+
+
+        this.starttime2 = null;
+        this.evedance = null;
+        this.isCollidingChicken = false;
     }
 
     scene = 2;
@@ -67,27 +74,27 @@ class World {
         // }
         // this.scene1(timestamp);
 
-        const deltaTime = timestamp - this.lastTime;
-        this.lastTime = timestamp;
-        if (!this.intro.done) {
-            this.intro.update(deltaTime);
-            this.intro.draw();
-            if (!this.isChapterSoundPlayed) {
-                this.chapterSound.play();
-                this.isChapterSoundPlayed = true;
-            }
-        } else {
-            switch (this.currentScene) {
+        // const deltaTime = timestamp - this.lastTime;
+        // this.lastTime = timestamp;
+        // if (!this.intro.done) {
+        //     this.intro.update(deltaTime);
+        //     this.intro.draw();
+        //     if (!this.isChapterSoundPlayed) {
+        //         this.chapterSound.play();
+        //         this.isChapterSoundPlayed = true;
+        //     }
+        // } else {
+        switch (this.currentScene) {
 
-                case 'farmScene':
-                    this.farmLevelController.update(timestamp);
-                    // this.farmScene(timestamp);
-                    break;
+            case 'farmScene':
+                this.farmLevelController.update(timestamp);
+                // this.farmScene(timestamp);
+                break;
 
-                case 'stallScene':
-                    this.stallScene(timestamp);
-                    break;
-            }
+            case 'stallScene':
+                this.stallScene(timestamp);
+                break;
+            // }
         }
         requestAnimationFrame((timestamp) => {
             this.draw(timestamp);
@@ -252,8 +259,16 @@ class World {
         this.addToWorld(this.statusBar);
         this.ctx.save();
         this.ctx.translate(-this.renderCameraX, 0);
-        this.addToWorld(this.charakter);
-        this.addToWorld(this.chickenNpc);
+        if (this.charakter.isCaress) {
+            this.addToWorld(this.charakter);
+            this.addToWorld(this.chickenNpc);
+            this.addToWorld(this.chickNpc);
+        } else {
+            this.addToWorld(this.chickenNpc);
+            this.addToWorld(this.chickNpc);
+            this.addToWorld(this.charakter);
+        }
+
         // this.ctx.translate(-this.camera_x, 0);
         if (this.charakter.x > 0 && this.charakter.x < 150) {
             if (!this.bubbleStall.startTime) {
@@ -280,6 +295,9 @@ class World {
         this.charakter.updateAnimation(timestamp);
         this.chickenNpc.updateState();
         this.chickenNpc.updateAnimation(timestamp);
+        this.chickNpc.updateState();
+        this.chickNpc.updateAnimation(timestamp);
+
 
         if (this.charakter.isJumping) {
             this.charakter.applyGravity(timestamp);
@@ -296,11 +314,94 @@ class World {
 
         }
 
-        if (this.charakter.x > 340 && this.charakter.x < 380) {
-            this.charakter.isCaress = true;
-        }
+        // if (this.charakter.x > 340 && this.charakter.x < 380) {
+        //     this.charakter.isCaress = true;
+        // }
 
         // let self = this;
+
+        if (this.charakter.isColliding(this.chickenNpc, 0, 0)) {
+            this.ctx.save();
+            this.ctx.translate(-this.renderCameraX, 0);
+            // if (!this.speechBubbles.bubbleStable1.startTime) {
+            //     this.speechBubbles.bubbleStable1.start();
+            // }
+            // this.speechBubbles.bubbleStable1.update(performance.now());
+            // this.speechBubbles.bubbleStable1.draw(this.ctx, 0);
+            this.ctx.restore();
+        }
+
+        if (this.charakter.isColliding(this.chickenNpc, 0, 0) && this.keyboard.F) {
+            if (!this.starttime2) {
+                this.starttime2 = performance.now();
+            }
+
+            const elapsed = performance.now() - this.starttime2;
+
+            // Zeitfenster für isCaress
+            if (elapsed >= 0 && elapsed < 5000) {
+                this.charakter.isCaress = true;
+                this.isKeysStopp = true;
+                this.charakter.x = 280;
+                this.charakter.isFlipped = false;
+                this.chickenNpc.updateState('love');
+                this.chickenSound.play();
+            } else {
+                this.charakter.isCaress = false;
+                this.starttime2 = null;
+                this.keyboard.F = false;
+                this.isKeysStopp = false;
+                this.chickenNpc.updateState('idle');
+                if (!this.farmLevelSetup.taskWindow.tasks[0].done) {
+                    this.farmLevelSetup.taskWindow.markDone(0)
+                    this.farmLevelSetup.sounds.taskCompletedSound.play();
+                    this.popupTexts.push(new PopupText("Aufgabe erledigt!", this.canvas.width / 2, 200));
+                }
+            }
+        }
+
+        if (this.charakter.isColliding(this.chickNpc, 0, 0)) {
+            this.ctx.save();
+            this.ctx.translate(-this.renderCameraX, 0);
+            // if (!this.speechBubbles.bubbleStable1.startTime) {
+            //     this.speechBubbles.bubbleStable1.start();
+            // }
+            // this.speechBubbles.bubbleStable1.update(performance.now());
+            // this.speechBubbles.bubbleStable1.draw(this.ctx, 0);
+            this.ctx.restore();
+        }
+
+        if (this.charakter.isColliding(this.chickNpc, 0, 0) && this.keyboard.F) {
+            if (!this.starttime2) {
+                this.starttime2 = performance.now();
+            }
+
+            const elapsed = performance.now() - this.starttime2;
+
+            // Zeitfenster für isCaress
+            if (elapsed >= 0 && elapsed < 5000) {
+                this.charakter.isCaress = true;
+                this.isKeysStopp = true;
+                this.charakter.x = 440;
+                this.charakter.isFlipped = false;
+                this.chickNpc.updateState('love');
+                this.chickSound.play();
+            } else {
+                this.charakter.isCaress = false;
+                this.starttime2 = null;
+                this.keyboard.F = false;
+                this.isKeysStopp = false;
+                this.chickNpc.updateState('idle');
+                if (!this.farmLevelSetup.taskWindow.tasks[1].done) {
+                    this.farmLevelSetup.taskWindow.markDone(1)
+                    this.farmLevelSetup.sounds.taskCompletedSound.play();
+                    this.popupTexts.push(new PopupText("Aufgabe erledigt!", this.canvas.width / 2, 200));
+                }
+            }
+        }
+        const now = performance.now();
+        this.popupTexts.forEach(p => p.draw(this.ctx, now));
+        this.popupTexts = this.popupTexts.filter(p => p.active);
     }
 
     inStallSetup() {
@@ -308,8 +409,18 @@ class World {
         // this.charakter = new Character();
         this.camera_x = 0;
         this.charakter.x = 100;
-        this.bubbleStall = new SpeechBubble("Den Hühnerstall verlassen? {F} drücken!", this.charakter, performance.now());
-        this.chickenNpc = new NotMovableNpc('chicken');
+        this.bubbleStall = new SpeechBubble("Den Hühnerstall verlassen? {F} drücken!", this.charakter, 'info');
+        this.chickenNpc = new NotMovableNpc('chicken', 150, 150, 355, 220, 0, 100, -20, 0);
+        this.chickNpc = new NotMovableNpc('chick', 120, 120, 525, 275);
+        this.chickNpc.isFlipped = false;
+        this.speechBubbles = {
+            bubbleStable1: new SpeechBubble("Yordi streicheln {F} drücken", 'canvas', 'speech')
+        };
+        this.chickSound = new Audio('./assets/audio/chick-sound2.mp3');
+        this.chickenSound = new Audio('./assets/audio/chicken-sound.mp3');
+
+        // this.popupText = new PopupText();
+        this.popupTexts = [];
         // this.statusBar = new LifeEnergyCharakterBar();
         // this.farmMusic = new Audio('./assets/audio/farm-music.mp3');
         // this.farmMusic.play();
@@ -385,13 +496,35 @@ class World {
             const drawX = Math.round(-object.x - object.width);
             const drawY = Math.round(object.y);
             this.ctx.drawImage(object.img, drawX, drawY, object.width, object.height);
-            if (!object.isGameCharakter == true) return;
+            // if (!object.isGameCharakter == true) return;
+            // this.ctx.beginPath();
+            // this.ctx.lineWidth = '3';
+            // this.ctx.strokeStyle = 'red';
+            // this.ctx.rect(-object.x - object.width, object.y, object.width, object.height);
+            // this.ctx.stroke();
+
+            // this.ctx.beginPath();
+            // this.ctx.lineWidth = '3';
+            // this.ctx.strokeStyle = 'blue';
+            // this.ctx.rect(-object.x - object.width + object.offset.left, object.y + object.offset.top, object.width - object.offset.left - object.offset.right, object.height - object.offset.top - object.offset.bottom); this.ctx.stroke();
             this.ctx.restore();
         } else {
             const drawX = Math.round(object.x);
             const drawY = Math.round(object.y);
             this.ctx.drawImage(object.img, drawX, drawY, object.width, object.height);
             // if (!object.isGameCharakter == true) return;
+            // this.ctx.beginPath();
+            // this.ctx.lineWidth = '3';
+            // this.ctx.strokeStyle = 'red';
+            // this.ctx.rect(object.x, object.y, object.width, object.height);
+            // this.ctx.stroke();
+
+            // this.ctx.beginPath();
+            // this.ctx.lineWidth = '3';
+            // this.ctx.strokeStyle = 'blue';
+            // this.ctx.rect(object.x + object.offset.left, object.y + object.offset.top, object.width - object.offset.left - object.offset.right, object.height - object.offset.top - object.offset.bottom);
+            // this.ctx.stroke();
+
         }
     }
 
@@ -404,74 +537,76 @@ class World {
     }
 
     checkPressKey() {
-        this.charakter.isMovingLeft = false;
-        this.charakter.isMovingRight = false;
-        if (this.keyboard.LEFT) {
-            this.charakter.isMovingLeft = true;
-        }
-        if (this.keyboard.RIGHT) {
-            this.charakter.isMovingRight = true;
-        }
-        if (this.keyboard.UP && !this.charakter.isAboveGround() && !this.charakter.isFlying && !this.charakter.isJumping) {
-            this.charakter.isJumping = true;
-            this.charakter.speedY = 23;
-            this.jumpSound.play();
-        }
-        if (this.keyboard.UP && this.charakter.isAboveGround() && this.charakter.isFlying) {
-            this.charakter.moveUp();
-        }
-        if (this.keyboard.DOWN && this.charakter.isAboveGround() && this.charakter.isFlying) {
-            if (this.charakter.y + 10 == 130) {
-                this.keyboard.J = false;
-                this.charakter.isFlying = false;
-                this.jetPackMusic.pause();
-                this.jetPackMusic.currentTime = 0;
-                this.jetPackSound.pause();
-                this.jetPackSound.currentTime = 0;
-                if (this.endbossMusicIsPlayed) {
-                    this.playEndbossMusic("play")
-                } else {
-                    this.backgroundMusic.play();
-                }
-                this.charakter.y = 130;
-                this.charakter.moveStop();
-            } else {
-                this.charakter.moveDown();
+        if (!this.isKeysStopp) {
+            this.charakter.isMovingLeft = false;
+            this.charakter.isMovingRight = false;
+            if (this.keyboard.LEFT) {
+                this.charakter.isMovingLeft = true;
             }
-        }
-        if (this.keyboard.J) {
-            this.charakter.moveFly();
-            this.backgroundMusic.pause();
-            this.backgroundMusic.currentTime = 0;
-            this.playEndbossMusic("stop");
-            this.jetPackMusic.play();
-            this.jetPackSound.play();
-        }
-        if (this.charakter.isDead) {
-            this.charakter.animationDead();
-        }
-        // if (this.charakter.isHurt) {
-        //     this.charakter.animationHurt();
-        // }
-        // else {
-        //     if (this.charakter.isJumping) return;
-        //     clearInterval(this.intervalJump);
-        //     this.intervalJump = null;
-        //     this.charakter.jumpCount = 0;
-        //     if (this.charakter.isMoving) this.charakter.moveStop();
-        // }
-        if (this.keyboard.S && this.chickenInBasket.isIdle && !this.chickenInBasket.isReturning && !this.chickenInBasket.justLanded) {
-            this.chickenInBasket.isAttack = true;
-            this.chickenInBasket.isIdle = false;
-            this.chickenInBasket.attackStartX = this.chickenInBasket.x;
-        }
+            if (this.keyboard.RIGHT) {
+                this.charakter.isMovingRight = true;
+            }
+            if (this.keyboard.UP && !this.charakter.isAboveGround() && !this.charakter.isFlying && !this.charakter.isJumping) {
+                this.charakter.isJumping = true;
+                this.charakter.speedY = 23;
+                this.jumpSound.play();
+            }
+            if (this.keyboard.UP && this.charakter.isAboveGround() && this.charakter.isFlying) {
+                this.charakter.moveUp();
+            }
+            if (this.keyboard.DOWN && this.charakter.isAboveGround() && this.charakter.isFlying) {
+                if (this.charakter.y + 10 == 130) {
+                    this.keyboard.J = false;
+                    this.charakter.isFlying = false;
+                    this.jetPackMusic.pause();
+                    this.jetPackMusic.currentTime = 0;
+                    this.jetPackSound.pause();
+                    this.jetPackSound.currentTime = 0;
+                    if (this.endbossMusicIsPlayed) {
+                        this.playEndbossMusic("play")
+                    } else {
+                        this.backgroundMusic.play();
+                    }
+                    this.charakter.y = 130;
+                    this.charakter.moveStop();
+                } else {
+                    this.charakter.moveDown();
+                }
+            }
+            if (this.keyboard.J) {
+                this.charakter.moveFly();
+                this.backgroundMusic.pause();
+                this.backgroundMusic.currentTime = 0;
+                this.playEndbossMusic("stop");
+                this.jetPackMusic.play();
+                this.jetPackSound.play();
+            }
+            if (this.charakter.isDead) {
+                this.charakter.animationDead();
+            }
+            // if (this.charakter.isHurt) {
+            //     this.charakter.animationHurt();
+            // }
+            // else {
+            //     if (this.charakter.isJumping) return;
+            //     clearInterval(this.intervalJump);
+            //     this.intervalJump = null;
+            //     this.charakter.jumpCount = 0;
+            //     if (this.charakter.isMoving) this.charakter.moveStop();
+            // }
+            if (this.keyboard.S && this.chickenInBasket.isIdle && !this.chickenInBasket.isReturning && !this.chickenInBasket.justLanded) {
+                this.chickenInBasket.isAttack = true;
+                this.chickenInBasket.isIdle = false;
+                this.chickenInBasket.attackStartX = this.chickenInBasket.x;
+            }
 
-        if (this.keyboard.T && !this.farmLevelSetup.tKeyPressed) {
-            this.farmLevelSetup.taskWindow.toggle();
-            this.farmLevelSetup.tKeyPressed = true;
-        }
-        if (!this.keyboard.T) {
-            this.farmLevelSetup.tKeyPressed = false;
+            if (this.keyboard.T && !this.farmLevelSetup.tKeyPressed) {
+                this.farmLevelSetup.taskWindow.toggle();
+                this.farmLevelSetup.tKeyPressed = true;
+            }
+            if (!this.keyboard.T) {
+                this.farmLevelSetup.tKeyPressed = false;
+            }
         }
     }
 

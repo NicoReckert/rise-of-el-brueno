@@ -1,5 +1,5 @@
 class SpeechBubble {
-    constructor(text, target, type = 'speech') {
+    constructor(text, target = 'canvas', type = 'speech') {
         this.fullText = text;
         this.displayedText = '';
         this.target = target;
@@ -60,8 +60,15 @@ class SpeechBubble {
         const bubbleHeight = lines.length * (fontSize + 5) + padding * 2;
 
         // Blasenposition
-        const x = this.target.x + this.target.width / 2 - bubbleWidth / 2;
-        const y = this.target.y - bubbleHeight + yPosition; // +42
+        let x = 0;
+        let y = 0;
+        if (this.target === 'canvas') {
+            x = 25;
+            y = 15;
+        } else {
+            x = this.target.x + this.target.width / 2 - bubbleWidth / 2;
+            y = this.target.y - bubbleHeight + yPosition; // +42
+        }
 
         let bubbleFill, bubbleStroke, textColor, drawArrow;
         if (this.type == "speech") {

@@ -38,10 +38,14 @@ class TaskWindow {
         ctx.save();
 
         // Panel Hintergrund
-        ctx.shadowColor = "rgba(0,0,0,0.4)";
-        ctx.shadowBlur = 8;
-        ctx.fillStyle = "rgba(50,50,50,0.9)";
-        ctx.strokeStyle = "orangered";
+        const gradient = ctx.createLinearGradient(this.x, this.y, this.x + this.width, this.y + this.height);
+        gradient.addColorStop(0, "rgba(245, 230, 200, 0.9)");
+        gradient.addColorStop(1, "rgba(220, 200, 170, 0.9)");
+        ctx.fillStyle = gradient; // <-- Hier Gradient setzen
+
+        ctx.shadowColor = "rgba(0,0,0,0.2)";
+        ctx.shadowBlur = 12;
+        ctx.strokeStyle = "rgba(200, 120, 30, 0.8)"; // Rand
         ctx.lineWidth = 2;
 
         this.roundRect(ctx, this.x, this.y, this.width, this.height, 12);
@@ -49,8 +53,8 @@ class TaskWindow {
         ctx.stroke();
 
         // Aufgaben-Text
-        ctx.fillStyle = "white";
-        ctx.font = `${fontSize}px Nunito-Italic`;
+        ctx.fillStyle = "#4b3e2a"
+        ctx.font = `bold ${fontSize}px Nunito-Italic`;
         let offsetY = this.y + this.padding + fontSize;
 
         for (let task of this.tasks) {
@@ -61,7 +65,7 @@ class TaskWindow {
                 const textMiddle = offsetY - textMetrics.actualBoundingBoxAscent / 2;
 
                 ctx.beginPath();
-                ctx.strokeStyle = "white";
+                ctx.strokeStyle = "rgba(200, 120, 30, 0.8)"; // gleiche Farbe wie Rahmen, harmonisch
                 ctx.lineWidth = 2;
                 ctx.moveTo(this.x + this.padding, textMiddle);
                 ctx.lineTo(this.x + this.padding + textMetrics.width, textMiddle);
@@ -70,6 +74,7 @@ class TaskWindow {
 
             offsetY += lineHeight;
         }
+
 
         ctx.restore();
     }

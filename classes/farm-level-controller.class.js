@@ -7,10 +7,15 @@ class FarmLevelController {
         this.addObject = this.world.addObject.bind(this.world);
         this.addToWorld = this.world.addToWorld.bind(this.world);
         this.charakter = this.world.charakter;
+        this.charakter2 = this.world.charakter2;
         this.checkPressKey = this.world.checkPressKey.bind(this.world);
         this.keyboard = this.world.keyboard;
         this.stepSoundCharakter = this.world.stepSoundCharakter.bind(this.world);
         this.landingSoundCharakter = this.world.landingSoundCharakter.bind(this.world);
+        this.starttime2;
+        this.lastCowSoundTime = 0;
+        this.popupTexts = [];
+
     }
 
     update(timestamp) {
@@ -21,6 +26,61 @@ class FarmLevelController {
         this.renderBackgrounds();
         this.renderStatusBar();
         this.renderNPCsAndCharacter();
+        this.setup.npcs.cow.updateState('walk');
+        if (this.charakter.isColliding(this.setup.npcs.cow, -200, -200)) {
+            if (this.setup.npcs.cow.x <= 5400) {
+                this.setup.npcs.cow.x += 2;
+            }
+        } else {
+            this.setup.npcs.cow.updateState('afraid', 1000 / 5);
+            const now = performance.now();
+            if (now - this.lastCowSoundTime > 4000) {
+                // this.setup.sounds.cowSound.currentTime = 0; // optional: Sound von vorne starten
+                this.setup.sounds.cowSound.play();
+                this.lastCowSoundTime = now;
+            }
+        }
+        if (this.setup.npcs.cow.x <= 5400) {
+            // this.setup.npcs.cow.updateState('walk');
+        } else {
+            this.setup.npcs.cow.updateState('eat');
+        }
+        if (this.charakter.isColliding(this.setup.npcs.cow) && this.keyboard.F && this.setup.npcs.cow.currentAnimation === 'eat') {
+            if (!this.starttime2) {
+                this.starttime2 = performance.now();
+            }
+
+            const elapsed = performance.now() - this.starttime2;
+
+            // Zeitfenster für isCaress
+            if (elapsed >= 0 && elapsed < 5000) {
+                this.charakter.isCaress = true;
+                this.world.isKeysStopp = true;
+                this.setup.npcs.cow.updateState('love');
+                this.charakter.x = this.setup.npcs.cow.x + 135;
+                if (this.setup.npcs.cow.isFlipped) {
+                    this.charakter.isFlipped = true;
+                }
+                this.setup.sounds.cowSound2.play();
+            } else {
+                this.charakter.isCaress = false;
+                this.starttime2 = null;
+                this.keyboard.F = false;
+                this.world.isKeysStopp = false;
+                this.setup.npcs.cow.updateState('eat');
+                if (!this.setup.taskWindow.tasks[2].done) {
+                    this.setup.taskWindow.markDone(2);
+                    this.setup.sounds.taskCompletedSound.play();
+                    this.popupTexts.push(new PopupText("Aufgabe erledigt!", this.canvas.width / 2, 200));
+                }
+
+
+            }
+        }
+        const now = performance.now();
+        this.popupTexts.forEach(p => p.draw(this.ctx, now));
+        this.popupTexts = this.popupTexts.filter(p => p.active);
+
         this.setup.taskWindow.update();
         this.setup.taskWindow.draw(this.ctx);
         this.handleSpeechBubble();
@@ -61,14 +121,30 @@ class FarmLevelController {
         this.ctx.save();
         this.ctx.translate(-this.renderCameraX, 0);
         if (!this.setup.isGameCharakterInHouse && !this.setup.isGameCharakterOutHouse) {
-            this.addToWorld(this.setup.npcs.cow);
             this.addToWorld(this.setup.npcs.bird);
         }
         this.addToWorld(this.setup.npcs.tree);
         if (!this.setup.isGameCharakterInHouse) {
-            this.addToWorld(this.charakter);
+            if (this.charakter.isCaress) {
+                this.addToWorld(this.charakter);
+                this.addToWorld(this.setup.npcs.cow);
+            } else {
+                if (!this.setup.isGameCharakterInHouse && !this.setup.isGameCharakterOutHouse) {
+                    this.addToWorld(this.setup.npcs.cow);
+                }
+                this.addToWorld(this.charakter);
+            }
         }
         this.addToWorld(this.setup.npcs.pond);
+        // this.addToWorld(this.setup.npcs.blackDragon);
+        // this.setup.npcs.blackDragon.isFlipped = false;
+        // this.setup.npcs.blackDragon.updateState('halfSizeFly', 1000 / 6.5);
+        // this.setup.sounds.dragonRoarSound.play();
+        //             if (this.setup.npcs.blackDragon.x <= 6000) {
+        //         this.setup.npcs.blackDragon.x += 2;
+        //     }
+
+
         this.ctx.restore();
     }
 
@@ -126,7 +202,7 @@ class FarmLevelController {
     }
 
     updateNPCs(timestamp) {
-        const npcs = ['cow', 'bird', 'pond', 'tree', 'drohne', 'chicken', 'cowHypno', 'chickHypno'];
+        const npcs = ['cow', 'bird', 'pond', 'tree', 'drohne', 'chicken', 'cowHypno', 'chickHypno', 'blackDragon'];
         npcs.forEach(name => {
             this.setup.npcs[name].updateState(timestamp);
             this.setup.npcs[name].updateAnimation(timestamp);

@@ -54,7 +54,35 @@ class MovableObject extends DrawableObject {
         }
     }
 
-    isColliding(object, collidingToleranceTop, collidingToleranceLeft) {
+    // für normal und isFlipped
+    isColliding(object, collidingToleranceTop = 0, collidingToleranceLeft = 0) {
+    const a_left = this.isFlipped
+        ? this.x + this.offset.right
+        : this.x + this.offset.left;
+    const a_right = this.isFlipped
+        ? this.x + this.width - this.offset.left
+        : this.x + this.width - this.offset.right;
+    const a_top = this.y + this.offset.top;
+    const a_bottom = this.y + this.height - this.offset.bottom;
+
+    const b_left = object.isFlipped
+        ? object.x + object.offset.right
+        : object.x + object.offset.left;
+    const b_right = object.isFlipped
+        ? object.x + object.width - object.offset.left
+        : object.x + object.width - object.offset.right;
+    const b_top = object.y + object.offset.top;
+    const b_bottom = object.y + object.height - object.offset.bottom;
+
+    return a_right > b_left + collidingToleranceLeft &&
+           a_left < b_right &&
+           a_bottom > b_top + collidingToleranceTop &&
+           a_top < b_bottom;
+}
+
+    
+    //letzte funktionierende Funktion
+    isCollidingBefore(object, collidingToleranceTop, collidingToleranceLeft) {
         const a_left = this.x + this.offset.left;
         const a_right = this.x + this.width - this.offset.right;
         const a_top = this.y + this.offset.top;

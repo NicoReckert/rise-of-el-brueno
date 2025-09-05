@@ -10,7 +10,8 @@ class FarmLevelSetup {
             drohne: new NotMovableNpc('drohne', 300, 300, 5000, -50),
             chicken: new NotMovableNpc('chicken', 90, 90, 200, 340),
             cowHypno: new NotMovableNpc('cowHypno', 200, 200, -100, 255),
-            chickHypno: new NotMovableNpc('chickHypno', 60, 60, 500, 360)
+            chickHypno: new NotMovableNpc('chickHypno', 60, 60, 500, 360),
+            blackDragon: new NotMovableNpc('blackDragon', 500, 500, 1000, -8)
         };
         this.npcs.pond.isFlipped = false;
         this.npcs.cowHypno.isFlipped = true;
@@ -28,10 +29,14 @@ class FarmLevelSetup {
             yawningSound: new Audio('./assets/audio/yawning-sound.mp3'),
             snoringSound: new Audio('./assets/audio/snoring-sound.mp3'),
             earthquakeSound: new Audio('./assets/audio/earthquake-sound.mp3'),
-            sadMusic: new Audio('./assets/audio/sad-music.mp3')
+            sadMusic: new Audio('./assets/audio/sad-music.mp3'),
+            dragonRoarSound: new Audio('./assets/audio/dragon-roar-sound.mp3'),
+            taskCompletedSound: new Audio('./assets/audio/task-completed-sound2.mp3'),
+            cowSound: new Audio('./assets/audio/cow-sound.mp3'),
+            cowSound2: new Audio('./assets/audio/cow-sound3.mp3')
         };
         this.speechBubbles = {
-            bubbleFarm: new SpeechBubble("In den Hühnerstall gehen? {F} drücken!", this.world.charakter, 'speech'),
+            bubbleFarm: new SpeechBubble("In den Hühnerstall gehen? {F} drücken!", this.world.charakter, 'info'),
             bubbleFarm2: new SpeechBubble("Ins Haus gehen? {F} drücken!", this.world.charakter, performance.now()),
             bubbleFarm3: new SpeechBubble("Was ist hier passiert ???", this.world.charakter, performance.now()),
             bubbleFarm4: new SpeechBubble("Freunde wo seit ihr ???", this.world.charakter, performance.now()),
@@ -64,9 +69,9 @@ class FarmLevelSetup {
         this.isNight = true;
         this.isGameCharakterOutHouse = false;
         this.tasks = [
-            "1. Gehe in den Hühnerstall",
-            "2. Bringe Lola zur Grasfläche",
-            "Aufgabe 3 starten"
+            "1. Kümmere dich um Yordi",
+            "2. Kümmere dich um Yarris",
+            "3. Kümmere dich um Lola"
         ];
         this.taskWindow = new TaskWindow(this.world.canvas, this.tasks);
         this.tKeyPressed = false;
