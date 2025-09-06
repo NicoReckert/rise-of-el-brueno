@@ -410,8 +410,8 @@ class World {
         this.camera_x = 0;
         this.charakter.x = 100;
         this.bubbleStall = new SpeechBubble("Den Hühnerstall verlassen? {F} drücken!", this.charakter, 'info');
-        this.chickenNpc = new NotMovableNpc('chicken', 150, 150, 355, 820, 0, 100, -20, 0);
-        this.chickNpc = new NotMovableNpc('chick', 120, 120, 525, 875);
+        this.chickenNpc = new NotMovableNpc('chicken', 150, 150, 355, 220, 0, 100, -20, 0);
+        this.chickNpc = new NotMovableNpc('chick', 120, 120, 525, 275);
         this.chickNpc.isFlipped = false;
         this.speechBubbles = {
             bubbleStable1: new SpeechBubble("Yordi streicheln {F} drücken", 'canvas', 'speech')
@@ -882,7 +882,7 @@ class World {
             document.getElementById('overlay-start-initialisation').style.display = 'none';
             document.getElementById('canvas').style.display = 'block';
             // document.getElementById('background-music').play();
-            setFullscreen();
+            // setFullscreen();
             // this.charakter.playSpeakSound();
             titleMusic.pause();
             titleMusic2.pause();

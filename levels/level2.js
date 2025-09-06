@@ -92,9 +92,6 @@ const scene2 = new Level(
                 new Ground(groundSrc2[6], -719),
                 new Ground(groundSrc2[6], -719),
                 new Ground(groundSrc2[6], -719),
-                new Ground(groundSrc2[6], -719, 960),
-                new Ground(groundSrc2[6], -719, 960),
-                new Ground(groundSrc2[6], -719, 960),
                 new Ground(groundSrc2[6], 0),
                 new Ground(groundSrc2[6], 0),
                 new Ground(groundSrc2[6], 0),
@@ -104,7 +101,7 @@ const scene2 = new Level(
             ],
         towns:
             [
-                new Town(townSrc2[3], 0, 620, 720, 480)
+                new Town(townSrc2[3], 0, 20, 720, 480)
             ],
         sky:
             [

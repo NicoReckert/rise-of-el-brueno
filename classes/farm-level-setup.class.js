@@ -3,15 +3,15 @@ class FarmLevelSetup {
         this.world = world;
         this.farmLevel = farmLevel;
         this.npcs = {
-            cow: new NotMovableNpc('cow', 200, 200, 1200, 845), //255 Y
-            bird: new NotMovableNpc('bird', 80, 80, 1180, 673),
-            pond: new NotMovableNpc('pond', 500, 600, -28, 680),//500, 600, 150, 120
-            tree: new NotMovableNpc('tree', 450, 450, 500, 610),
-            drohne: new NotMovableNpc('drohne', 300, 300, 5000, 550),
-            chicken: new NotMovableNpc('chicken', 90, 90, 200, 940),
-            cowHypno: new NotMovableNpc('cowHypno', 200, 200, -100, 855),
-            chickHypno: new NotMovableNpc('chickHypno', 60, 60, 500, 960),
-            blackDragon: new NotMovableNpc('blackDragon', 600, 600, 1000, 492)
+            cow: new NotMovableNpc('cow', 200, 200, 1200, 245), //255 Y
+            bird: new NotMovableNpc('bird', 80, 80, 1180, 73),
+            pond: new NotMovableNpc('pond', 500, 600, -28, 80),//500, 600, 150, 120
+            tree: new NotMovableNpc('tree', 450, 450, 500, 10),
+            drohne: new NotMovableNpc('drohne', 300, 300, 5000, -50),
+            chicken: new NotMovableNpc('chicken', 90, 90, 200, 340),
+            cowHypno: new NotMovableNpc('cowHypno', 200, 200, -100, 255),
+            chickHypno: new NotMovableNpc('chickHypno', 60, 60, 500, 360),
+            blackDragon: new NotMovableNpc('blackDragon', 500, 500, 1000, -8)
         };
         this.npcs.pond.isFlipped = false;
         this.npcs.cowHypno.isFlipped = true;
