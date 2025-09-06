@@ -30,8 +30,8 @@ class MovableObject extends DrawableObject {
             if (!this.isFlying && this.isAboveGround() || this.speedY > 0) {
                 this.y -= this.speedY;
                 this.speedY -= this.acceleration;
-                if (this.y >= 130) {
-                    this.y = 130;
+                if (this.y >= 370) {
+                    this.y = 370;
                     this.speedY = 0;
                     this.isJumping = false;
                     this.isLanding = true;
@@ -50,7 +50,7 @@ class MovableObject extends DrawableObject {
         } else if (this instanceof Endboss) {
             return this.y < -35;
         } else {
-            return this.y < 130.0;
+            return this.y < 370.0;
         }
     }
 

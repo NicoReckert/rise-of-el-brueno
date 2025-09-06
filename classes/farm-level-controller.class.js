@@ -71,7 +71,7 @@ class FarmLevelController {
                 if (!this.setup.taskWindow.tasks[2].done) {
                     this.setup.taskWindow.markDone(2);
                     this.setup.sounds.taskCompletedSound.play();
-                    this.popupTexts.push(new PopupText("Aufgabe erledigt!", this.canvas.width / 2, 200));
+                    this.popupTexts.push(new PopupText("Aufgabe erledigt!", this.canvas.width / 2, 400));
                 }
 
 
@@ -138,7 +138,7 @@ class FarmLevelController {
         this.addToWorld(this.setup.npcs.pond);
         // this.addToWorld(this.setup.npcs.blackDragon);
         // this.setup.npcs.blackDragon.isFlipped = false;
-        // this.setup.npcs.blackDragon.updateState('halfSizeFly', 1000 / 6.5);
+        // this.setup.npcs.blackDragon.updateState('idle', 1000 / 6.5);
         // this.setup.sounds.dragonRoarSound.play();
         //             if (this.setup.npcs.blackDragon.x <= 6000) {
         //         this.setup.npcs.blackDragon.x += 2;
@@ -214,8 +214,8 @@ class FarmLevelController {
             this.world.inStallSetup();
             this.world.currentScene = 'stallScene';
             this.keyboard.F = false;
-            this.setup.farmLevel.level_end_x = 500;
-            this.world.charakter.level_start_x = 80;
+            this.setup.farmLevel.level_end_x = 720;
+            this.world.charakter.level_start_x = 360;
         }
 
         if (this.keyboard.F && this.charakter.x > 1000 && this.charakter.x < 1100) {

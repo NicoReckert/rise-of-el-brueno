@@ -176,13 +176,13 @@ class Character extends MovableObject {
         this.height = 300; // 183 für voidless.dev sprite - 300 * 0.61
         this.width = 130; // 158 für voidless.dev sprite - 130 * 1.216
         this.x = 1000;
-        this.y = 130; // 247 für voidless.dev sprite - 130 * 1.9
+        this.y = 370; // 247 für voidless.dev sprite - 130 * 1.9
         // this.startMainLoop()
         this.offset.top = 130;
         this.offset.left = 20;
         this.offset.right = 40;
         this.offset.bottom = 15;
-        this.speedX = 10;
+        this.speedX = 8;
         this.isJumping = false;
         this.isLanding = false;
         this.isKneelAndCry = false;
@@ -382,13 +382,13 @@ class Character extends MovableObject {
             this.isFlipped = true;
             if (this.x > this.level_start_x) {
                 this.x -= movementSpeed;
-                this.world.camera_x += ((this.x - 500) - this.world.camera_x) * 0.1;
+                this.world.camera_x += ((this.x - 1060) - this.world.camera_x) * 0.05;
             }
         } else if (this.isMovingRight) {
             this.isFlipped = false;
             if (this.x < this.world.farmLevelSetup.farmLevel.level_end_x) {
                 this.x += movementSpeed;
-                this.world.camera_x += ((this.x - 100) - this.world.camera_x) * 0.1;
+                this.world.camera_x += ((this.x - 100) - this.world.camera_x) * 0.05;
             }
         }
 
@@ -513,7 +513,7 @@ class Character extends MovableObject {
                     if (['kneel-and-cry', 'stand-up-and-look-determined', 'cry', 'look-determined', 'look-determined-and-stand-up', 'strong-determined', 'caress', 'caress2'].includes(this.currentAnimation)) {
                         this.width = 158;
                         this.height = 183;
-                        this.y = 247;
+                        this.y = 487;
                         this.offset.top = 13;
                         this.offset.left = 33;
                         this.offset.right = 55;
@@ -522,7 +522,7 @@ class Character extends MovableObject {
                     } else {
                         this.width = 130;
                         this.height = 300;
-                        this.y = 130;
+                        this.y = 370;
                         this.offset.top = 130;
                         this.offset.left = 20;
                         this.offset.right = 40;

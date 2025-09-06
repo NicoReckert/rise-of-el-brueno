@@ -270,7 +270,7 @@ class World {
         }
 
         // this.ctx.translate(-this.camera_x, 0);
-        if (this.charakter.x > 0 && this.charakter.x < 150) {
+        if (this.charakter.x > 280 && this.charakter.x < 430) {
             if (!this.bubbleStall.startTime) {
                 this.bubbleStall.start();
             }
@@ -304,7 +304,7 @@ class World {
         }
         this.stepSoundCharakter(timestamp);
         this.landingSoundCharakter();
-        if (this.keyboard.F && this.charakter.x > 0 && this.charakter.x < 150) {
+        if (this.keyboard.F && this.charakter.x > 280 && this.charakter.x < 430) {
             this.currentScene = 'farmScene';
             this.charakter.x = 1620;
             this.camera_x = this.charakter.x - 100;
@@ -342,7 +342,7 @@ class World {
             if (elapsed >= 0 && elapsed < 5000) {
                 this.charakter.isCaress = true;
                 this.isKeysStopp = true;
-                this.charakter.x = 280;
+                this.charakter.x = 560;
                 this.charakter.isFlipped = false;
                 this.chickenNpc.updateState('love');
                 this.chickenSound.play();
@@ -355,7 +355,7 @@ class World {
                 if (!this.farmLevelSetup.taskWindow.tasks[0].done) {
                     this.farmLevelSetup.taskWindow.markDone(0)
                     this.farmLevelSetup.sounds.taskCompletedSound.play();
-                    this.popupTexts.push(new PopupText("Aufgabe erledigt!", this.canvas.width / 2, 200));
+                    this.popupTexts.push(new PopupText("Aufgabe erledigt!", this.canvas.width / 2, 440));
                 }
             }
         }
@@ -382,7 +382,7 @@ class World {
             if (elapsed >= 0 && elapsed < 5000) {
                 this.charakter.isCaress = true;
                 this.isKeysStopp = true;
-                this.charakter.x = 440;
+                this.charakter.x = 720;
                 this.charakter.isFlipped = false;
                 this.chickNpc.updateState('love');
                 this.chickSound.play();
@@ -395,7 +395,7 @@ class World {
                 if (!this.farmLevelSetup.taskWindow.tasks[1].done) {
                     this.farmLevelSetup.taskWindow.markDone(1)
                     this.farmLevelSetup.sounds.taskCompletedSound.play();
-                    this.popupTexts.push(new PopupText("Aufgabe erledigt!", this.canvas.width / 2, 200));
+                    this.popupTexts.push(new PopupText("Aufgabe erledigt!", this.canvas.width / 2, 440));
                 }
             }
         }
@@ -408,10 +408,10 @@ class World {
         this.scene2 = scene2;
         // this.charakter = new Character();
         this.camera_x = 0;
-        this.charakter.x = 100;
+        this.charakter.x = 380;
         this.bubbleStall = new SpeechBubble("Den Hühnerstall verlassen? {F} drücken!", this.charakter, 'info');
-        this.chickenNpc = new NotMovableNpc('chicken', 150, 150, 355, 220, 0, 100, -20, 0);
-        this.chickNpc = new NotMovableNpc('chick', 120, 120, 525, 275);
+        this.chickenNpc = new NotMovableNpc('chicken', 150, 150, 635, 460, 0, 100, -20, 0);
+        this.chickNpc = new NotMovableNpc('chick', 120, 120, 805, 515);
         this.chickNpc.isFlipped = false;
         this.speechBubbles = {
             bubbleStable1: new SpeechBubble("Yordi streicheln {F} drücken", 'canvas', 'speech')
@@ -882,7 +882,7 @@ class World {
             document.getElementById('overlay-start-initialisation').style.display = 'none';
             document.getElementById('canvas').style.display = 'block';
             // document.getElementById('background-music').play();
-            // setFullscreen();
+            setFullscreen();
             // this.charakter.playSpeakSound();
             titleMusic.pause();
             titleMusic2.pause();
