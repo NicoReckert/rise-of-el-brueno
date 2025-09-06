@@ -138,7 +138,7 @@ class FarmLevelController {
         this.addToWorld(this.setup.npcs.pond);
         // this.addToWorld(this.setup.npcs.blackDragon);
         // this.setup.npcs.blackDragon.isFlipped = false;
-        // this.setup.npcs.blackDragon.updateState('halfSizeFly', 1000 / 6.5);
+        // this.setup.npcs.blackDragon.updateState('idle', 1000 / 6.5);
         // this.setup.sounds.dragonRoarSound.play();
         //             if (this.setup.npcs.blackDragon.x <= 6000) {
         //         this.setup.npcs.blackDragon.x += 2;
