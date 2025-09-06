@@ -2,7 +2,7 @@ class World {
 
     ctx;
     canvas;
-    currentScene = 'farmScene';
+    currentScene = 'farmLevel';
 
 
 
@@ -43,6 +43,8 @@ class World {
     startGame() {
         this.farmLevelSetup = new FarmLevelSetup(this);
         this.farmLevelController = new FarmLevelController(this.farmLevelSetup);
+        this.stableLevelSetup = new StableLevelSetup(this);
+        this.stableLevelController = new StableLevelController(this.stableLevelSetup, this.farmLevelSetup);
         this.setWorld();
         this.draw();
         // this.checkPressKey();
@@ -52,11 +54,10 @@ class World {
         // this.npc2.isNpcFlipped = true;
     }
 
-    changeSetup() {
-        this.inStallSetup();
-        this.setWorld
-        this.draw();
-    }
+    // changeSetup() {
+    //     this.stableLevelSetup = new StableLevelSetup(this);
+    //     this.stableLevelController = new StableLevelController(this.stableLevelSetup, this.farmLevelSetup);
+    // }
 
     draw(timestamp) {
         // if (this.charakter.x == 1800) {
@@ -86,15 +87,13 @@ class World {
         // } else {
         switch (this.currentScene) {
 
-            case 'farmScene':
+            case 'farmLevel':
                 this.farmLevelController.update(timestamp);
-                // this.farmScene(timestamp);
                 break;
 
-            case 'stallScene':
-                this.stallScene(timestamp);
+            case 'stableLevel':
+                this.stableLevelController.update(timestamp);
                 break;
-            // }
         }
         requestAnimationFrame((timestamp) => {
             this.draw(timestamp);
@@ -244,165 +243,6 @@ class World {
         // let self = this;
     }
 
-    stallScene(timestamp) {
-        this.renderCameraX = Math.round(this.camera_x);
-        this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-        // this.updateCamera();
-        this.ctx.save();
-        this.ctx.translate(-this.renderCameraX, 0);
-        this.addObject(this.scene2.sky);
-        // this.addObject(this.scene2.clouds);
-        this.addObject(this.scene2.grounds);
-        this.addToWorld(this.scene2.towns[0]);
-        this.ctx.restore();
-        // this.ctx.translate(-this.camera_x, 0);
-        this.addToWorld(this.statusBar);
-        this.ctx.save();
-        this.ctx.translate(-this.renderCameraX, 0);
-        if (this.charakter.isCaress) {
-            this.addToWorld(this.charakter);
-            this.addToWorld(this.chickenNpc);
-            this.addToWorld(this.chickNpc);
-        } else {
-            this.addToWorld(this.chickenNpc);
-            this.addToWorld(this.chickNpc);
-            this.addToWorld(this.charakter);
-        }
-
-        // this.ctx.translate(-this.camera_x, 0);
-        if (this.charakter.x > 280 && this.charakter.x < 430) {
-            if (!this.bubbleStall.startTime) {
-                this.bubbleStall.start();
-            }
-            this.bubbleStall.update(performance.now());
-            this.bubbleStall.draw(this.ctx);
-            if (!this.isNotificationPlay) {
-                this.farmLevelSetup.sounds.notificationSound.currentTime = 0;
-                this.farmLevelSetup.sounds.notificationSound.play();
-                this.farmLevelSetup.isNotificationPlay = true;
-            }
-            // this.bubbleFarm = new SpeechBubble("In den Hühnerstall gehen? {F} drücken!", this.charakter, performance.now());
-            // this.drawSpeechBubble(this.ctx, "In den Hühnerstall gehen? {F} drücken!", this.charakter);
-        } else {
-            this.isNotificationPlay = false;
-            this.bubbleStall.startTime = null;
-        }
-        this.ctx.restore();
-
-        this.checkPressKey();
-        // this.checkCollisions();
-        this.charakter.updateState(timestamp);
-        this.charakter.updateAnimation(timestamp);
-        this.chickenNpc.updateState();
-        this.chickenNpc.updateAnimation(timestamp);
-        this.chickNpc.updateState();
-        this.chickNpc.updateAnimation(timestamp);
-
-
-        if (this.charakter.isJumping) {
-            this.charakter.applyGravity(timestamp);
-        }
-        this.stepSoundCharakter(timestamp);
-        this.landingSoundCharakter();
-        if (this.keyboard.F && this.charakter.x > 280 && this.charakter.x < 430) {
-            this.currentScene = 'farmScene';
-            this.charakter.x = 1620;
-            this.camera_x = this.charakter.x - 100;
-            this.keyboard.F = false;
-            farmLevel.level_end_x = 6409;
-            this.charakter.level_start_x = 440;
-
-        }
-
-        // if (this.charakter.x > 340 && this.charakter.x < 380) {
-        //     this.charakter.isCaress = true;
-        // }
-
-        // let self = this;
-
-        if (this.charakter.isColliding(this.chickenNpc, 0, 0)) {
-            this.ctx.save();
-            this.ctx.translate(-this.renderCameraX, 0);
-            // if (!this.speechBubbles.bubbleStable1.startTime) {
-            //     this.speechBubbles.bubbleStable1.start();
-            // }
-            // this.speechBubbles.bubbleStable1.update(performance.now());
-            // this.speechBubbles.bubbleStable1.draw(this.ctx, 0);
-            this.ctx.restore();
-        }
-
-        if (this.charakter.isColliding(this.chickenNpc, 0, 0) && this.keyboard.F) {
-            if (!this.starttime2) {
-                this.starttime2 = performance.now();
-            }
-
-            const elapsed = performance.now() - this.starttime2;
-
-            // Zeitfenster für isCaress
-            if (elapsed >= 0 && elapsed < 5000) {
-                this.charakter.isCaress = true;
-                this.isKeysStopp = true;
-                this.charakter.x = 560;
-                this.charakter.isFlipped = false;
-                this.chickenNpc.updateState('love');
-                this.chickenSound.play();
-            } else {
-                this.charakter.isCaress = false;
-                this.starttime2 = null;
-                this.keyboard.F = false;
-                this.isKeysStopp = false;
-                this.chickenNpc.updateState('idle');
-                if (!this.farmLevelSetup.taskWindow.tasks[0].done) {
-                    this.farmLevelSetup.taskWindow.markDone(0)
-                    this.farmLevelSetup.sounds.taskCompletedSound.play();
-                    this.popupTexts.push(new PopupText("Aufgabe erledigt!", this.canvas.width / 2, 440));
-                }
-            }
-        }
-
-        if (this.charakter.isColliding(this.chickNpc, 0, 0)) {
-            this.ctx.save();
-            this.ctx.translate(-this.renderCameraX, 0);
-            // if (!this.speechBubbles.bubbleStable1.startTime) {
-            //     this.speechBubbles.bubbleStable1.start();
-            // }
-            // this.speechBubbles.bubbleStable1.update(performance.now());
-            // this.speechBubbles.bubbleStable1.draw(this.ctx, 0);
-            this.ctx.restore();
-        }
-
-        if (this.charakter.isColliding(this.chickNpc, 0, 0) && this.keyboard.F) {
-            if (!this.starttime2) {
-                this.starttime2 = performance.now();
-            }
-
-            const elapsed = performance.now() - this.starttime2;
-
-            // Zeitfenster für isCaress
-            if (elapsed >= 0 && elapsed < 5000) {
-                this.charakter.isCaress = true;
-                this.isKeysStopp = true;
-                this.charakter.x = 720;
-                this.charakter.isFlipped = false;
-                this.chickNpc.updateState('love');
-                this.chickSound.play();
-            } else {
-                this.charakter.isCaress = false;
-                this.starttime2 = null;
-                this.keyboard.F = false;
-                this.isKeysStopp = false;
-                this.chickNpc.updateState('idle');
-                if (!this.farmLevelSetup.taskWindow.tasks[1].done) {
-                    this.farmLevelSetup.taskWindow.markDone(1)
-                    this.farmLevelSetup.sounds.taskCompletedSound.play();
-                    this.popupTexts.push(new PopupText("Aufgabe erledigt!", this.canvas.width / 2, 440));
-                }
-            }
-        }
-        const now = performance.now();
-        this.popupTexts.forEach(p => p.draw(this.ctx, now));
-        this.popupTexts = this.popupTexts.filter(p => p.active);
-    }
 
     scene3() {
         this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);

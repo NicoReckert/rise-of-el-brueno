@@ -7,7 +7,6 @@ class FarmLevelController {
         this.addObject = this.world.addObject.bind(this.world);
         this.addToWorld = this.world.addToWorld.bind(this.world);
         this.charakter = this.world.charakter;
-        this.charakter2 = this.world.charakter2;
         this.checkPressKey = this.world.checkPressKey.bind(this.world);
         this.keyboard = this.world.keyboard;
         this.stepSoundCharakter = this.world.stepSoundCharakter.bind(this.world);
@@ -211,8 +210,10 @@ class FarmLevelController {
 
     handleInteractions() {
         if (this.keyboard.F && this.charakter.x > 1550 && this.charakter.x < 1700) {
-            this.world.inStallSetup();
-            this.world.currentScene = 'stallScene';
+            // this.world.changeSetup();
+            this.camera_x = 0;
+            this.charakter.x = 380;
+            this.world.currentScene = 'stableLevel';
             this.keyboard.F = false;
             this.setup.farmLevel.level_end_x = 720;
             this.world.charakter.level_start_x = 360;
