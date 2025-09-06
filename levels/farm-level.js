@@ -51,7 +51,7 @@ const farmLevel = new Level(
             new Ground(groundSrcFarm[3], 5033),
             new Ground(groundSrcFarm[4], 5033),
             new Ground(groundSrcFarm[5], 5033),
-            new Ground(groundSrcFarm[6], 5033, 335, 100), //115 , 400    // 335, 100 //190, 300
+            new Ground(groundSrcFarm[6], 5033, 575, 100), //115 , 400    // 335, 100 //190, 300
             new Ground(groundSrcFarm[0], 5752),
             new Ground(groundSrcFarm[1], 5752),
             new Ground(groundSrcFarm[2], 5752),
@@ -60,10 +60,10 @@ const farmLevel = new Level(
             new Ground(groundSrcFarm[5], 6471),
         ],
         towns: [
-            new Town(townSrcFarm[0], 800, -280, 900, 900), // 800, -42, 600, 450
-            new Town(townSrcFarm[1], 1290, 84, 300, 400),
+            new Town(townSrcFarm[0], 800, -40, 900, 900), // 800, -42, 600, 450
+            new Town(townSrcFarm[1], 1290, 324, 300, 400),
             // new Town(townSrcFarm[2], 1600, 70, 400, 400),
-            new Town(townSrcFarm[3], 1550, -70, 600, 600)
+            new Town(townSrcFarm[3], 1550, 170, 600, 600)
 
         ],
         sky: [
