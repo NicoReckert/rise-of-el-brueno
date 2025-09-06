@@ -5,7 +5,7 @@ class Sky extends MovableObject {
         super.loadImage('./assets/img/5_background/layers/air.png')
         this.x = x;
         this.y = 0;
-        this.height = 480;
+        this.height = 720;
         this.width = 720;
     }
 }
