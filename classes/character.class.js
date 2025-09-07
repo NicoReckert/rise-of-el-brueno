@@ -1,7 +1,5 @@
 class Character extends MovableObject {
 
-
-
     standImages = [
         './assets/img/2_character_pepe/1_idle/idle/I-1.png',
         './assets/img/2_character_pepe/1_idle/idle/I-2.png',
@@ -140,9 +138,6 @@ class Character extends MovableObject {
         './assets/img/2_character_pepe/10/image_15.png'
     ]
 
-
-
-
     intervalStand = null;
     standCount = 0;
     intervalWalk = null;
@@ -182,7 +177,7 @@ class Character extends MovableObject {
         this.offset.left = 20;
         this.offset.right = 40;
         this.offset.bottom = 15;
-        this.speedX = 8;
+        this.speedX = 10;
         this.isJumping = false;
         this.isLanding = false;
         this.isKneelAndCry = false;

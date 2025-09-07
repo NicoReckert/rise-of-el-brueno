@@ -1,12 +1,19 @@
 class TownLevelSetup {
-        constructor(world) {
+    constructor(world) {
         this.world = world;
         this.townLevel = townLevel;
-        this.npcs = {
-            // cow: new NotMovableNpc('cow', 200, 200, 1200, 485), //255 Y
-        };
-        this.world.camera_x = 800;
+        this.world.camera_x = 0;
         this.statusBar = new LifeEnergyCharakterBar();
+        this.statusBar2 = new LifeEnergyBossBar();
+        this.coinBar = new CoinBar();
+        this.bottleBar = new BottleBar();
+        this.throwableObjects = [];
+        this.world.charakter.x = 100;
+        this.world.charakter.level_start_x = 0;
+        this.chickenBasket = new ChickenBasket(this.world.charakter.x + 38, this.world.charakter.y + 228);
+        this.chickenInBasket = new ChickenInBasket(this.chickenBasket.x, this.chickenBasket.y - 20);
+        this.npc1 = new Npc(1750, 130, 130, 300);
+        this.npc2 = new Npc(2500, 170, 180, 250);
         this.sounds = {
             notificationSound: new Audio('./assets/audio/notification-sound.mp3'),
             taskCompletedSound: new Audio('./assets/audio/task-completed-sound2.mp3'),
@@ -23,5 +30,17 @@ class TownLevelSetup {
         ];
         this.taskWindow = new TaskWindow(this.world.canvas, this.tasks);
         this.tKeyPressed = false;
+
+        this.endbossMusic;
+        this.endbossAlarmSound;
+        this.endbossMusicIsPlayed = false;
+        this.endbossAlarmSoundIsPlayed = false;
+        this.endbossAttack = new EndbossAttack();
+        this.backgroundMusic = document.getElementById('background-music');
+        this.jetPackMusic = document.getElementById('jet-pack-music');
+        this.jetPackSound = document.getElementById('jet-pack-sound');
+        this.bubble = new SpeechBubble("Ich bin Brünö ein Hühnerexperte, Compadre Amigo!", this.world.charakter, performance.now());
+        this.bubble2 = new SpeechBubble("Ich bin Aria und wir haben große Probleme mit motierten Hühnern", this.npc2, performance.now());
+        this.video = document.getElementById('portal-video');
     }
 }

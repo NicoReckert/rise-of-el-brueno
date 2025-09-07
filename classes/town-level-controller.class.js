@@ -8,11 +8,14 @@ class TownLevelController {
         this.addToWorld = this.world.addToWorld.bind(this.world);
         this.charakter = this.world.charakter;
         this.checkPressKey = this.world.checkPressKey.bind(this.world);
+        this.checkCollisions = this.world.checkCollisions.bind(this.world);
+        this.checkThrowObjects = this.world.checkThrowObjects.bind(this.world);
         this.keyboard = this.world.keyboard;
         this.stepSoundCharakter = this.world.stepSoundCharakter.bind(this.world);
         this.landingSoundCharakter = this.world.landingSoundCharakter.bind(this.world);
         this.popupTexts = [];
-
+        this.setup.backgroundMusic.play();
+        this.setup.backgroundMusic.loop = true;
     }
 
     update(timestamp) {
@@ -26,8 +29,10 @@ class TownLevelController {
         this.handleSpeechBubble();
         this.updateCharacter(timestamp);
         this.updateNPCs(timestamp);
+        this.updateEndboss(timestamp);
         this.handleInteractions();
         this.handlePopup();
+        this.handleChickenInBasket();
     }
 
     updateCamera() {
@@ -48,12 +53,26 @@ class TownLevelController {
 
     renderStatusBar() {
         this.addToWorld(this.setup.statusBar);
+        this.addToWorld(this.setup.statusBar2);
+        this.addToWorld(this.setup.coinBar);
+        this.addToWorld(this.setup.bottleBar);
+
     }
 
     renderNPCsAndCharacter() {
         this.ctx.save();
         this.ctx.translate(-this.renderCameraX, 0);
         this.addToWorld(this.charakter);
+        this.addObject(this.setup.townLevel.coins);
+        this.addObject(this.setup.townLevel.bottles);
+        this.addToWorld(this.chickenBasket);
+        this.addToWorld(this.chickenInBasket);
+        this.addObject(this.setup.townLevel.enemies);
+        this.addToWorld(this.endbossAttack);
+        this.addObject(this.setup.throwableObjects);
+        if (!this.setup.townLevel.endboss.isUnderTheGround) {
+            this.addToWorld(this.setup.townLevel.endboss);
+        }
         this.ctx.restore();
     }
 
@@ -80,11 +99,19 @@ class TownLevelController {
 
     updateCharacter(timestamp) {
         this.checkPressKey();
+        this.checkCollisions();
+        this.checkThrowObjects(timestamp);
         this.charakter.updateState(timestamp);
         this.charakter.updateAnimation(timestamp);
         if (this.charakter.isJumping) this.charakter.applyGravity(timestamp);
         this.stepSoundCharakter(timestamp);
         this.landingSoundCharakter();
+        this.setup.throwableObjects?.forEach(bottle => {
+            bottle.updateState(timestamp);
+            bottle.updateAnimation(timestamp);
+            bottle.applyGravity2(timestamp);
+        });
+
     }
 
     updateNPCs(timestamp) {
@@ -93,6 +120,18 @@ class TownLevelController {
             this.setup.npcs[name].updateState(timestamp);
             this.setup.npcs[name].updateAnimation(timestamp);
         });
+        this.setup.townLevel.enemies.forEach(enemy => {
+            enemy.updateState();
+            enemy.updateAnimation(timestamp);
+        });
+    }
+
+    updateEndboss(timestamp) {
+        this.setup.townLevel.endboss.updateState();
+        this.setup.townLevel.endboss.updateAnimation(timestamp);
+        this.setup.endbossAttack.updateState();
+        this.setup.endbossAttack.updateAnimation(timestamp);
+        if (this.setup.townLevel.endboss.isJumping) this.level1.endboss.applyGravityBoss(timestamp);
     }
 
     handleInteractions() {
@@ -110,5 +149,29 @@ class TownLevelController {
         const now = performance.now();
         this.popupTexts.forEach(p => p.draw(this.ctx, now));
         this.popupTexts = this.popupTexts.filter(p => p.active);
+    }
+
+    handleChickenInBasket() {
+        const basketWobble = Math.sin(Date.now() / 100) * 0.5;
+        if (this.charakter.isJumping) {
+            this.setup.chickenBasket.setCoordinates(this.charakter.x + 38, this.charakter.y + 220);
+        } else if (this.charakter.isMovingLeft || this.charakter.isMovingRight) {
+            this.setup.chickenBasket.setCoordinates(this.charakter.x + 38, this.charakter.y + 228 + basketWobble);
+        } else if (this.charakter.isFlipped) {
+            this.setup.chickenBasket.setCoordinates(this.charakter.x + 38 + 17.5, this.charakter.y + 228 + basketWobble);
+        } else {
+            this.setup.chickenBasket.setCoordinates(this.charakter.x + 38, this.charakter.y + 228);
+        }
+        if (this.setup.chickenInBasket.isIdle && !this.setup.chickenInBasket.isReturning && !this.setup.chickenInBasket.justLanded) {
+            this.setup.chickenInBasket.setCoordinates(
+                this.setup.chickenBasket.x,
+                this.setup.chickenBasket.y - 20
+            )
+        };
+        this.setup.chickenInBasket.chickenAttack(this.charakter.x, this.charakter.y, this.setup.chickenInBasket.x, this.setup.chickenInBasket.y - 20);
+        if (this.setup.chickenInBasket.isReturning) {
+            this.setup.chickenInBasket.updateReturnFlight();
+        }
+        this.world.endbossReaction();
     }
 }
