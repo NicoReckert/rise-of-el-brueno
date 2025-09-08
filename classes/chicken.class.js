@@ -4,23 +4,27 @@ class Chicken extends MovableObject {
     isDead = false;
 
     walkImages = [
-        './assets/img/3_enemies_chicken/chicken_normal/1_walk/1_w.png',
-        './assets/img/3_enemies_chicken/chicken_normal/1_walk/2_w.png',
-        './assets/img/3_enemies_chicken/chicken_normal/1_walk/3_w.png',
+        // './assets/img/3_enemies_chicken/chicken_mutates/image_1.png',
+        './assets/img/3_enemies_chicken/chicken_mutates/image_2.png',
+        './assets/img/3_enemies_chicken/chicken_mutates/image_3.png',
+        './assets/img/3_enemies_chicken/chicken_mutates/image_4.png',
+        './assets/img/3_enemies_chicken/chicken_mutates/image_5.png',
+        './assets/img/3_enemies_chicken/chicken_mutates/image_6.png'
     ]
 
     constructor() {
         super();
-        super.loadImage('./assets/img/3_enemies_chicken/chicken_normal/1_walk/1_w.png')
-        this.x = 600 + Math.random() * 500;
-        this.y = 570;
-        this.height = 100;
+        super.loadImage('./assets/img/3_enemies_chicken/chicken_mutates/image_1.png')
+        this.x = 600 + Math.random() * 2000;
+        this.y = 545;
+        this.height = 120;
+        this.widht = 120,
         this.isMovingLeft = true;
-        this.speed = 0.15 + Math.random() * 0.5;
-        this.offset.top = 4;
-        this.offset.left = 0;
-        this.offset.right = 3;
-        this.offset.bottom = 8;
+        this.speed = 0.5 + Math.random() * 0.5;
+        this.offset.top = 16;
+        this.offset.left = 12;
+        this.offset.right = 14;
+        this.offset.bottom = 10;
 
         this.lastFrameTime = 0;
         this.currentAnimation = 'walk';
@@ -43,11 +47,12 @@ class Chicken extends MovableObject {
 
         if (this.isDead) {
             this.currentAnimation = null;
-            this.img.src = './assets/img/3_enemies_chicken/chicken_normal/2_dead/dead.png'
+            this.img.src = 'assets/img/3_enemies_chicken/chicken_mutates/dead/image_1.png';
+            this.y = 565;
             return;
         } else if (this.isMovingLeft || this.isMovingRight) {
             this.currentAnimation = 'walk';
-            this.frameInterval = 1000 / 8;
+            this.frameInterval = 1000 / 5;
         }
     }
 

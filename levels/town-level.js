@@ -6,12 +6,19 @@ const groundSrcTown =
         './assets/img/5_background/layers/3_third_layer/2.png',
         './assets/img/5_background/layers/2_second_layer/2.png',
         './assets/img/5_background/layers/1_first_layer/2.png',
+        './assets/img/5_background/layers/ground-town.png',
+        './assets/img/5_background/layers/ground-town2.png'
     ]
 
 const townSrcTown =
     [
         './assets/img/town1.png',
         './assets/img/town2.png',
+        './assets/img/town3.png',
+        './assets/img/town4.png',
+        './assets/img/town5.png',
+        './assets/img/town6.png'
+
     ]
 
 const townLevel = new Level(
@@ -62,12 +69,16 @@ const townLevel = new Level(
                 new Ground(groundSrcTown[2], 5752),
                 new Ground(groundSrcTown[3], 6471),
                 new Ground(groundSrcTown[4], 6471),
-                new Ground(groundSrcTown[5], 6471),
+                new Ground(groundSrcTown[5], 6471)
             ],
         towns:
             [
-                new Town(townSrcTown[0], 1438, 115, 800, 650),
-                new Town(townSrcTown[1], 2203, 51, 800, 750)
+                new Town(townSrcTown[0], 1238, 5, 1000, 800),
+                new Town(townSrcTown[1], 2180, -105, 1000, 1000),
+                // new Town(townSrcTown[2], 3160, 25, 800, 800),
+                new Town(townSrcTown[3], 3085, -35, 800, 800),
+                new Town(townSrcTown[4], 3900, -18, 800, 800),
+                new Town(townSrcTown[5], 4600, -17, 1000, 800)
             ],
         sky:
             [
@@ -104,4 +115,11 @@ const townLevel = new Level(
                 new Bottle()
             ]
     }
+
+
 );
+let calculationX = 1400
+for (let index = 0; index < 20; index++) {
+    townLevel.grounds.push(new Ground(groundSrcTown[7], `${calculationX}`, 572, 150, 300));
+    calculationX = calculationX + 100;
+}

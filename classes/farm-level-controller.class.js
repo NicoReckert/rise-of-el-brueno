@@ -123,6 +123,19 @@ class FarmLevelController {
             this.addToWorld(this.setup.npcs.bird);
         }
         this.addToWorld(this.setup.npcs.tree);
+        this.addToWorld(this.setup.npcs.tree2);
+        this.addToWorld(this.setup.npcs.tree3);
+        this.addToWorld(this.setup.npcs.flower);
+        this.addToWorld(this.setup.npcs.flower2);
+        this.addToWorld(this.setup.npcs.flower3);
+        this.addToWorld(this.setup.npcs.flower4);
+        this.addToWorld(this.setup.npcs.flower5);
+        this.addToWorld(this.setup.npcs.flower6);
+        this.addToWorld(this.setup.npcs.flower7);
+        this.addToWorld(this.setup.npcs.flower8);
+        this.addToWorld(this.setup.npcs.barrier);
+        this.setup.npcs.barrier.updateState('idle', 1000 / 8);
+        this.setup.npcs.barrier.isFlipped = false;
         if (!this.setup.isGameCharakterInHouse) {
             if (this.charakter.isCaress) {
                 this.addToWorld(this.charakter);
@@ -201,7 +214,7 @@ class FarmLevelController {
     }
 
     updateNPCs(timestamp) {
-        const npcs = ['cow', 'bird', 'pond', 'tree', 'drohne', 'chicken', 'cowHypno', 'chickHypno', 'blackDragon'];
+        const npcs = ['cow', 'bird', 'pond', 'tree', 'tree2', 'tree3', 'flower', 'flower2', 'flower3', 'flower4', 'flower5', 'flower6', 'flower7', 'flower8', 'drohne', 'chicken', 'cowHypno', 'chickHypno', 'blackDragon', 'barrier'];
         npcs.forEach(name => {
             this.setup.npcs[name].updateState(timestamp);
             this.setup.npcs[name].updateAnimation(timestamp);

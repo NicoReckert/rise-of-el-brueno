@@ -11,14 +11,20 @@ class Endboss extends MovableObject {
     isUnderTheGround = false;
     idleImages =
         [
-            './assets/img/4_enemie_boss_chicken/2_alert/G5.png',
-            './assets/img/4_enemie_boss_chicken/2_alert/G6.png',
-            './assets/img/4_enemie_boss_chicken/2_alert/G7.png',
-            './assets/img/4_enemie_boss_chicken/2_alert/G8.png',
-            './assets/img/4_enemie_boss_chicken/2_alert/G9.png',
-            './assets/img/4_enemie_boss_chicken/2_alert/G10.png',
-            './assets/img/4_enemie_boss_chicken/2_alert/G11.png',
-            './assets/img/4_enemie_boss_chicken/2_alert/G12.png'
+            './assets/img/4_enemie_boss_chicken/0_idle/image_1.png',
+            './assets/img/4_enemie_boss_chicken/0_idle/image_2.png',
+            './assets/img/4_enemie_boss_chicken/0_idle/image_3.png',
+            './assets/img/4_enemie_boss_chicken/0_idle/image_4.png',
+            './assets/img/4_enemie_boss_chicken/0_idle/image_5.png',
+            './assets/img/4_enemie_boss_chicken/0_idle/image_5.png',
+            './assets/img/4_enemie_boss_chicken/0_idle/image_5.png',
+            './assets/img/4_enemie_boss_chicken/0_idle/image_6.png',
+            './assets/img/4_enemie_boss_chicken/0_idle/image_7.png',
+            './assets/img/4_enemie_boss_chicken/0_idle/image_8.png',
+            './assets/img/4_enemie_boss_chicken/0_idle/image_9.png',
+            './assets/img/4_enemie_boss_chicken/0_idle/image_10.png',
+            './assets/img/4_enemie_boss_chicken/0_idle/image_11.png',
+            './assets/img/4_enemie_boss_chicken/0_idle/image_12.png'
         ]
     walkImages =
         [
@@ -30,19 +36,22 @@ class Endboss extends MovableObject {
 
     hurtImages =
         [
-            './assets/img/4_enemie_boss_chicken/4_hurt/G21.png',
-            './assets/img/4_enemie_boss_chicken/4_hurt/G22.png',
-            './assets/img/4_enemie_boss_chicken/4_hurt/G23.png',
-            './assets/img/4_enemie_boss_chicken/4_hurt/G21.png',
-            './assets/img/4_enemie_boss_chicken/4_hurt/G22.png',
-            './assets/img/4_enemie_boss_chicken/4_hurt/G23.png'
+            './assets/img/4_enemie_boss_chicken/4_hurt/image_1.png',
+            './assets/img/4_enemie_boss_chicken/4_hurt/image_2.png',
+            './assets/img/4_enemie_boss_chicken/4_hurt/image_3.png',
+            './assets/img/4_enemie_boss_chicken/4_hurt/image_4.png',
+            './assets/img/4_enemie_boss_chicken/4_hurt/image_5.png',
+            './assets/img/4_enemie_boss_chicken/4_hurt/image_6.png'
         ]
 
     deadImages =
         [
-            './assets/img/4_enemie_boss_chicken/5_dead/G24.png',
-            './assets/img/4_enemie_boss_chicken/5_dead/G25.png',
-            './assets/img/4_enemie_boss_chicken/5_dead/G26.png'
+            './assets/img/4_enemie_boss_chicken/5_dead/image_1.png',
+            './assets/img/4_enemie_boss_chicken/5_dead/image_2.png',
+            './assets/img/4_enemie_boss_chicken/5_dead/image_3.png',
+            './assets/img/4_enemie_boss_chicken/5_dead/image_4.png',
+            './assets/img/4_enemie_boss_chicken/5_dead/image_5.png',
+            './assets/img/4_enemie_boss_chicken/5_dead/image_6.png'
         ]
 
     intervalMoveDownAfterDead = null;
@@ -61,7 +70,7 @@ class Endboss extends MovableObject {
 
         this.lastFrameTime = 0;
         this.currentAnimation = 'idle';
-        this.frameInterval = 1000 / 4;
+        this.frameInterval = 1000 / 8;
         this.frameIndex = 0;
 
     }
@@ -204,7 +213,7 @@ class Endboss extends MovableObject {
             this.frameInterval = 1000 / 8;
         } else {
             this.currentAnimation = 'idle';
-            this.frameInterval = 1000 / 4;
+            this.frameInterval = 1000 / 8;
         }
     }
 
@@ -234,7 +243,7 @@ class Endboss extends MovableObject {
             if (this.currentAnimation === 'dead' && this.frameIndex >= this.deadImages.length) {
                 this.isDeadAnimationReady = true;
                 this.frameIndex = 0;
-                this.img.src = './assets/img/4_enemie_boss_chicken/5_dead/G26.png'
+                this.img.src = './assets/img/4_enemie_boss_chicken/5_dead/image_6.png'
             }
         }
     }

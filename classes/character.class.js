@@ -1,143 +1,4 @@
 class Character extends MovableObject {
-
-    standImages = [
-        './assets/img/2_character_pepe/1_idle/idle/I-1.png',
-        './assets/img/2_character_pepe/1_idle/idle/I-2.png',
-        './assets/img/2_character_pepe/1_idle/idle/I-3.png',
-        './assets/img/2_character_pepe/1_idle/idle/I-4.png',
-        './assets/img/2_character_pepe/1_idle/idle/I-5.png',
-        './assets/img/2_character_pepe/1_idle/idle/I-6.png',
-        './assets/img/2_character_pepe/1_idle/idle/I-7.png',
-        './assets/img/2_character_pepe/1_idle/idle/I-8.png',
-        './assets/img/2_character_pepe/1_idle/idle/I-9.png',
-        './assets/img/2_character_pepe/1_idle/idle/I-10.png'
-    ]
-
-    walkImages = [
-        './assets/img/2_character_pepe/2_walk/W-21.png',
-        './assets/img/2_character_pepe/2_walk/W-22.png',
-        './assets/img/2_character_pepe/2_walk/W-23.png',
-        './assets/img/2_character_pepe/2_walk/W-24.png',
-        './assets/img/2_character_pepe/2_walk/W-25.png',
-        './assets/img/2_character_pepe/2_walk/W-26.png'
-    ]
-
-    jumpImages = [
-        './assets/img/2_character_pepe/3_jump/J-31.png',
-        './assets/img/2_character_pepe/3_jump/J-32.png',
-        './assets/img/2_character_pepe/3_jump/J-33.png',
-        './assets/img/2_character_pepe/3_jump/J-34.png',
-        './assets/img/2_character_pepe/3_jump/J-35.png',
-        './assets/img/2_character_pepe/3_jump/J-36.png',
-        './assets/img/2_character_pepe/3_jump/J-37.png',
-        './assets/img/2_character_pepe/3_jump/J-38.png',
-        './assets/img/2_character_pepe/3_jump/J-39.png'
-    ]
-
-    deadImages = [
-        './assets/img/2_character_pepe/5_dead/D-51.png',
-        './assets/img/2_character_pepe/5_dead/D-52.png',
-        './assets/img/2_character_pepe/5_dead/D-53.png',
-        './assets/img/2_character_pepe/5_dead/D-54.png',
-        './assets/img/2_character_pepe/5_dead/D-55.png',
-        './assets/img/2_character_pepe/5_dead/D-56.png',
-        './assets/img/2_character_pepe/5_dead/D-57.png'
-    ]
-
-    hurtImages = [
-        './assets/img/2_character_pepe/4_hurt/H-41.png',
-        './assets/img/2_character_pepe/4_hurt/H-42.png',
-        './assets/img/2_character_pepe/4_hurt/H-43.png'
-    ]
-
-    jetPackImages = [
-        './assets/img/Pepe_Jetpack.png'
-    ]
-
-    caressImages = [
-        './assets/img/2_character_pepe/6_caress/image_1.png',
-        './assets/img/2_character_pepe/6_caress/image_2.png',
-        './assets/img/2_character_pepe/6_caress/image_3.png',
-        './assets/img/2_character_pepe/6_caress/image_4.png',
-        './assets/img/2_character_pepe/6_caress/image_5.png',
-        './assets/img/2_character_pepe/6_caress/image_6.png',
-        './assets/img/2_character_pepe/6_caress/image_7.png',
-        './assets/img/2_character_pepe/6_caress/image_8.png'
-    ]
-
-    caressImages2 = [
-        './assets/img/2_character_pepe/6_caress/image_6.png',
-        './assets/img/2_character_pepe/6_caress/image_7.png',
-        './assets/img/2_character_pepe/6_caress/image_8.png'
-    ]
-
-    kneelDownAndCryImages = [
-        // './assets/img/2_character_pepe/7_kneel-down-and-cry/image_1.png',
-        './assets/img/2_character_pepe/7_kneel-down-and-cry/image_2.png',
-        './assets/img/2_character_pepe/7_kneel-down-and-cry/image_3.png',
-        './assets/img/2_character_pepe/7_kneel-down-and-cry/image_4.png',
-        './assets/img/2_character_pepe/7_kneel-down-and-cry/image_5.png',
-        './assets/img/2_character_pepe/7_kneel-down-and-cry/image_6.png',
-        // './assets/img/2_character_pepe/7_kneel-down-and-cry/image_7.png',
-        './assets/img/2_character_pepe/7_kneel-down-and-cry/image_8.png',
-        './assets/img/2_character_pepe/7_kneel-down-and-cry/image_9.png',
-        './assets/img/2_character_pepe/7_kneel-down-and-cry/image_10.png'
-    ]
-
-    cryImages = [
-        // './assets/img/2_character_pepe/7_kneel-down-and-cry/image_5.png',
-        // './assets/img/2_character_pepe/7_kneel-down-and-cry/image_6.png',
-        // './assets/img/2_character_pepe/7_kneel-down-and-cry/image_7.png',
-        './assets/img/2_character_pepe/7_kneel-down-and-cry/image_8.png',
-        './assets/img/2_character_pepe/7_kneel-down-and-cry/image_9.png',
-        './assets/img/2_character_pepe/7_kneel-down-and-cry/image_10.png'
-    ]
-
-    standUpAndLookDeterminedImages = [
-        './assets/img/2_character_pepe/8_stand_up_look_determined/image_1.png',
-        './assets/img/2_character_pepe/8_stand_up_look_determined/image_2.png',
-        './assets/img/2_character_pepe/8_stand_up_look_determined/image_3.png',
-        './assets/img/2_character_pepe/8_stand_up_look_determined/image_4.png',
-        './assets/img/2_character_pepe/8_stand_up_look_determined/image_5.png',
-        './assets/img/2_character_pepe/8_stand_up_look_determined/image_6.png',
-        './assets/img/2_character_pepe/8_stand_up_look_determined/image_7.png',
-        './assets/img/2_character_pepe/8_stand_up_look_determined/image_8.png',
-        './assets/img/2_character_pepe/8_stand_up_look_determined/image_9.png',
-        './assets/img/2_character_pepe/8_stand_up_look_determined/image_10.png'
-    ]
-
-    lookDeterminedImages = [
-        './assets/img/2_character_pepe/8_stand_up_look_determined/image_8.png',
-        './assets/img/2_character_pepe/8_stand_up_look_determined/image_9.png',
-        './assets/img/2_character_pepe/8_stand_up_look_determined/image_10.png'
-    ]
-
-    lookDeterminedStandUpImages = [
-        './assets/img/2_character_pepe/10/image_1.png',
-        './assets/img/2_character_pepe/10/image_2.png',
-        './assets/img/2_character_pepe/10/image_3.png',
-        './assets/img/2_character_pepe/10/image_4.png',
-        './assets/img/2_character_pepe/10/image_5.png',
-        './assets/img/2_character_pepe/10/image_6.png',
-        './assets/img/2_character_pepe/10/image_7.png',
-        './assets/img/2_character_pepe/10/image_8.png',
-        './assets/img/2_character_pepe/10/image_9.png',
-        './assets/img/2_character_pepe/10/image_10.png',
-        './assets/img/2_character_pepe/10/image_11.png',
-        './assets/img/2_character_pepe/10/image_12.png',
-        './assets/img/2_character_pepe/10/image_13.png',
-        './assets/img/2_character_pepe/10/image_14.png',
-        './assets/img/2_character_pepe/10/image_15.png'
-    ]
-
-    strongDeterminedImages = [
-        // './assets/img/2_character_pepe/10/image_11.png',
-        './assets/img/2_character_pepe/10/image_12.png',
-        './assets/img/2_character_pepe/10/image_13.png',
-        './assets/img/2_character_pepe/10/image_14.png',
-        './assets/img/2_character_pepe/10/image_15.png'
-    ]
-
     intervalStand = null;
     standCount = 0;
     intervalWalk = null;
@@ -163,15 +24,13 @@ class Character extends MovableObject {
     throwableBottels = 0;
     isCaress = false;
 
-
-
     constructor() {
         super();
         super.loadImage('./assets/img/2_character_pepe/1_idle/idle/I-1.png');
         this.height = 300; // 183 für voidless.dev sprite - 300 * 0.61
         this.width = 130; // 158 für voidless.dev sprite - 130 * 1.216
         this.x = 1000;
-        this.y = 370; // 247 für voidless.dev sprite - 130 * 1.9
+        this.y = 370; // 487 für voidless.dev sprite - 370 * 1.9
         // this.startMainLoop()
         this.offset.top = 130;
         this.offset.left = 20;
@@ -189,176 +48,106 @@ class Character extends MovableObject {
         this.frameIndex = 0;
         this.level_start_x = 440;
 
+
+        this.preloadIdleAndWalkImages();
+        this.preloadJumpAndDeadImages();
+        this.preloadHurtAndJetpackImages();
+        this.preloadCaressAndCaress2Images();
+        this.preloadKneelDownAndCryImages();
+        this.preloadStandUpAndLookDeterminedImages();
+        this.preloadLookDeterminedStandUpAndStrongDeterminedImages();
     }
 
-    // moveLeft() {
-    //     if (this.intervalMoveLeft) return;
-    //     this.isFlipped = true;
-    //     this.isMoving = true;
-    //     // this.clearAllInterval();
-    //     clearInterval(this.intervalMoveRight);
-    //     clearInterval(this.intervalStand);
-    //     this.intervalMoveLeft = setInterval(() => {
-    //         if (this.x > 0) {
-    //             this.x -= this.speedX;
-    //             this.world.camera_x = -this.x + 100;
-    //             // this.updateCameraSmooth();
-    //         }
-    //     }, 1000 / 60);
-    //     if (this.isFlying || this.isJumping) return;
-    //     this.animationWalk();
-    // }
+    preloadIdleAndWalkImages() {
+        this.standImages = Array.from({ length: 10 }, (_, i) => {
+            const img = new Image();
+            img.src = `./assets/img/2_character_pepe/1_idle/idle/I-${i + 1}.png`;
+            return img;
+        });
+        this.walkImages = Array.from({ length: 6 }, (_, i) => {
+            const img = new Image();
+            img.src = `./assets/img/2_character_pepe/2_walk/W-2${i + 1}.png`;
+            return img;
+        });
+    }
 
-    // moveRight() {
-    //     if (this.intervalMoveRight) return
-    //     this.isFlipped = false;
-    //     this.isMoving = true;
-    //     // this.clearAllInterval();
-    //     clearInterval(this.intervalMoveLeft);
-    //     clearInterval(this.intervalStand);
-    //     this.intervalMoveRight = setInterval(() => {
-    //         if (this.x < this.world.level1.level_end_x) {
-    //             this.x += this.speedX;
-    //             this.world.camera_x = -this.x + 100;
-    //             // this.updateCameraSmooth();
-    //         }
-    //     }, 1000 / 60);
-    //     if (this.isFlying || this.isJumping) return;
-    //     this.animationWalk();
-    // }
+    preloadJumpAndDeadImages() {
+        this.jumpImages = Array.from({ length: 9 }, (_, i) => {
+            const img = new Image();
+            img.src = `./assets/img/2_character_pepe/3_jump/J-3${i + 1}.png`;
+            return img;
+        });
+        this.deadImages = Array.from({ length: 7 }, (_, i) => {
+            const img = new Image();
+            img.src = `./assets/img/2_character_pepe/5_dead/D-5${i + 1}.png`;
+            return img;
+        });
+    }
 
-    // updateCameraSmooth() {
-    //     const offset = this.isFlipped ? 600 : 0;
-    //     const targetX = -this.x + offset;
-    //     this.world.camera_x += (targetX - this.world.camera_x) * 0.08; // je kleiner 0.1, desto weicher
-    // }
+    preloadHurtAndJetpackImages() {
+        this.hurtImages = Array.from({ length: 3 }, (_, i) => {
+            const img = new Image();
+            img.src = `./assets/img/2_character_pepe/4_hurt/H-4${i + 1}.png`;
+            return img;
+        });
+        this.jetPackImages = Array.from({ length: 1 }, _ => {
+            const img = new Image();
+            img.src = `./assets/img/Pepe_Jetpack.png`;
+            return img;
+        });
+    }
 
-    // moveUp() {
-    //     if (this.intervalMoveUp) return
-    //     this.isMoving = true;
-    //     if (this.y > -60) {
-    //         this.y -= 10;
-    //     }
+    preloadCaressAndCaress2Images() {
+        this.caressImages = Array.from({ length: 8 }, (_, i) => {
+            const img = new Image();
+            img.src = `./assets/img/2_character_pepe/6_caress/image_${i + 1}.png`;
+            return img;
+        });
+        this.caressImages2 = Array.from({ length: 3 }, (_, i) => {
+            const img = new Image();
+            img.src = `./assets/img/2_character_pepe/6_caress/image_${6 + i}.png`;
+            return img;
+        });
+    }
 
-    // }
+    preloadKneelDownAndCryImages() {
+        this.kneelDownAndCryImages = Array.from({ length: 8 }, (_, i) => {
+            const img = new Image();
+            img.src = `./assets/img/2_character_pepe/7_kneel-down-and-cry/image_${i + 1}.png`;
+            return img;
+        });
+        this.cryImages = Array.from({ length: 3 }, (_, i) => {
+            const img = new Image();
+            img.src = `./assets/img/2_character_pepe/7_kneel-down-and-cry/image_${6 + i}.png`;
+            return img;
+        });
+    }
 
-    // moveDown() {
-    //     if (this.intervalMoveDown) return
-    //     this.isMoving = true;
-    //     if (this.y + 10 < 130) {
-    //         this.y += 10;
-    //     } else {
-    //         this.isFlying = false;
-    //         this.y = 130;
-    //         this.moveStop();
-    //     }
-    // }
+    preloadStandUpAndLookDeterminedImages() {
+        this.standUpAndLookDeterminedImages = Array.from({ length: 10 }, (_, i) => {
+            const img = new Image();
+            img.src = `./assets/img/2_character_pepe/8_stand_up_look_determined/image_${i + 1}.png`;
+            return img;
+        });
+        this.lookDeterminedImages = Array.from({ length: 3 }, (_, i) => {
+            const img = new Image();
+            img.src = `./assets/img/2_character_pepe/8_stand_up_look_determined/image_${8 + i}.png`;
+            return img;
+        });
+    }
 
-    // moveStop() {
-    //     this.isMoving = false;
-    //     this.clearAllInterval();
-    //     this.animationStand();
-    // }
-
-    // moveJump() {
-    //     // this.clearAllInterval();
-    //     // if (this.intervalJump) return
-    //     // if (this.intervalGravity) return
-    //     clearInterval(this.intervalWalk);
-    //     this, this.intervalWalk = null;
-    //     this.isJumping = true;
-    //     this.isMoving = true;
-    //     this.speedY = 23;
-    //     this.animationJump();
-    //     this.applyGravity();
-
-    // }
-
-    // moveFly() {
-    //     this.clearAllInterval();
-    //     if (this.isFlying) return;
-    //     this.isFlying = true;
-    //     this.y = 120;
-    //     super.loadImage(this.jetPackImages[0]);
-    // }
-
-    // clearAllInterval() {
-    //     clearInterval(this.intervalMoveLeft);
-    //     this.intervalMoveLeft = null;
-    //     clearInterval(this.intervalMoveRight);
-    //     this.intervalMoveRight = null;
-    //     clearInterval(this.intervalStand);
-    //     this.intervalStand = null;
-    //     clearInterval(this.intervalWalk);
-    //     this.intervalWalk = null;
-    //     clearInterval(this.intervalJump);
-    //     this.intervalJump = null;
-    //     clearInterval(this.intervalDead);
-    //     this.intervalDead = null;
-    //     clearInterval(this.intervalHurt);
-    //     this.intervalHurt = null;
-    // }
-
-    // animationStand() {
-    //     if (this.intervalStand) return;
-    //     this.intervalStand = setInterval(() => {
-    //         let index = this.standCount % this.standImages.length;
-    //         this.img.src = this.standImages[index];
-    //         this.standCount++
-    //     }, 400);
-    // }
-
-    // animationWalk() {
-    //     if (this.intervalWalk) return;
-    //     this.intervalWalk = setInterval(() => {
-    //         let index = this.walkCount % this.walkImages.length;
-    //         this.img.src = this.walkImages[index];
-    //         this.walkCount++
-    //     }, 1000 / 8);
-    // }
-
-    // animationJump() {
-    //     if (this.intervalJump) return;
-    //     this.intervalJump = setInterval(() => {
-    //         if (this.isAboveGround() || this.speedY > 0) {
-    //             let index = this.jumpCount % this.jumpImages.length;
-    //             this.img.src = this.jumpImages[index];
-    //             this.jumpCount++
-    //         } else {
-    //             this.clearAllInterval();
-    //             this.isMoving = false;
-    //             this.isJumping = false;
-    //             this.moveStop();
-    //         }
-    //     }, 1000 / 9);
-    // }
-
-    // animationDead() {
-    //     if (this.intervalDead) return;
-    //     this.clearAllInterval();
-    //     this.intervalDead = setInterval(() => {
-    //         if (this.deadCount === this.deadImages.length) return;
-    //         let index = this.deadCount % this.deadImages.length;
-    //         this.img.src = this.deadImages[index];
-    //         this.deadCount++
-    //     }, 1000 / 8);
-    // }
-
-    // animationHurt() {
-    //     if (this.intervalHurt) return;
-    //     this.clearAllInterval();
-    //     this.intervalHurt = setInterval(() => {
-    //         let index = this.hurtCount % this.hurtImages.length;
-    //         this.img.src = this.hurtImages[index];
-    //         this.hurtCount++
-    //     }, 1000 / 8);
-    // }
-
-    // playSpeakSound() {
-    //     if (this.x == 1650) {
-    //         document.getElementById('speak-sound').play();
-    //     }
-    // }
+    preloadLookDeterminedStandUpAndStrongDeterminedImages() {
+        this.lookDeterminedStandUpImages = Array.from({ length: 15 }, (_, i) => {
+            const img = new Image();
+            img.src = `./assets/img/2_character_pepe/10/image_${i + 1}.png`;
+            return img;
+        });
+        this.strongDeterminedImages = Array.from({ length: 4 }, (_, i) => {
+            const img = new Image();
+            img.src = `./assets/img/2_character_pepe/10/image_${12 + i}.png`;
+            return img;
+        });
+    }
 
     bounce() {
         this.speedY = 10; // kleiner Rücksprung nach oben
@@ -437,64 +226,6 @@ class Character extends MovableObject {
 
     }
 
-    setPropertiesNormal() {
-        this.width = 130;
-        this.height = 300;
-        this.y = 130;
-    }
-
-    setPropertiesVoidless() {
-        this.width = 158;
-        this.height = 183;
-        this.y = 247;
-    }
-
-
-    updateState2() {
-        if (this.isJumping) {
-            this.currentAnimation = 'jump';
-            this.frameInterval = 1000 / 10; // jump: 10 FPS
-            return;
-        }
-        if (this.isDead) {
-            this.currentAnimation = 'dead';
-            this.frameInterval = 1000 / 6; // dead: 6 FPS
-            return;
-        }
-        if (this.isMovingLeft) {
-            this.currentAnimation = 'walk';
-            this.frameInterval = 1000 / 8; // walk: 8 FPS
-            this.isFlipped = true;
-            if (this.x > 0) {
-                this.x -= this.speedX;
-                this.world.camera_x = -this.x + 100;
-            }
-        } else if (this.isMovingRight) {
-            this.currentAnimation = 'walk';
-            this.frameInterval = 1000 / 8; // walk: 8 FPS
-            this.isFlipped = false;
-            if (this.x < this.world.level1.level_end_x) {
-                this.x += this.speedX;
-                this.world.camera_x = -this.x + 100;
-            }
-        }
-        else {
-            this.currentAnimation = 'stand';
-            this.frameInterval = 1000 / 2.5; // idle: 5 FPS
-        }
-    }
-
-    // updateAnimation() {
-    //     this.frameTimer += 1000 / 60;
-
-    //     if (this.frameTimer >= this.frameInterval) {
-    //         let animationFrames = this.getAnimationFrames(this.currentAnimation);
-    //         this.img.src = animationFrames[this.imageIndex % animationFrames.length];
-    //         this.imageIndex++;
-    //         this.frameTimer = 0;
-    //     }
-    // }
-
     updateAnimation(timestamp) {
         if (!this.lastFrameTime) this.lastFrameTime = timestamp;
         const deltaTime = timestamp - this.lastFrameTime;
@@ -503,7 +234,7 @@ class Character extends MovableObject {
             let images = this.getAnimationImages(this.currentAnimation);
 
             if (images && images.length > 0) {
-                this.img.src = images[this.frameIndex % images.length];
+                this.img = images[this.frameIndex % images.length];
                 if (this.deferSizeUpdate) {
                     if (['kneel-and-cry', 'stand-up-and-look-determined', 'cry', 'look-determined', 'look-determined-and-stand-up', 'strong-determined', 'caress', 'caress2'].includes(this.currentAnimation)) {
                         this.width = 158;
@@ -554,18 +285,6 @@ class Character extends MovableObject {
         }
     }
 
-
-    // getAnimationFrames(name) {
-    //     switch (name) {
-    //         case 'stand': return this.standImages;
-    //         case 'walk': return this.walkImages;
-    //         case 'jump': return this.jumpImages;
-    //         case 'dead': return this.deadImages;
-    //         case 'hurt': return this.hurtImages;
-    //         default: return [this.standImages[0]];
-    //     }
-    // }
-
     getAnimationImages(state) {
         switch (state) {
             case 'walk': return this.walkImages;
@@ -595,38 +314,3 @@ class Character extends MovableObject {
         }
     }
 }
-
-
-// this.extractFramesCentered('./assets/img/Walk.png', 128, 128, 8).then((frames) => {
-//             this.walkImages = frames;
-//             this.loadImage(this.walkImages[0]);
-//             this.animationWalk();
-//         });
-// extractFramesCentered(src, frameW, frameH, count, row = 0, pad = 30) {
-//         return new Promise((resolve) => {
-//             const img = new Image();
-//             const frames = [];
-//             const canvas = document.createElement('canvas');
-//             const ctx = canvas.getContext('2d');
-
-//             canvas.width = frameW + pad * 2;
-//             canvas.height = frameH;
-
-//             img.onload = () => {
-//                 for (let i = 0; i < count; i++) {
-//                     ctx.clearRect(0, 0, canvas.width, canvas.height);
-//                     ctx.drawImage(
-//                         img,
-//                         i * frameW, row * frameH,
-//                         frameW, frameH,
-//                         pad, 0,
-//                         frameW, frameH
-//                     );
-//                     frames.push(canvas.toDataURL());
-//                 }
-//                 resolve(frames);
-//             };
-
-//             img.src = src;
-//         });
-//     }

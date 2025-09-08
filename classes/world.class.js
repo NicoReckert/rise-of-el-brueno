@@ -34,14 +34,14 @@ class World {
         this.farmLevelController = new FarmLevelController(this.farmLevelSetup);
         this.stableLevelSetup = new StableLevelSetup(this);
         this.stableLevelController = new StableLevelController(this.stableLevelSetup, this.farmLevelSetup);
-        this.townLevelSetup = new TownLevelSetup(this);
-        this.townLevelController = new TownLevelController(this.townLevelSetup);
+        // this.townLevelSetup = new TownLevelSetup(this);
+        // this.townLevelController = new TownLevelController(this.townLevelSetup);
         this.setWorld();
         this.draw();
     }
 
     draw(timestamp) {
-        this.townLevelController.update(timestamp);
+        // this.farmLevelController.update(timestamp);
 
         // const deltaTime = timestamp - this.lastTime;
         // this.lastTime = timestamp;
@@ -53,16 +53,16 @@ class World {
         //         this.isChapterSoundPlayed = true;
         //     }
         // } else {
-        // switch (this.currentScene) {
+        switch (this.currentScene) {
 
-        //     case 'farmLevel':
-        //         this.farmLevelController.update(timestamp);
-        //         break;
+            case 'farmLevel':
+                this.farmLevelController.update(timestamp);
+                break;
 
-        //     case 'stableLevel':
-        //         this.stableLevelController.update(timestamp);
-        //         break;
-        // }
+            case 'stableLevel':
+                this.stableLevelController.update(timestamp);
+                break;
+        }
         requestAnimationFrame((timestamp) => {
             this.draw(timestamp);
         });

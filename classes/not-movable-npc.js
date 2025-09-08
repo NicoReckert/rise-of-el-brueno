@@ -118,6 +118,84 @@ class NotMovableNpc extends MovableObject {
                 ]
         }
 
+    tree2 =
+        {
+            idle:
+                [
+                    './assets/img/npcs/tree2/idle/image_1.png',
+                    './assets/img/npcs/tree2/idle/image_2.png',
+                    './assets/img/npcs/tree2/idle/image_3.png',
+                    './assets/img/npcs/tree2/idle/image_4.png',
+                    './assets/img/npcs/tree2/idle/image_5.png',
+                    './assets/img/npcs/tree2/idle/image_6.png'
+                ]
+        }
+
+    tree3 =
+        {
+            idle:
+                [
+                    './assets/img/npcs/tree3/idle/image_1.png',
+                    './assets/img/npcs/tree3/idle/image_2.png',
+                    './assets/img/npcs/tree3/idle/image_3.png',
+                    './assets/img/npcs/tree3/idle/image_4.png',
+                    './assets/img/npcs/tree3/idle/image_5.png',
+                    './assets/img/npcs/tree3/idle/image_6.png'
+                ]
+        }
+
+    tree4 =
+        {
+            idle:
+                [
+                    './assets/img/npcs/tree4/idle/image_1.png',
+                    './assets/img/npcs/tree4/idle/image_2.png',
+                    './assets/img/npcs/tree4/idle/image_3.png',
+                    './assets/img/npcs/tree4/idle/image_4.png',
+                    './assets/img/npcs/tree4/idle/image_5.png',
+                    './assets/img/npcs/tree4/idle/image_6.png'
+                ]
+        }
+
+    flower =
+        {
+            idle:
+                [
+                    './assets/img/npcs/flower/idle/image_1.png',
+                    './assets/img/npcs/flower/idle/image_2.png',
+                    './assets/img/npcs/flower/idle/image_3.png',
+                    './assets/img/npcs/flower/idle/image_4.png',
+                    './assets/img/npcs/flower/idle/image_5.png',
+                    './assets/img/npcs/flower/idle/image_6.png'
+                ]
+        }
+
+    flower2 =
+        {
+            idle:
+                [
+                    './assets/img/npcs/flower2/idle/image_1.png',
+                    './assets/img/npcs/flower2/idle/image_2.png',
+                    './assets/img/npcs/flower2/idle/image_3.png',
+                    './assets/img/npcs/flower2/idle/image_4.png',
+                    './assets/img/npcs/flower2/idle/image_5.png',
+                    './assets/img/npcs/flower2/idle/image_6.png'
+                ]
+        }
+
+    flower3 =
+        {
+            idle:
+                [
+                    './assets/img/npcs/flower3/idle/image_1.png',
+                    './assets/img/npcs/flower3/idle/image_2.png',
+                    './assets/img/npcs/flower3/idle/image_3.png',
+                    './assets/img/npcs/flower3/idle/image_4.png',
+                    './assets/img/npcs/flower3/idle/image_5.png',
+                    './assets/img/npcs/flower3/idle/image_6.png'
+                ]
+        }
+
     chicken =
         {
             idle:
@@ -338,8 +416,18 @@ class NotMovableNpc extends MovableObject {
                 ]
         }
 
+    barrier =
+        {
+            idle: [
+                './assets/img/npcs/barrier/idle/image_1.png',
+                './assets/img/npcs/barrier/idle/image_2.png',
+                './assets/img/npcs/barrier/idle/image_3.png',
+                './assets/img/npcs/barrier/idle/image_4.png',
+                './assets/img/npcs/barrier/idle/image_5.png',
+                './assets/img/npcs/barrier/idle/image_6.png'
+            ]
 
-
+        }
 
     allNpcs =
         {
@@ -349,10 +437,17 @@ class NotMovableNpc extends MovableObject {
             chicken: this.chicken,
             chick: this.chick,
             tree: this.tree,
+            tree2: this.tree2,
+            tree3: this.tree3,
+            tree4: this.tree4,
+            flower: this.flower,
+            flower2: this.flower2,
+            flower3: this.flower3,
             drohne: this.drohne,
             cowHypno: this.cowHypno,
             chickHypno: this.chickHypno,
-            blackDragon: this.blackDragon
+            blackDragon: this.blackDragon,
+            barrier: this.barrier
         }
 
     idleImages = [];

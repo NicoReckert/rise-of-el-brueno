@@ -131,7 +131,7 @@ class TownLevelController {
         this.setup.townLevel.endboss.updateAnimation(timestamp);
         this.setup.endbossAttack.updateState();
         this.setup.endbossAttack.updateAnimation(timestamp);
-        if (this.setup.townLevel.endboss.isJumping) this.level1.endboss.applyGravityBoss(timestamp);
+        if (this.setup.townLevel.endboss.isJumping) this.setup.townLevel.endboss.applyGravityBoss(timestamp);
     }
 
     handleInteractions() {
