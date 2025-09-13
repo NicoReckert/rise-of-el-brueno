@@ -24,8 +24,8 @@ class TownLevelSetup {
         this.sounds.notificationSound.volume = 0.5;
         this.isNotificationPlay = false;
         this.tasks = [
-            // "1. Kümmere dich um Yordi",
-            // "2. Kümmere dich um Yarris",
+            // "1. Kümmere dich um Juanito",
+            // "2. Kümmere dich um Pollito",
             // "3. Kümmere dich um Lola"
         ];
         this.taskWindow = new TaskWindow(this.world.canvas, this.tasks);

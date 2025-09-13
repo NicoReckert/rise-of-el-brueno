@@ -50,3 +50,69 @@ titleMusic.addEventListener('timeupdate', () => {
         }, 800);
     }
 });
+
+async function init() {
+  // Optional: sofort Kritisches priorisieren (Startscreen/Background)
+  // z.B. nur die Videos im Start-Overlay:
+  await preloadAllVideos('#overlay-startscreen video, #overlay-start-initialisation video');
+
+  // Jetzt Spiel initialisieren
+  // … deine bisherige Init-Logik …
+}
+
+// --- Video Preloader ---------------------------------------------
+
+/** Resolves sobald das Video abspielbereit ist (robust; blockiert nie ewig). */
+function preloadVideo(el, { timeoutMs = 12000 } = {}) {
+    return new Promise((resolve) => {
+        let done = false;
+        const finish = () => { if (!done) { done = true; cleanup(); resolve(el); } };
+
+        const cleanup = () => {
+            clearInterval(checkReady);
+            clearTimeout(timer);
+            el.removeEventListener('canplaythrough', onReady);
+            el.removeEventListener('loadeddata', onReady);
+            el.removeEventListener('loadedmetadata', onReadyMeta);
+            el.removeEventListener('error', finish);
+            el.removeEventListener('stalled', onStalled);
+        };
+
+        const onReady = () => finish();
+        const onReadyMeta = () => { if (el.readyState >= 3) finish(); }; // Safari fallback
+        const onStalled = () => { /* ignoriere, wir pollen unten */ };
+
+        el.addEventListener('canplaythrough', onReady, { once: true });
+        el.addEventListener('loadeddata', onReady, { once: true });
+        el.addEventListener('loadedmetadata', onReadyMeta, { once: true });
+        el.addEventListener('error', finish, { once: true });
+        el.addEventListener('stalled', onStalled);
+
+        // sicherstellen, dass der Browser lädt
+        try { el.preload = el.preload || 'auto'; el.load?.(); } catch (_) { }
+
+        // schon fertig?
+        if (el.readyState >= 3) return finish();
+
+        // Poll alle 400ms (hilft bei Browsern, die Events skippen)
+        const checkReady = setInterval(() => {
+            if (el.readyState >= 3) finish();
+        }, 400);
+
+        // Hartes Timeout -> wir blockieren den Start nicht
+        const timer = setTimeout(finish, timeoutMs);
+    });
+}
+
+/** Lädt alle Videos parallel; gibt zurück, wenn alle „spielbereit ODER timeout“ sind. */
+async function preloadAllVideos(selector = 'video') {
+    const videos = Array.from(document.querySelectorAll(selector));
+    if (videos.length === 0) return;
+    // Optionale Netzwerk-Tweaks pro Video
+    for (const v of videos) {
+        v.setAttribute('playsinline', ''); // iOS sicher
+        v.setAttribute('preload', 'auto');
+        v.muted = v.muted || true; // Autoplay-Policy freundlicher
+    }
+    await Promise.all(videos.map(v => preloadVideo(v)));
+}

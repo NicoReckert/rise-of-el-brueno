@@ -68,25 +68,25 @@ const farmLevel = new Level(
             new Ground(groundSrcFarm[5], 6471)
         ],
         towns: [
-            new Town(townSrcFarm[0], 800, -30, 900, 900), // 800, -42, 600, 450
-            new Town(townSrcFarm[1], 1290, 324, 300, 400),
-            // new Town(townSrcFarm[2], 1600, 70, 400, 400),
-            new Town(townSrcFarm[3], 1550, 177, 600, 600)
+        // new Town(townSrcFarm[0], 800, -30, 900, 900), // 800, -42, 600, 450
+        new Town(townSrcFarm[1], 1290, 324, 300, 400),
+        // new Town(townSrcFarm[2], 1600, 70, 400, 400),
+        // new Town(townSrcFarm[3], 1550, 177, 600, 600)
 
         ],
-        sky: [
-            new Sky(-719),
-            new Sky(0),
-            new Sky(719),
-            new Sky(1438),
-            new Sky(2157),
-            new Sky(2876),
-            new Sky(3595),
-            new Sky(4314),
-            new Sky(5033),
-            new Sky(5752),
-            new Sky(6471)
-        ],
+sky: [
+    new Sky(-719),
+    new Sky(0),
+    new Sky(719),
+    new Sky(1438),
+    new Sky(2157),
+    new Sky(2876),
+    new Sky(3595),
+    new Sky(4314),
+    new Sky(5033),
+    new Sky(5752),
+    new Sky(6471)
+],
     });
 
 let calculationXFarm = 1280;

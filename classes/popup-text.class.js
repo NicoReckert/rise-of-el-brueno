@@ -24,8 +24,8 @@ class PopupText {
     const progress = elapsed / this.duration;
 
     // Y-Bewegung: fliegt hoch + leichte Welle
-    const baseOffset = -this.easeOutCubic(progress) * 60; 
-    const wave = Math.sin(progress * Math.PI * 2) * 5 * (1 - progress); 
+    const baseOffset = -this.easeOutCubic(progress) * 60;
+    const wave = Math.sin(progress * Math.PI * 2) * 5 * (1 - progress);
     const offsetY = baseOffset + wave;
 
     // Scale: am Anfang etwas größer, federt sanft zurück
@@ -41,18 +41,27 @@ class PopupText {
 
     // Glow
     ctx.shadowColor = "orange";
-    ctx.shadowBlur = 20;
+    ctx.shadowBlur = 15;
 
-    // Gradient
+    // Farbverlauf
     const gradient = ctx.createLinearGradient(-80, 0, 80, 0);
     gradient.addColorStop(0, "gold");
     gradient.addColorStop(1, "orange");
 
     ctx.font = "bold 48px Adventure";
-    ctx.fillStyle = gradient;
     ctx.textAlign = "center";
+    ctx.textBaseline = "middle";
+    ctx.fillStyle = gradient;
+
+    // Weicher schwarzer Schatten statt harter Outline
+    ctx.shadowColor = "rgba(0,0,0,0.7)";
+    ctx.shadowBlur = 8;
+    ctx.shadowOffsetX = 2;
+    ctx.shadowOffsetY = 2;
+
     ctx.fillText(this.text, 0, 0);
 
     ctx.restore();
+
   }
 }

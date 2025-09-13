@@ -41,27 +41,28 @@ class World {
     }
 
     draw(timestamp) {
-        // this.farmLevelController.update(timestamp);
+        // this.townLevelController.update(timestamp);
 
-        // const deltaTime = timestamp - this.lastTime;
-        // this.lastTime = timestamp;
-        // if (!this.intro.done) {
-        //     this.intro.update(deltaTime);
-        //     this.intro.draw();
-        //     if (!this.isChapterSoundPlayed) {
-        //         this.chapterSound.play();
-        //         this.isChapterSoundPlayed = true;
-        //     }
-        // } else {
-        switch (this.currentScene) {
+        const deltaTime = timestamp - this.lastTime;
+        this.lastTime = timestamp;
+        if (!this.intro.done) {
+            this.intro.update(deltaTime);
+            this.intro.draw();
+            if (!this.isChapterSoundPlayed) {
+                this.chapterSound.play();
+                this.isChapterSoundPlayed = true;
+            }
+        } else {
+            switch (this.currentScene) {
 
-            case 'farmLevel':
-                this.farmLevelController.update(timestamp);
-                break;
+                case 'farmLevel':
+                    this.farmLevelController.update(timestamp);
+                    break;
 
-            case 'stableLevel':
-                this.stableLevelController.update(timestamp);
-                break;
+                case 'stableLevel':
+                    this.stableLevelController.update(timestamp);
+                    break;
+            }
         }
         requestAnimationFrame((timestamp) => {
             this.draw(timestamp);

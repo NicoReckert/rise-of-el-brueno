@@ -14,84 +14,115 @@ class FarmLevelController {
         this.starttime2;
         this.lastCowSoundTime = 0;
         this.popupTexts = [];
+        this.doorState = 'closed';
+        this.doorBusy = false;
+        this.timerManager = this.setup.timerManager;
+        this.doorState = 'close';
+        this.timeOnStable = null;
+        this.start1 = false;
+        this.cowTaskStep = 1;
 
+        // Mittelpunkt des Bogens (etwas links unterhalb vom Canvas)
+        this.sunCenterX = 640;    // Mitte der Szene
+        this.sunCenterY = 820;    // unter dem Boden
+        this.sunRadius = 850;    // groß genug, damit Start hoch ist
+
+        this.moonCenterX = 1200;   // 640
+        this.moonCenterY = 320; // 820, unter Boden
+        this.moonRadius = 700;   // Höhe des Bogens
+
+        // Startwinkel: ca. 20° oberhalb rechts
+        this.sunAngle = Math.PI / 6; // ~30°
+        this.moonAngle = Math.PI / 2; // 45°, rechts-oben
+
+        this.eventManager = new EventManager(this.setup);
+        this.handleInteractions(this.setup);
     }
 
     update(timestamp) {
+        this.start();
         this.setup.sounds.farmMusic.play();
         this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+        this.timerManager.update();
         this.updateCamera();
         this.handleEarthquake();
         this.renderBackgrounds();
         this.renderStatusBar();
         this.renderNPCsAndCharacter();
-        this.setup.npcs.cow.updateState('walk');
-        if (this.charakter.isColliding(this.setup.npcs.cow, -200, -200)) {
-            if (this.setup.npcs.cow.x <= 5400) {
-                this.setup.npcs.cow.x += 2;
-            }
-        } else {
-            this.setup.npcs.cow.updateState('afraid', 1000 / 5);
-            const now = performance.now();
-            if (now - this.lastCowSoundTime > 4000) {
-                // this.setup.sounds.cowSound.currentTime = 0; // optional: Sound von vorne starten
-                this.setup.sounds.cowSound.play();
-                this.lastCowSoundTime = now;
-            }
-        }
-        if (this.setup.npcs.cow.x <= 5400) {
-            // this.setup.npcs.cow.updateState('walk');
-        } else {
-            this.setup.npcs.cow.updateState('eat');
-        }
-        if (this.charakter.isColliding(this.setup.npcs.cow) && this.keyboard.F && this.setup.npcs.cow.currentAnimation === 'eat') {
-            if (!this.starttime2) {
-                this.starttime2 = performance.now();
-            }
-
-            const elapsed = performance.now() - this.starttime2;
-
-            // Zeitfenster für isCaress
-            if (elapsed >= 0 && elapsed < 5000) {
-                this.charakter.isCaress = true;
-                this.world.isKeysStopp = true;
-                this.setup.npcs.cow.updateState('love');
-                this.charakter.x = this.setup.npcs.cow.x + 135;
-                if (this.setup.npcs.cow.isFlipped) {
-                    this.charakter.isFlipped = true;
-                }
-                this.setup.sounds.cowSound2.play();
-            } else {
-                this.charakter.isCaress = false;
-                this.starttime2 = null;
-                this.keyboard.F = false;
-                this.world.isKeysStopp = false;
-                this.setup.npcs.cow.updateState('eat');
-                if (!this.setup.taskWindow.tasks[2].done) {
-                    this.setup.taskWindow.markDone(2);
-                    this.setup.sounds.taskCompletedSound.play();
-                    this.popupTexts.push(new PopupText("Aufgabe erledigt!", this.canvas.width / 2, 400));
-                }
-
-
-            }
-        }
         const now = performance.now();
         this.popupTexts.forEach(p => p.draw(this.ctx, now));
         this.popupTexts = this.popupTexts.filter(p => p.active);
-
         this.setup.taskWindow.update();
         this.setup.taskWindow.draw(this.ctx);
         this.handleSpeechBubble();
         this.updateHouseEffects();
         this.updateCharacter(timestamp);
         this.updateNPCs(timestamp);
-        this.handleInteractions();
+        // this.handleInteractions(this.setup);
         this.drawDroneAndMoveCamera();
         this.playDroneHypnoSound();
         this.droneGo();
+        this.makeAFire();
+        this.songSzene();
         this.ctx.restore();
+
+        const isPlayerNearDoor = this.charakter.x > 1000 && this.charakter.x < 1100;
+
+        if (isPlayerNearDoor && !this.isNearDoor) {
+            // Spieler betritt den Bereich
+            this.isNearDoor = true;
+            this.tryOpenDoor();
+        }
+        else if (!isPlayerNearDoor && this.isNearDoor) {
+            // Spieler verlässt den Bereich
+            this.isNearDoor = false;
+            this.tryCloseDoor();
+        }
+
+        this.stableOpen();
+        this.handleCowTaskBefore();
+        this.handleCowTask();
+        this.eventManager.update();
+        this.eventManager.debug = true;
+
     }
+
+    start() {
+        if (!this.start1) {
+            setTimeout(() => {
+                this.setup.sounds.newTaskSound.play();
+                this.popupTexts.push(new PopupText("Neue Aufgaben im Log!", this.canvas.width / 2, 400));
+            }, 4000);
+            this.start1 = true;
+        }
+    }
+
+
+    tryOpenDoor() {
+        if (this.doorState === "closed") {
+            this.doorState = "opening";
+            this.setup.npcs.house.updateState("doorOpens");
+
+            // Nur 1x starten, verhindert mehrfaches Öffnen
+            this.timerManager.addUnique("door", 600, () => {
+                this.doorState = "open";
+                this.setup.npcs.house.updateState("idleOpen");
+            });
+        }
+    }
+
+    tryCloseDoor() {
+        if (this.doorState === "open") {
+            this.doorState = "closing";
+            this.setup.npcs.house.updateState("doorCloses");
+
+            this.timerManager.addUnique("door", 600, () => {
+                this.doorState = "closed";
+                this.setup.npcs.house.updateState("idle");
+            });
+        }
+    }
+
 
     updateCamera() {
         this.camera_x = this.setup.world.camera_x;
@@ -134,14 +165,19 @@ class FarmLevelController {
         this.addToWorld(this.setup.npcs.flower7);
         this.addToWorld(this.setup.npcs.flower8);
         this.addToWorld(this.setup.npcs.barrier);
-        this.setup.npcs.barrier.updateState('idle', 1000 / 8);
+        if (this.cowTaskStep === 12) this.addToWorld(this.setup.npcs.sun);
+        this.addToWorld(this.setup.npcs.house);
+        this.addToWorld(this.setup.npcs.stable);
+        this.addToWorld(this.setup.npcs.campfire);
+        this.setup.npcs.house.isFlipped = false;
+        this.setup.npcs.stable.isFlipped = false;
         this.setup.npcs.barrier.isFlipped = false;
         if (!this.setup.isGameCharakterInHouse) {
             if (this.charakter.isCaress) {
                 this.addToWorld(this.charakter);
                 this.addToWorld(this.setup.npcs.cow);
             } else {
-                if (!this.setup.isGameCharakterInHouse && !this.setup.isGameCharakterOutHouse) {
+                if (!this.setup.isGameCharakterInHouse && !this.setup.isGameCharakterOutHouse && this.cowTaskStep !== 11) {
                     this.addToWorld(this.setup.npcs.cow);
                 }
                 this.addToWorld(this.charakter);
@@ -214,23 +250,39 @@ class FarmLevelController {
     }
 
     updateNPCs(timestamp) {
-        const npcs = ['cow', 'bird', 'pond', 'tree', 'tree2', 'tree3', 'flower', 'flower2', 'flower3', 'flower4', 'flower5', 'flower6', 'flower7', 'flower8', 'drohne', 'chicken', 'cowHypno', 'chickHypno', 'blackDragon', 'barrier'];
+        const npcs = ['cow', 'bird', 'pond', 'tree', 'tree2', 'tree3', 'flower', 'flower2', 'flower3', 'flower4', 'flower5', 'flower6', 'flower7', 'flower8', 'drohne', 'chicken', 'cowHypno', 'chickHypno', 'blackDragon', 'barrier', 'house', 'stable', 'clock', 'campfire', 'chicken2', 'chick', 'sun', 'moon'];
         npcs.forEach(name => {
             this.setup.npcs[name].updateState(timestamp);
             this.setup.npcs[name].updateAnimation(timestamp);
         });
     }
 
-    handleInteractions() {
-        if (this.keyboard.F && this.charakter.x > 1550 && this.charakter.x < 1700) {
-            // this.world.changeSetup();
-            this.camera_x = 0;
-            this.charakter.x = 380;
-            this.world.currentScene = 'stableLevel';
-            this.keyboard.F = false;
-            this.setup.farmLevel.level_end_x = 720;
-            this.world.charakter.level_start_x = 360;
-        }
+    handleInteractions(setup) {
+        this.eventManager.add({
+            type: "position",
+            area: { x: 1700, width: 135},
+            once: false,
+            requireKey: "F",
+            action: (setup) => {
+                this.camera_x = 0;
+                this.charakter.x = 380;
+                this.world.currentScene = 'stableLevel';
+                this.keyboard.F = false;
+                this.setup.farmLevel.level_end_x = 720;
+                this.world.charakter.level_start_x = 360;
+            }
+        });
+
+
+
+        // if (this.keyboard.F && this.charakter.x >= 1620 && this.charakter.x <= 1810) {
+        //     this.camera_x = 0;
+        //     this.charakter.x = 380;
+        //     this.world.currentScene = 'stableLevel';
+        //     this.keyboard.F = false;
+        //     this.setup.farmLevel.level_end_x = 720;
+        //     this.world.charakter.level_start_x = 360;
+        // }
 
         if (this.keyboard.F && this.charakter.x > 1000 && this.charakter.x < 1100) {
             this.setup.isGameCharakterInHouse = true;
@@ -255,13 +307,19 @@ class FarmLevelController {
             }
             this.setup.timeElapsed = performance.now() - this.setup.timeGoOutHouse;
         }
+        if (this.cowTaskStep === 12) {
+            if (!this.setup.timeAfterMakeAFire) {
+                this.setup.timeAfterMakeAFire = performance.now();
+            }
+            this.setup.timeElapsedAfterMakeFire = performance.now() - this.setup.timeAfterMakeAFire;
+        }
         this.adjustDarknessAndVolume();
         this.playYawningAndSnoreSounds();
         this.ctx.restore();
     }
 
     adjustDarknessAndVolume() {
-        if (this.setup.timeElapsed >= 5000) {
+        if (this.setup.timeElapsedAfterMakeFire >= 5000) {
 
             if (this.setup.isNight) {
                 if (this.setup.darknessLevel < this.setup.maxDarkness) {
@@ -273,10 +331,10 @@ class FarmLevelController {
                 }
             }
 
-            if (this.setup.volumeLevel > this.setup.minVolumeLevel) {
-                this.setup.volumeLevel = Math.max(this.setup.volumeLevel - 0.005, this.setup.minVolumeLevel);
-                this.setup.sounds.farmMusic.volume = this.setup.volumeLevel;
-            }
+            // if (this.setup.volumeLevel > this.setup.minVolumeLevel) {
+            //     this.setup.volumeLevel = Math.max(this.setup.volumeLevel - 0.005, this.setup.minVolumeLevel);
+            //     this.setup.sounds.farmMusic.volume = this.setup.volumeLevel;
+            // }
 
             let gradient = this.ctx.createRadialGradient(
                 this.charakter.x - this.camera_x + 50,
@@ -297,8 +355,6 @@ class FarmLevelController {
     playYawningAndSnoreSounds() {
         if (this.setup.timeElapsed >= 8000 && !this.setup.isYawning) {
             this.setup.isYawning = true;
-            this.setup.sounds.farmMusic.pause();
-            this.setup.sounds.eveningSound.play();
             this.setup.sounds.yawningSound.play();
         }
 
@@ -316,8 +372,8 @@ class FarmLevelController {
         }
 
 
-        //     this.nightMusic.play();
-        //     this.drohneSound.play();
+        // this.nightMusic.play();
+        // this.drohneSound.play();
     }
 
     drawDroneAndMoveCamera() {
@@ -561,5 +617,464 @@ class FarmLevelController {
             this.ctx.save();
             this.ctx.translate(shakeX, shakeY);
         }
+    }
+
+    //1620 1810
+    stableOpen() {
+
+        if (this.charakter.x >= 1620 && this.charakter.x <= 1810) {
+            if (!this.timeOnStable) this.timeOnStable = performance.now();
+            const elapsed = performance.now() - this.timeOnStable;
+            if (this.doorState !== 'open' && this.setup.npcs.stable.currentAnimation !== 'doorOpens' && this.setup.npcs.stable.currentAnimation !== 'idleOpen' && elapsed >= 350) {
+                this.doorState = 'open';
+                this.setup.npcs.stable.updateState('doorOpens');
+                this.setup.sounds.doorOpeningSound.play();
+            }
+        } else {
+            this.timeOnStable = null;
+            if (this.doorState !== 'closed' && this.setup.npcs.stable.currentAnimation !== 'doorCloses' && this.setup.npcs.stable.currentAnimation !== 'idle') {
+                this.doorState = 'closed';
+                this.setup.npcs.stable.updateState('doorCloses');
+                this.setup.sounds.doorClosingSound.play();
+            }
+        }
+    }
+
+    handleCowTaskBefore() {
+        if (this.charakter.isColliding(this.setup.npcs.cow, 0, 0) && this.cowTaskStep === 1) {
+            this.setup.npcs.cow.updateState('happy', 1000 / 5.5);
+            const now = performance.now();
+            if (now - this.lastCowSoundTime > 6000) {
+                this.setup.sounds.cowSound2.play();
+                this.lastCowSoundTime = now;
+            }
+        } else {
+            if (this.cowTaskStep !== 12) this.setup.npcs.cow.updateState('idle', 1000 / 5.5);
+        }
+
+        if (this.setup.taskWindow.tasks[0].done && this.setup.taskWindow.tasks[1].done && this.cowTaskStep === 1) {
+            this.cowTaskStep = 2;
+        }
+
+        if (this.cowTaskStep === 2) {
+            this.setup.taskWindow.addTask('3. Bringe Lola zur Wiese', { active: true });
+            this.setup.sounds.newTaskSound.play();
+            this.popupTexts.push(new PopupText("Neue Aufgabe im Log!", this.canvas.width / 2, 400));
+            this.cowTaskStep = 3;
+        }
+    }
+
+    handleCowTask() {
+        if (this.cowTaskStep === 3 && this.charakter.isColliding(this.setup.npcs.cow, 0, 0) && this.keyboard.F) {
+            this.setup.npcs.cow.updateState('standUp', 1000 / 5.5);
+            this.setup.npcs.cow.y = 485;
+            if (!this.starttime2) {
+                this.starttime2 = performance.now();
+            }
+            const elapsed = performance.now() - this.starttime2;
+            if (elapsed >= 600) {
+                this.starttime2 = null;
+                this.keyboard.F = false;
+                this.cowTaskStep = 4;
+            }
+        }
+
+        if (this.cowTaskStep === 4) {
+            this.setup.npcs.cow.updateState('walk');
+            if (this.charakter.isColliding(this.setup.npcs.cow, -200, -200)) {
+                if (this.setup.npcs.cow.x <= 5400) {
+                    this.setup.npcs.cow.x += 10;
+                }
+            } else {
+                this.setup.npcs.cow.updateState('afraid', 1000 / 5);
+                const now = performance.now();
+                if (now - this.lastCowSoundTime > 4000) {
+                    // this.setup.sounds.cowSound.currentTime = 0; // optional: Sound von vorne starten
+                    this.setup.sounds.cowSound.play();
+                    this.lastCowSoundTime = now;
+                }
+            }
+            if (this.setup.npcs.cow.x >= 5400) {
+                this.cowTaskStep = 5;
+                this.setup.taskWindow.markDone(2);
+                this.popupTexts.push(new PopupText("Aufgabe Erledigt!", this.canvas.width / 2, 400));
+                this.setup.sounds.taskCompletedSound.play();
+            }
+        }
+
+        if (this.cowTaskStep === 5) {
+            this.setup.npcs.cow.updateState('eat', 1000 / 5.5);
+            if (!this.starttime2) this.starttime2 = performance.now();
+            const elapsed = performance.now() - this.starttime2;
+            if (elapsed > 3000) {
+                this.setup.taskWindow.addTask('4. Warte bis Lola fertig ist', { active: true });
+                this.setup.sounds.newTaskSound.play();
+                this.popupTexts.push(new PopupText("Neue Aufgabe im Log!", this.canvas.width / 2, 400));
+                this.cowTaskStep = 6;
+                this.starttime2 = null;
+            }
+        }
+
+        if (this.cowTaskStep === 6) {
+            this.setup.npcs.cow.updateState('eat', 1000 / 5.5);
+            this.ctx.save();
+            this.ctx.translate(-this.renderCameraX, 0);
+            this.addToWorld(this.setup.npcs.clock);
+            this.ctx.restore();
+            if (!this.starttime2) this.starttime2 = performance.now();
+            const elapsed = performance.now() - this.starttime2;
+            if (elapsed >= 10000 && !this.setup.taskWindow.tasks[3].done) {
+                this.setup.taskWindow.markDone(3);
+                this.setup.sounds.taskCompletedSound.play();
+                this.popupTexts.push(new PopupText("Aufgabe erledigt!", this.canvas.width / 2, 400));
+            }
+            if (elapsed >= 13000) {
+                this.setup.taskWindow.addTask('5. Belohne Lola', { active: true });
+                this.setup.sounds.newTaskSound.play();
+                this.popupTexts.push(new PopupText("Neue Aufgabe im Log!", this.canvas.width / 2, 400));
+                this.starttime2 = null;
+                this.cowTaskStep = 7;
+            }
+        }
+
+        if (this.cowTaskStep === 7) {
+            this.setup.npcs.cow.updateState('eat');
+        }
+        if (this.cowTaskStep === 7 && this.setup.npcs.cow.x <= 5400 && this.charakter.isColliding(this.setup.npcs.cow) && this.keyboard.F && this.setup.npcs.cow.currentAnimation === 'eat') {
+            if (!this.starttime2) this.starttime2 = performance.now();
+            const elapsed = performance.now() - this.starttime2;
+            if (elapsed >= 0 && elapsed < 5000) {
+                this.charakter.isCaress = true;
+                this.world.isKeysStopp = true;
+                this.setup.npcs.cow.updateState('love');
+                this.charakter.x = this.setup.npcs.cow.x + 135;
+                if (this.setup.npcs.cow.isFlipped) {
+                    this.charakter.isFlipped = true;
+                }
+                this.setup.sounds.cowSound2.play();
+            } else {
+                this.charakter.isCaress = false;
+                this.starttime2 = null;
+                this.keyboard.F = false;
+                this.world.isKeysStopp = false;
+                this.setup.npcs.cow.updateState('eat');
+                if (!this.setup.taskWindow.tasks[4].done) {
+                    this.setup.taskWindow.markDone(4);
+                    this.setup.sounds.taskCompletedSound.play();
+                    this.popupTexts.push(new PopupText("Aufgabe erledigt!", this.canvas.width / 2, 400));
+                    this.starttime2 = null;
+                    this.cowTaskStep = 8;
+                }
+            }
+        }
+
+        if (this.cowTaskStep === 8 && this.setup.taskWindow.tasks[4].done) {
+            if (!this.starttime2) this.starttime2 = performance.now();
+            const elapsed = performance.now() - this.starttime2;
+            if (elapsed >= 2000) {
+                this.setup.taskWindow.addTask('6. Bringe Lola wieder zurück', { active: true });
+                this.setup.sounds.newTaskSound.play();
+                this.popupTexts.push(new PopupText("Neue Aufgabe im Log!", this.canvas.width / 2, 400));
+                this.starttime2 = null;
+                this.cowTaskStep = 9;
+            }
+        }
+        if (this.cowTaskStep === 9) {
+            this.setup.npcs.cow.updateState('walk');
+            this.setup.npcs.cow.isFlipped = false;
+            if (this.charakter.isColliding(this.setup.npcs.cow, -800, -800)) {
+                if (this.setup.npcs.cow.x >= 500) {
+                    this.setup.npcs.cow.x -= 10;
+                } else {
+                    this.setup.taskWindow.markDone(5);
+                    this.setup.sounds.taskCompletedSound.play();
+                    this.popupTexts.push(new PopupText("Aufgabe erledigt!", this.canvas.width / 2, 400));
+                    this.cowTaskStep = 10;
+                }
+            } else {
+                this.setup.npcs.cow.updateState('afraid', 1000 / 5);
+                const now = performance.now();
+                if (now - this.lastCowSoundTime > 4000) {
+                    // this.setup.sounds.cowSound.currentTime = 0; // optional: Sound von vorne starten
+                    this.setup.sounds.cowSound.play();
+                    this.lastCowSoundTime = now;
+                }
+            }
+        }
+
+        if (this.cowTaskStep === 10) {
+            this.charakter.isMovingLeft = false;
+            this.charakter.isMovingRight = false;
+            this.world.isKeysStopp = true;
+            this.charakter.isFlipped = false;
+            this.setup.npcs.cow.isFlipped = true;
+            this.ctx.save();
+            this.ctx.translate(-this.renderCameraX, 0);
+            this.addToWorld(this.setup.npcs.chicken2);
+            this.addToWorld(this.setup.npcs.chick);
+            this.ctx.restore();
+            this.setup.npcs.chicken2.updateState('walk2', 1000 / 8);
+            this.setup.npcs.chick.updateState('walk', 1000 / 8);
+            this.setup.npcs.chicken2.isFlipped = true;
+            this.setup.npcs.chick.isFlipped = true;
+            if (this.setup.npcs.chicken2.x >= 500) this.setup.npcs.chicken2.x -= 3;
+            if (this.setup.npcs.chick.x >= 575) this.setup.npcs.chick.x -= 3;
+            if (this.setup.npcs.chicken2.x <= 500 && this.setup.npcs.chicken2.x >= 450 && this.setup.npcs.chick.x <= 575 && this.setup.npcs.chick.x >= 525) {
+                this.cowTaskStep = 11;
+            }
+        }
+    }
+
+    makeAFire() {
+        if (this.cowTaskStep === 11 || this.cowTaskStep === 12) {
+            if (this.world.camera_x <= 108) this.world.camera_x += 5;
+            if (this.world.camera_x >= 108) this.world.camera_x -= 5;
+            this.ctx.save();
+            this.ctx.translate(-this.renderCameraX, 0);
+            this.addToWorld(this.setup.npcs.cow);
+            this.addToWorld(this.setup.npcs.chick);
+            this.addToWorld(this.setup.npcs.chicken2);
+            this.addToWorld(this.setup.npcs.campfire);
+            this.addToWorld(this.charakter);
+            this.addToWorld(this.setup.npcs.moon);
+            this.ctx.restore();
+            this.setup.npcs.chicken2.updateState('idle');
+            this.setup.npcs.chicken2.isFlipped = false;
+            this.setup.npcs.chick.updateState('idle');
+            this.setup.npcs.chick.isFlipped = true;
+            if (this.charakter.x < 788) {
+                this.charakter.x += 5;
+                this.charakter.isWalk = true;
+                this.charakter.isFlipped = false;
+            }
+            if (this.charakter.x > 788) {
+                this.charakter.x -= 5;
+                this.charakter.isWalk = true;
+                this.charakter.isFlipped = true;
+            }
+
+            if (this.charakter.y <= 393) this.charakter.y += 1.5;
+            if (this.charakter.x <= 788 && this.charakter.x >= 738 && this.charakter.y <= 394 && this.charakter.y >= 343) {
+                this.charakter.isFlipped = true;
+                this.charakter.isWalk = false;
+                this.charakter.yNormal = 393;
+                this.charakter.yVoidless = 510;
+                this.charakter.isLightACampfire = true;
+                this.cowTaskStep = 12;
+            }
+        }
+    }
+
+
+    songSzene() {
+
+        if (this.cowTaskStep === 12) {
+            this.moveSunAndMoon();
+            if (this.setup.volumeLevel > this.setup.minVolumeLevel) {
+                this.setup.volumeLevel = Math.max(this.setup.volumeLevel - 0.005, this.setup.minVolumeLevel);
+                this.setup.sounds.farmMusic.volume = this.setup.volumeLevel;
+            }
+            if (!this.starttime2) this.starttime2 = performance.now();
+            const elapsed = performance.now() - this.starttime2;
+            if (elapsed >= 1500) {
+                this.setup.npcs.campfire.updateState('fireGoesOn');
+                this.setup.sounds.happyTogetherMusic.play();
+                // this.setup.sounds.farmMusic.pause();
+                this.setup.sounds.eveningSound.play();
+                this.setup.npcs.cow.updateState('swingToMusic', 1000 / 6.5);
+                this.setup.npcs.chick.updateState('swingToMusic', 1000 / 6.5);
+                this.setup.npcs.chicken2.updateState('swingToMusic', 1000 / 6.5);
+                this.campfire();
+            }
+        }
+    }
+
+
+    renderLyrics() {
+        const audio = this.setup.sounds.happyTogetherMusic;
+        const currentTime = audio.currentTime;
+
+        const line = this.lyrics.findLast(l => currentTime >= l.time);
+        if (!line) return;
+
+        const nextLine = this.lyrics.find(l => l.time > currentTime);
+        const lineEnd = nextLine
+            ? nextLine.time
+            : (line.duration ? line.time + line.duration : audio.duration);
+        const elapsed = currentTime - line.time;
+        const total = lineEnd - line.time;
+        const remaining = lineEnd - currentTime;
+
+        // Fade
+        const fadeIn = 0.35;
+        const fadeOut = 0.35;
+        let opacity = 1;
+        if (elapsed < fadeIn) opacity = elapsed / fadeIn;
+        else if (nextLine && remaining < fadeOut) opacity = remaining / fadeOut;
+
+        this.ctx.save();
+
+        // --- Hintergrund mit Verlauf ---
+        const padding = 20;
+        const boxHeight = 115; // 80
+        const gradientBg = this.ctx.createLinearGradient(0, this.canvas.height - boxHeight - padding, 0, this.canvas.height);
+        gradientBg.addColorStop(0, `rgba(0, 0, 0, 0)`);
+        gradientBg.addColorStop(1, `rgba(252, 112, 5,${0.2 * opacity})`); // rgba(0,0,0,${0.6 * opacity})
+
+        this.ctx.fillStyle = gradientBg;
+        this.ctx.fillRect(
+            0,
+            this.canvas.height - boxHeight - padding,
+            this.canvas.width,
+            boxHeight + padding
+        );
+
+        // --- Text ---
+        this.ctx.font = "bold 32px Adventure, Arial";
+        this.ctx.textAlign = "center";
+        this.ctx.textBaseline = "middle";
+        const x = this.canvas.width / 2;
+        const y = this.canvas.height - 25; //55
+
+        // Zeilen umbrechen (max. 80% Breite)
+        const maxWidth = this.canvas.width * 0.8;
+        const words = line.text.split(" ");
+        const lines = [];
+        let currentLine = words[0];
+
+        for (let i = 1; i < words.length; i++) {
+            const testLine = currentLine + " " + words[i];
+            const testWidth = this.ctx.measureText(testLine).width;
+            if (testWidth < maxWidth) {
+                currentLine = testLine;
+            } else {
+                lines.push(currentLine);
+                currentLine = words[i];
+            }
+        }
+        lines.push(currentLine);
+
+        // Karaoke Fortschritt
+        const progress = Math.min(elapsed / total, 1);
+
+        // Für jede Zeile zeichnen
+        lines.forEach((txt, i) => {
+            const lineY = y - ((lines.length - 1) * 20) + i * 40;
+
+            // Grauer Basistext
+            this.ctx.shadowColor = "rgba(0,0,0,0.9)";
+            this.ctx.shadowBlur = 6;
+            this.ctx.shadowOffsetX = 2;
+            this.ctx.shadowOffsetY = 2;
+            this.ctx.lineWidth = 4;
+            this.ctx.strokeStyle = "black";
+            this.ctx.strokeText(txt, x, lineY);
+            this.ctx.fillStyle = `rgba(200,200,200,${opacity})`;
+            this.ctx.fillText(txt, x, lineY);
+
+            // Highlight-Gradient (Gelb→Orange)
+            const textWidth = this.ctx.measureText(txt).width;
+            const highlightWidth = textWidth * progress;
+
+            this.ctx.save();
+            this.ctx.beginPath();
+            this.ctx.rect(x - textWidth / 2, lineY - 25, highlightWidth, 50);
+            this.ctx.clip();
+
+            const gradient = this.ctx.createLinearGradient(x - textWidth / 2, 0, x + textWidth / 2, 0);
+            gradient.addColorStop(0, `rgba(255, 215, 0, ${opacity})`);
+            gradient.addColorStop(1, `rgba(255, 140, 0, ${opacity})`);
+
+            this.ctx.fillStyle = gradient;
+            this.ctx.fillText(txt, x, lineY);
+            this.ctx.restore();
+        });
+
+        this.ctx.restore();
+    }
+
+    campfire() {
+        this.lyrics = [
+            { time: 7.2, text: "Bailamos en la plaza," },
+            { time: 9.3, text: "Cantando sin parar," },
+            { time: 11.4, text: "Con mis amigos cerca," },
+            { time: 13.5, text: "Es un día para amar." },
+
+            { time: 15.7, text: "Juanito, Pollito, Lola, we sing," },
+            { time: 20.2, text: "Happy together, joy that we bring," },
+            { time: 24.1, text: "Juanito, Pollito, Lola, my friends," },
+            { time: 28.2, text: "Our love and our laughter will never end." },
+            { time: 32.1, text: "" },
+
+            { time: 39.5, text: "Caminamos la calle," },
+            { time: 41, text: "con sonrisas y fe," },
+            { time: 43, text: "cada paso juntos," },
+            { time: 45.5, text: "la vida se ve bien." },
+
+            { time: 46.8, text: "Juanito, Pollito, Lola my friends," },
+            { time: 52, text: "Singing together, the joy never ends," },
+            { time: 55.5, text: "Juanito, Pollito, Lola we sing," },
+            { time: 60, text: "Friendship forever, the joy that we bring." },
+            { time: 64.5, text: "" },
+
+            { time: 71.2, text: "Siempre cantando, amigos de verdad," },
+            { time: 75.7, text: "Juanito, Pollito, y Lola están," },
+            { time: 79.7, text: "Juanito, Pollito, Lola my friends," },
+            { time: 84.1, text: "Amigos por siempre, love never ends.", duration: 1 },
+            { time: 89.9, text: "" }
+        ];
+
+        switch (true) {
+            case (this.setup.sounds.happyTogetherMusic.currentTime >= 0 && this.setup.sounds.happyTogetherMusic.currentTime <= 7.2):
+                this.charakter.isSitDownAndPlayGuitar = true;
+                break;
+            case (this.setup.sounds.happyTogetherMusic.currentTime >= 7.2 && this.setup.sounds.happyTogetherMusic.currentTime <= 32.1):
+                this.charakter.isSitDownAndPlayGuitar = false;
+                this.charakter.isPlayGuitarAndSing = true;
+                break;
+            case (this.setup.sounds.happyTogetherMusic.currentTime >= 32.1 && this.setup.sounds.happyTogetherMusic.currentTime <= 39.5):
+                this.charakter.isPlayGuitarAndSing = false;
+                this.charakter.isPlayGuitar = true;
+                break;
+            case (this.setup.sounds.happyTogetherMusic.currentTime >= 39.5 && this.setup.sounds.happyTogetherMusic.currentTime <= 64.5):
+                this.charakter.isPlayGuitar = false;
+                this.charakter.isPlayGuitarAndSing = true;
+                break;
+            case (this.setup.sounds.happyTogetherMusic.currentTime >= 64.5 && this.setup.sounds.happyTogetherMusic.currentTime <= 71.2):
+                this.charakter.isPlayGuitarAndSing = false;
+                this.charakter.isPlayGuitar = true;
+                break;
+            case (this.setup.sounds.happyTogetherMusic.currentTime >= 71.2 && this.setup.sounds.happyTogetherMusic.currentTime <= 89.9):
+                this.charakter.isPlayGuitar = false;
+                this.charakter.isPlayGuitarAndSing = true;
+                break;
+            case (this.setup.sounds.happyTogetherMusic.currentTime >= 89.9):
+                this.charakter.isPlayGuitarAndSing = false;
+                this.charakter.isPlayGuitar = true;
+                break;
+
+        }
+        this.renderLyrics();
+    }
+
+    moveSunAndMoon() {
+        if (this.sunAngle < Math.PI) {
+            this.sunAngle += 0.004;
+
+        }
+        if (!this.moonStartTime) {
+            this.moonStartTime = performance.now();
+        }
+
+        const elapsed = performance.now() - this.moonStartTime;
+
+        if (elapsed > 5000 && this.moonAngle < Math.PI * 0.85) {
+            this.moonAngle += 0.004;
+        }
+
+        this.setup.npcs.sun.x = this.sunCenterX + this.sunRadius * Math.cos(this.sunAngle);
+        this.setup.npcs.sun.y = this.sunCenterY - this.sunRadius * Math.sin(this.sunAngle);
+        this.setup.npcs.moon.x = this.moonCenterX + this.moonRadius * Math.cos(this.moonAngle);
+        this.setup.npcs.moon.y = this.moonCenterY - this.moonRadius * Math.sin(this.moonAngle);
     }
 }
