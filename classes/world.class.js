@@ -16,7 +16,7 @@ class World {
 
         this.lastStepCheck = 0;
         this.stepCheckDelay = 400;
-        this.charakter = new Character();
+        this.character = new Character();
         this.footStepSound = new Audio('./assets/audio/footstep-sound.mp3');
         this.jumpSound = new Audio('./assets/audio/jump-sound2.mp3');
         this.landingSound = new Audio('./assets/audio/landing-sound.mp3');
@@ -74,7 +74,7 @@ class World {
             this.ctx.save();
             this.ctx.scale(-1, 1);
             this.ctx.drawImage(object.img, -object.x - object.width, object.y, object.width, object.height);
-            if (!object.isGameCharakter == true) return;
+            if (!object.isGamecharacter == true) return;
             // this.ctx.beginPath();
             // this.ctx.lineWidth = '3';
             // this.ctx.strokeStyle = 'red';
@@ -89,7 +89,7 @@ class World {
             this.ctx.restore();
         } else {
             this.ctx.drawImage(object.img, object.x, object.y, object.width, object.height);
-            if (!object.isGameCharakter == true) return;
+            if (!object.isGamecharacter == true) return;
             // this.ctx.beginPath();
             // this.ctx.lineWidth = '3';
             // this.ctx.strokeStyle = 'red';
@@ -117,7 +117,7 @@ class World {
             const drawX = Math.round(-object.x - object.width);
             const drawY = Math.round(object.y);
             this.ctx.drawImage(object.img, drawX, drawY, object.width, object.height);
-            // if (!object.isGameCharakter == true) return;
+            // if (!object.isGamecharacter == true) return;
             // this.ctx.beginPath();
             // this.ctx.lineWidth = '3';
             // this.ctx.strokeStyle = 'red';
@@ -133,7 +133,7 @@ class World {
             const drawX = Math.round(object.x);
             const drawY = Math.round(object.y);
             this.ctx.drawImage(object.img, drawX, drawY, object.width, object.height);
-            // if (!object.isGameCharakter == true) return;
+            // if (!object.isGamecharacter == true) return;
             // this.ctx.beginPath();
             // this.ctx.lineWidth = '3';
             // this.ctx.strokeStyle = 'red';
@@ -159,26 +159,26 @@ class World {
 
     checkPressKey() {
         if (!this.isKeysStopp) {
-            this.charakter.isMovingLeft = false;
-            this.charakter.isMovingRight = false;
+            this.character.isMovingLeft = false;
+            this.character.isMovingRight = false;
             if (this.keyboard.LEFT) {
-                this.charakter.isMovingLeft = true;
+                this.character.isMovingLeft = true;
             }
             if (this.keyboard.RIGHT) {
-                this.charakter.isMovingRight = true;
+                this.character.isMovingRight = true;
             }
-            if (this.keyboard.UP && !this.charakter.isAboveGround() && !this.charakter.isFlying && !this.charakter.isJumping) {
-                this.charakter.isJumping = true;
-                this.charakter.speedY = 23;
+            if (this.keyboard.UP && !this.character.isAboveGround() && !this.character.isFlying && !this.character.isJumping) {
+                this.character.isJumping = true;
+                this.character.speedY = 23;
                 this.jumpSound.play();
             }
-            if (this.keyboard.UP && this.charakter.isAboveGround() && this.charakter.isFlying) {
-                this.charakter.moveUp();
+            if (this.keyboard.UP && this.character.isAboveGround() && this.character.isFlying) {
+                this.character.moveUp();
             }
-            if (this.keyboard.DOWN && this.charakter.isAboveGround() && this.charakter.isFlying) {
-                if (this.charakter.y + 10 == 130) {
+            if (this.keyboard.DOWN && this.character.isAboveGround() && this.character.isFlying) {
+                if (this.character.y + 10 == 130) {
                     this.keyboard.J = false;
-                    this.charakter.isFlying = false;
+                    this.character.isFlying = false;
                     this.jetPackMusic.pause();
                     this.jetPackMusic.currentTime = 0;
                     this.jetPackSound.pause();
@@ -188,32 +188,32 @@ class World {
                     } else {
                         this.backgroundMusic.play();
                     }
-                    this.charakter.y = 130;
-                    this.charakter.moveStop();
+                    this.character.y = 130;
+                    this.character.moveStop();
                 } else {
-                    this.charakter.moveDown();
+                    this.character.moveDown();
                 }
             }
             if (this.keyboard.J) {
-                this.charakter.moveFly();
+                this.character.moveFly();
                 this.backgroundMusic.pause();
                 this.backgroundMusic.currentTime = 0;
                 this.playEndbossMusic("stop");
                 this.jetPackMusic.play();
                 this.jetPackSound.play();
             }
-            if (this.charakter.isDead) {
-                this.charakter.animationDead();
+            if (this.character.isDead) {
+                this.character.animationDead();
             }
-            // if (this.charakter.isHurt) {
-            //     this.charakter.animationHurt();
+            // if (this.character.isHurt) {
+            //     this.character.animationHurt();
             // }
             // else {
-            //     if (this.charakter.isJumping) return;
+            //     if (this.character.isJumping) return;
             //     clearInterval(this.intervalJump);
             //     this.intervalJump = null;
-            //     this.charakter.jumpCount = 0;
-            //     if (this.charakter.isMoving) this.charakter.moveStop();
+            //     this.character.jumpCount = 0;
+            //     if (this.character.isMoving) this.character.moveStop();
             // }
             if (this.keyboard.S && this.townLevelSetup.chickenInBasket.isIdle && !this.townLevelSetup.chickenInBasket.isReturning && !this.townLevelSetup.chickenInBasket.justLanded) {
                 this.townLevelSetup.chickenInBasket.isAttack = true;
@@ -232,35 +232,35 @@ class World {
     }
 
     setWorld() {
-        this.charakter.world = this;
+        this.character.world = this;
     }
 
     checkCollisions() {
         this.townLevelSetup.townLevel.enemies.forEach(element => {
-            if (this.charakter.isColliding(element, 0, 0) && !element.isDead) {
-                this.charakter.hit();
-                this.townLevelSetup.statusBar.setPercentage(this.charakter.energy);
+            if (this.character.isColliding(element, 0, 0) && !element.isDead) {
+                this.character.hit();
+                this.townLevelSetup.statusBar.setPercentage(this.character.energy);
             }
-            if (this.charakter.isColliding(element, 0, 0) && !this.charakter.isJumpOn(element) && !element.isDead) {
-                if (this.charakter.speedX > 0 && this.charakter.x < element.x) {
-                    this.charakter.speedX = 0;
-                } else if (this.charakter.speedX < 0 && this.charakter.x > element.x) {
-                    this.charakter.speedX = 0;
+            if (this.character.isColliding(element, 0, 0) && !this.character.isJumpOn(element) && !element.isDead) {
+                if (this.character.speedX > 0 && this.character.x < element.x) {
+                    this.character.speedX = 0;
+                } else if (this.character.speedX < 0 && this.character.x > element.x) {
+                    this.character.speedX = 0;
                 } else {
-                    this.charakter.speedX = 10;
+                    this.character.speedX = 10;
                 }
             }
         })
 
         for (let i = this.townLevelSetup.townLevel.enemies.length - 1; i >= 0; i--) {
             const enemy = this.townLevelSetup.townLevel.enemies[i];
-            if (this.charakter.isJumpOn(enemy)) {
+            if (this.character.isJumpOn(enemy)) {
                 if (enemy.isDead) continue;
                 enemy.isDead = true;
                 enemy.isMovingLeft = false;
                 enemy.isMovingRight = false;
                 this.playChickenDeathSound();
-                this.charakter.bounce();
+                this.character.bounce();
                 const removeIndex = i;
                 setTimeout(() => {
                     this.townLevelSetup.townLevel.enemies.splice(removeIndex, 1);
@@ -270,7 +270,7 @@ class World {
 
         for (let i = this.townLevelSetup.townLevel.coins.length - 1; i >= 0; i--) {
             const coin = this.townLevelSetup.townLevel.coins[i];
-            if (this.charakter.isColliding(coin, 0, 0)) {
+            if (this.character.isColliding(coin, 0, 0)) {
                 this.townLevelSetup.townLevel.coins.splice(i, 1);
                 // this.coinBar.percentage = this.coinBar.percentage == 100 ? this.coinBar.percentage + 0 : this.coinBar.percentage + 20;
                 // document.getElementById('coin-sound').play();
@@ -281,14 +281,14 @@ class World {
         }
         for (let i = this.townLevelSetup.townLevel.bottles.length - 1; i >= 0; i--) {
             const bottle = this.townLevelSetup.townLevel.bottles[i];
-            if (this.charakter.isColliding(bottle, 0, 0) && this.townLevelSetup.bottleBar.percentage != 100) {
+            if (this.character.isColliding(bottle, 0, 0) && this.townLevelSetup.bottleBar.percentage != 100) {
                 this.townLevelSetup.townLevel.bottles.splice(i, 1);
                 // this.coinBar.percentage = this.coinBar.percentage == 100 ? this.coinBar.percentage + 0 : this.coinBar.percentage + 20;
                 // document.getElementById('coin-sound').play();
                 this.playBottleSound();
                 this.townLevelSetup.bottleBar.percentage = Math.min(this.townLevelSetup.bottleBar.percentage + 20, 100);
                 this.townLevelSetup.bottleBar.setPercentage(this.townLevelSetup.bottleBar.percentage);
-                this.charakter.throwableBottels != 5 ? this.charakter.throwableBottels += 1 : this.charakter.throwableBottels += 0;
+                this.character.throwableBottels != 5 ? this.character.throwableBottels += 1 : this.character.throwableBottels += 0;
             }
         }
 
@@ -302,7 +302,7 @@ class World {
 
             if (!bottle.isBrokenAnimation && bottle.isBrokenAnimationDone) {
                 this.townLevelSetup.throwableObjects.splice(i, 1);
-                this.charakter.isThrowing = false;
+                this.character.isThrowing = false;
                 bottle.isBrokenSound = false;
                 continue;
             }
@@ -320,7 +320,7 @@ class World {
                 }
                 if (!bottle.isBrokenAnimation) {
                     this.townLevelSetup.throwableObjects.splice(i, 1);
-                    this.charakter.isThrowing = false;
+                    this.character.isThrowing = false;
                     bottle.isBrokenSound = false;
                 }
                 continue;
@@ -373,7 +373,7 @@ class World {
             }
 
         }
-        if (this.charakter.x >= 1050 && this.charakter.x <= 1250) {
+        if (this.character.x >= 1050 && this.character.x <= 1250) {
             if (this.endbossMusicIsPlayed || this.endbossAlarmSoundIsPlayed) return;
             document.getElementById('background-music').pause();
             console.log('wird ausgeführt');
@@ -419,32 +419,32 @@ class World {
         if (timestamp - this.lastThrowCheck < this.throwCheckDelay) return;
 
         this.lastThrowCheck = timestamp;
-        if (this.keyboard.D && this.charakter.throwableBottels != 0 && !this.charakter.isThrowing) {
+        if (this.keyboard.D && this.character.throwableBottels != 0 && !this.character.isThrowing) {
             let bottle;
-            if (!this.charakter.isFlipped) {
-                bottle = new ThrowableObject(this.charakter.x + 35, this.charakter.y + 150);
+            if (!this.character.isFlipped) {
+                bottle = new ThrowableObject(this.character.x + 35, this.character.y + 150);
                 bottle.isMovingRight = true;
                 bottle.isThrow = true;
                 bottle.isBroken = false;
                 bottle.speedY = 30;
                 bottle.isGravity = true;
-                bottle.charakterIsFlipped = false;
+                bottle.characterIsFlipped = false;
             } else {
-                bottle = new ThrowableObject(this.charakter.x - 35, this.charakter.y + 150);
+                bottle = new ThrowableObject(this.character.x - 35, this.character.y + 150);
                 bottle.isMovingLeft = true;
                 bottle.isThrow = true;
                 bottle.isBroken = false;
                 bottle.speedY = 30;
                 bottle.isGravity = true;
-                bottle.charakterIsFlipped = true;
+                bottle.characterIsFlipped = true;
             }
             this.townLevelSetup.throwableObjects.push(bottle);
             this.playBottelThrowSound();
             this.townLevelSetup.bottleBar.percentage = Math.min(this.townLevelSetup.bottleBar.percentage - 20, 100);
             this.townLevelSetup.bottleBar.setPercentage(this.townLevelSetup.bottleBar.percentage);
-            this.charakter.throwableBottels != 0 ? this.charakter.throwableBottels -= 1 : this.charakter.throwableBottels -= 0;
-            this.charakter.isThrowing = true;
-        } else if (this.keyboard.D && this.charakter.throwableBottels == 0) {
+            this.character.throwableBottels != 0 ? this.character.throwableBottels -= 1 : this.character.throwableBottels -= 0;
+            this.character.isThrowing = true;
+        } else if (this.keyboard.D && this.character.throwableBottels == 0) {
             this.playEmptyBottelsSound();
         }
     }
@@ -457,7 +457,7 @@ class World {
             document.getElementById('canvas').style.display = 'block';
             // document.getElementById('background-music').play();
             setFullscreen();
-            // this.charakter.playSpeakSound();
+            // this.character.playSpeakSound();
             titleMusic.pause();
             titleMusic2.pause();
         });
@@ -513,7 +513,7 @@ class World {
 
     endbossReaction() {
         const boss = this.townLevelSetup.townLevel.endboss;
-        const player = this.charakter;
+        const player = this.character;
         const distance = Math.abs((player.x + player.width / 2) - (boss.x + boss.width / 2));
 
         if (distance < 200 && !boss.isDead) {
@@ -545,20 +545,20 @@ class World {
         }
     }
 
-    stepSoundCharakter(timestamp) {
+    stepSoundCharacter(timestamp) {
         if (timestamp - this.lastStepCheck < this.stepCheckDelay) return;
         this.lastStepCheck = timestamp;
-        if ((this.charakter.isMovingLeft || this.charakter.isMovingRight) && !this.charakter.isJumping && !this.charakter.isFlying) {
+        if ((this.character.isMovingLeft || this.character.isMovingRight) && !this.character.isJumping && !this.character.isFlying) {
             this.footStepSound.currentTime = 0;
             this.footStepSound.play();
         }
     }
 
-    landingSoundCharakter() {
-        if (this.charakter.isLanding) {
+    landingSoundCharacter() {
+        if (this.character.isLanding) {
             this.landingSound.currentTime = 0;
             this.landingSound.play();
-            this.charakter.isLanding = false;
+            this.character.isLanding = false;
         }
     }
 }

@@ -4,7 +4,7 @@ class Coin extends MovableObject {
         './assets/img/8_coin/coin_2.png'
     ]
 
-    isGameCharakter = true;
+    isGameCharacter = true;
 
     coinCount = 0;
 

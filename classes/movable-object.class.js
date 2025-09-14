@@ -62,8 +62,41 @@ class MovableObject extends DrawableObject {
         }
     }
 
-    // für normal und isFlipped
-    isColliding(object, collidingToleranceTop = 0, collidingToleranceLeft = 0) {
+
+    // neuste Version für vent Manager
+    isColliding(
+        object,
+        toleranceA = { x: 0, y: 0, width: 0, height: 0 },
+        toleranceB = { x: 0, y: 0, width: 0, height: 0 }
+    ) {
+        // --- Hitbox von "this" (A) ---
+        const aLeft = this.isFlipped
+            ? this.x + this.offset.right + toleranceA.x
+            : this.x + this.offset.left + toleranceA.x;
+        const aRight = this.isFlipped
+            ? this.x + this.width - this.offset.left - toleranceA.width
+            : this.x + this.width - this.offset.right - toleranceA.width;
+        const aTop = this.y + this.offset.top + toleranceA.y;
+        const aBottom = this.y + this.height - this.offset.bottom - toleranceA.height;
+
+        // --- Hitbox von "object" (B) ---
+        const bLeft = object.isFlipped
+            ? object.x + object.offset.right + toleranceB.x
+            : object.x + object.offset.left + toleranceB.x;
+        const bRight = object.isFlipped
+            ? object.x + object.width - object.offset.left - toleranceB.width
+            : object.x + object.width - object.offset.right - toleranceB.width;
+        const bTop = object.y + object.offset.top + toleranceB.y;
+        const bBottom = object.y + object.height - object.offset.bottom - toleranceB.height;
+
+        // --- Kollision prüfen ---
+        return !(aRight < bLeft || aLeft > bRight || aBottom < bTop || aTop > bBottom);
+    }
+
+
+
+    // version vor event manager - für normal und isFlipped
+    isCollidingBefore(object, collidingToleranceTop = 0, collidingToleranceLeft = 0) {
         const a_left = this.isFlipped
             ? this.x + this.offset.right
             : this.x + this.offset.left;
@@ -90,7 +123,7 @@ class MovableObject extends DrawableObject {
 
 
     //letzte funktionierende Funktion
-    isCollidingBefore(object, collidingToleranceTop, collidingToleranceLeft) {
+    isCollidingBeforeBefore(object, collidingToleranceTop, collidingToleranceLeft) {
         const a_left = this.x + this.offset.left;
         const a_right = this.x + this.width - this.offset.right;
         const a_top = this.y + this.offset.top;

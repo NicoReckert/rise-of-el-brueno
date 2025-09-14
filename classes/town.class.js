@@ -1,7 +1,7 @@
 class Town extends Ground {
 
     isFlipped = false;
-    isGameCharakter = true;
+    isGameCharacter = true;
 
     constructor(img, x, y, width, height, isFlipped = false) {
         super(img, x);

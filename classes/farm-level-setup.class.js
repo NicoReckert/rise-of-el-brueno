@@ -25,7 +25,7 @@ class FarmLevelSetup {
             barrier: new NotMovableNpc('barrier', 450, 120, 7050, 305),
             house: new NotMovableNpc('house', 900, 900, 800, -30),
             stable: new NotMovableNpc('stable', 600, 600, 1550, 177),
-            clock: new NotMovableNpc('clock', 150, 150, 5420, 400),
+            clock: new NotMovableNpc('clock', 150, 150, 5320, 400),
             campfire: new NotMovableNpc('campfire', 200, 200, 650, 520),
             chicken2: new NotMovableNpc('chicken', 150, 150, 1600, 540), // 500, 540
             chick: new NotMovableNpc('chick', 120, 120, 1680, 587), // 575, 587
@@ -37,7 +37,7 @@ class FarmLevelSetup {
         this.npcs.bird.updateState('idle', 1000 / 7);
         this.npcs.drohne.updateState('idle', 1000 / 7);
         this.world.camera_x = 800;
-        this.statusBar = new LifeEnergyCharakterBar();
+        this.statusBar = new LifeEnergyCharacterBar();
         this.sounds = {
             farmMusic: new Audio('./assets/audio/farm-music.mp3'),
             notificationSound: new Audio('./assets/audio/notification-sound.mp3'),
@@ -59,20 +59,20 @@ class FarmLevelSetup {
             happyTogetherMusic: new Audio('./assets/audio/happy-together-music.mp3')
         };
         this.speechBubbles = {
-            bubbleFarm: new SpeechBubble("In den Hühnerstall gehen? {F} drücken!", this.world.charakter, 'info'),
-            bubbleFarm2: new SpeechBubble("Ins Haus gehen? {F} drücken!", this.world.charakter, performance.now()),
-            bubbleFarm3: new SpeechBubble("Was ist hier passiert ???", this.world.charakter, performance.now()),
-            bubbleFarm4: new SpeechBubble("Freunde wo seit ihr ???", this.world.charakter, performance.now()),
-            bubbleFarm5: new SpeechBubble("Neeeeiiiinnnnn. *Weinen*", this.world.charakter, performance.now()),
-            bubbleFarm6: new SpeechBubble("Ich werde euch finden !!!", this.world.charakter, performance.now()),
-            bubbleFarm7: new SpeechBubble("Und wenn ich die ganze Welt nach euch absuchen muss !!!", this.world.charakter, performance.now()),
-            bubbleFarm8: new SpeechBubble("Haltet durch !!!", this.world.charakter, performance.now())
+            bubbleFarm: new SpeechBubble("In den Hühnerstall gehen? {F} drücken!", this.world.character, 'info'),
+            bubbleFarm2: new SpeechBubble("Ins Haus gehen? {F} drücken!", this.world.character, 'speech'),
+            bubbleFarm3: new SpeechBubble("Was ist hier passiert ???", this.world.character, performance.now()),
+            bubbleFarm4: new SpeechBubble("Freunde wo seit ihr ???", this.world.character, performance.now()),
+            bubbleFarm5: new SpeechBubble("Neeeeiiiinnnnn. *Weinen*", this.world.character, performance.now()),
+            bubbleFarm6: new SpeechBubble("Ich werde euch finden !!!", this.world.character, performance.now()),
+            bubbleFarm7: new SpeechBubble("Und wenn ich die ganze Welt nach euch absuchen muss !!!", this.world.character, performance.now()),
+            bubbleFarm8: new SpeechBubble("Haltet durch !!!", this.world.character, performance.now())
         };
         this.sounds.farmMusic.loop = true;
         this.sounds.farmMusic.volume = 0.6;
         this.sounds.notificationSound.volume = 0.5;
         this.isNotificationPlay = false;
-        this.isGameCharakterInHouse = false;
+        this.isGameCharacterInHouse = false;
         this.shakeIntensity = 20;
         this.darknessLevel = 0;
         this.maxDarkness = 0.9;
@@ -92,7 +92,7 @@ class FarmLevelSetup {
         this.nightMusicIsPlaying = false;
         this.droneIsGo = false;
         this.isNight = true;
-        this.isGameCharakterOutHouse = false;
+        this.isGameCharacterOutHouse = false;
         this.tasks = [
             "1. Kümmere dich um Juanito",
             "2. Kümmere dich um Pollito"
@@ -100,5 +100,6 @@ class FarmLevelSetup {
         this.taskWindow = new TaskWindow(this.world.canvas, this.tasks);
         this.tKeyPressed = false;
         this.timerManager = new TimerManager();
+        this.popupTexts = [];
     }
 }

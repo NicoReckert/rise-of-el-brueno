@@ -1,7 +1,7 @@
 class Endboss extends MovableObject {
     speedX = 1;
     speedY = 0;
-    isGameCharakter = true;
+    isGameCharacter = true;
     isHurt = false;
     isDead = false;
     isDeadAnimationReady = false;

@@ -1,6 +1,6 @@
 class Chicken extends MovableObject {
     speed = 0.15;
-    isGameCharakter = true;
+    isGameCharacter = true;
     isDead = false;
 
     walkImages = [

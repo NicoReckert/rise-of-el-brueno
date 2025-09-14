@@ -1,4 +1,4 @@
-class LifeEnergyCharakterBar extends StatusBar {
+class LifeEnergyCharacterBar extends StatusBar {
     constructor() {
         super();
         this.statusImages = [

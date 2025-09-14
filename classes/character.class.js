@@ -20,7 +20,7 @@ class Character extends MovableObject {
     isHurt = false;
     isJumping;
     isThrowing = false;
-    isGameCharakter = true;
+    isGameCharacter = true;
     throwableBottels = 0;
     isCaress = false;
     isWalk = false;

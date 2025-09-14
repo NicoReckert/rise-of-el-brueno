@@ -5,7 +5,7 @@ class Npc extends MovableObject {
     intervalStand = null;
     standCount = 0;
     isNpcFlipped = false;
-    isGameCharakter = true;
+    isGameCharacter = true;
     intervalWalk = null;
     walkCount = 0;
     intervalMoveLeft = null;

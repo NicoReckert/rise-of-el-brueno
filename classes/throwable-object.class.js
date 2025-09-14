@@ -5,11 +5,11 @@ class ThrowableObject extends MovableObject {
     intervalMoveBottle = null;
     throwBottleCount = 0;
     brokenBottleCount = 0;
-    isGameCharakter = true;
+    isGameCharacter = true;
     isBrokenAnimation = false;
     isBrokenAnimationDone = false;
     isBrokenSound = false;
-    charakterIsFlipped = false
+    characterIsFlipped = false
     isMovingLeft = false;
     isMovingRight = false;
 

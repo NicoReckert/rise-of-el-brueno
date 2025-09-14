@@ -7,11 +7,11 @@ class StableLevelController {
         this.canvas = this.world.canvas;
         this.addObject = this.world.addObject.bind(this.world);
         this.addToWorld = this.world.addToWorld.bind(this.world);
-        this.charakter = this.world.charakter;
+        this.character = this.world.character;
         this.checkPressKey = this.world.checkPressKey.bind(this.world);
         this.keyboard = this.world.keyboard;
-        this.stepSoundCharakter = this.world.stepSoundCharakter.bind(this.world);
-        this.landingSoundCharakter = this.world.landingSoundCharakter.bind(this.world);
+        this.stepSoundCharacter = this.world.stepSoundCharacter.bind(this.world);
+        this.landingSoundCharacter = this.world.landingSoundCharacter.bind(this.world);
         this.lastCowSoundTime = 0;
         this.popupTexts = [];
         this.starttime2;
@@ -51,14 +51,14 @@ class StableLevelController {
     renderNPCsAndCharacter() {
         this.ctx.save();
         this.ctx.translate(-this.renderCameraX, 0);
-        if (this.charakter.isCaress) {
-            this.addToWorld(this.charakter);
+        if (this.character.isCaress) {
+            this.addToWorld(this.character);
             this.addToWorld(this.setup.npcs.chicken);
             this.addToWorld(this.setup.npcs.chick);
         } else {
             this.addToWorld(this.setup.npcs.chicken);
             this.addToWorld(this.setup.npcs.chick);
-            this.addToWorld(this.charakter);
+            this.addToWorld(this.character);
         }
         this.ctx.restore();
     }
@@ -66,7 +66,7 @@ class StableLevelController {
     handleSpeechBubble() {
         this.ctx.save();
         this.ctx.translate(-this.renderCameraX, 0);
-        if (this.charakter.x > 280 && this.charakter.x < 430) {
+        if (this.character.x > 280 && this.character.x < 430) {
             if (!this.setup.speechBubbles.bubbleStable1.startTime) {
                 this.setup.speechBubbles.bubbleStable1.start();
             }
@@ -81,7 +81,7 @@ class StableLevelController {
             this.setup.isNotificationPlay = false;
             this.setup.speechBubbles.bubbleStable1.startTime = null;
         }
-        if (this.charakter.isColliding(this.setup.npcs.chicken, 0, 0)) {
+        if (this.character.isColliding(this.setup.npcs.chicken, 0, 0)) {
             this.ctx.save();
             this.ctx.translate(-this.renderCameraX, 0);
             // if (!this.setup.speechBubbles.bubbleStable2.startTime) {
@@ -90,7 +90,7 @@ class StableLevelController {
             // this.setup.speechBubbles.bubbleStable2.update(performance.now());
             // this.setup.speechBubbles.bubbleStable2.draw(this.ctx, 0);
         }
-        if (this.charakter.isColliding(this.setup.npcs.chick, 0, 0)) {
+        if (this.character.isColliding(this.setup.npcs.chick, 0, 0)) {
             this.ctx.save();
             this.ctx.translate(-this.renderCameraX, 0);
             // if (!this.setup.speechBubbles.bubbleStable2.startTime) {
@@ -104,11 +104,11 @@ class StableLevelController {
 
     updateCharacter(timestamp) {
         this.checkPressKey();
-        this.charakter.updateState(timestamp);
-        this.charakter.updateAnimation(timestamp);
-        if (this.charakter.isJumping) this.charakter.applyGravity(timestamp);
-        this.stepSoundCharakter(timestamp);
-        this.landingSoundCharakter();
+        this.character.updateState(timestamp);
+        this.character.updateAnimation(timestamp);
+        if (this.character.isJumping) this.character.applyGravity(timestamp);
+        this.stepSoundCharacter(timestamp);
+        this.landingSoundCharacter();
     }
 
     updateNPCs(timestamp) {
@@ -120,29 +120,29 @@ class StableLevelController {
     }
 
     handleEvents() {
-        if (this.keyboard.F && this.charakter.x > 280 && this.charakter.x < 430) {
+        if (this.keyboard.F && this.character.x > 280 && this.character.x < 430) {
             this.world.currentScene = 'farmLevel';
-            this.charakter.x = 1700;
-            this.world.camera_x = this.charakter.x - 500;
+            this.character.x = 1700;
+            this.world.camera_x = this.character.x - 500;
             this.keyboard.F = false;
             farmLevel.level_end_x = 6409;
-            this.charakter.level_start_x = 440;
+            this.character.level_start_x = 440;
         }
 
-        if (this.charakter.isColliding(this.setup.npcs.chicken, 0, 0) && this.keyboard.F) {
+        if (this.character.isColliding(this.setup.npcs.chicken, 0, 0) && this.keyboard.F) {
             if (!this.starttime2) {
                 this.starttime2 = performance.now();
             }
             const elapsed = performance.now() - this.starttime2;
             if (elapsed >= 0 && elapsed < 5000) {
-                this.charakter.isCaress = true;
+                this.character.isCaress = true;
                 this.world.isKeysStopp = true;
-                this.charakter.x = 560;
-                this.charakter.isFlipped = false;
+                this.character.x = 560;
+                this.character.isFlipped = false;
                 this.setup.npcs.chicken.updateState('love');
                 this.setup.sounds.chickenSound.play();
             } else {
-                this.charakter.isCaress = false;
+                this.character.isCaress = false;
                 this.starttime2 = null;
                 this.keyboard.F = false;
                 this.world.isKeysStopp = false;
@@ -155,20 +155,20 @@ class StableLevelController {
             }
         }
 
-        if (this.charakter.isColliding(this.setup.npcs.chick, 0, 0) && this.keyboard.F) {
+        if (this.character.isColliding(this.setup.npcs.chick, 0, 0) && this.keyboard.F) {
             if (!this.starttime2) {
                 this.starttime2 = performance.now();
             }
             const elapsed = performance.now() - this.starttime2;
             if (elapsed >= 0 && elapsed < 5000) {
-                this.charakter.isCaress = true;
+                this.character.isCaress = true;
                 this.world.isKeysStopp = true;
-                this.charakter.x = 720;
-                this.charakter.isFlipped = false;
+                this.character.x = 720;
+                this.character.isFlipped = false;
                 this.setup.npcs.chick.updateState('love');
                 this.setup.sounds.chickSound.play();
             } else {
-                this.charakter.isCaress = false;
+                this.character.isCaress = false;
                 this.starttime2 = null;
                 this.keyboard.F = false;
                 this.world.isKeysStopp = false;

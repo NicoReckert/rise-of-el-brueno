@@ -11,7 +11,7 @@ class StableLevelSetup {
         };
         this.npcs.chick.isFlipped = false;
         this.speechBubbles = {
-            bubbleStable1: new SpeechBubble("Den Hühnerstall verlassen? {F} drücken!", this.world.charakter, 'info'),
+            bubbleStable1: new SpeechBubble("Den Hühnerstall verlassen? {F} drücken!", this.world.character, 'info'),
             bubbleStable2: new SpeechBubble("Yordi streicheln {F} drücken", 'canvas', 'speech')
         };
         this.sounds = {

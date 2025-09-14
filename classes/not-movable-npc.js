@@ -68,7 +68,7 @@ class NotMovableNpc extends MovableObject {
                 ],
             eat:
                 [
-                    './assets/img/npcs/cow/eat_grass/image_1.png',
+                    // './assets/img/npcs/cow/eat_grass/image_1.png',
                     './assets/img/npcs/cow/eat_grass/image_2.png',
                     './assets/img/npcs/cow/eat_grass/image_3.png',
                     './assets/img/npcs/cow/eat_grass/image_4.png',
@@ -794,7 +794,7 @@ class NotMovableNpc extends MovableObject {
         this.frameInterval = 1000 / 5.5;
         this.frameIndex = 0;
         this.isFlipped = true;
-        this.isGameCharakter = true;
+        this.isGameCharacter = true;
         this.offset.top = offsetTop;
         this.offset.left = offsetLeft;
         this.offset.right = offsetRight;

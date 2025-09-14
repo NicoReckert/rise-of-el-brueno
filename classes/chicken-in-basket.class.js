@@ -7,7 +7,7 @@ class ChickenInBasket extends MovableObject {
         this.x = x;
         this.y = y;
         this.isFlipped = true;
-        this.isGameCharakter = true;
+        this.isGameCharacter = true;
         this.isAttack = false;
         this.isIdle = true;
         this.speedX = 10;
@@ -30,9 +30,9 @@ class ChickenInBasket extends MovableObject {
 
     }
 
-    chickenAttack(charakterX, charakterY, basketX, basketY) {
+    chickenAttack(characterX, characterY, basketX, basketY) {
         if (this.isAttack && this.x <= this.attackStartX + 300) {
-            console.log(charakterX - this.x);
+            console.log(characterX - this.x);
             this.x += this.speedX;
         } else if (this.isAttack) {
             this.isAttack = false;
