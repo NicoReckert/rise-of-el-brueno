@@ -37,7 +37,6 @@ class FarmLevelController {
         this.eventManager = new EventManager(this.setup);
         this.questManager = new QuestManager(this.setup, this.eventManager);
         this.eventManager.questManager = this.questManager;
-        this.handleInteractions(this.setup);
     }
 
     update(timestamp) {
@@ -59,7 +58,7 @@ class FarmLevelController {
         this.updateHouseEffects();
         this.updateCharacter(timestamp);
         this.updateNPCs(timestamp);
-        // this.handleInteractions(this.setup);
+        this.handleInteractions();
         this.drawDroneAndMoveCamera();
         this.playDroneHypnoSound();
         this.droneGo();
@@ -257,38 +256,38 @@ class FarmLevelController {
         });
     }
 
-    handleInteractions(setup) {
-        this.eventManager.add({
-            type: "position",
-            area: { x: 1700, width: 135 },
-            once: false,
-            requireKey: "F",
-            action: (setup) => {
-                this.camera_x = 0;
-                this.character.x = 380;
-                this.world.currentScene = 'stableLevel';
-                this.keyboard.F = false;
-                setup.farmLevel.level_end_x = 720;
-                this.world.character.level_start_x = 360;
-            }
-        });
+    handleInteractions() {
+        // this.eventManager.add({
+        //     type: "position",
+        //     area: { x: 1700, width: 135 },
+        //     once: false,
+        //     requireKey: "F",
+        //     action: (setup) => {
+        //         this.camera_x = 0;
+        //         this.character.x = 380;
+        //         this.world.currentScene = 'stableLevel';
+        //         this.keyboard.F = false;
+        //         setup.farmLevel.level_end_x = 720;
+        //         this.world.character.level_start_x = 360;
+        //     }
+        // });
 
-       
-        // if (this.keyboard.F && this.character.x >= 1620 && this.character.x <= 1810) {
-        //     this.camera_x = 0;
-        //     this.character.x = 380;
-        //     this.world.currentScene = 'stableLevel';
-        //     this.keyboard.F = false;
-        //     this.setup.farmLevel.level_end_x = 720;
-        //     this.world.character.level_start_x = 360;
-        // }
 
-        // if (this.keyboard.F && this.character.x > 1000 && this.character.x < 1100) {
-        //     this.setup.isGamecharacterInHouse = true;
-        //     this.keyboard.F = false;
-        //     this.setup.isNotificationPlay = false;
-        //     this.setup.speechBubbles.bubbleFarm2.startTime = null;
-        // }
+        if (this.keyboard.F && this.character.x >= 1620 && this.character.x <= 1810) {
+            this.world.camera_x = 0;
+            this.character.x = 380;
+            this.world.currentScene = 'stableLevel';
+            this.keyboard.F = false;
+            this.setup.farmLevel.level_end_x = 720;
+            this.world.character.level_start_x = 360;
+        }
+
+        if (this.keyboard.F && this.character.x > 1000 && this.character.x < 1100) {
+            this.setup.isGamecharacterInHouse = true;
+            this.keyboard.F = false;
+            this.setup.isNotificationPlay = false;
+            this.setup.speechBubbles.bubbleFarm2.startTime = null;
+        }
     }
 
     updateHouseEffects() {

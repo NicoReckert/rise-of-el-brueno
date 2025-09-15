@@ -45,6 +45,15 @@ class EventManager {
         });
     }
 
+    emitNow(eventName) {
+        const now = performance.now();
+        this.events.forEach(e => {
+            if (e.resetOn === eventName) {
+                this.resetEvent(e, now); // sofort resetten
+            }
+        });
+    }
+
     resetEvent(element, now) {
         element.startAt = now;
         element.triggered = false;

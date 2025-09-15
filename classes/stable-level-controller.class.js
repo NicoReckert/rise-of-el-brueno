@@ -13,8 +13,10 @@ class StableLevelController {
         this.stepSoundCharacter = this.world.stepSoundCharacter.bind(this.world);
         this.landingSoundCharacter = this.world.landingSoundCharacter.bind(this.world);
         this.lastCowSoundTime = 0;
-        this.popupTexts = [];
         this.starttime2;
+        this.eventManager = new EventManager(this.setup);
+        this.questManager = new StableQuestManager(this.setup, this.eventManager);
+        this.eventManager.questManager = this.questManager;
     }
 
     update(timestamp) {
@@ -26,8 +28,9 @@ class StableLevelController {
         this.handleSpeechBubble();
         this.updateCharacter(timestamp);
         this.updateNPCs(timestamp);
-        this.handleEvents();
         this.handlePopup();
+        this.eventManager.update();
+        this.eventManager.debug = true;
     }
 
     updateCamera() {
@@ -119,72 +122,9 @@ class StableLevelController {
         });
     }
 
-    handleEvents() {
-        if (this.keyboard.F && this.character.x > 280 && this.character.x < 430) {
-            this.world.currentScene = 'farmLevel';
-            this.character.x = 1700;
-            this.world.camera_x = this.character.x - 500;
-            this.keyboard.F = false;
-            farmLevel.level_end_x = 6409;
-            this.character.level_start_x = 440;
-        }
-
-        if (this.character.isColliding(this.setup.npcs.chicken, 0, 0) && this.keyboard.F) {
-            if (!this.starttime2) {
-                this.starttime2 = performance.now();
-            }
-            const elapsed = performance.now() - this.starttime2;
-            if (elapsed >= 0 && elapsed < 5000) {
-                this.character.isCaress = true;
-                this.world.isKeysStopp = true;
-                this.character.x = 560;
-                this.character.isFlipped = false;
-                this.setup.npcs.chicken.updateState('love');
-                this.setup.sounds.chickenSound.play();
-            } else {
-                this.character.isCaress = false;
-                this.starttime2 = null;
-                this.keyboard.F = false;
-                this.world.isKeysStopp = false;
-                this.setup.npcs.chicken.updateState('idle');
-                if (!this.farmLevelSetup.taskWindow.tasks[0].done) {
-                    this.farmLevelSetup.taskWindow.markDone(0)
-                    this.farmLevelSetup.sounds.taskCompletedSound.play();
-                    this.popupTexts.push(new PopupText("Aufgabe erledigt!", this.canvas.width / 2, 440));
-                }
-            }
-        }
-
-        if (this.character.isColliding(this.setup.npcs.chick, 0, 0) && this.keyboard.F) {
-            if (!this.starttime2) {
-                this.starttime2 = performance.now();
-            }
-            const elapsed = performance.now() - this.starttime2;
-            if (elapsed >= 0 && elapsed < 5000) {
-                this.character.isCaress = true;
-                this.world.isKeysStopp = true;
-                this.character.x = 720;
-                this.character.isFlipped = false;
-                this.setup.npcs.chick.updateState('love');
-                this.setup.sounds.chickSound.play();
-            } else {
-                this.character.isCaress = false;
-                this.starttime2 = null;
-                this.keyboard.F = false;
-                this.world.isKeysStopp = false;
-                this.setup.npcs.chick.updateState('idle');
-                if (!this.farmLevelSetup.taskWindow.tasks[1].done) {
-                    this.farmLevelSetup.taskWindow.markDone(1)
-                    this.farmLevelSetup.sounds.taskCompletedSound.play();
-                    this.popupTexts.push(new PopupText("Aufgabe erledigt!", this.canvas.width / 2, 440));
-                }
-            }
-        }
-    }
-
     handlePopup() {
         const now = performance.now();
-        this.popupTexts.forEach(p => p.draw(this.ctx, now));
-        this.popupTexts = this.popupTexts.filter(p => p.active);
+        this.setup.popupTexts.forEach(p => p.draw(this.ctx, now));
+        this.setup.popupTexts = this.setup.popupTexts.filter(p => p.active);
     }
 }

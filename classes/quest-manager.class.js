@@ -3,7 +3,7 @@ class QuestManager {
         this.setup = setup;
         this.world = setup.world;
         this.eventManager = eventManager;
-        this.step = 2;
+        this.step = 1;
         this.quests = [];
         this.registerEvents();
     }
@@ -185,7 +185,6 @@ class QuestManager {
                 setup.world.character.x = setup.npcs.cow.x + 135;
                 if (setup.npcs.cow.isFlipped) setup.world.character.isFlipped = true;
                 this.setup.sounds.cowSound2.play();
-                this.eventManager.emit("caressStart");
                 this.advance(6)
             },
         });
