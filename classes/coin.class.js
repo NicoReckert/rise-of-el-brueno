@@ -1,7 +1,7 @@
 class Coin extends MovableObject {
     coinImages = [
-        './assets/img/8_coin/coin_1.png',
-        './assets/img/8_coin/coin_2.png'
+        './assets/img/8_coin/coin_1.webp',
+        './assets/img/8_coin/coin_2.webp'
     ]
 
     isGameCharacter = true;
@@ -10,7 +10,7 @@ class Coin extends MovableObject {
 
     constructor() {
         super();
-        super.loadImage('./assets/img/8_coin/coin_1.png')
+        super.loadImage('./assets/img/8_coin/coin_1.webp')
         this.x = 200 + Math.random() * 500;
         this.y = 340 + Math.random() * 20;
         this.height = 100;

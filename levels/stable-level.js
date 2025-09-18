@@ -1,11 +1,11 @@
 const groundSrcStable =
     [
-        './assets/img/holz_hintergrund.png'
+        './assets/img/holz_hintergrund.webp'
     ]
 
 const townSrcStable =
     [
-        './assets/img/Hühnerstall innen.png'
+        './assets/img/Hühnerstall innen.webp'
     ]
 
 const stableLevel = new Level(

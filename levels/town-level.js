@@ -1,23 +1,23 @@
 const groundSrcTown =
     [
-        './assets/img/5_background/layers/3_third_layer/1.png',
-        './assets/img/5_background/layers/2_second_layer/1.png',
-        './assets/img/5_background/layers/1_first_layer/1.png',
-        './assets/img/5_background/layers/3_third_layer/2.png',
-        './assets/img/5_background/layers/2_second_layer/2.png',
-        './assets/img/5_background/layers/1_first_layer/2.png',
-        './assets/img/5_background/layers/ground-town.png',
-        './assets/img/5_background/layers/ground-town2.png'
+        './assets/img/5_background/layers/3_third_layer/1.webp',
+        './assets/img/5_background/layers/2_second_layer/1.webp',
+        './assets/img/5_background/layers/1_first_layer/1.webp',
+        './assets/img/5_background/layers/3_third_layer/2.webp',
+        './assets/img/5_background/layers/2_second_layer/2.webp',
+        './assets/img/5_background/layers/1_first_layer/2.webp',
+        './assets/img/5_background/layers/ground-town.webp',
+        './assets/img/5_background/layers/ground-town2.webp'
     ]
 
 const townSrcTown =
     [
-        './assets/img/town1.png',
-        './assets/img/town2.png',
-        './assets/img/town3.png',
-        './assets/img/town4.png',
-        './assets/img/town5.png',
-        './assets/img/town6.png'
+        './assets/img/town1.webp',
+        './assets/img/town2.webp',
+        './assets/img/town3.webp',
+        './assets/img/town4.webp',
+        './assets/img/town5.webp',
+        './assets/img/town6.webp'
 
     ]
 

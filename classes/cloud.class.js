@@ -1,7 +1,7 @@
 class Cloud extends MovableObject {
     constructor(existingClouds = [], minDistance = 6500 / 30) {
         super();
-        super.loadImage('./assets/img/5_background/layers/4_clouds/1.png');
+        super.loadImage('./assets/img/5_background/layers/4_clouds/1.webp');
 
         this.y = 50;
 

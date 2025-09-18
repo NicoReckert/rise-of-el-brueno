@@ -1,7 +1,7 @@
-let titleMusic = new Audio('./assets/audio/title-music.mp3');
-let titleMusic2 = new Audio('./assets/audio/title-music2.mp3');
-let titleSound = new Audio('./assets/audio/title-sound5.mp3');
-let welcomeButtonHoverSound = new Audio('./assets/audio/ui-tuping-391160.mp3');
+let titleMusic = new Audio('./assets/audio/title-music.opus');
+let titleMusic2 = new Audio('./assets/audio/title-music2.opus');
+let titleSound = new Audio('./assets/audio/title-sound5.opus');
+let welcomeButtonHoverSound = new Audio('./assets/audio/ui-tuping-391160.opus');
 let titleSoundIsPlayed = false;
 
 function startVideo() {

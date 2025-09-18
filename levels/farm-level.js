@@ -1,24 +1,24 @@
 const groundSrcFarm =
     [
-        './assets/img/5_background/layers/3_third_layer/1.png',
-        './assets/img/5_background/layers/2_second_layer/1.png',
-        './assets/img/5_background/layers/1_first_layer/1.png',
-        './assets/img/5_background/layers/3_third_layer/2.png',
-        './assets/img/5_background/layers/2_second_layer/2.png',
-        './assets/img/5_background/layers/1_first_layer/2.png',
-        './assets/img/grass3.png',
-        './assets/img/5_background/layers/ground-town.png',
-        './assets/img/5_background/layers/ground-town2.png',
-        './assets/img/5_background/layers/ground-town3.png'
+        './assets/img/5_background/layers/3_third_layer/1.webp',
+        './assets/img/5_background/layers/2_second_layer/1.webp',
+        './assets/img/5_background/layers/1_first_layer/1.webp',
+        './assets/img/5_background/layers/3_third_layer/2.webp',
+        './assets/img/5_background/layers/2_second_layer/2.webp',
+        './assets/img/5_background/layers/1_first_layer/2.webp',
+        './assets/img/grass3.webp',
+        './assets/img/5_background/layers/ground-town.webp',
+        './assets/img/5_background/layers/ground-town2.webp',
+        './assets/img/5_background/layers/ground-town3.webp'
     ]
 
 const townSrcFarm =
     [
-        './assets/img/bauernhof1.png',
-        './assets/img/bauernhof2.png',
-        './assets/img/Hühnerstall 2.png',
-        './assets/img/stable.png',
-        './assets/img/stable2.png'
+        './assets/img/bauernhof1.webp',
+        './assets/img/bauernhof2.webp',
+        './assets/img/Hühnerstall 2.webp',
+        './assets/img/stable.webp',
+        './assets/img/stable2.webp'
     ]
 
 const cloudArray = [];

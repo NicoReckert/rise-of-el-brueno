@@ -18,7 +18,7 @@ class IntroScreen {
         this.bgLoaded = false;
         this.bgImage.onload = () => this.bgLoaded = true;
         this.bgImage.onerror = () => this.bgLoaded = false;
-        this.bgImage.src = "./assets/img/background-task-window2.png";
+        this.bgImage.src = "./assets/img/background-task-window2.webp";
 
         // Overlay über dem Bild (optional)
         this.bgOverlayAlpha = 0.20;

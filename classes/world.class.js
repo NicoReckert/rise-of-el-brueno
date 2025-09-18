@@ -4,27 +4,29 @@ class World {
     canvas;
     currentScene = 'farmLevel';
 
-    constructor(canvas, keyboard) {
+    constructor(canvas, keyboard, characterImages, npcImages) {
         this.canvas = canvas;
         this.ctx = canvas.getContext('2d');
         this.keyboard = keyboard;
+        this.characterImages = characterImages;
+        this.npcImages = npcImages;
         this.listenStartButton();
-        this.endbossMusic = new Audio('./assets/audio/endboss-music.mp3');
+        this.endbossMusic = new Audio('./assets/audio/endboss-music.opus');
 
         this.lastThrowCheck = 0;
         this.throwCheckDelay = 120;
 
         this.lastStepCheck = 0;
         this.stepCheckDelay = 400;
-        this.character = new Character();
-        this.footStepSound = new Audio('./assets/audio/footstep-sound.mp3');
-        this.jumpSound = new Audio('./assets/audio/jump-sound2.mp3');
-        this.landingSound = new Audio('./assets/audio/landing-sound.mp3');
+        this.character = new Character(this.characterImages);
+        this.footStepSound = new Audio('./assets/audio/footstep-sound.opus');
+        this.jumpSound = new Audio('./assets/audio/jump-sound2.opus');
+        this.landingSound = new Audio('./assets/audio/landing-sound.opus');
         this.camera_x = 0;
 
         this.lastTime = performance.now();
         this.intro = new IntroScreen(this.ctx, this.canvas);
-        this.chapterSound = new Audio('./assets/audio/chapter-sound1.mp3');
+        this.chapterSound = new Audio('./assets/audio/chapter-sound1.opus');
         this.isChapterSoundPlayed = false;
         this.isKeysStopp = false;
     }
@@ -464,32 +466,32 @@ class World {
     }
 
     playCoinSound() {
-        const sound = new Audio('./assets/audio/coin2.mp3');
+        const sound = new Audio('./assets/audio/coin2.opus');
         sound.play();
     }
 
     playBottleSound() {
-        const sound = new Audio('./assets/audio/bottle-clink1.mp3');
+        const sound = new Audio('./assets/audio/bottle-clink1.opus');
         sound.play();
     }
 
     playChickenDeathSound() {
-        const sound = new Audio('./assets/audio/chicken-death.mp3');
+        const sound = new Audio('./assets/audio/chicken-death.opus');
         sound.play();
     }
 
     playEmptyBottelsSound() {
-        const sound = new Audio('./assets/audio/empty-bottels2.mp3');
+        const sound = new Audio('./assets/audio/empty-bottels2.opus');
         sound.play();
     }
 
     playBottelBrokenSound() {
-        const sound = new Audio('./assets/audio/bottle-shattering1.mp3');
+        const sound = new Audio('./assets/audio/bottle-shattering1.opus');
         sound.play();
     }
 
     playBottelThrowSound() {
-        const sound = new Audio('./assets/audio/throw2.mp3');
+        const sound = new Audio('./assets/audio/throw2.opus');
         sound.play();
     }
 
@@ -507,7 +509,7 @@ class World {
     }
 
     playEndbossAlarmSound() {
-        this.endbossAlarmSound = new Audio('./assets/audio/endboss-alarm.mp3');
+        this.endbossAlarmSound = new Audio('./assets/audio/endboss-alarm.opus');
         this.endbossAlarmSound.play();
     }
 

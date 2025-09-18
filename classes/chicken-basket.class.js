@@ -1,7 +1,7 @@
 class ChickenBasket extends MovableObject {
     constructor(x, y) {
         super();
-        super.loadImage('./assets/img/hühnerkorb.png');
+        super.loadImage('./assets/img/hühnerkorb.webp');
         this.height = 35;
         this.width = 35;
         this.x = x;

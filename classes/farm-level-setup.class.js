@@ -2,35 +2,36 @@ class FarmLevelSetup {
     constructor(world) {
         this.world = world;
         this.farmLevel = farmLevel;
+        this.npcImages = this.world.npcImages;
         this.npcs = {
-            cow: new NotMovableNpc('cow', 200, 200, 500, 495), //255 Y
-            bird: new NotMovableNpc('bird', 80, 80, 1400, 178),
-            pond: new NotMovableNpc('pond', 500, 600, -28, 320),//500, 600, 150, 120
-            tree: new NotMovableNpc('tree', 450, 450, 500, 250),
-            tree2: new NotMovableNpc('tree2', 450, 450, 4600, 250),
-            tree3: new NotMovableNpc('tree3', 450, 450, 5700, 255),
-            flower: new NotMovableNpc('flower', 65, 65, 5650, 600),
-            flower2: new NotMovableNpc('flower2', 65, 65, 5600, 600),
-            flower3: new NotMovableNpc('flower3', 65, 65, 5550, 600),
-            flower4: new NotMovableNpc('flower', 65, 65, 5070, 600),
-            flower5: new NotMovableNpc('flower2', 65, 65, 5120, 600),
-            flower6: new NotMovableNpc('flower3', 65, 65, 5170, 600),
-            flower7: new NotMovableNpc('flower', 65, 65, 4730, 600),
-            flower8: new NotMovableNpc('flower', 65, 65, 4800, 600),
-            drohne: new NotMovableNpc('drohne', 300, 300, 5000, 190),
-            chicken: new NotMovableNpc('chicken', 90, 90, 200, 580),
-            cowHypno: new NotMovableNpc('cowHypno', 200, 200, -100, 495),
-            chickHypno: new NotMovableNpc('chickHypno', 60, 60, 500, 600),
-            blackDragon: new NotMovableNpc('blackDragon', 600, 600, 1000, 132),
-            barrier: new NotMovableNpc('barrier', 450, 120, 7050, 305),
-            house: new NotMovableNpc('house', 900, 900, 800, -30),
-            stable: new NotMovableNpc('stable', 600, 600, 1550, 177),
-            clock: new NotMovableNpc('clock', 150, 150, 5320, 400),
-            campfire: new NotMovableNpc('campfire', 200, 200, 650, 520),
-            chicken2: new NotMovableNpc('chicken', 150, 150, 1600, 540), // 500, 540
-            chick: new NotMovableNpc('chick', 120, 120, 1680, 587), // 575, 587
-            sun: new NotMovableNpc('sun', 250, 250, 3000, 50),
-            moon: new NotMovableNpc('moon', 200, 200, 3000, 50)
+            cow: new NotMovableNpc(this.npcImages, 'cow', 200, 200, 500, 495), //255 Y
+            bird: new NotMovableNpc(this.npcImages, 'bird', 80, 80, 1400, 178),
+            pond: new NotMovableNpc(this.npcImages, 'pond', 500, 600, -28, 320),//500, 600, 150, 120
+            tree: new NotMovableNpc(this.npcImages, 'tree', 450, 450, 500, 250),
+            tree2: new NotMovableNpc(this.npcImages, 'tree2', 450, 450, 4600, 250),
+            tree3: new NotMovableNpc(this.npcImages, 'tree3', 450, 450, 5700, 255),
+            flower: new NotMovableNpc(this.npcImages, 'flower', 65, 65, 5650, 600),
+            flower2: new NotMovableNpc(this.npcImages, 'flower2', 65, 65, 5600, 600),
+            flower3: new NotMovableNpc(this.npcImages, 'flower3', 65, 65, 5550, 600),
+            flower4: new NotMovableNpc(this.npcImages, 'flower', 65, 65, 5070, 600),
+            flower5: new NotMovableNpc(this.npcImages, 'flower2', 65, 65, 5120, 600),
+            flower6: new NotMovableNpc(this.npcImages, 'flower3', 65, 65, 5170, 600),
+            flower7: new NotMovableNpc(this.npcImages, 'flower', 65, 65, 4730, 600),
+            flower8: new NotMovableNpc(this.npcImages, 'flower', 65, 65, 4800, 600),
+            drohne: new NotMovableNpc(this.npcImages, 'drohne', 300, 300, 5000, 190),
+            chicken: new NotMovableNpc(this.npcImages, 'chicken', 90, 90, 200, 580),
+            cowHypno: new NotMovableNpc(this.npcImages, 'cowHypno', 200, 200, -100, 495),
+            chickHypno: new NotMovableNpc(this.npcImages, 'chickHypno', 60, 60, 500, 600),
+            blackDragon: new NotMovableNpc(this.npcImages, 'blackDragon', 600, 600, 1000, 132),
+            barrier: new NotMovableNpc(this.npcImages, 'barrier', 450, 120, 7050, 305),
+            house: new NotMovableNpc(this.npcImages, 'house', 900, 900, 800, -30),
+            stable: new NotMovableNpc(this.npcImages, 'stable', 600, 600, 1550, 177),
+            clock: new NotMovableNpc(this.npcImages, 'clock', 150, 150, 5320, 400),
+            campfire: new NotMovableNpc(this.npcImages, 'campfire', 200, 200, 650, 520),
+            chicken2: new NotMovableNpc(this.npcImages, 'chicken', 150, 150, 1600, 540), // 500, 540
+            chick: new NotMovableNpc(this.npcImages, 'chick', 120, 120, 1680, 587), // 575, 587
+            sun: new NotMovableNpc(this.npcImages, 'sun', 250, 250, 3000, 50),
+            moon: new NotMovableNpc(this.npcImages, 'moon', 200, 200, 3000, 50)
         };
         this.npcs.pond.isFlipped = false;
         this.npcs.cowHypno.isFlipped = true;
@@ -39,24 +40,24 @@ class FarmLevelSetup {
         this.world.camera_x = 800;
         this.statusBar = new LifeEnergyCharacterBar();
         this.sounds = {
-            farmMusic: new Audio('./assets/audio/farm-music.mp3'),
-            notificationSound: new Audio('./assets/audio/notification-sound.mp3'),
-            nightMusic: new Audio('./assets/audio/night-music.mp3'),
-            drohneSound: new Audio('./assets/audio/drohne-sound.mp3'),
-            drohneHypnoSound: new Audio('./assets/audio/drohne-sound2.mp3'),
-            eveningSound: new Audio('./assets/audio/evening-sound.mp3'),
-            yawningSound: new Audio('./assets/audio/yawning-sound.mp3'),
-            snoringSound: new Audio('./assets/audio/snoring-sound.mp3'),
-            earthquakeSound: new Audio('./assets/audio/earthquake-sound.mp3'),
-            sadMusic: new Audio('./assets/audio/sad-music.mp3'),
-            dragonRoarSound: new Audio('./assets/audio/dragon-roar-sound.mp3'),
-            newTaskSound: new Audio('./assets/audio/task-completed-sound.mp3'),
-            taskCompletedSound: new Audio('./assets/audio/task-completed-sound2.mp3'),
-            cowSound: new Audio('./assets/audio/cow-sound.mp3'),
-            cowSound2: new Audio('./assets/audio/cow-sound3.mp3'),
-            doorOpeningSound: new Audio('./assets/audio/door-opening.mp3'),
-            doorClosingSound: new Audio('./assets/audio/door-closing.mp3'),
-            happyTogetherMusic: new Audio('./assets/audio/happy-together-music.mp3')
+            farmMusic: new Audio('./assets/audio/farm-music.opus'),
+            notificationSound: new Audio('./assets/audio/notification-sound.opus'),
+            nightMusic: new Audio('./assets/audio/night-music.opus'),
+            drohneSound: new Audio('./assets/audio/drohne-sound.opus'),
+            drohneHypnoSound: new Audio('./assets/audio/drohne-sound2.opus'),
+            eveningSound: new Audio('./assets/audio/evening-sound.opus'),
+            yawningSound: new Audio('./assets/audio/yawning-sound.opus'),
+            snoringSound: new Audio('./assets/audio/snoring-sound.opus'),
+            earthquakeSound: new Audio('./assets/audio/earthquake-sound.opus'),
+            sadMusic: new Audio('./assets/audio/sad-music.opus'),
+            dragonRoarSound: new Audio('./assets/audio/dragon-roar-sound.opus'),
+            newTaskSound: new Audio('./assets/audio/task-completed-sound.opus'),
+            taskCompletedSound: new Audio('./assets/audio/task-completed-sound2.opus'),
+            cowSound: new Audio('./assets/audio/cow-sound.opus'),
+            cowSound2: new Audio('./assets/audio/cow-sound3.opus'),
+            doorOpeningSound: new Audio('./assets/audio/door-opening.opus'),
+            doorClosingSound: new Audio('./assets/audio/door-closing.opus'),
+            happyTogetherMusic: new Audio('./assets/audio/happy-together-music.opus')
         };
         this.speechBubbles = {
             bubbleFarm: new SpeechBubble("In den Hühnerstall gehen? {F} drücken!", this.world.character, 'info'),

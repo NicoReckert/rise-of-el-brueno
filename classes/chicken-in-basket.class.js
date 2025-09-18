@@ -1,7 +1,7 @@
 class ChickenInBasket extends MovableObject {
     constructor(x, y) {
         super();
-        super.loadImage('./assets/img/3_enemies_chicken/chicken_normal/1_walk/1_w.png');
+        super.loadImage('./assets/img/3_enemies_chicken/chicken_normal/1_walk/1_w.webp');
         this.height = 50;
         this.width = 50;
         this.x = x;

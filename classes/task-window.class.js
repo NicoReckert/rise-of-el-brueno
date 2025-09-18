@@ -31,7 +31,7 @@ class TaskWindow {
         this.bgLoaded = false;
         this.bgImage.onload = () => (this.bgLoaded = true);
         this.bgImage.onerror = () => (this.bgLoaded = false);
-        this.bgImage.src = "./assets/img/background-task-window.png";
+        this.bgImage.src = "./assets/img/background-task-window.webp";
 
         // Overlay über dem Bild, um Text klarer zu machen (0 = aus, 0.2 ≈ dezent)
         this.bgOverlayAlpha = 0.30;

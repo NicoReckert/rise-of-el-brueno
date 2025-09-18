@@ -1,7 +1,7 @@
 class Bottle extends MovableObject {
     bottleImages = [
-        './assets/img/6_salsa_bottle/1_salsa_bottle_on_ground.png',
-        './assets/img/6_salsa_bottle/2_salsa_bottle_on_ground.png'
+        './assets/img/6_salsa_bottle/1_salsa_bottle_on_ground.webp',
+        './assets/img/6_salsa_bottle/2_salsa_bottle_on_ground.webp'
     ]
 
     isGameCharacter = true;
@@ -16,7 +16,7 @@ class Bottle extends MovableObject {
         this.height = 80;
         this.width = 80;
         this.offset.top = 12;
-        if (this.randomImage != "./assets/img/6_salsa_bottle/1_salsa_bottle_on_ground.png") {
+        if (this.randomImage != "./assets/img/6_salsa_bottle/1_salsa_bottle_on_ground.webp") {
             this.offset.left = 24;
             this.offset.right = 25;
         } else {

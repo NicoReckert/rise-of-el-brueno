@@ -15,8 +15,8 @@ class TownLevelSetup {
         this.npc1 = new Npc(1750, 130, 130, 300);
         this.npc2 = new Npc(2500, 170, 180, 250);
         this.sounds = {
-            notificationSound: new Audio('./assets/audio/notification-sound.mp3'),
-            taskCompletedSound: new Audio('./assets/audio/task-completed-sound2.mp3'),
+            notificationSound: new Audio('./assets/audio/notification-sound.opus'),
+            taskCompletedSound: new Audio('./assets/audio/task-completed-sound2.opus'),
         };
         this.speechBubbles = {
             // bubbleFarm: new SpeechBubble("In den Hühnerstall gehen? {F} drücken!", this.world.character, 'info'),

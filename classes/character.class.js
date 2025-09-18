@@ -25,9 +25,10 @@ class Character extends MovableObject {
     isCaress = false;
     isWalk = false;
 
-    constructor() {
+    constructor(characterImages) {
         super();
-        super.loadImage('./assets/img/2_character_pepe/1_idle/idle/I-1.png');
+        this.characterImages = characterImages;
+        super.loadImage('./assets/img/2_character_pepe/1_idle/idle/I-1.webp');
         this.height = 300; // 183 für voidless.dev sprite - 300 * 0.61
         this.width = 130; // 158 für voidless.dev sprite - 130 * 1.216
         this.x = 1000;
@@ -48,7 +49,7 @@ class Character extends MovableObject {
         this.isPlayGuitar = false;
         this.isLightACampfire = false;
         this.lastFrameTime = 0;        // Timestamp des letzten Framewechsels
-        this.currentAnimation = 'stand';
+        this.currentAnimation = 'idle';
         this.frameInterval = 1000 / 2.5; // Standard: 5 FPS
         this.frameIndex = 0;
         this.level_start_x = 440;
@@ -56,25 +57,49 @@ class Character extends MovableObject {
         this.yVoidless = 487;
 
 
-        this.preloadIdleAndWalkImages();
-        this.preloadJumpAndDeadImages();
-        this.preloadHurtAndJetpackImages();
-        this.preloadCaressAndCaress2Images();
-        this.preloadKneelDownAndCryImages();
-        this.preloadStandUpAndLookDeterminedImages();
-        this.preloadLookDeterminedStandUpAndStrongDeterminedImages();
-        this.preloadPlayGuitarImages();
+
+
+        // this.preloadIdleAndWalkImages();
+        // this.preloadJumpAndDeadImages();
+        // this.preloadHurtAndJetpackImages();
+        // this.preloadCaressAndCaress2Images();
+        // this.preloadKneelDownAndCryImages();
+        // this.preloadStandUpAndLookDeterminedImages();
+        // this.preloadLookDeterminedStandUpAndStrongDeterminedImages();
+        // this.preloadPlayGuitarImages();
+        this.init();
+    }
+
+    init() {
+        this.idleImages = this.characterImages.idleImages || [];
+        this.walkImages = this.characterImages.walkImages || [];
+        this.jumpImages = this.characterImages.jumpImages || [];
+        this.deadImages = this.characterImages.deadImages || [];
+        this.hurtImages = this.characterImages.hurtImages || [];
+        this.jetPackImages = this.characterImages.jetPackImages || [];
+        this.caressImages = this.characterImages.caressImages || [];
+        this.caressImages2 = this.characterImages.caressImages2 || [];
+        this.kneelDownAndCryImages = this.characterImages.kneelDownAndCryImages || [];
+        this.cryImages = this.characterImages.cryImages || [];
+        this.standUpAndLookDeterminedImages = this.characterImages.standUpAndLookDeterminedImages || [];
+        this.lookDeterminedImages = this.characterImages.lookDeterminedImages || [];
+        this.lookDeterminedStandUpImages = this.characterImages.lookDeterminedStandUpImages || [];
+        this.strongDeterminedImages = this.characterImages.strongDeterminedImages || [];
+        this.sitDownAndPlayGuitarImages = this.characterImages.sitDownAndPlayGuitarImages || [];
+        this.playGuitarAndSingImages = this.characterImages.playGuitarAndSingImages || [];
+        this.playGuitarImages = this.characterImages.playGuitarImages || [];
+        this.lightACampfireImages = this.characterImages.lightACampfireImages || [];
     }
 
     preloadIdleAndWalkImages() {
-        this.standImages = Array.from({ length: 10 }, (_, i) => {
+        this.idleImages = Array.from({ length: 10 }, (_, i) => {
             const img = new Image();
-            img.src = `./assets/img/2_character_pepe/1_idle/idle/I-${i + 1}.png`;
+            img.src = `./assets/img/2_character_pepe/1_idle/idle/I-${i + 1}.webp`;
             return img;
         });
         this.walkImages = Array.from({ length: 6 }, (_, i) => {
             const img = new Image();
-            img.src = `./assets/img/2_character_pepe/2_walk/W-2${i + 1}.png`;
+            img.src = `./assets/img/2_character_pepe/2_walk/W-2${i + 1}.webp`;
             return img;
         });
     }
@@ -82,12 +107,12 @@ class Character extends MovableObject {
     preloadJumpAndDeadImages() {
         this.jumpImages = Array.from({ length: 9 }, (_, i) => {
             const img = new Image();
-            img.src = `./assets/img/2_character_pepe/3_jump/J-3${i + 1}.png`;
+            img.src = `./assets/img/2_character_pepe/3_jump/J-3${i + 1}.webp`;
             return img;
         });
         this.deadImages = Array.from({ length: 7 }, (_, i) => {
             const img = new Image();
-            img.src = `./assets/img/2_character_pepe/5_dead/D-5${i + 1}.png`;
+            img.src = `./assets/img/2_character_pepe/5_dead/D-5${i + 1}.webp`;
             return img;
         });
     }
@@ -95,12 +120,12 @@ class Character extends MovableObject {
     preloadHurtAndJetpackImages() {
         this.hurtImages = Array.from({ length: 3 }, (_, i) => {
             const img = new Image();
-            img.src = `./assets/img/2_character_pepe/4_hurt/H-4${i + 1}.png`;
+            img.src = `./assets/img/2_character_pepe/4_hurt/H-4${i + 1}.webp`;
             return img;
         });
         this.jetPackImages = Array.from({ length: 1 }, _ => {
             const img = new Image();
-            img.src = `./assets/img/Pepe_Jetpack.png`;
+            img.src = `./assets/img/Pepe_Jetpack.webp`;
             return img;
         });
     }
@@ -108,12 +133,12 @@ class Character extends MovableObject {
     preloadCaressAndCaress2Images() {
         this.caressImages = Array.from({ length: 8 }, (_, i) => {
             const img = new Image();
-            img.src = `./assets/img/2_character_pepe/6_caress/image_${i + 1}.png`;
+            img.src = `./assets/img/2_character_pepe/6_caress/image_${i + 1}.webp`;
             return img;
         });
         this.caressImages2 = Array.from({ length: 3 }, (_, i) => {
             const img = new Image();
-            img.src = `./assets/img/2_character_pepe/6_caress/image_${6 + i}.png`;
+            img.src = `./assets/img/2_character_pepe/6_caress/image_${6 + i}.webp`;
             return img;
         });
     }
@@ -121,12 +146,12 @@ class Character extends MovableObject {
     preloadKneelDownAndCryImages() {
         this.kneelDownAndCryImages = Array.from({ length: 8 }, (_, i) => {
             const img = new Image();
-            img.src = `./assets/img/2_character_pepe/7_kneel-down-and-cry/image_${i + 1}.png`;
+            img.src = `./assets/img/2_character_pepe/7_kneel-down-and-cry/image_${i + 1}.webp`;
             return img;
         });
         this.cryImages = Array.from({ length: 3 }, (_, i) => {
             const img = new Image();
-            img.src = `./assets/img/2_character_pepe/7_kneel-down-and-cry/image_${6 + i}.png`;
+            img.src = `./assets/img/2_character_pepe/7_kneel-down-and-cry/image_${6 + i}.webp`;
             return img;
         });
     }
@@ -134,12 +159,12 @@ class Character extends MovableObject {
     preloadStandUpAndLookDeterminedImages() {
         this.standUpAndLookDeterminedImages = Array.from({ length: 10 }, (_, i) => {
             const img = new Image();
-            img.src = `./assets/img/2_character_pepe/8_stand_up_look_determined/image_${i + 1}.png`;
+            img.src = `./assets/img/2_character_pepe/8_stand_up_look_determined/image_${i + 1}.webp`;
             return img;
         });
         this.lookDeterminedImages = Array.from({ length: 3 }, (_, i) => {
             const img = new Image();
-            img.src = `./assets/img/2_character_pepe/8_stand_up_look_determined/image_${8 + i}.png`;
+            img.src = `./assets/img/2_character_pepe/8_stand_up_look_determined/image_${8 + i}.webp`;
             return img;
         });
     }
@@ -147,12 +172,12 @@ class Character extends MovableObject {
     preloadLookDeterminedStandUpAndStrongDeterminedImages() {
         this.lookDeterminedStandUpImages = Array.from({ length: 15 }, (_, i) => {
             const img = new Image();
-            img.src = `./assets/img/2_character_pepe/10/image_${i + 1}.png`;
+            img.src = `./assets/img/2_character_pepe/10/image_${i + 1}.webp`;
             return img;
         });
         this.strongDeterminedImages = Array.from({ length: 4 }, (_, i) => {
             const img = new Image();
-            img.src = `./assets/img/2_character_pepe/10/image_${12 + i}.png`;
+            img.src = `./assets/img/2_character_pepe/10/image_${12 + i}.webp`;
             return img;
         });
     }
@@ -160,25 +185,25 @@ class Character extends MovableObject {
     preloadPlayGuitarImages() {
         this.sitDownAndPlayGuitarImages = Array.from({ length: 6 }, (_, i) => {
             const img = new Image();
-            img.src = `./assets/img/2_character_pepe/12/image_${i + 1}.png`;
+            img.src = `./assets/img/2_character_pepe/12/image_${i + 1}.webp`;
             return img;
         });
 
         this.playGuitarAndSingImages = Array.from({ length: 23 }, (_, i) => {
             const img = new Image();
-            img.src = `./assets/img/2_character_pepe/12/image_${6 + i}.png`;
+            img.src = `./assets/img/2_character_pepe/12/image_${6 + i}.webp`;
             return img;
         });
 
         this.playGuitarImages = Array.from({ length: 20 }, (_, i) => {
             const img = new Image();
-            img.src = `./assets/img/2_character_pepe/13/image_${i + 1}.png`;
+            img.src = `./assets/img/2_character_pepe/13/image_${i + 1}.webp`;
             return img;
         });
 
         this.lightACampfireImages = Array.from({ length: 10 }, (_, i) => {
             const img = new Image();
-            img.src = `./assets/img/2_character_pepe/14/image_${i + 1}.png`;
+            img.src = `./assets/img/2_character_pepe/14/image_${i + 1}.webp`;
             return img;
         });
     }
@@ -273,8 +298,8 @@ class Character extends MovableObject {
             this.currentAnimation = 'walk';
             this.frameInterval = 1000 / 8;
         } else {
-            this.setAnimation('stand');
-            // this.currentAnimation = 'stand';
+            this.setAnimation('idle');
+            // this.currentAnimation = 'idle';
             this.frameInterval = 1000 / 2.5;
             // this.setPropertiesNormal();
         }
@@ -367,8 +392,8 @@ class Character extends MovableObject {
             case 'play-guitar-and-sing': return this.playGuitarAndSingImages;
             case 'play-guitar': return this.playGuitarImages;
             case 'light-a-campfire': return this.lightACampfireImages;
-            case 'stand':
-            default: return this.standImages;
+            case 'idle':
+            default: return this.idleImages;
         }
     }
 

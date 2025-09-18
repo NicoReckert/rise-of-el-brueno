@@ -1,11 +1,14 @@
 let canvas;
 let world;
 let keyboard = new Keyboard();
+let characterImages;
+let npcImages;
 
-function init() {
+async function init() {
     canvas = document.getElementById('canvas');
-    world = new World(canvas, keyboard);
-    // world.setLevel(level2);
+    characterImages = await preloadManifestImages(characterImageManifest);
+    npcImages = await preloadManifestImages(npcImageManifest);
+    world = new World(canvas, keyboard, characterImages, npcImages);
 }
 
 window.addEventListener('keydown', (event) => {

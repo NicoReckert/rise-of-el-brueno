@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Rise of El Brünö</title>
-    <link rel="icon" type="image/x-icon" href="./assets/img/favicon.png">
+    <link rel="icon" type="image/x-icon" href="./assets/img/favicon.webp">
     <link rel="stylesheet" href="./style.css">
     <link rel="stylesheet" href="./css/font.css">
 </head>
@@ -28,19 +28,19 @@
             </div>
         </div>
         <audio id="background-music" loop>
-            <source src="./assets/audio/background-music-level1.mp3" type="audio/mpeg">
+            <source src="./assets/audio/background-music-level1.opus" type="audio/mpeg">
         </audio>
         <audio id="jet-pack-music" loop>
-            <source src="./assets/audio/jet-pack-music.mp3" type="audio/mpeg">
+            <source src="./assets/audio/jet-pack-music.opus" type="audio/mpeg">
         </audio>
         <audio id="jet-pack-sound">
-            <source src="./assets/audio/jet-pack-sound.mp3" type="audio/mpeg">
+            <source src="./assets/audio/jet-pack-sound.opus" type="audio/mpeg">
         </audio>
         <audio id="speak-sound">
-            <source src="./assets/audio/speak1.mp3" type="audio/mpeg">
+            <source src="./assets/audio/speak1.opus" type="audio/mpeg">
         </audio>
         <audio id="coin-sound">
-            <source src="./assets/audio/coin2.mp3" type="audio/mpeg">
+            <source src="./assets/audio/coin2.opus" type="audio/mpeg">
         </audio>
     </div>
     <div class="overlay-startscreen opacity-none" id="overlay-startscreen">
@@ -52,7 +52,7 @@
         <!-- <button class="button-play" onclick="startVideo()">startVid</button> -->
         <div class="title-dragon-box">
             <div class="dragon-img-box">
-                <img class="dragon" src="./assets/img/Roter Drache mit scharfen Zähnen.png" alt="">
+                <img class="dragon" src="./assets/img/Roter Drache mit scharfen Zähnen.webp" alt="">
             </div>
             <h1 id="h1" class="before-animation">RISE OF<br>EL BRÜNÖ</h1>
         </div>
@@ -64,9 +64,9 @@
                         controlslist="nodownload nofullscreen noremoteplayback"></video>
                 </div>
                 <div class="img-box2">
-                    <img class="kuecken-img" src="./assets/img/Kücken.png" alt="">
-                    <img class="bruno-img" src="./assets/img/Brünö.png" alt="">
-                    <img class="huhn-img" src="./assets/img/huhn.png" alt="">
+                    <img class="kuecken-img" src="./assets/img/Kücken.webp" alt="">
+                    <img class="bruno-img" src="./assets/img/Brünö.webp" alt="">
+                    <img class="huhn-img" src="./assets/img/huhn.webp" alt="">
                 </div>
                 <div class="portal-video-box">
                     <video class="portal-video" src="./assets/videos/27238-362769967_medium.mp4" autoplay loop muted
@@ -77,8 +77,8 @@
             <video class="thunder-video" src="./assets/videos/166697-835224043_medium.mp4" autoplay loop muted
                 playsinline preload="auto" disablepictureinpicture
                 controlslist="nodownload nofullscreen noremoteplayback"></video>
-            <img class="dragon2" src="./assets/img/black-dragon-8808269_1280.png" alt="">
-            <img class="dragon2 red-glow" src="./assets/img/black-dragon-8808269_1280.png" alt="">
+            <img class="dragon2" src="./assets/img/black-dragon-8808269_1280.webp" alt="">
+            <img class="dragon2 red-glow" src="./assets/img/black-dragon-8808269_1280.webp" alt="">
             <div class="startscreen">
                 <button class="start-button" id="start-button">Start</button>
                 <button class="start-button" id="menu-button">Menü</button>
@@ -140,9 +140,14 @@
     <script src="./classes/quest-manager.class.js"></script>
     <script src="./classes/stable-quest-manager.class.js"></script>
     <script src="./classes/dialog-manager.class.js"></script>
+    <script src="./classes/cutscene-manager.class copy.js"></script>
     <script src="./levels/town-level.js"></script>
     <script src="./levels/farm-level.js"></script>
     <script src="./levels/stable-level.js"></script>
+    <script src="./events/farm-level-event.js"></script>
+    <script src="./characterImageManifest.js"></script>
+    <script src="./npcImageManifest.js"></script>
+    <script src="./imageLoader.js"></script>
     <script src="./script.js"></script>
     <script src="./js/game.js"></script>
 </body>

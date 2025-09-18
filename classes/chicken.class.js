@@ -4,17 +4,17 @@ class Chicken extends MovableObject {
     isDead = false;
 
     walkImages = [
-        // './assets/img/3_enemies_chicken/chicken_mutates/image_1.png',
-        './assets/img/3_enemies_chicken/chicken_mutates/image_2.png',
-        './assets/img/3_enemies_chicken/chicken_mutates/image_3.png',
-        './assets/img/3_enemies_chicken/chicken_mutates/image_4.png',
-        './assets/img/3_enemies_chicken/chicken_mutates/image_5.png',
-        './assets/img/3_enemies_chicken/chicken_mutates/image_6.png'
+        // './assets/img/3_enemies_chicken/chicken_mutates/image_1.webp',
+        './assets/img/3_enemies_chicken/chicken_mutates/image_2.webp',
+        './assets/img/3_enemies_chicken/chicken_mutates/image_3.webp',
+        './assets/img/3_enemies_chicken/chicken_mutates/image_4.webp',
+        './assets/img/3_enemies_chicken/chicken_mutates/image_5.webp',
+        './assets/img/3_enemies_chicken/chicken_mutates/image_6.webp'
     ]
 
     constructor() {
         super();
-        super.loadImage('./assets/img/3_enemies_chicken/chicken_mutates/image_1.png')
+        super.loadImage('./assets/img/3_enemies_chicken/chicken_mutates/image_1.webp')
         this.x = 600 + Math.random() * 2000;
         this.y = 545;
         this.height = 120;
@@ -47,7 +47,7 @@ class Chicken extends MovableObject {
 
         if (this.isDead) {
             this.currentAnimation = null;
-            this.img.src = 'assets/img/3_enemies_chicken/chicken_mutates/dead/image_1.png';
+            this.img.src = 'assets/img/3_enemies_chicken/chicken_mutates/dead/image_1.webp';
             this.y = 565;
             return;
         } else if (this.isMovingLeft || this.isMovingRight) {

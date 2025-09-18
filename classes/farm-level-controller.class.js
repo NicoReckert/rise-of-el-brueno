@@ -62,7 +62,6 @@ class FarmLevelController {
         this.drawDroneAndMoveCamera();
         this.playDroneHypnoSound();
         this.droneGo();
-        this.makeAFire();
         this.songSzene();
         this.ctx.restore();
 
@@ -637,74 +636,6 @@ class FarmLevelController {
             }
         }
     }
-
-
-
-
-
-    //     if (this.cowTaskStep === 10) {
-    //         this.character.isMovingLeft = false;
-    //         this.character.isMovingRight = false;
-    //         this.world.isKeysStopp = true;
-    //         this.character.isFlipped = false;
-    //         this.setup.npcs.cow.isFlipped = true;
-    //         this.ctx.save();
-    //         this.ctx.translate(-this.renderCameraX, 0);
-    //         this.addToWorld(this.setup.npcs.chicken2);
-    //         this.addToWorld(this.setup.npcs.chick);
-    //         this.ctx.restore();
-    //         this.setup.npcs.chicken2.updateState('walk2', 1000 / 8);
-    //         this.setup.npcs.chick.updateState('walk', 1000 / 8);
-    //         this.setup.npcs.chicken2.isFlipped = true;
-    //         this.setup.npcs.chick.isFlipped = true;
-    //         if (this.setup.npcs.chicken2.x >= 500) this.setup.npcs.chicken2.x -= 3;
-    //         if (this.setup.npcs.chick.x >= 575) this.setup.npcs.chick.x -= 3;
-    //         if (this.setup.npcs.chicken2.x <= 500 && this.setup.npcs.chicken2.x >= 450 && this.setup.npcs.chick.x <= 575 && this.setup.npcs.chick.x >= 525) {
-    //             this.cowTaskStep = 11;
-    //         }
-    //     }
-    // }
-
-    makeAFire() {
-        if (this.cowTaskStep === 11 || this.cowTaskStep === 12) {
-            if (this.world.camera_x <= 108) this.world.camera_x += 5;
-            if (this.world.camera_x >= 108) this.world.camera_x -= 5;
-            this.ctx.save();
-            this.ctx.translate(-this.renderCameraX, 0);
-            this.addToWorld(this.setup.npcs.cow);
-            this.addToWorld(this.setup.npcs.chick);
-            this.addToWorld(this.setup.npcs.chicken2);
-            this.addToWorld(this.setup.npcs.campfire);
-            this.addToWorld(this.character);
-            this.addToWorld(this.setup.npcs.moon);
-            this.ctx.restore();
-            this.setup.npcs.chicken2.updateState('idle');
-            this.setup.npcs.chicken2.isFlipped = false;
-            this.setup.npcs.chick.updateState('idle');
-            this.setup.npcs.chick.isFlipped = true;
-            if (this.character.x < 788) {
-                this.character.x += 5;
-                this.character.isWalk = true;
-                this.character.isFlipped = false;
-            }
-            if (this.character.x > 788) {
-                this.character.x -= 5;
-                this.character.isWalk = true;
-                this.character.isFlipped = true;
-            }
-
-            if (this.character.y <= 393) this.character.y += 1.5;
-            if (this.character.x <= 788 && this.character.x >= 738 && this.character.y <= 394 && this.character.y >= 343) {
-                this.character.isFlipped = true;
-                this.character.isWalk = false;
-                this.character.yNormal = 393;
-                this.character.yVoidless = 510;
-                this.character.isLightACampfire = true;
-                this.cowTaskStep = 12;
-            }
-        }
-    }
-
 
     songSzene() {
 

@@ -1,20 +1,20 @@
 class EndbossAttack extends MovableObject {
     idleImages =
         [
-            './assets/img/tornado/image_1.png',
-            './assets/img/tornado/image_2.png',
-            './assets/img/tornado/image_3.png',
-            './assets/img/tornado/image_4.png',
-            './assets/img/tornado/image_5.png',
-            './assets/img/tornado/image_6.png',
-            './assets/img/tornado/image_7.png',
-            './assets/img/tornado/image_8.png',
-            './assets/img/tornado/image_9.png',
-            './assets/img/tornado/image_10.png'
+            './assets/img/tornado/image_1.webp',
+            './assets/img/tornado/image_2.webp',
+            './assets/img/tornado/image_3.webp',
+            './assets/img/tornado/image_4.webp',
+            './assets/img/tornado/image_5.webp',
+            './assets/img/tornado/image_6.webp',
+            './assets/img/tornado/image_7.webp',
+            './assets/img/tornado/image_8.webp',
+            './assets/img/tornado/image_9.webp',
+            './assets/img/tornado/image_10.webp'
         ]
     constructor() {
         super();
-        super.loadImage('./assets/img/tornado/image_1.png');
+        super.loadImage('./assets/img/tornado/image_1.webp');
         this.x = 800; //6200
         this.y = 35;
         this.width = 300;
