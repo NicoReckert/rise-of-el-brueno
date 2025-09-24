@@ -16,6 +16,7 @@ class Character extends MovableObject {
     isMoving = false;
     isMovingLeft = false;
     isMovingRight = false;
+    isMeditation = false;
     isDead = false;
     isHurt = false;
     isJumping;
@@ -48,6 +49,7 @@ class Character extends MovableObject {
         this.isPlayGuitarAndSing = false;
         this.isPlayGuitar = false;
         this.isLightACampfire = false;
+        this.isAttack = false;
         this.lastFrameTime = 0;        // Timestamp des letzten Framewechsels
         this.currentAnimation = 'idle';
         this.frameInterval = 1000 / 2.5; // Standard: 5 FPS
@@ -89,6 +91,9 @@ class Character extends MovableObject {
         this.playGuitarAndSingImages = this.characterImages.playGuitarAndSingImages || [];
         this.playGuitarImages = this.characterImages.playGuitarImages || [];
         this.lightACampfireImages = this.characterImages.lightACampfireImages || [];
+        this.attackImages = this.characterImages.attackImages || [];
+        this.meditationImages = this.characterImages.meditationImages || [];
+        this.meditationLoopImages = this.characterImages.meditationLoopImages || [];
     }
 
     preloadIdleAndWalkImages() {
@@ -289,6 +294,14 @@ class Character extends MovableObject {
                 this.setAnimation('light-a-campfire');
                 this.frameInterval = 1000 / 6;
             }
+        } else if (this.isAttack) {
+            this.setAnimation('attack');
+            this.frameInterval = 1000 / 7;
+        } else if (this.isMeditation) {
+            if (this.currentAnimation !== 'meditation-loop') {
+                this.setAnimation('meditation');
+                this.frameInterval = 1000 / 6;
+            }
         } else if (this.isMovingLeft || this.isMovingRight) {
             // this.setAnimation('walk');
             this.currentAnimation = 'walk';
@@ -316,7 +329,7 @@ class Character extends MovableObject {
             if (images && images.length > 0) {
                 this.img = images[this.frameIndex % images.length];
                 if (this.deferSizeUpdate) {
-                    if (['kneel-and-cry', 'stand-up-and-look-determined', 'cry', 'look-determined', 'look-determined-and-stand-up', 'strong-determined', 'caress', 'caress2', 'sit-down-and-play-guitar', 'play-guitar-and-sing', 'play-guitar', 'light-a-campfire'].includes(this.currentAnimation)) {
+                    if (['kneel-and-cry', 'stand-up-and-look-determined', 'cry', 'look-determined', 'look-determined-and-stand-up', 'strong-determined', 'caress', 'caress2', 'sit-down-and-play-guitar', 'play-guitar-and-sing', 'play-guitar', 'light-a-campfire', 'meditation', 'meditation-loop'].includes(this.currentAnimation)) {
                         this.width = 158;
                         this.height = 183;
                         this.y = this.yVoidless;
@@ -325,6 +338,14 @@ class Character extends MovableObject {
                         this.offset.right = 55;
                         this.offset.bottom = 15;
 
+                    } else if (['attack'].includes(this.currentAnimation)) {
+                        this.width = 290;
+                        this.height = 355;
+                        this.y = 315;
+                        this.offset.top = 13;
+                        this.offset.left = 33;
+                        this.offset.right = 55;
+                        this.offset.bottom = 15;
                     } else {
                         this.width = 130;
                         this.height = 300;
@@ -340,7 +361,7 @@ class Character extends MovableObject {
                 this.frameIndex++;
             }
             this.lastFrameTime = timestamp;
-            if (this.frameIndex >= images.length && (this.currentAnimation == 'kneel-and-cry' || this.currentAnimation == 'stand-up-and-look-determined' || this.currentAnimation == 'look-determined-and-stand-up' || this.currentAnimation == 'caress' || this.currentAnimation == 'sit-down-and-play-guitar' || this.currentAnimation == 'light-a-campfire')) {
+            if (this.frameIndex >= images.length && (this.currentAnimation == 'kneel-and-cry' || this.currentAnimation == 'stand-up-and-look-determined' || this.currentAnimation == 'look-determined-and-stand-up' || this.currentAnimation == 'caress' || this.currentAnimation == 'sit-down-and-play-guitar' || this.currentAnimation == 'light-a-campfire' || this.currentAnimation == 'attack' || this.currentAnimation == 'meditation')) {
                 this.animationFinished = true;
                 switch (this.currentAnimation) {
                     case 'stand-up-and-look-determined':
@@ -369,6 +390,13 @@ class Character extends MovableObject {
                         this.isLightACampfire = false;        // Flag aufräumen
                         this.isSitDownAndPlayGuitar = true;
                         break;
+                    case 'attack':
+                        this.isAttack = false;
+                        break;
+                    case 'meditation':
+                        this.setAnimation('meditation-loop');
+                        this.frameInterval = 1000 / 4;
+                        break;
                 }
             }
         }
@@ -392,6 +420,9 @@ class Character extends MovableObject {
             case 'play-guitar-and-sing': return this.playGuitarAndSingImages;
             case 'play-guitar': return this.playGuitarImages;
             case 'light-a-campfire': return this.lightACampfireImages;
+            case 'attack': return this.attackImages;
+            case 'meditation': return this.meditationImages;
+            case 'meditation-loop': return this.meditationLoopImages;
             case 'idle':
             default: return this.idleImages;
         }

@@ -50,5 +50,8 @@ const npcImageManifest = {
   campfire_burningFire: Array.from({ length: 7 }, (_, i) => `./assets/img/npcs/campfire/burning_fire/image_${i + 1}.webp`),
   campfire_fireGoesOn: Array.from({ length: 13 }, (_, i) => `./assets/img/npcs/campfire/fire_goes_on/image_${i + 1}.webp`),
   sun_idle: Array.from({ length: 10 }, (_, i) => `./assets/img/npcs/sun/idle/image_${i + 1}.webp`),
-  moon_idle: Array.from({ length: 10 }, (_, i) => `./assets/img/npcs/moon/idle/image_${i + 1}.webp`)
+  moon_idle: Array.from({ length: 10 }, (_, i) => `./assets/img/npcs/moon/idle/image_${i + 1}.webp`),
+  soul_idle: Array.from({ length: 18 }, (_, i) => `./assets/img/npcs/soul/idle/image_${i + 1}.webp`),
+  soul_findsPeace: Array.from({ length: 22 }, (_, i) => `./assets/img/npcs/soul/finds-peace/image_${i + 1}.webp`),
+  soul_findsPeaceLoop: Array.from({ length: 9 }, (_, i) => `./assets/img/npcs/soul/finds-peace/image_${13 + i}.webp`)
 }

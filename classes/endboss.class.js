@@ -9,6 +9,7 @@ class Endboss extends MovableObject {
     isMovingRight = false;
     isJumping = false;
     isUnderTheGround = false;
+    isFindsPeace = false;
     idleImages =
         [
             './assets/img/4_enemie_boss_chicken/0_idle/image_1.webp',
@@ -51,7 +52,36 @@ class Endboss extends MovableObject {
             './assets/img/4_enemie_boss_chicken/5_dead/image_3.webp',
             './assets/img/4_enemie_boss_chicken/5_dead/image_4.webp',
             './assets/img/4_enemie_boss_chicken/5_dead/image_5.webp',
-            './assets/img/4_enemie_boss_chicken/5_dead/image_6.webp'
+            './assets/img/4_enemie_boss_chicken/5_dead/image_6.webp',
+            './assets/img/4_enemie_boss_chicken/5_dead/image_7.webp',
+            './assets/img/4_enemie_boss_chicken/5_dead/image_8.webp'
+
+        ]
+
+    findsPeaceImages =
+        [
+            './assets/img/4_enemie_boss_chicken/6_finds_peace/image_1.webp',
+            './assets/img/4_enemie_boss_chicken/6_finds_peace/image_2.webp',
+            './assets/img/4_enemie_boss_chicken/6_finds_peace/image_3.webp',
+            './assets/img/4_enemie_boss_chicken/6_finds_peace/image_4.webp',
+            './assets/img/4_enemie_boss_chicken/6_finds_peace/image_5.webp',
+            './assets/img/4_enemie_boss_chicken/6_finds_peace/image_6.webp',
+            './assets/img/4_enemie_boss_chicken/6_finds_peace/image_7.webp',
+            './assets/img/4_enemie_boss_chicken/6_finds_peace/image_8.webp',
+            './assets/img/4_enemie_boss_chicken/6_finds_peace/image_9.webp',
+            './assets/img/4_enemie_boss_chicken/6_finds_peace/image_10.webp',
+            './assets/img/4_enemie_boss_chicken/6_finds_peace/image_11.webp',
+            './assets/img/4_enemie_boss_chicken/6_finds_peace/image_12.webp',
+            './assets/img/4_enemie_boss_chicken/6_finds_peace/image_13.webp',
+            './assets/img/4_enemie_boss_chicken/6_finds_peace/image_14.webp',
+            './assets/img/4_enemie_boss_chicken/6_finds_peace/image_15.webp',
+            './assets/img/4_enemie_boss_chicken/6_finds_peace/image_16.webp',
+            './assets/img/4_enemie_boss_chicken/6_finds_peace/image_17.webp',
+            './assets/img/4_enemie_boss_chicken/6_finds_peace/image_18.webp',
+            './assets/img/4_enemie_boss_chicken/6_finds_peace/image_19.webp',
+            './assets/img/4_enemie_boss_chicken/6_finds_peace/image_20.webp'
+
+
         ]
 
     intervalMoveDownAfterDead = null;
@@ -173,9 +203,9 @@ class Endboss extends MovableObject {
     }
 
     updateState() {
-        if (this.isDeadAnimationReady && !this.isUnderTheGround) {
-            this.y += 3;
-        }
+        // if (this.isDeadAnimationReady && !this.isUnderTheGround) {
+        //     this.y += 3;
+        // }
 
         if (this.isMovingLeft) {
             this.isFlipped = false;
@@ -188,11 +218,17 @@ class Endboss extends MovableObject {
             this.x += this.speedX;
             // }
         }
-
-        if (this.isDead) {
+        if (this.isFindsPeace) {
+            this.currentAnimation = 'findsPeace';
+            this.frameInterval = 1000 / 6;
+            if (this.frameIndex >= this.findsPeaceImages.length) {
+                this.isFindsPeace = false;
+                this.frameIndex = 0;
+            }
+        } else if (this.isDead) {
             if (!this.isDeadAnimationReady) {
                 this.currentAnimation = 'dead';
-                this.frameInterval = 1000 / 8;
+                this.frameInterval = 1000 / 4;
             } else {
                 this.currentAnimation = null;
             }
@@ -223,6 +259,7 @@ class Endboss extends MovableObject {
             case 'hurt': return this.hurtImages;
             case 'jump': return this.jumpImages;
             case 'walk': return this.walkImages;
+            case 'findsPeace': return this.findsPeaceImages;
             case 'idle': return this.idleImages;
         }
     }

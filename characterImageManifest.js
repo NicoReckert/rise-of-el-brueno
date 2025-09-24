@@ -16,5 +16,8 @@ const characterImageManifest = {
     sitDownAndPlayGuitarImages: Array.from({ length: 6 }, (_, i) => `./assets/img/2_character_pepe/12/image_${i + 1}.webp`),
     playGuitarAndSingImages: Array.from({ length: 23 }, (_, i) => `./assets/img/2_character_pepe/12/image_${6 + i}.webp`),
     playGuitarImages: Array.from({ length: 20 }, (_, i) => `./assets/img/2_character_pepe/13/image_${i + 1}.webp`),
-    lightACampfireImages: Array.from({ length: 10 }, (_, i) => `./assets/img/2_character_pepe/14/image_${i + 1}.webp`)
+    lightACampfireImages: Array.from({ length: 10 }, (_, i) => `./assets/img/2_character_pepe/14/image_${i + 1}.webp`),
+    attackImages: Array.from({ length: 4 }, (_, i) => `./assets/img/2_character_pepe/15/image_${i + 1}.webp`),
+    meditationImages: Array.from({ length: 10 }, (_, i) => `./assets/img/2_character_pepe/16/image_${i + 1}.webp`),
+    meditationLoopImages: Array.from({ length: 4 }, (_, i) => `./assets/img/2_character_pepe/16/image_${7 + i}.webp`)
 };

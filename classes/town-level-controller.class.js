@@ -71,6 +71,8 @@ class TownLevelController {
         this.addToWorld(this.endbossAttack);
         this.addObject(this.setup.throwableObjects);
         if (!this.setup.townLevel.endboss.isUnderTheGround) {
+            this.addToWorld(this.setup.npcs.soul);
+            // this.setup.npcs.soul.updateState('idle', 1000 / 6);
             this.addToWorld(this.setup.townLevel.endboss);
         }
         this.ctx.restore();
@@ -115,7 +117,7 @@ class TownLevelController {
     }
 
     updateNPCs(timestamp) {
-        const npcs = [/*'cow'*/];
+        const npcs = ['soul'];
         npcs.forEach(name => {
             this.setup.npcs[name].updateState(timestamp);
             this.setup.npcs[name].updateAnimation(timestamp);

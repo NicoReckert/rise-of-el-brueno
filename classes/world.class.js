@@ -12,6 +12,7 @@ class World {
         this.npcImages = npcImages;
         this.listenStartButton();
         this.endbossMusic = new Audio('./assets/audio/endboss-music.opus');
+        this.endbossMusic.volume = 0.6;
 
         this.lastThrowCheck = 0;
         this.throwCheckDelay = 120;
@@ -29,43 +30,51 @@ class World {
         this.chapterSound = new Audio('./assets/audio/chapter-sound1.opus');
         this.isChapterSoundPlayed = false;
         this.isKeysStopp = false;
+
+        this.volumeLevel = 0.6;
+        this.minVolumeLevel = 0;
+        this.volumeLevel2 = 0;
+        this.minVolumeLevel2 = 0.1;
+        this.volumeLevel3 = 0.1;
+        this.minVolumeLevel3 = 1;
+        this.isPlay = false;
     }
 
     startGame() {
         this.farmLevelSetup = new FarmLevelSetup(this);
-        this.farmLevelController = new FarmLevelController(this.farmLevelSetup);
-        this.stableLevelSetup = new StableLevelSetup(this);
-        this.stableLevelController = new StableLevelController(this.stableLevelSetup, this.farmLevelSetup);
-        // this.townLevelSetup = new TownLevelSetup(this);
-        // this.townLevelController = new TownLevelController(this.townLevelSetup);
+        // this.farmLevelController = new FarmLevelController(this.farmLevelSetup);
+        // this.stableLevelSetup = new StableLevelSetup(this);
+        // this.stableLevelController = new StableLevelController(this.stableLevelSetup, this.farmLevelSetup);
+        this.townLevelSetup = new TownLevelSetup(this);
+        this.townLevelController = new TownLevelController(this.townLevelSetup);
         this.setWorld();
         this.draw();
     }
 
     draw(timestamp) {
-        // this.townLevelController.update(timestamp);
+        this.townLevelController.update(timestamp);
 
-        const deltaTime = timestamp - this.lastTime;
-        this.lastTime = timestamp;
-        if (!this.intro.done) {
-            this.intro.update(deltaTime);
-            this.intro.draw();
-            if (!this.isChapterSoundPlayed) {
-                this.chapterSound.play();
-                this.isChapterSoundPlayed = true;
-            }
-        } else {
-            switch (this.currentScene) {
+        // const deltaTime = timestamp - this.lastTime;
+        // this.lastTime = timestamp;
+        // if (!this.intro.done) {
+        //     this.intro.update(deltaTime);
+        //     this.intro.draw();
+        //     if (!this.isChapterSoundPlayed) {
+        //         this.chapterSound.play();
+        //         this.isChapterSoundPlayed = true;
+        //     }
+        // } else {
+        //     switch (this.currentScene) {
 
-                case 'farmLevel':
-                    this.farmLevelController.update(timestamp);
-                    break;
+        //         case 'farmLevel':
+        //             this.farmLevelController.update(timestamp);
+        //             break;
 
-                case 'stableLevel':
-                    this.stableLevelController.update(timestamp);
-                    break;
-            }
-        }
+        //         case 'stableLevel':
+        //             this.stableLevelController.update(timestamp);
+        //             break;
+        //     }
+        // }
         requestAnimationFrame((timestamp) => {
             this.draw(timestamp);
         });
@@ -107,7 +116,7 @@ class World {
     }
 
 
-    addToWorld(object) {
+    addToWorld3(object) {
         if (!object || !object.img) return;
 
         const flipped = object.isFlipped ?? false;
@@ -115,41 +124,139 @@ class World {
 
         if (flipped || flippedNPC) {
             this.ctx.save();
+            this.ctx.translate(object.x + object.width, 0);
             this.ctx.scale(-1, 1);
-            const drawX = Math.round(-object.x - object.width);
-            const drawY = Math.round(object.y);
-            this.ctx.drawImage(object.img, drawX, drawY, object.width, object.height);
-            // if (!object.isGamecharacter == true) return;
-            // this.ctx.beginPath();
-            // this.ctx.lineWidth = '3';
-            // this.ctx.strokeStyle = 'red';
-            // this.ctx.rect(-object.x - object.width, object.y, object.width, object.height);
-            // this.ctx.stroke();
+            this.ctx.drawImage(object.img, 0, object.y, object.width, object.height);
+            if (!object.isGamecharacter) return;
+            this.ctx.beginPath();
+            this.ctx.lineWidth = '3';
+            this.ctx.strokeStyle = 'red';
+            this.ctx.rect(-object.x - object.width, object.y, object.width, object.height);
+            this.ctx.stroke();
 
-            // this.ctx.beginPath();
-            // this.ctx.lineWidth = '3';
-            // this.ctx.strokeStyle = 'blue';
-            // this.ctx.rect(-object.x - object.width + object.offset.left, object.y + object.offset.top, object.width - object.offset.left - object.offset.right, object.height - object.offset.top - object.offset.bottom); this.ctx.stroke();
-            this.ctx.restore();
+            this.ctx.beginPath();
+            this.ctx.lineWidth = '3';
+            this.ctx.strokeStyle = 'blue';
+            this.ctx.rect(-object.x - object.width + object.offset.left, object.y + object.offset.top, object.width - object.offset.left - object.offset.right, object.height - object.offset.top - object.offset.bottom); this.ctx.stroke();
         } else {
             const drawX = Math.round(object.x);
             const drawY = Math.round(object.y);
             this.ctx.drawImage(object.img, drawX, drawY, object.width, object.height);
-            // if (!object.isGamecharacter == true) return;
-            // this.ctx.beginPath();
-            // this.ctx.lineWidth = '3';
-            // this.ctx.strokeStyle = 'red';
-            // this.ctx.rect(object.x, object.y, object.width, object.height);
-            // this.ctx.stroke();
+            if (!object.isGamecharacter == true) return;
+            this.ctx.beginPath();
+            this.ctx.lineWidth = '3';
+            this.ctx.strokeStyle = 'red';
+            this.ctx.rect(object.x, object.y, object.width, object.height);
+            this.ctx.stroke();
 
-            // this.ctx.beginPath();
-            // this.ctx.lineWidth = '3';
-            // this.ctx.strokeStyle = 'blue';
-            // this.ctx.rect(object.x + object.offset.left, object.y + object.offset.top, object.width - object.offset.left - object.offset.right, object.height - object.offset.top - object.offset.bottom);
-            // this.ctx.stroke();
+            this.ctx.beginPath();
+            this.ctx.lineWidth = '3';
+            this.ctx.strokeStyle = 'blue';
+            this.ctx.rect(object.x + object.offset.left, object.y + object.offset.top, object.width - object.offset.left - object.offset.right, object.height - object.offset.top - object.offset.bottom);
+            this.ctx.stroke();
 
         }
+        this.ctx.restore();
     }
+
+    // addToWorld(object) {
+    //     if (!object || !object.img) return;
+
+    //     const flipped = object.isFlipped ?? false;
+    //     const flippedNPC = object.isNpcFlipped ?? false;
+
+    //     this.ctx.save();
+
+    //     let drawX = Math.round(object.x);
+    //     const drawY = Math.round(object.y);
+
+    //     if (flipped || flippedNPC) {
+    //         this.ctx.translate(object.x + object.width, 0);
+    //         this.ctx.scale(-1, 1);
+    //         drawX = 0; // ab hier wird im gespiegelten System gezeichnet
+    //     }
+
+    //     // Bild
+    //     this.ctx.drawImage(object.img, drawX, drawY, object.width, object.height);
+
+    //     // Debug-Boxen nur wenn Gamecharacter
+    //     if (object.isGamecharacter) {
+    //         this.ctx.lineWidth = 3;
+
+    //         // Außenrand (rot)
+    //         this.ctx.strokeStyle = 'red';
+    //         this.ctx.strokeRect(drawX, drawY, object.width, object.height);
+
+    //         // Hitbox mit Offset (blau)
+    //         const off = object.offset || { left: 0, right: 0, top: 0, bottom: 0 };
+    //         this.ctx.strokeStyle = 'blue';
+    //         this.ctx.strokeRect(
+    //             drawX + off.left,
+    //             drawY + off.top,
+    //             object.width - off.left - off.right,
+    //             object.height - off.top - off.bottom
+    //         );
+    //     }
+
+    //     this.ctx.restore(); // immer am Ende!
+    // }
+
+    addToWorld(object) {
+        if (!object || !object.img) return;
+
+        const flipped = !!(object.isFlipped ?? false);
+        const flippedNPC = !!(object.isNpcFlipped ?? false);
+        const isFlipped = flipped || flippedNPC;
+        const off = Object.assign({ left: 0, right: 0, top: 0, bottom: 0 }, object.offset || {});
+
+        this.ctx.save();
+
+        if (isFlipped) {
+            // verschiebe Origin so dass lokales 0,0 an der Position (object.x + object.width, object.y) liegt
+            this.ctx.translate(object.x + object.width, Math.round(object.y));
+            this.ctx.scale(-1, 1);
+            // im lokalen System zeichnen wir bei 0,0
+            this.ctx.drawImage(object.img, 0, 0, object.width, object.height);
+
+            if (object.isGamecharacter) {
+                this.ctx.lineWidth = 3;
+                this.ctx.strokeStyle = 'red';
+                // Außenrand (lokal bei 0,0)
+                this.ctx.strokeRect(0, 0, object.width, object.height);
+
+                // Hitbox: bei Spiegeln muss left/right getauscht werden
+                const left = off.right;   // swap
+                const top = off.top;
+                const w = object.width - off.left - off.right;
+                const h = object.height - off.top - off.bottom;
+                this.ctx.strokeStyle = 'blue';
+                this.ctx.strokeRect(left, top, w, h);
+            }
+        } else {
+            // nicht gespiegelt: normale Koordinaten verwenden
+            const drawX = Math.round(object.x);
+            const drawY = Math.round(object.y);
+            this.ctx.drawImage(object.img, drawX, drawY, object.width, object.height);
+
+            if (object.isGamecharacter) {
+                this.ctx.lineWidth = 3;
+                this.ctx.strokeStyle = 'red';
+                this.ctx.strokeRect(drawX, drawY, object.width, object.height);
+
+                this.ctx.strokeStyle = 'blue';
+                this.ctx.strokeRect(
+                    drawX + off.left,
+                    drawY + off.top,
+                    object.width - off.left - off.right,
+                    object.height - off.top - off.bottom
+                );
+            }
+        }
+
+        this.ctx.restore();
+    }
+
+
 
 
     addObject(objectArray) {
@@ -230,6 +337,10 @@ class World {
             if (!this.keyboard.T) {
                 this.farmLevelSetup.tKeyPressed = false;
             }
+
+            if (this.keyboard.A && !this.character.isAttack) {
+                this.character.isAttack = true;
+            }
         }
     }
 
@@ -239,11 +350,11 @@ class World {
 
     checkCollisions() {
         this.townLevelSetup.townLevel.enemies.forEach(element => {
-            if (this.character.isColliding(element, 0, 0) && !element.isDead) {
+            if (this.character.isCollidingBefore(element, 0, 0) && !element.isDead) {
                 this.character.hit();
                 this.townLevelSetup.statusBar.setPercentage(this.character.energy);
             }
-            if (this.character.isColliding(element, 0, 0) && !this.character.isJumpOn(element) && !element.isDead) {
+            if (this.character.isCollidingBefore(element, 0, 0) && !this.character.isJumpOn(element) && !element.isDead) {
                 if (this.character.speedX > 0 && this.character.x < element.x) {
                     this.character.speedX = 0;
                 } else if (this.character.speedX < 0 && this.character.x > element.x) {
@@ -272,10 +383,10 @@ class World {
 
         for (let i = this.townLevelSetup.townLevel.coins.length - 1; i >= 0; i--) {
             const coin = this.townLevelSetup.townLevel.coins[i];
-            if (this.character.isColliding(coin, 0, 0)) {
+            if (this.character.isCollidingBefore(coin, 0, 0)) {
                 this.townLevelSetup.townLevel.coins.splice(i, 1);
-                // this.coinBar.percentage = this.coinBar.percentage == 100 ? this.coinBar.percentage + 0 : this.coinBar.percentage + 20;
-                // document.getElementById('coin-sound').play();
+                this.townLevelSetup.coinBar.percentage = this.townLevelSetup.coinBar.percentage == 100 ? this.townLevelSetup.coinBar.percentage + 0 : this.townLevelSetup.coinBar.percentage + 20;
+                document.getElementById('coin-sound').play();
                 this.playCoinSound();
                 this.townLevelSetup.coinBar.percentage = Math.min(this.townLevelSetup.coinBar.percentage + 20, 100);
                 this.townLevelSetup.coinBar.setPercentage(this.townLevelSetup.coinBar.percentage);
@@ -283,10 +394,10 @@ class World {
         }
         for (let i = this.townLevelSetup.townLevel.bottles.length - 1; i >= 0; i--) {
             const bottle = this.townLevelSetup.townLevel.bottles[i];
-            if (this.character.isColliding(bottle, 0, 0) && this.townLevelSetup.bottleBar.percentage != 100) {
+            if (this.character.isCollidingBefore(bottle, 0, 0) && this.townLevelSetup.bottleBar.percentage != 100) {
                 this.townLevelSetup.townLevel.bottles.splice(i, 1);
-                // this.coinBar.percentage = this.coinBar.percentage == 100 ? this.coinBar.percentage + 0 : this.coinBar.percentage + 20;
-                // document.getElementById('coin-sound').play();
+                this.townLevelSetup.coinBar.percentage = this.townLevelSetup.coinBar.percentage == 100 ? this.townLevelSetup.coinBar.percentage + 0 : this.townLevelSetup.coinBar.percentage + 20;
+                document.getElementById('coin-sound').play();
                 this.playBottleSound();
                 this.townLevelSetup.bottleBar.percentage = Math.min(this.townLevelSetup.bottleBar.percentage + 20, 100);
                 this.townLevelSetup.bottleBar.setPercentage(this.townLevelSetup.bottleBar.percentage);
@@ -332,7 +443,7 @@ class World {
                 for (let j = 0; j < this.townLevelSetup.townLevel.enemies.length; j++) {
                     const enemy = this.townLevelSetup.townLevel.enemies[j];
 
-                    if (bottle.isColliding(enemy, 50, 0) && !enemy.isDead) {
+                    if (bottle.isCollidingBefore(enemy, 50, 0) && !enemy.isDead) {
                         if (!bottle.isBrokenSound) {
                             this.playBottelBrokenSound();
                             bottle.isBrokenSound = true;
@@ -352,7 +463,7 @@ class World {
                         }
                     }
                 }
-                if (bottle.isColliding(this.townLevelSetup.townLevel.endboss, 0, 50) && !this.townLevelSetup.townLevel.endboss.isDead) {
+                if (bottle.isCollidingBefore(this.townLevelSetup.townLevel.endboss, 0, 50) && !this.townLevelSetup.townLevel.endboss.isDead) {
                     if (!bottle.isBrokenSound) {
                         this.playBottelBrokenSound();
                         this.townLevelSetup.townLevel.endboss.isHurt = true;
@@ -388,7 +499,7 @@ class World {
 
         for (let j = 0; j < this.townLevelSetup.townLevel.enemies.length; j++) {
             const enemy = this.townLevelSetup.townLevel.enemies[j];
-            if (this.townLevelSetup.chickenInBasket.isColliding(enemy, 25, 0) && !enemy.isDead) {
+            if (this.townLevelSetup.chickenInBasket.isCollidingBefore(enemy, 25, 0) && !enemy.isDead) {
                 this.townLevelSetup.chickenInBasket.isAttack = false;
                 this.townLevelSetup.chickenInBasket.isIdle = true;
                 enemy.isDead = true;
@@ -402,16 +513,58 @@ class World {
                 break;
             }
         }
-        if (this.townLevelSetup.chickenInBasket.isColliding(this.townLevelSetup.townLevel.endboss, 0, 80) && !this.townLevelSetup.townLevel.endboss.isDead) {
+        if (this.townLevelSetup.chickenInBasket.isCollidingBefore(this.townLevelSetup.townLevel.endboss, 0, 80) && !this.townLevelSetup.townLevel.endboss.isDead) {
             this.townLevelSetup.chickenInBasket.isAttack = false;
             this.townLevelSetup.chickenInBasket.isIdle = true;
-            this.townLevelSetup.townLevel.endboss.animationHurt();
             this.townLevelSetup.townLevel.endboss.isHurt = true;
             this.townLevelSetup.townLevel.endboss.energy = this.townLevelSetup.townLevel.endboss.energy - 5;
-            this.statusBar2.setPercentage(this.townLevelSetup.townLevel1.endboss.energy);
+            this.townLevelSetup.statusBar2.setPercentage(this.townLevelSetup.townLevel.endboss.energy);
             if (this.townLevelSetup.townLevel.endboss.energy <= 0) {
                 this.townLevelSetup.townLevel.endboss.isDead = true;
-                this.townLevelSetup.townLevel.endboss.animationDead();
+            }
+        }
+
+
+
+
+
+
+        if (!this.townLevelSetup.townLevel.endboss.isDead) {
+            this.townLevelSetup.npcs.soul.x = this.townLevelSetup.townLevel.endboss.x + 75;
+            this.townLevelSetup.npcs.soul.y = this.townLevelSetup.townLevel.endboss.y + 200;
+        }
+
+        if (this.townLevelSetup.townLevel.endboss.isDead && this.townLevelSetup.npcs.soul.y >= 250) {
+            this.townLevelSetup.npcs.soul.y -= 1.5;
+        }
+
+        if (this.townLevelSetup.npcs.soul.y <= 250) {
+            if (this.volumeLevel > this.minVolumeLevel) {
+                this.volumeLevel = Math.max(this.volumeLevel - 0.010, this.minVolumeLevel);
+                this.endbossMusic.volume = this.volumeLevel;
+            } else {
+                if (!this.isPlay) {
+                    this.townLevelSetup.sounds.soulSpeakSound.play();
+                    this.isPlay = true;
+                }
+            }
+            if (this.volumeLevel2 < this.minVolumeLevel2) {
+                this.volumeLevel2 = Math.min(this.volumeLevel2 + 0.010, this.minVolumeLevel2);
+                this.townLevelSetup.sounds.soulMusic.volume = this.volumeLevel2;
+            }
+            this.townLevelSetup.sounds.soulMusic.play();
+
+            if (this.townLevelSetup.sounds.soulSpeakSound.currentTime >= 18) {
+                this.character.isMeditation = true
+                this.townLevelSetup.npcs.soul.updateState('findsPeace', 1000 / 5);
+                this.townLevelSetup.townLevel.endboss.isFindsPeace = true;
+                if (this.townLevelSetup.npcs.soul.y >= -500) {
+                    this.townLevelSetup.npcs.soul.y -= 1;
+                }
+                if (this.volumeLevel3 < this.minVolumeLevel3) {
+                    this.volumeLevel3 = Math.min(this.volumeLevel3 + 0.005, this.minVolumeLevel3);
+                    this.townLevelSetup.sounds.soulMusic.volume = this.volumeLevel3;
+                }
             }
         }
 
@@ -458,8 +611,8 @@ class World {
             document.getElementById('overlay-start-initialisation').style.display = 'none';
             document.getElementById('canvas').style.display = 'block';
             // document.getElementById('background-music').play();
-            setFullscreen();
             // this.character.playSpeakSound();
+            setFullscreen();
             titleMusic.pause();
             titleMusic2.pause();
         });
