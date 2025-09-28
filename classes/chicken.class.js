@@ -15,7 +15,7 @@ class Chicken extends MovableObject {
     constructor() {
         super();
         super.loadImage('./assets/img/3_enemies_chicken/chicken_mutates/image_1.webp')
-        this.x = 600 + Math.random() * 2000;
+        this.x = 12000 + Math.random() * 2000; // 600
         this.y = 545;
         this.height = 120;
         this.widht = 120,

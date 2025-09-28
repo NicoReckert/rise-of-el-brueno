@@ -11,6 +11,8 @@ class TownLevelSetup {
         this.throwableObjects = [];
         this.world.character.x = 100;
         this.world.character.level_start_x = 0;
+        this.world.farmLevelSetup.farmLevel.level_end_x = 25000;
+        this.world.character.speedX = 3;
         this.chickenBasket = new ChickenBasket(this.world.character.x + 38, this.world.character.y + 228);
         this.chickenInBasket = new ChickenInBasket(this.chickenBasket.x, this.chickenBasket.y - 20);
         // this.npc1 = new Npc(1750, 130, 130, 300);

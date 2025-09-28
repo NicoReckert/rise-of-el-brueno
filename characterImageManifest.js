@@ -19,5 +19,7 @@ const characterImageManifest = {
     lightACampfireImages: Array.from({ length: 10 }, (_, i) => `./assets/img/2_character_pepe/14/image_${i + 1}.webp`),
     attackImages: Array.from({ length: 4 }, (_, i) => `./assets/img/2_character_pepe/15/image_${i + 1}.webp`),
     meditationImages: Array.from({ length: 10 }, (_, i) => `./assets/img/2_character_pepe/16/image_${i + 1}.webp`),
-    meditationLoopImages: Array.from({ length: 4 }, (_, i) => `./assets/img/2_character_pepe/16/image_${7 + i}.webp`)
+    meditationLoopImages: Array.from({ length: 4 }, (_, i) => `./assets/img/2_character_pepe/16/image_${7 + i}.webp`),
+    newWeaponImages: Array.from({ length: 58 }, (_, i) => `./assets/img/2_character_pepe/17/image_${i + 1}.webp`),
+    newWeaponLoopImages: Array.from({ length: 22 }, (_, i) => `./assets/img/2_character_pepe/17/image_${31 + i}.webp`)
 };

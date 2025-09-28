@@ -45,14 +45,18 @@ class World {
         // this.farmLevelController = new FarmLevelController(this.farmLevelSetup);
         // this.stableLevelSetup = new StableLevelSetup(this);
         // this.stableLevelController = new StableLevelController(this.stableLevelSetup, this.farmLevelSetup);
-        this.townLevelSetup = new TownLevelSetup(this);
-        this.townLevelController = new TownLevelController(this.townLevelSetup);
+        // this.townLevelSetup = new TownLevelSetup(this);
+        // this.townLevelController = new TownLevelController(this.townLevelSetup);
+        // this.nayelisHouseLevelSetup = new NayelisHouseLevelSetup(this);
+        // this.nayelisHouseLevelController = new NayelisHouseLevelController(this.nayelisHouseLevelSetup);
+        this.newWeaponLevelSetup = new NewWeaponLevelSetup(this);
+        this.newWeaponLevelController = new NewWeaponLevelController(this.newWeaponLevelSetup);
         this.setWorld();
         this.draw();
     }
 
     draw(timestamp) {
-        this.townLevelController.update(timestamp);
+        this.newWeaponLevelController.update(timestamp);
 
         // const deltaTime = timestamp - this.lastTime;
         // this.lastTime = timestamp;
@@ -201,7 +205,7 @@ class World {
     //     this.ctx.restore(); // immer am Ende!
     // }
 
-    addToWorld(object) {
+    addToWorld(object, ctx = this.ctx) {
         if (!object || !object.img) return;
 
         const flipped = !!(object.isFlipped ?? false);
@@ -209,42 +213,42 @@ class World {
         const isFlipped = flipped || flippedNPC;
         const off = Object.assign({ left: 0, right: 0, top: 0, bottom: 0 }, object.offset || {});
 
-        this.ctx.save();
+        ctx.save();
 
         if (isFlipped) {
             // verschiebe Origin so dass lokales 0,0 an der Position (object.x + object.width, object.y) liegt
-            this.ctx.translate(object.x + object.width, Math.round(object.y));
-            this.ctx.scale(-1, 1);
+            ctx.translate(object.x + object.width, Math.round(object.y));
+            ctx.scale(-1, 1);
             // im lokalen System zeichnen wir bei 0,0
-            this.ctx.drawImage(object.img, 0, 0, object.width, object.height);
+            ctx.drawImage(object.img, 0, 0, object.width, object.height);
 
             if (object.isGamecharacter) {
-                this.ctx.lineWidth = 3;
-                this.ctx.strokeStyle = 'red';
+                ctx.lineWidth = 3;
+                ctx.strokeStyle = 'red';
                 // Außenrand (lokal bei 0,0)
-                this.ctx.strokeRect(0, 0, object.width, object.height);
+                ctx.strokeRect(0, 0, object.width, object.height);
 
                 // Hitbox: bei Spiegeln muss left/right getauscht werden
                 const left = off.right;   // swap
                 const top = off.top;
                 const w = object.width - off.left - off.right;
                 const h = object.height - off.top - off.bottom;
-                this.ctx.strokeStyle = 'blue';
-                this.ctx.strokeRect(left, top, w, h);
+                ctx.strokeStyle = 'blue';
+                ctx.strokeRect(left, top, w, h);
             }
         } else {
             // nicht gespiegelt: normale Koordinaten verwenden
             const drawX = Math.round(object.x);
             const drawY = Math.round(object.y);
-            this.ctx.drawImage(object.img, drawX, drawY, object.width, object.height);
+            ctx.drawImage(object.img, drawX, drawY, object.width, object.height);
 
             if (object.isGamecharacter) {
-                this.ctx.lineWidth = 3;
-                this.ctx.strokeStyle = 'red';
-                this.ctx.strokeRect(drawX, drawY, object.width, object.height);
+                ctx.lineWidth = 3;
+                ctx.strokeStyle = 'red';
+                ctx.strokeRect(drawX, drawY, object.width, object.height);
 
-                this.ctx.strokeStyle = 'blue';
-                this.ctx.strokeRect(
+                ctx.strokeStyle = 'blue';
+                ctx.strokeRect(
                     drawX + off.left,
                     drawY + off.top,
                     object.width - off.left - off.right,
@@ -253,7 +257,7 @@ class World {
             }
         }
 
-        this.ctx.restore();
+        ctx.restore();
     }
 
 
@@ -386,7 +390,6 @@ class World {
             if (this.character.isCollidingBefore(coin, 0, 0)) {
                 this.townLevelSetup.townLevel.coins.splice(i, 1);
                 this.townLevelSetup.coinBar.percentage = this.townLevelSetup.coinBar.percentage == 100 ? this.townLevelSetup.coinBar.percentage + 0 : this.townLevelSetup.coinBar.percentage + 20;
-                document.getElementById('coin-sound').play();
                 this.playCoinSound();
                 this.townLevelSetup.coinBar.percentage = Math.min(this.townLevelSetup.coinBar.percentage + 20, 100);
                 this.townLevelSetup.coinBar.setPercentage(this.townLevelSetup.coinBar.percentage);
@@ -396,8 +399,6 @@ class World {
             const bottle = this.townLevelSetup.townLevel.bottles[i];
             if (this.character.isCollidingBefore(bottle, 0, 0) && this.townLevelSetup.bottleBar.percentage != 100) {
                 this.townLevelSetup.townLevel.bottles.splice(i, 1);
-                this.townLevelSetup.coinBar.percentage = this.townLevelSetup.coinBar.percentage == 100 ? this.townLevelSetup.coinBar.percentage + 0 : this.townLevelSetup.coinBar.percentage + 20;
-                document.getElementById('coin-sound').play();
                 this.playBottleSound();
                 this.townLevelSetup.bottleBar.percentage = Math.min(this.townLevelSetup.bottleBar.percentage + 20, 100);
                 this.townLevelSetup.bottleBar.setPercentage(this.townLevelSetup.bottleBar.percentage);
@@ -486,16 +487,15 @@ class World {
             }
 
         }
-        if (this.character.x >= 1050 && this.character.x <= 1250) {
-            if (this.endbossMusicIsPlayed || this.endbossAlarmSoundIsPlayed) return;
-            document.getElementById('background-music').pause();
-            console.log('wird ausgeführt');
-            this.playEndbossMusic("play");
-            this.playEndbossAlarmSound();
-            // this.level1.endboss.animationHurt();
-            this.endbossMusicIsPlayed = true;
-            this.endbossAlarmSoundIsPlayed = true;
-        }
+        // if (this.character.x >= 1050 && this.character.x <= 1250) {
+        //     if (this.endbossMusicIsPlayed || this.endbossAlarmSoundIsPlayed) return;
+        // document.getElementById('background-music').pause();
+        // this.playEndbossMusic("play");
+        // this.playEndbossAlarmSound();
+        // this.level1.endboss.animationHurt();
+        //     this.endbossMusicIsPlayed = true;
+        //     this.endbossAlarmSoundIsPlayed = true;
+        // }
 
         for (let j = 0; j < this.townLevelSetup.townLevel.enemies.length; j++) {
             const enemy = this.townLevelSetup.townLevel.enemies[j];
@@ -620,31 +620,37 @@ class World {
 
     playCoinSound() {
         const sound = new Audio('./assets/audio/coin2.opus');
+        sound.volume = 0.4;
         sound.play();
     }
 
     playBottleSound() {
         const sound = new Audio('./assets/audio/bottle-clink1.opus');
+        sound.volume = 0.6;
         sound.play();
     }
 
     playChickenDeathSound() {
         const sound = new Audio('./assets/audio/chicken-death.opus');
+        sound.volume = 0.6;
         sound.play();
     }
 
     playEmptyBottelsSound() {
         const sound = new Audio('./assets/audio/empty-bottels2.opus');
+        sound.volume = 0.6;
         sound.play();
     }
 
     playBottelBrokenSound() {
         const sound = new Audio('./assets/audio/bottle-shattering1.opus');
+        sound.volume = 0.6;
         sound.play();
     }
 
     playBottelThrowSound() {
         const sound = new Audio('./assets/audio/throw2.opus');
+        sound.volume = 0.6;
         sound.play();
     }
 

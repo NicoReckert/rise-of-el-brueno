@@ -16,6 +16,18 @@ class TownLevelController {
         this.popupTexts = [];
         this.setup.backgroundMusic.play();
         this.setup.backgroundMusic.loop = true;
+        this.sandstorm = new SandstormEffect(this.canvas);
+        this.sandstormNear = new SandstormEffect(this.canvas); // schneller, heller
+        this.sandstormFar = new SandstormEffect(this.canvas); // langsamer, dunkler
+
+        this.sandstorm.setAlpha(0.5);
+        this.sandstorm.setSpeed(20); // 1.2
+        
+        this.sandstormNear.setAlpha(0.12);
+        this.sandstormNear.setSpeed(10); // 1.2
+
+        this.sandstormFar.setAlpha(0.08); 
+        this.sandstormFar.setSpeed(5); // 0.3
     }
 
     update(timestamp) {
@@ -33,6 +45,9 @@ class TownLevelController {
         this.handleInteractions();
         this.handlePopup();
         this.handleChickenInBasket();
+        this.sandstorm.update();
+        this.sandstormNear.update();
+        this.sandstormFar.update();
     }
 
     updateCamera() {
@@ -76,6 +91,10 @@ class TownLevelController {
             this.addToWorld(this.setup.townLevel.endboss);
         }
         this.ctx.restore();
+        this.sandstorm.draw(this.ctx, this.renderCameraX);
+        this.sandstormFar.draw(this.ctx, this.renderCameraX);
+        this.sandstormNear.draw(this.ctx, this.renderCameraX);
+
     }
 
     handleSpeechBubble() {

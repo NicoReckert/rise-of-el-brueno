@@ -61,3 +61,11 @@
     font-style: normal;
     font-weight: 100 900;
 }
+
+@font-face {
+    font-display: swap;
+    font-family: 'UncialAntiqua';
+    src: url('../assets/fonts/UncialAntiqua-Regular.ttf') format('truetype');
+    font-style: normal;
+    font-weight: 100 900;
+}

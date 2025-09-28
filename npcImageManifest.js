@@ -53,5 +53,7 @@ const npcImageManifest = {
   moon_idle: Array.from({ length: 10 }, (_, i) => `./assets/img/npcs/moon/idle/image_${i + 1}.webp`),
   soul_idle: Array.from({ length: 18 }, (_, i) => `./assets/img/npcs/soul/idle/image_${i + 1}.webp`),
   soul_findsPeace: Array.from({ length: 22 }, (_, i) => `./assets/img/npcs/soul/finds-peace/image_${i + 1}.webp`),
-  soul_findsPeaceLoop: Array.from({ length: 9 }, (_, i) => `./assets/img/npcs/soul/finds-peace/image_${13 + i}.webp`)
+  soul_findsPeaceLoop: Array.from({ length: 9 }, (_, i) => `./assets/img/npcs/soul/finds-peace/image_${13 + i}.webp`),
+  nayeli_idle: Array.from({ length: 10 }, (_, i) => `./assets/img/npcs/nayeli/idle/image_${i + 1}.webp`),
+  macuahuitl_idle: Array.from({ length: 30 }, (_, i) => `./assets/img/npcs/macuahuitl/idle/image_${i + 1}.webp`),
 }

@@ -25,6 +25,7 @@ class Character extends MovableObject {
     throwableBottels = 0;
     isCaress = false;
     isWalk = false;
+    isNewWeapon = false;
 
     constructor(characterImages) {
         super();
@@ -94,6 +95,8 @@ class Character extends MovableObject {
         this.attackImages = this.characterImages.attackImages || [];
         this.meditationImages = this.characterImages.meditationImages || [];
         this.meditationLoopImages = this.characterImages.meditationLoopImages || [];
+        this.newWeaponImages = this.characterImages.newWeaponImages || [];
+        this.newWeaponLoopImages = this.characterImages.newWeaponLoopImages || [];
     }
 
     preloadIdleAndWalkImages() {
@@ -302,6 +305,11 @@ class Character extends MovableObject {
                 this.setAnimation('meditation');
                 this.frameInterval = 1000 / 6;
             }
+        } else if (this.isNewWeapon) {
+            if (this.currentAnimation !== 'new-weapon-loop') {
+                this.setAnimation('new-weapon');
+                this.frameInterval = 1000 / 6;
+            }
         } else if (this.isMovingLeft || this.isMovingRight) {
             // this.setAnimation('walk');
             this.currentAnimation = 'walk';
@@ -337,8 +345,7 @@ class Character extends MovableObject {
                         this.offset.left = 33;
                         this.offset.right = 55;
                         this.offset.bottom = 15;
-
-                    } else if (['attack'].includes(this.currentAnimation)) {
+                    } else if (['attack', 'new-weapon', 'new-weapon-loop'].includes(this.currentAnimation)) {
                         this.width = 290;
                         this.height = 355;
                         this.y = 315;
@@ -361,7 +368,7 @@ class Character extends MovableObject {
                 this.frameIndex++;
             }
             this.lastFrameTime = timestamp;
-            if (this.frameIndex >= images.length && (this.currentAnimation == 'kneel-and-cry' || this.currentAnimation == 'stand-up-and-look-determined' || this.currentAnimation == 'look-determined-and-stand-up' || this.currentAnimation == 'caress' || this.currentAnimation == 'sit-down-and-play-guitar' || this.currentAnimation == 'light-a-campfire' || this.currentAnimation == 'attack' || this.currentAnimation == 'meditation')) {
+            if (this.frameIndex >= images.length && (this.currentAnimation == 'kneel-and-cry' || this.currentAnimation == 'stand-up-and-look-determined' || this.currentAnimation == 'look-determined-and-stand-up' || this.currentAnimation == 'caress' || this.currentAnimation == 'sit-down-and-play-guitar' || this.currentAnimation == 'light-a-campfire' || this.currentAnimation == 'attack' || this.currentAnimation == 'meditation' || this.currentAnimation == 'new-weapon')) {
                 this.animationFinished = true;
                 switch (this.currentAnimation) {
                     case 'stand-up-and-look-determined':
@@ -397,6 +404,10 @@ class Character extends MovableObject {
                         this.setAnimation('meditation-loop');
                         this.frameInterval = 1000 / 4;
                         break;
+                    case 'new-weapon':
+                        this.setAnimation('new-weapon-loop');
+                        this.frameInterval = 1000 / 6;
+                        break;
                 }
             }
         }
@@ -423,6 +434,8 @@ class Character extends MovableObject {
             case 'attack': return this.attackImages;
             case 'meditation': return this.meditationImages;
             case 'meditation-loop': return this.meditationLoopImages;
+            case 'new-weapon': return this.newWeaponImages;
+            case 'new-weapon-loop': return this.newWeaponLoopImages;
             case 'idle':
             default: return this.idleImages;
         }
