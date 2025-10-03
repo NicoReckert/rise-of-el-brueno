@@ -5,10 +5,14 @@ class StableLevelSetup {
         this.stableLevel = stableLevel;
         this.isNotificationPlay = false;
         this.popupTexts = [];
+        this.stableEvents = stableEvents;
+        this.statusBar = new LifeEnergyCharacterBar();
+
 
         this.npcs = {
             chicken: new NotMovableNpc(this.npcImages, 'chicken', 150, 150, 635, 460, 0, 100, -20, 0),
-            chick: new NotMovableNpc(this.npcImages, 'chick', 120, 120, 805, 515)
+            chick: new NotMovableNpc(this.npcImages, 'chick', 120, 120, 805, 515),
+            memoryLight: new NotMovableNpc(this.npcImages, 'memoryLight', 200, 200, 590, 473),
         };
         this.npcs.chick.isFlipped = false;
         this.speechBubbles = {
@@ -20,5 +24,9 @@ class StableLevelSetup {
             chickenSound: new Audio('./assets/audio/chicken-sound.opus'),
             notificationSound: new Audio('./assets/audio/notification-sound.opus'),
         };
+
+        this.video = document.createElement('video');
+        this.video.src = './assets/videos/memory.mp4';
+        document.body.appendChild(this.video);
     }
 }

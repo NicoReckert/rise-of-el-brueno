@@ -1,11 +1,12 @@
 class QuestManager {
-    constructor(setup, eventManager) {
+    constructor(setup, eventManager, events) {
         this.setup = setup;
         this.world = setup.world;
         this.eventManager = eventManager;
+        this.events = events;
         this.step = 1;
         this.quests = [];
-        this.registerEvents();
+        this.registerEvents(this.events);
     }
 
     advance(step) {
@@ -19,8 +20,8 @@ class QuestManager {
         });
     }
 
-    registerEvents() {
-        farmEvents.forEach(element => this.eventManager.add(element));
+    registerEvents(events) {
+        events.forEach(element => this.eventManager.add(element));
     }
 
     update() {
@@ -36,12 +37,3 @@ class QuestManager {
         }
     }
 }
-
-
-
-//     if (this.cowTaskStep === 10) {
-//         if (this.setup.npcs.chicken2.x <= 500 && this.setup.npcs.chicken2.x >= 450 && this.setup.npcs.chick.x <= 575 && this.setup.npcs.chick.x >= 525) {
-//             this.cowTaskStep = 11;
-//         }
-//     }
-// }

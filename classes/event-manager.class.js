@@ -61,6 +61,13 @@ class EventManager {
         element._resetFlag = false;
     }
 
+    resetEventByName(name) {
+        const event = this.events.find(e => e.name === name);
+        if (event) {
+            this.resetEvent(event, performance.now());
+        }
+    }
+
     // Hilfsfunktion: Hitbox berechnen + NORMALISIEREN
     _getBox(obj, tol = { x: 0, y: 0, width: 0, height: 0 }) {
         // robuste Defaults

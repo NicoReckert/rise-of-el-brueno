@@ -69,7 +69,7 @@ const farmLevel = new Level(
         ],
         towns: [
         // new Town(townSrcFarm[0], 800, -30, 900, 900), // 800, -42, 600, 450
-        new Town(townSrcFarm[1], 1290, 324, 300, 400),
+        new Town(townSrcFarm[1], 1310, 408, 300, 300),
         // new Town(townSrcFarm[2], 1600, 70, 400, 400),
         // new Town(townSrcFarm[3], 1550, 177, 600, 600)
 
@@ -91,6 +91,6 @@ sky: [
 
 let calculationXFarm = 1280;
 for (let index = 0; index < 66; index++) {
-    farmLevel.grounds.push(new Ground(groundSrcFarm[9], `${calculationXFarm}`, 572, 150, 150)); //572
+    farmLevel.grounds.push(new Ground(groundSrcFarm[9], `${calculationXFarm}`, 575, 150, 150)); //572
     calculationXFarm = calculationXFarm + 50;
 }

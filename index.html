@@ -13,19 +13,21 @@
 <body onload="init()">
     <div class="all-content" id="all-content">
         <div class="canvas-button-box" id="canvas-button-box">
-            <div class="move-button-box">
-                <button class="move-button" id="left-button">⇐</button>
-                <button class="move-button" id="right-button">⇒</button>
-                <button class="move-button" id="jet-pack-button">J</button>
-                <button class="move-button" id="action-button">F</button>
+            <div class="move-button-box d-none" id="move-button-box">
+                <div class="left-button-box">
+                    <button class="move-button" id="left-button">⇐</button>
+                    <button class="move-button" id="right-button">⇒</button>
+                </div>
+                <div class="right-button-box">
+                    <button class="move-button" id="action-button">F</button>
+                    <div class="middle-button-box">
+                        <button class="move-button" id="jump-button">⇧</button>
+                        <button class="move-button" id="throw-button">↗</button>
+                    </div>
+                    <button class="fullscreen-button" onclick="setFullscreen()">🗖</button>
+                </div>
             </div>
             <canvas id="canvas" width="1280" height="720"></canvas>
-            <div class="move-button-box">
-                <button class="move-button" id="jump-button">⇧</button>
-                <button class="move-button" id="down-button">⇩</button>
-                <button class="move-button" id="throw-button">↗</button>
-                <button class="fullscreen-button" onclick="setFullscreen()">🗖</button>
-            </div>
         </div>
         <audio id="background-music" loop>
             <source src="./assets/audio/background-music-level1.opus" type="audio/mpeg">
@@ -104,6 +106,7 @@
     <script src="./classes/task-window.class.js"></script>
     <script src="./classes/popup-text.class.js"></script>
     <script src="./classes/intro-screen.class.js"></script>
+    <script src="./classes/image-fader.class.js"></script>
     <script src="./classes/life-energy-character-bar.class.js"></script>
     <script src="./classes/life-energy-boss-bar.class.js"></script>
     <script src="./classes/coin-bar.class.js"></script>
@@ -135,20 +138,26 @@
     <script src="./classes/nayelis-house-level-controller.class.js"></script>
     <script src="./classes/new-weapon-level-setup.class.js"></script>
     <script src="./classes/new-weapon-level-controller.class.js"></script>
+    <script src="./classes/level-complete-setup.class.js"></script>
+    <script src="./classes/level-complete-controller.class.js"></script>
     <script src="./classes/endboss.class.js"></script>
     <script src="./classes/enboss-attack.class.js"></script>
     <script src="./classes/time-manager.class.js"></script>
     <script src="./classes/event-manager.class.js"></script>
     <script src="./classes/quest-manager.class.js"></script>
-    <script src="./classes/stable-quest-manager.class.js"></script>
     <script src="./classes/dialog-manager.class.js"></script>
     <script src="./classes/cutscene-manager.class.js"></script>
     <script src="./classes/sandstorm-effect.class.js"></script>
+    <script src="./classes/wind-particle.class.js"></script>
     <script src="./levels/town-level.js"></script>
     <script src="./levels/farm-level.js"></script>
     <script src="./levels/stable-level.js"></script>
     <script src="./levels/nayelis-house-level.js"></script>
-    <script src="./events/farm-level-event.js"></script>
+    <script src="./events/farm-level-events.js"></script>
+    <script src="./events/stable-level-events.js"></script>
+    <script src="./events/town-level-events.js"></script>
+    <script src="./events/nayelis-house-level-events.js"></script>
+    <script src="./events/level-complete-events.js"></script>
     <script src="./characterImageManifest.js"></script>
     <script src="./npcImageManifest.js"></script>
     <script src="./imageLoader.js"></script>

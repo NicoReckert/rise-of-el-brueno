@@ -14,20 +14,23 @@ class TownLevelController {
         this.stepSoundCharacter = this.world.stepSoundCharacter.bind(this.world);
         this.landingSoundCharacter = this.world.landingSoundCharacter.bind(this.world);
         this.popupTexts = [];
-        this.setup.backgroundMusic.play();
-        this.setup.backgroundMusic.loop = true;
         this.sandstorm = new SandstormEffect(this.canvas);
         this.sandstormNear = new SandstormEffect(this.canvas); // schneller, heller
         this.sandstormFar = new SandstormEffect(this.canvas); // langsamer, dunkler
 
         this.sandstorm.setAlpha(0.5);
         this.sandstorm.setSpeed(20); // 1.2
-        
+
         this.sandstormNear.setAlpha(0.12);
         this.sandstormNear.setSpeed(10); // 1.2
 
-        this.sandstormFar.setAlpha(0.08); 
+        this.sandstormFar.setAlpha(0.08);
         this.sandstormFar.setSpeed(5); // 0.3
+
+        this.eventManager = new EventManager(this.setup);
+        this.questManager = new QuestManager(this.setup, this.eventManager, this.setup.townEvents);
+        this.eventManager.questManager = this.questManager;
+
     }
 
     update(timestamp) {
@@ -48,6 +51,8 @@ class TownLevelController {
         this.sandstorm.update();
         this.sandstormNear.update();
         this.sandstormFar.update();
+        this.eventManager.update();
+        this.eventManager.debug = true;
     }
 
     updateCamera() {

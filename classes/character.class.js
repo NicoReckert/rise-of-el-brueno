@@ -26,6 +26,7 @@ class Character extends MovableObject {
     isCaress = false;
     isWalk = false;
     isNewWeapon = false;
+    isWalkDetermined = false;
 
     constructor(characterImages) {
         super();
@@ -51,6 +52,8 @@ class Character extends MovableObject {
         this.isPlayGuitar = false;
         this.isLightACampfire = false;
         this.isAttack = false;
+        this.isStandUp = false;
+        this.isStandDetermined = false;
         this.lastFrameTime = 0;        // Timestamp des letzten Framewechsels
         this.currentAnimation = 'idle';
         this.frameInterval = 1000 / 2.5; // Standard: 5 FPS
@@ -97,6 +100,11 @@ class Character extends MovableObject {
         this.meditationLoopImages = this.characterImages.meditationLoopImages || [];
         this.newWeaponImages = this.characterImages.newWeaponImages || [];
         this.newWeaponLoopImages = this.characterImages.newWeaponLoopImages || [];
+        this.standUpImages = this.characterImages.standUpImages || [];
+        this.walkDeterminedImages = this.characterImages.walkDeterminedImages || [];
+        this.standDeterminedImages = this.characterImages.standDeterminedImages || [];
+        this.standDeterminedLoopImages = this.characterImages.standDeterminedLoopImages || [];
+
     }
 
     preloadIdleAndWalkImages() {
@@ -310,14 +318,27 @@ class Character extends MovableObject {
                 this.setAnimation('new-weapon');
                 this.frameInterval = 1000 / 6;
             }
+        } else if (this.isStandUp) {
+            this.setAnimation('stand-up');
+            this.frameInterval = 1000 / 4;
         } else if (this.isMovingLeft || this.isMovingRight) {
             // this.setAnimation('walk');
             this.currentAnimation = 'walk';
             this.frameInterval = 1000 / 8;
         } else if (this.isWalk) {
-            // this.setAnimation('walk');
-            this.currentAnimation = 'walk';
+            this.setAnimation('walk');
+            // this.currentAnimation = 'walk';
             this.frameInterval = 1000 / 8;
+        } else if (this.isWalkDetermined) {
+            this.setAnimation('walk-determined');
+            // this.currentAnimation = 'walk';
+            this.frameInterval = 1000 / 5;
+        } else if (this.isStandDetermined) {
+            if (this.currentAnimation !== 'stand-determined-loop') {
+                this.setAnimation('stand-determined');
+                // this.currentAnimation = 'walk';
+                this.frameInterval = 1000 / 5;
+            }
         } else {
             this.setAnimation('idle');
             // this.currentAnimation = 'idle';
@@ -337,7 +358,7 @@ class Character extends MovableObject {
             if (images && images.length > 0) {
                 this.img = images[this.frameIndex % images.length];
                 if (this.deferSizeUpdate) {
-                    if (['kneel-and-cry', 'stand-up-and-look-determined', 'cry', 'look-determined', 'look-determined-and-stand-up', 'strong-determined', 'caress', 'caress2', 'sit-down-and-play-guitar', 'play-guitar-and-sing', 'play-guitar', 'light-a-campfire', 'meditation', 'meditation-loop'].includes(this.currentAnimation)) {
+                    if (['kneel-and-cry', 'stand-up-and-look-determined', 'cry', 'look-determined', 'look-determined-and-stand-up', 'strong-determined', 'caress', 'caress2', 'sit-down-and-play-guitar', 'play-guitar-and-sing', 'play-guitar', 'light-a-campfire', 'meditation', 'meditation-loop', 'stand-up', 'walk-determined', 'stand-determined', 'stand-determined-loop'].includes(this.currentAnimation)) {
                         this.width = 158;
                         this.height = 183;
                         this.y = this.yVoidless;
@@ -368,12 +389,12 @@ class Character extends MovableObject {
                 this.frameIndex++;
             }
             this.lastFrameTime = timestamp;
-            if (this.frameIndex >= images.length && (this.currentAnimation == 'kneel-and-cry' || this.currentAnimation == 'stand-up-and-look-determined' || this.currentAnimation == 'look-determined-and-stand-up' || this.currentAnimation == 'caress' || this.currentAnimation == 'sit-down-and-play-guitar' || this.currentAnimation == 'light-a-campfire' || this.currentAnimation == 'attack' || this.currentAnimation == 'meditation' || this.currentAnimation == 'new-weapon')) {
+            if (this.frameIndex >= images.length && (this.currentAnimation == 'kneel-and-cry' || this.currentAnimation == 'stand-up-and-look-determined' || this.currentAnimation == 'look-determined-and-stand-up' || this.currentAnimation == 'caress' || this.currentAnimation == 'sit-down-and-play-guitar' || this.currentAnimation == 'light-a-campfire' || this.currentAnimation == 'attack' || this.currentAnimation == 'meditation' || this.currentAnimation == 'new-weapon' || this.currentAnimation == 'stand-up' || this.currentAnimation == 'stand-determined')) {
                 this.animationFinished = true;
                 switch (this.currentAnimation) {
                     case 'stand-up-and-look-determined':
                         this.setAnimation('look-determined');
-                        this.frameInterval = 1000 / 3;
+                        this.frameInterval = 1000 / 5.5;
                         break;
                     case 'kneel-and-cry':
                         this.setAnimation('cry');
@@ -408,6 +429,12 @@ class Character extends MovableObject {
                         this.setAnimation('new-weapon-loop');
                         this.frameInterval = 1000 / 6;
                         break;
+                    case 'stand-up':
+                        this.isStandUp = false;
+                        break;
+                    case 'stand-determined':
+                         this.setAnimation('stand-determined-loop');
+                        break;
                 }
             }
         }
@@ -436,6 +463,10 @@ class Character extends MovableObject {
             case 'meditation-loop': return this.meditationLoopImages;
             case 'new-weapon': return this.newWeaponImages;
             case 'new-weapon-loop': return this.newWeaponLoopImages;
+            case 'stand-up': return this.standUpImages;
+            case 'walk-determined': return this.walkDeterminedImages;
+            case 'stand-determined': return this.standDeterminedImages;
+            case 'stand-determined-loop': return this.standDeterminedLoopImages;
             case 'idle':
             default: return this.idleImages;
         }

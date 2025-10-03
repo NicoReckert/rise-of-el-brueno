@@ -1,8 +1,7 @@
 class StableLevelController {
-    constructor(setup, farmLevelSetup) {
+    constructor(setup) {
         this.setup = setup;
         this.world = setup.world;
-        this.farmLevelSetup = farmLevelSetup;
         this.ctx = this.world.ctx;
         this.canvas = this.world.canvas;
         this.addObject = this.world.addObject.bind(this.world);
@@ -13,9 +12,8 @@ class StableLevelController {
         this.stepSoundCharacter = this.world.stepSoundCharacter.bind(this.world);
         this.landingSoundCharacter = this.world.landingSoundCharacter.bind(this.world);
         this.lastCowSoundTime = 0;
-        this.starttime2;
         this.eventManager = new EventManager(this.setup);
-        this.questManager = new StableQuestManager(this.setup, this.eventManager);
+        this.questManager = new QuestManager(this.setup, this.eventManager, this.setup.stableEvents);
         this.eventManager.questManager = this.questManager;
     }
 
@@ -25,7 +23,7 @@ class StableLevelController {
         this.renderBackgrounds();
         this.renderStatusBar();
         this.renderNPCsAndCharacter();
-        this.handleSpeechBubble();
+        // this.handleSpeechBubble();
         this.updateCharacter(timestamp);
         this.updateNPCs(timestamp);
         this.handlePopup();
@@ -41,7 +39,6 @@ class StableLevelController {
     renderBackgrounds() {
         this.ctx.save();
         this.ctx.translate(-this.renderCameraX, 0);
-        this.addObject(this.setup.stableLevel.sky);
         this.addObject(this.setup.stableLevel.grounds);
         this.addToWorld(this.setup.stableLevel.towns[0]);
         this.ctx.restore();
@@ -56,11 +53,16 @@ class StableLevelController {
         this.ctx.translate(-this.renderCameraX, 0);
         if (this.character.isCaress) {
             this.addToWorld(this.character);
-            this.addToWorld(this.setup.npcs.chicken);
-            this.addToWorld(this.setup.npcs.chick);
+            if (this.setup.world.farmLevelController.questManager.step < 8) {
+                this.addToWorld(this.setup.npcs.chicken);
+                this.addToWorld(this.setup.npcs.chick);
+            }
         } else {
-            this.addToWorld(this.setup.npcs.chicken);
-            this.addToWorld(this.setup.npcs.chick);
+            if (this.setup.world.farmLevelController.questManager.step < 8) {
+                this.addToWorld(this.setup.npcs.chicken);
+                this.addToWorld(this.setup.npcs.chick);
+            }
+            if(this.setup.world.farmLevelController.questManager.step >= 20)this.addToWorld(this.setup.npcs.memoryLight);
             this.addToWorld(this.character);
         }
         this.ctx.restore();
@@ -115,7 +117,7 @@ class StableLevelController {
     }
 
     updateNPCs(timestamp) {
-        const npcs = ['chicken', 'chick'];
+        const npcs = ['chicken', 'chick', 'memoryLight'];
         npcs.forEach(name => {
             this.setup.npcs[name].updateState(timestamp);
             this.setup.npcs[name].updateAnimation(timestamp);

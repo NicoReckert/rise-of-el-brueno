@@ -18,8 +18,11 @@ class NotMovableNpc extends MovableObject {
     swingToMusicImages = [];
     burningFireImages = [];
     fireGoesOnImages = [];
+    fireGoesOutImages = [];
     findsPeaceImages = [];
     findsPeaceLoopImages = [];
+    sleepImages = [];
+    portraitImages = [];
 
     constructor(npcImages, currentNpc, height = 150, width = 150, x = 355, y = 220, offsetTop = 0, offsetLeft = 0, offsetRight = 0, offsetBottom = 0) {
         super();
@@ -41,6 +44,13 @@ class NotMovableNpc extends MovableObject {
         this.offset.left = offsetLeft;
         this.offset.right = offsetRight;
         this.offset.bottom = offsetBottom;
+
+
+        this.opacity = 1;
+        this.fading = null; // "in" | "out" | null
+        this.fadeStart = null;
+        this.fadeDuration = 1000;
+
     }
 
     loadImgFromCurrentNpc(currentNpc) {
@@ -63,9 +73,43 @@ class NotMovableNpc extends MovableObject {
         this.swingToMusicImages = this.npcImages[`${currentNpc}_swingToMusic`] || [];
         this.burningFireImages = this.npcImages[`${currentNpc}_burningFire`] || [];
         this.fireGoesOnImages = this.npcImages[`${currentNpc}_fireGoesOn`] || [];
+        this.fireGoesOutImages = this.npcImages[`${currentNpc}_fireGoesOut`] || [];
         this.findsPeaceImages = this.npcImages[`${currentNpc}_findsPeace`] || [];
         this.findsPeaceLoopImages = this.npcImages[`${currentNpc}_findsPeaceLoop`] || [];
+        this.sleepImages = this.npcImages[`${currentNpc}_sleep`] || [];
+        this.portraitImages = this.npcImages[`${currentNpc}_portrait`] || [];
+
     }
+
+    fade(direction = "in", timestamp, duration = 1000) {
+        this.fading = direction;
+        this.fadeStart = timestamp;
+        this.fadeDuration = duration;
+        this.opacity = direction === "in" ? 0 : 1;
+    }
+
+    fadeIn(timestamp, duration = 1000) {
+        this.fade("in", timestamp, duration);
+    }
+
+    fadeOut(timestamp, duration = 1000) {
+        this.fade("out", timestamp, duration);
+    }
+
+    updateFade(timestamp) {
+        if (!this.fading) return;
+
+        const elapsed = timestamp - this.fadeStart;
+        const t = Math.min(elapsed / this.fadeDuration, 1);
+
+        this.opacity = this.fading === "in" ? t : 1 - t;
+
+        if (t >= 1) {
+            this.fading = null;
+        }
+    }
+
+
 
     updateState(state, frameInterval = 1000 / 5.5) {
         switch (state) {
@@ -147,11 +191,23 @@ class NotMovableNpc extends MovableObject {
                     this.frameInterval = frameInterval;
                 }
                 break;
+            case 'fireGoesOut':
+                this.setAnimation('fireGoesOut');
+                this.frameInterval = frameInterval;
+                break;
             case 'findsPeace':
                 if (this.currentAnimation !== 'findsPeaceLoop') {
                     this.setAnimation('findsPeace');
                     this.frameInterval = frameInterval;
                 }
+                break;
+            case 'sleep':
+                this.setAnimation('sleep');
+                this.frameInterval = frameInterval;
+                break;
+            case 'portrait':
+                this.setAnimation('portrait');
+                this.frameInterval = frameInterval;
                 break;
         }
 
@@ -191,7 +247,7 @@ class NotMovableNpc extends MovableObject {
                 this.frameIndex++;
             }
             this.lastFrameTime = timestamp;
-            if (this.frameIndex >= images.length && (this.currentAnimation == 'doorOpens' || this.currentAnimation == 'doorCloses' || this.currentAnimation == 'fireGoesOn' || this.currentAnimation == 'findsPeace')) {
+            if (this.frameIndex >= images.length && (this.currentAnimation == 'doorOpens' || this.currentAnimation == 'doorCloses' || this.currentAnimation == 'fireGoesOn' || this.currentAnimation == 'fireGoesOut' || this.currentAnimation == 'findsPeace')) {
                 this.animationFinished = true;
                 switch (this.currentAnimation) {
                     case 'doorOpens':
@@ -203,13 +259,16 @@ class NotMovableNpc extends MovableObject {
                     case 'fireGoesOn':
                         this.setAnimation('burningFire');
                         break;
+                    case 'fireGoesOut':
+                        this.setAnimation('idle');
+                        break;
                     case 'findsPeace':
                         this.setAnimation('findsPeaceLoop');
                         break;
                 }
-
             }
         }
+        this.updateFade(timestamp);
     }
 
     getAnimationImages(state) {
@@ -233,8 +292,11 @@ class NotMovableNpc extends MovableObject {
             case 'swingToMusic': return this.swingToMusicImages;
             case 'burningFire': return this.burningFireImages;
             case 'fireGoesOn': return this.fireGoesOnImages;
+            case 'fireGoesOut': return this.fireGoesOutImages;
             case 'findsPeace': return this.findsPeaceImages;
             case 'findsPeaceLoop': return this.findsPeaceLoopImages;
+            case 'sleep': return this.sleepImages;
+            case 'portrait': return this.portraitImages;
         }
     }
 

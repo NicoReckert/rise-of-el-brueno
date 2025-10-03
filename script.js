@@ -52,18 +52,20 @@ titleMusic.addEventListener('timeupdate', () => {
     }
 });
 
-async function init2() {
+async function init() {
     // 1. Intro sofort laden
     await attachVideoSource("start-initialisation-video", videoManifest.intro);
 
     // 2. Vorspann-Video im Hintergrund schon vorbereiten
     attachVideoSource("start-initialisation-video2", videoManifest.vorspann);
 
-    // 3. Klick startet es sofort
-    // document.getElementById("welcome-button").addEventListener("click", () => {
-    //     const video2 = document.getElementById("start-initialisation-video2");
-    //     video2.play();
-    // });
+    //3. Klick startet es sofort
+    document.getElementById("welcome-button").addEventListener("click", () => {
+        const video2 = document.getElementById("start-initialisation-video2");
+        // console.log('hat geklappt')
+        // video2.play();
+        startVideo()
+    });
 
 
     // 3. Hintergrund-Videos nebenbei (ohne zu blockieren) laden
@@ -75,5 +77,4 @@ async function init2() {
     ]);
 }
 
-// init();
-
+init();

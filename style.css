@@ -84,7 +84,7 @@ canvas {
   background-color: black;
   display: none;
   width: 100%;
-  height: 100dvh; 
+  height: 100dvh;
   /* border-radius: 20px; */
   /* aspect-ratio: 16 / 9; */
 }
@@ -95,29 +95,64 @@ canvas {
   align-items: center;
   gap: 24px;
   width: 100%;
-  height: 100%; 
+  height: 100%;
 }
 
 .move-button-box {
+  position: absolute;
+  bottom: 0px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
+
+.left-button-box {
   display: flex;
   justify-content: center;
   align-items: center;
-  gap: 16px;
-  display: none;
+  padding: 8px;
+  gap: 8px;
+  border: solid 2px rgba(136, 134, 134, 0.8);
+  border-radius: 25px;
+  opacity: 80%;
+  margin-left: 30px;
+
 }
+
+.right-button-box {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 8px;
+  flex-direction: column;
+  border: solid 2px rgba(136, 134, 134, 0.8);
+  border-radius: 25px;
+  opacity: 80%;
+  margin-right: 30px;
+}
+
+.middle-button-box {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 30px;
+}
+
 
 .move-button {
   display: flex;
   justify-content: center;
   align-items: center;
-  width: 50px;
-  height: 50px;
+  width: 40px;
+  height: 40px;
   border-radius: 100%;
   /* border: 1.5px solid orangered; */
   font-size: 24px;
-  background-color: orange;
+  /* background-color: orange; */
   color: black;
   font-weight: bold;
+  opacity: 80%;
 }
 
 .move-button:active {
@@ -128,13 +163,13 @@ canvas {
   display: flex;
   justify-content: center;
   align-items: center;
-  width: 50px;
-  height: 50px;
+  width: 40px;
+  height: 40px;
   border-radius: 100%;
   /* border: 1.5px solid orangered; */
   font-size: 24px;
   text-align: center;
-  background-color: orange;
+  /* background-color: orange; */
   color: black;
   padding-bottom: 6px;
 }
@@ -146,7 +181,7 @@ canvas {
 .overlay-startscreen {
   position: absolute;
   top: 0;
-  bottom: 0;
+  /* bottom: 0; */
   left: 0;
   right: 0;
   display: flex;
@@ -598,6 +633,10 @@ canvas {
   transition: filter 0.4s ease-in-out;
 }
 
+.d-none {
+  display: none;
+}
+
 .opacity-none {
   opacity: 0;
   pointer-events: none;
@@ -691,8 +730,8 @@ canvas {
 
 
 @media only screen and (max-width: 850px) {
-  canvas {
-    width: 85%;
+  .all-content {
+    height: 100dvh;
   }
 
   .canvas-button-box {
@@ -700,21 +739,7 @@ canvas {
   }
 
   .move-button-box {
-    display: flex;
     gap: 6px;
-    flex-direction: column;
-  }
-
-  .move-button {
-    width: 42px;
-    height: 42px;
-    font-size: 20px;
-  }
-
-  .fullscreen-button {
-    width: 32px;
-    height: 32px;
-    font-size: 18px;
   }
 
   h1 {

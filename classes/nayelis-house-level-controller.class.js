@@ -12,11 +12,9 @@ class NayelisHouseLevelController {
         this.keyboard = this.world.keyboard;
         this.stepSoundCharacter = this.world.stepSoundCharacter.bind(this.world);
         this.landingSoundCharacter = this.world.landingSoundCharacter.bind(this.world);
-        // this.eventManager = new EventManager(this.setup);
-        // this.questManager = new StableQuestManager(this.setup, this.eventManager);
-        // this.eventManager.questManager = this.questManager;
-        this.character.x = 290;
-        this.world.camera_x = 0;
+        this.eventManager = new EventManager(this.setup);
+        this.questManager = new QuestManager(this.setup, this.eventManager, this.setup.nayelisHouseEvents);
+        this.eventManager.questManager = this.questManager;
     }
 
     update(timestamp) {
@@ -29,63 +27,62 @@ class NayelisHouseLevelController {
         this.updateCharacter(timestamp);
         this.updateNPCs(timestamp);
         this.handlePopup();
-        // this.eventManager.update();
-        // this.eventManager.debug = true;
-        this.test();
+        this.eventManager.update();
+        this.eventManager.debug = true;
     }
 
     updateCamera() {
         this.camera_x = this.setup.world.camera_x;
         this.renderCameraX = Math.round(this.camera_x);
-        this.renderCameraX = 0;
+        // this.renderCameraX = 0;
     }
 
-renderBackgrounds() {
-    const house = this.setup.nayelisHouseLevel.towns[0];
-    const fadeStrength = 0.05; // 5% links und rechts
+    renderBackgrounds() {
+        const house = this.setup.nayelisHouseLevel.towns[0];
+        const fadeStrength = 0.05; // 5% links und rechts
 
-    // === 1. Hintergrundvideo zeichnen ===
-    if (this.setup.video.readyState >= 2) {
+        // === 1. Hintergrundvideo zeichnen ===
+        if (this.setup.video.readyState >= 2) {
+            this.ctx.save();
+            this.ctx.globalAlpha = 0.8;
+            this.ctx.filter = 'brightness(0.8)';
+            this.ctx.drawImage(this.setup.video, 0, 0, this.canvas.width, this.canvas.height);
+            this.ctx.restore();
+        }
+
+        // === 2. Offscreen-Canvas für das Haus ===
+        const houseCanvas = document.createElement('canvas');
+        houseCanvas.width = house.width;
+        houseCanvas.height = house.height;
+        const houseCtx = houseCanvas.getContext('2d');
+
+        // Haus (oder alle Objekte im Haus) auf Offscreen zeichnen
+        this.addToWorld({ ...house, x: 0, y: 0 }, houseCtx);
+
+        // === 3. ECHTER, SANFTER ALPHA-Fade an den Rändern ===
+        const fs = fadeStrength;
+        const fsMid = fs * 0.45; // 0.4
+        const fade = houseCtx.createLinearGradient(0, 0, house.width, 0);
+
+        fade.addColorStop(0.0, 'rgba(0,0,0,0)');
+        fade.addColorStop(fsMid, 'rgba(0,0,0,0.0)'); // 0.4
+        fade.addColorStop(fs, 'rgba(0,0,0,1)');
+        fade.addColorStop(1 - fs, 'rgba(0,0,0,1)');
+        fade.addColorStop(1 - fsMid, 'rgba(0,0,0,0.0)'); // 0.4
+        fade.addColorStop(1.0, 'rgba(0,0,0,0)');
+
+        houseCtx.globalCompositeOperation = 'destination-in';
+        houseCtx.fillStyle = fade;
+        houseCtx.fillRect(0, 0, house.width, house.height);
+        houseCtx.globalCompositeOperation = 'source-over';
+
+        // === 4. Hausbild mit Fade auf Hauptcanvas zeichnen ===
         this.ctx.save();
-        this.ctx.globalAlpha = 0.8;
-        this.ctx.filter = 'brightness(0.8)';
-        this.ctx.drawImage(this.setup.video, 0, 0, this.canvas.width, this.canvas.height);
+        this.ctx.translate(house.x - this.renderCameraX, house.y);
+        this.ctx.filter = 'brightness(1.1)';
+        this.ctx.drawImage(houseCanvas, 0, 0);
         this.ctx.restore();
     }
-
-    // === 2. Offscreen-Canvas für das Haus ===
-    const houseCanvas = document.createElement('canvas');
-    houseCanvas.width = house.width;
-    houseCanvas.height = house.height;
-    const houseCtx = houseCanvas.getContext('2d');
-
-    // Haus (oder alle Objekte im Haus) auf Offscreen zeichnen
-    this.addToWorld({ ...house, x: 0, y: 0 }, houseCtx);
-
-    // === 3. ECHTER, SANFTER ALPHA-Fade an den Rändern ===
-    const fs = fadeStrength;
-    const fsMid = fs * 0.45; // 0.4
-    const fade = houseCtx.createLinearGradient(0, 0, house.width, 0);
-
-    fade.addColorStop(0.0, 'rgba(0,0,0,0)');
-    fade.addColorStop(fsMid, 'rgba(0,0,0,0.0)'); // 0.4
-    fade.addColorStop(fs, 'rgba(0,0,0,1)');
-    fade.addColorStop(1 - fs, 'rgba(0,0,0,1)');
-    fade.addColorStop(1 - fsMid, 'rgba(0,0,0,0.0)'); // 0.4
-    fade.addColorStop(1.0, 'rgba(0,0,0,0)');
-
-    houseCtx.globalCompositeOperation = 'destination-in';
-    houseCtx.fillStyle = fade;
-    houseCtx.fillRect(0, 0, house.width, house.height);
-    houseCtx.globalCompositeOperation = 'source-over';
-
-    // === 4. Hausbild mit Fade auf Hauptcanvas zeichnen ===
-    this.ctx.save();
-    this.ctx.translate(house.x - this.renderCameraX, house.y);
-    this.ctx.filter = 'brightness(1.1)';
-    this.ctx.drawImage(houseCanvas, 0, 0);
-    this.ctx.restore();
-}
 
 
 
@@ -169,12 +166,5 @@ renderBackgrounds() {
         const now = performance.now();
         this.setup.popupTexts.forEach(p => p.draw(this.ctx, now));
         this.setup.popupTexts = this.setup.popupTexts.filter(p => p.active);
-    }
-
-    test() {
-        if (this.world.character.x >= 600 && this.world.character.x <= 700 && !this.speakSoundPlay) {
-            this.setup.sounds.nayelisSpeakSound.play();
-            this.speakSoundPlay = true;
-        }
     }
 }

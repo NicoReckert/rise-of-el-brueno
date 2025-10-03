@@ -5,7 +5,7 @@ const groundSrcStable =
 
 const townSrcStable =
     [
-        './assets/img/Hühnerstall innen.webp'
+        './assets/img/Hühnerstall innen2.webp'
     ]
 
 const stableLevel = new Level(
@@ -22,13 +22,6 @@ const stableLevel = new Level(
         towns:
             [
                 new Town(townSrcStable[0], 280, 260, 720, 480)
-            ],
-        sky:
-            [
-                new Sky(-719),
-                new Sky(-719),
-                new Sky(0),
-                new Sky(719)
             ]
     }
 );

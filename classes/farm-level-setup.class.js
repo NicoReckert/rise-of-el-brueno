@@ -3,8 +3,10 @@ class FarmLevelSetup {
         this.world = world;
         this.farmLevel = farmLevel;
         this.npcImages = this.world.npcImages;
+        this.farmEvents = farmEvents;
         this.npcs = {
             cow: new NotMovableNpc(this.npcImages, 'cow', 200, 200, 500, 495), //255 Y
+            cowPortrait: new NotMovableNpc(this.npcImages, 'cow', 400, 400, 5200, 100),
             bird: new NotMovableNpc(this.npcImages, 'bird', 80, 80, 1400, 178),
             pond: new NotMovableNpc(this.npcImages, 'pond', 500, 600, -28, 320),//500, 600, 150, 120
             tree: new NotMovableNpc(this.npcImages, 'tree', 450, 450, 500, 250),
@@ -20,7 +22,7 @@ class FarmLevelSetup {
             flower8: new NotMovableNpc(this.npcImages, 'flower', 65, 65, 4800, 600),
             drohne: new NotMovableNpc(this.npcImages, 'drohne', 300, 300, 5000, 190),
             chicken: new NotMovableNpc(this.npcImages, 'chicken', 90, 90, 200, 580),
-            cowHypno: new NotMovableNpc(this.npcImages, 'cowHypno', 200, 200, -100, 495),
+            cowHypno: new NotMovableNpc(this.npcImages, 'cowHypno', 200, 200, -100, 492),
             chickHypno: new NotMovableNpc(this.npcImages, 'chickHypno', 60, 60, 500, 600),
             blackDragon: new NotMovableNpc(this.npcImages, 'blackDragon', 600, 600, 1000, 132),
             barrier: new NotMovableNpc(this.npcImages, 'barrier', 450, 120, 7050, 305),
@@ -29,7 +31,9 @@ class FarmLevelSetup {
             clock: new NotMovableNpc(this.npcImages, 'clock', 150, 150, 5320, 400),
             campfire: new NotMovableNpc(this.npcImages, 'campfire', 200, 200, 650, 520),
             chicken2: new NotMovableNpc(this.npcImages, 'chicken', 150, 150, 1600, 540), // 500, 540
+            chickenPortrait: new NotMovableNpc(this.npcImages, 'chicken', 400, 400, 5200, 100), // 500, 540
             chick: new NotMovableNpc(this.npcImages, 'chick', 120, 120, 1680, 587), // 575, 587
+            chickPortrait: new NotMovableNpc(this.npcImages, 'chick', 400, 400, 5200, 100), // 575, 587
             sun: new NotMovableNpc(this.npcImages, 'sun', 250, 250, 3000, 50),
             moon: new NotMovableNpc(this.npcImages, 'moon', 200, 200, 3000, 50)
         };
@@ -57,17 +61,22 @@ class FarmLevelSetup {
             cowSound2: new Audio('./assets/audio/cow-sound3.opus'),
             doorOpeningSound: new Audio('./assets/audio/door-opening.opus'),
             doorClosingSound: new Audio('./assets/audio/door-closing.opus'),
-            happyTogetherMusic: new Audio('./assets/audio/happy-together-music.opus')
+            happyTogetherMusic: new Audio('./assets/audio/happy-together-music.opus'),
+            determinedMusic: new Audio('./assets/audio/determined-music.mp3'),
+            windSound: new Audio('./assets/audio/wind-sound.mp3')
         };
         this.speechBubbles = {
             bubbleFarm: new SpeechBubble("In den Hühnerstall gehen? {F} drücken!", this.world.character, 'info'),
             bubbleFarm2: new SpeechBubble("Ins Haus gehen? {F} drücken!", this.world.character, 'speech'),
-            bubbleFarm3: new SpeechBubble("Was ist hier passiert ???", this.world.character, performance.now()),
-            bubbleFarm4: new SpeechBubble("Freunde wo seit ihr ???", this.world.character, performance.now()),
-            bubbleFarm5: new SpeechBubble("Neeeeiiiinnnnn. *Weinen*", this.world.character, performance.now()),
-            bubbleFarm6: new SpeechBubble("Ich werde euch finden !!!", this.world.character, performance.now()),
-            bubbleFarm7: new SpeechBubble("Und wenn ich die ganze Welt nach euch absuchen muss !!!", this.world.character, performance.now()),
-            bubbleFarm8: new SpeechBubble("Haltet durch !!!", this.world.character, performance.now())
+            bubbleFarm3: new SpeechBubble("Was ist hier passiert ???", this.world.character, 'speech'),
+            bubbleFarm4: new SpeechBubble("Freunde wo seit ihr ???", this.world.character, 'speech'),
+            bubbleFarm5: new SpeechBubble("Neeeeiiiinnnnn. *Weinen*", this.world.character, 'speech'),
+            bubbleFarm6: new SpeechBubble("Ich werde euch finden !!!", this.world.character, 'speech'),
+            bubbleFarm7: new SpeechBubble("Und wenn ich die ganze Welt nach euch absuchen muss !!!", this.world.character, 'speech'),
+            bubbleFarm8: new SpeechBubble("Haltet durch !!!", this.world.character, 'speech'),
+            bubbleFarm9: new SpeechBubble("Pollito", this.world.character, 'speech'),
+            bubbleFarm10: new SpeechBubble("Juanito", this.world.character, 'speech'),
+            bubbleFarm11: new SpeechBubble("Lola", this.world.character, 'speech'),
         };
         this.sounds.farmMusic.loop = true;
         this.sounds.farmMusic.volume = 0.6;
@@ -92,7 +101,7 @@ class FarmLevelSetup {
         this.droneHypnoSoundIsPlaying = false;
         this.nightMusicIsPlaying = false;
         this.droneIsGo = false;
-        this.isNight = true;
+        this.isNight = false;
         this.isGameCharacterOutHouse = false;
         this.tasks = [
             "1. Kümmere dich um Juanito",
@@ -102,5 +111,8 @@ class FarmLevelSetup {
         this.tKeyPressed = false;
         this.timerManager = new TimerManager();
         this.popupTexts = [];
+        this.comeFromStable = false;
+        this.lyrics = [];
+        this.earthquakeStart = false;
     }
 }

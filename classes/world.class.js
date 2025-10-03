@@ -42,43 +42,54 @@ class World {
 
     startGame() {
         this.farmLevelSetup = new FarmLevelSetup(this);
-        // this.farmLevelController = new FarmLevelController(this.farmLevelSetup);
-        // this.stableLevelSetup = new StableLevelSetup(this);
-        // this.stableLevelController = new StableLevelController(this.stableLevelSetup, this.farmLevelSetup);
-        // this.townLevelSetup = new TownLevelSetup(this);
-        // this.townLevelController = new TownLevelController(this.townLevelSetup);
-        // this.nayelisHouseLevelSetup = new NayelisHouseLevelSetup(this);
-        // this.nayelisHouseLevelController = new NayelisHouseLevelController(this.nayelisHouseLevelSetup);
+        this.farmLevelController = new FarmLevelController(this.farmLevelSetup);
+        this.stableLevelSetup = new StableLevelSetup(this);
+        this.stableLevelController = new StableLevelController(this.stableLevelSetup);
+        this.townLevelSetup = new TownLevelSetup(this);
+        this.townLevelController = new TownLevelController(this.townLevelSetup);
+        this.nayelisHouseLevelSetup = new NayelisHouseLevelSetup(this);
+        this.nayelisHouseLevelController = new NayelisHouseLevelController(this.nayelisHouseLevelSetup);
         this.newWeaponLevelSetup = new NewWeaponLevelSetup(this);
         this.newWeaponLevelController = new NewWeaponLevelController(this.newWeaponLevelSetup);
+        this.levelCompleteSetup = new LevelCompleteSetup(this);
+        this.levelCompleteController = new LevelCompleteController(this.levelCompleteSetup);
         this.setWorld();
         this.draw();
     }
 
     draw(timestamp) {
-        this.newWeaponLevelController.update(timestamp);
+        const deltaTime = timestamp - this.lastTime;
+        this.lastTime = timestamp;
+        if (!this.intro.done) {
+            this.intro.update(deltaTime);
+            this.intro.draw();
+            if (!this.isChapterSoundPlayed) {
+                this.chapterSound.play();
+                this.isChapterSoundPlayed = true;
+            }
+        } else {
+            switch (this.currentScene) {
 
-        // const deltaTime = timestamp - this.lastTime;
-        // this.lastTime = timestamp;
-        // if (!this.intro.done) {
-        //     this.intro.update(deltaTime);
-        //     this.intro.draw();
-        //     if (!this.isChapterSoundPlayed) {
-        //         this.chapterSound.play();
-        //         this.isChapterSoundPlayed = true;
-        //     }
-        // } else {
-        //     switch (this.currentScene) {
-
-        //         case 'farmLevel':
-        //             this.farmLevelController.update(timestamp);
-        //             break;
-
-        //         case 'stableLevel':
-        //             this.stableLevelController.update(timestamp);
-        //             break;
-        //     }
-        // }
+                case 'farmLevel':
+                    this.farmLevelController.update(timestamp);
+                    break;
+                case 'stableLevel':
+                    this.stableLevelController.update(timestamp);
+                    break;
+                case 'townLevel':
+                    this.townLevelController.update(timestamp);
+                    break;
+                case 'nayelisHouseLevel':
+                    this.nayelisHouseLevelController.update(timestamp);
+                    break;
+                case 'newWeaponLevel':
+                    this.newWeaponLevelController.update(timestamp);
+                    break;
+                case 'levelComplete':
+                    this.levelCompleteController.update(timestamp);
+                    break;
+            }
+        }
         requestAnimationFrame((timestamp) => {
             this.draw(timestamp);
         });
@@ -214,6 +225,8 @@ class World {
         const off = Object.assign({ left: 0, right: 0, top: 0, bottom: 0 }, object.offset || {});
 
         ctx.save();
+
+        ctx.globalAlpha = object.opacity !== undefined ? object.opacity : 1;
 
         if (isFlipped) {
             // verschiebe Origin so dass lokales 0,0 an der Position (object.x + object.width, object.y) liegt
@@ -605,11 +618,12 @@ class World {
     }
 
     listenStartButton() {
-        document.getElementById('welcome-button').addEventListener('click', () => {
+        document.getElementById('start-button').addEventListener('click', () => {
             this.startGame();
             document.getElementById('overlay-startscreen').style.display = 'none';
             document.getElementById('overlay-start-initialisation').style.display = 'none';
             document.getElementById('canvas').style.display = 'block';
+            document.getElementById('move-button-box').classList.remove('d-none');
             // document.getElementById('background-music').play();
             // this.character.playSpeakSound();
             setFullscreen();

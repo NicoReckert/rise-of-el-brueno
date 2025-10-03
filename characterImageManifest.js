@@ -21,5 +21,9 @@ const characterImageManifest = {
     meditationImages: Array.from({ length: 10 }, (_, i) => `./assets/img/2_character_pepe/16/image_${i + 1}.webp`),
     meditationLoopImages: Array.from({ length: 4 }, (_, i) => `./assets/img/2_character_pepe/16/image_${7 + i}.webp`),
     newWeaponImages: Array.from({ length: 58 }, (_, i) => `./assets/img/2_character_pepe/17/image_${i + 1}.webp`),
-    newWeaponLoopImages: Array.from({ length: 22 }, (_, i) => `./assets/img/2_character_pepe/17/image_${31 + i}.webp`)
+    newWeaponLoopImages: Array.from({ length: 22 }, (_, i) => `./assets/img/2_character_pepe/17/image_${31 + i}.webp`),
+    standUpImages: Array.from({ length: 3 }, (_, i) => `./assets/img/2_character_pepe/18/image_${i + 1}.webp`),
+    walkDeterminedImages: Array.from({ length: 4 }, (_, i) => `./assets/img/2_character_pepe/19/image_${4 + i}.webp`),
+    standDeterminedImages: Array.from({ length: 8 }, (_, i) => `./assets/img/2_character_pepe/20/image_${i + 1}.webp`),
+    standDeterminedLoopImages: Array.from({ length: 2 }, (_, i) => `./assets/img/2_character_pepe/20/image_${7 + i}.webp`)
 };
