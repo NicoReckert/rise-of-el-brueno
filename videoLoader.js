@@ -6,7 +6,7 @@ function attachVideoSource(id, src) {
         // Autoplay-Policy freundlich
         video.muted = true;
         video.playsInline = true;
-        video.autoplay = true;
+        // video.autoplay = true;
         video.preload = "auto";
 
         // Keine doppelten Quellen

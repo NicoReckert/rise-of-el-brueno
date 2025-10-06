@@ -81,7 +81,7 @@ class FarmLevelController {
         this.sandstorm.update();
         this.eventManager.update();
         this.questManager.update();
-        this.eventManager.debug = true;
+        // this.eventManager.debug = true;
         this.renderAfterDark()
         if(this.questManager.step >= 20)this.windParticles.update();
     }

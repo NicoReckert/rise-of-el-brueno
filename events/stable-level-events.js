@@ -122,8 +122,8 @@ const stableEvents =
             condition: (setup) => !setup.world.farmLevelSetup.taskWindow.tasks[1].done,
             action: (setup) => {
                 setup.world.farmLevelSetup.taskWindow.markDone(1)
-                setup.world.farmLevelSetup.sounds.taskCompletedSound.currenttime = 0;
-                setup.world.farmLevelSetup.sounds.taskCompletedSound.play();
+                setup.world.farmLevelSetup.sounds.taskCompletedSound2.currenttime = 0;
+                setup.world.farmLevelSetup.sounds.taskCompletedSound2.play();
                 setup.popupTexts.push(new PopupText("Aufgabe erledigt!", setup.world.canvas.width / 2, 440));
             }
         },

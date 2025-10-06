@@ -57,6 +57,7 @@ class FarmLevelSetup {
             dragonRoarSound: new Audio('./assets/audio/dragon-roar-sound.opus'),
             newTaskSound: new Audio('./assets/audio/task-completed-sound.opus'),
             taskCompletedSound: new Audio('./assets/audio/task-completed-sound2.opus'),
+            taskCompletedSound2: new Audio('./assets/audio/task-completed-sound2.opus'),
             cowSound: new Audio('./assets/audio/cow-sound.opus'),
             cowSound2: new Audio('./assets/audio/cow-sound3.opus'),
             doorOpeningSound: new Audio('./assets/audio/door-opening.opus'),

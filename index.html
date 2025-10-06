@@ -10,21 +10,27 @@
     <link rel="stylesheet" href="./css/font.css">
 </head>
 
-<body onload="init()">
+<body id="body" onload="init()">
     <div class="all-content" id="all-content">
         <div class="canvas-button-box" id="canvas-button-box">
             <div class="move-button-box d-none" id="move-button-box">
                 <div class="left-button-box">
-                    <button class="move-button" id="left-button">⇐</button>
-                    <button class="move-button" id="right-button">⇒</button>
+                    <button class="move-button" id="left-button"><img class="mobile-button-icon"
+                            src="./assets/icons/left2.png" alt=""></button>
+                    <button class="move-button" id="right-button"><img class="mobile-button-icon"
+                            src="./assets/icons/right2.png" alt=""></button>
                 </div>
                 <div class="right-button-box">
-                    <button class="move-button" id="action-button">F</button>
+                    <button class="move-button" id="action-button"><img class="mobile-button-icon"
+                            src="./assets/icons/use.png" alt=""></button>
                     <div class="middle-button-box">
-                        <button class="move-button" id="jump-button">⇧</button>
-                        <button class="move-button" id="throw-button">↗</button>
+                        <button class="move-button" id="jump-button"><img class="mobile-button-icon"
+                                src="./assets/icons/jump.png" alt=""></button>
+                        <button class="move-button" id="throw-button"><img class="mobile-button-throw"
+                                src="./assets/icons/throw2.png" alt=""></button>
                     </div>
-                    <button class="fullscreen-button" onclick="setFullscreen()">🗖</button>
+                    <button class="move-button" id="attack-button"><img class="mobile-button-icon"
+                            src="./assets/icons/attack.png" alt=""></button>
                 </div>
             </div>
             <canvas id="canvas" width="1280" height="720"></canvas>
@@ -55,7 +61,7 @@
             <div class="dragon-img-box">
                 <img class="dragon" src="./assets/img/Roter Drache mit scharfen Zähnen.webp" alt="">
             </div>
-            <h1 id="h1" class="before-animation">RISE OF<br>EL BRÜNÖ</h1>
+            <h1 class="title" id="h1" class="before-animation">RISE OF<br>EL BRÜNÖ</h1>
         </div>
         <div class="img-div-box">
             <div class="img-box">
@@ -82,7 +88,10 @@
             <img class="dragon2 red-glow" src="./assets/img/black-dragon-8808269_1280.webp" alt="">
             <div class="startscreen">
                 <button class="start-button" id="start-button">Start</button>
-                <button class="start-button" id="menu-button">Menü</button>
+                <button class="start-button" id="info-button" onclick="openStoryOverlay()">Story</button>
+                <button class="start-button" id="info-button" onclick="openOverlay()">Characters</button>
+                <button class="start-button" id="menu-button">Steuerung</button>
+                <button class="start-button" id="menu-button">Credits</button>
             </div>
         </div>
     </div>
@@ -99,6 +108,51 @@
             Dein Browser unterstützt kein HTML5-Video.
         </video>
     </div>
+    <div class="overlay-info d-none" id="overlay-info">
+        <video muted autoplay loop playsinline preload="auto" disablePictureInPicture
+            controlsList="nodownload noremoteplayback" class="test-video">
+            <source src="assets/videos/test3/110586-689510310.mp4" type="video/mp4">
+            Dein Browser unterstützt kein HTML5-Video.
+        </video>
+        <div class="back-box">
+            <button class="start-button" onclick="closeOverlay()">Back</button>
+        </div>
+        <h1 class="title-characters">Characters</h1>
+        <div class="ornament-box">
+            <div class="ornament2"></div>
+        </div>
+        <div class="small-card-box" id="small-card-box">
+
+        </div>
+    </div>
+    <div class="overlay-big-card d-none" id="overlay-story">
+        <video muted autoplay loop playsinline preload="auto" disablePictureInPicture
+            controlsList="nodownload noremoteplayback" class="test-video">
+            <source src="assets/videos/test3/110586-689510310.mp4" type="video/mp4">
+            Dein Browser unterstützt kein HTML5-Video.
+        </video>
+        <div class="back-box">
+            <button class="start-button" onclick="closeStoryOverlay()">Back</button>
+        </div>
+        <h1 class="title-characters">Story</h1>
+        <div class="ornament story-ornament-left"></div>
+        <div class="ornament story-ornament-right"></div>
+        <div class="story-card-box" id="story-box">
+
+        </div>
+    </div>
+
+    <div class="overlay-big-card d-none" id="overlay-big-card">
+        <div class="ornament ornament-left"></div>
+        <div class="ornament ornament-right"></div>
+        <div class="big-card-box" id="big-card-box">
+
+        </div>
+        <div class="close-box">
+            <button class="start-button" onclick="closeBigBox()">Close</button>
+        </div>
+    </div>
+
 
     <script src="./classes/drawable-object.class.js"></script>
     <script src="./classes/movable-object.class.js"></script>

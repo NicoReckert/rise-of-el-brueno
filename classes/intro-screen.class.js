@@ -22,9 +22,14 @@ class IntroScreen {
 
         // Overlay über dem Bild (optional)
         this.bgOverlayAlpha = 0.20;
+
+        // Für Flacker-Effekt
+        this.time = 0;
     }
 
     update(deltaTime) {
+        this.time += deltaTime * 0.005; // langsame Animation
+
         if (this.phase === "fadeIn") {
             this.alpha += this.fadeInSpeed;
             if (this.alpha >= 1) {
@@ -64,45 +69,50 @@ class IntroScreen {
             ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
         }
 
-        // --- Text-Hintergrund-Kasten ---
-        const boxWidth = 420;
-        const boxHeight = 120;
-        const boxX = this.canvas.width / 2 - boxWidth / 2;
-        const boxY = this.canvas.height / 2 - boxHeight / 2;
-
+        // --- Hero-Text (Gold + Outline + Glow + Flackern) ---
         ctx.globalAlpha = this.alpha;
-        this._roundedRect(ctx, boxX, boxY, boxWidth, boxHeight, 20);
-        ctx.fillStyle = "rgba(0,0,0,0.45)";
-        ctx.fill();
-
-        // --- Text mit Glow ---
-        ctx.font = "bold 64px Nunito, Nunito Sans, system-ui, -apple-system, Segoe UI, Roboto, sans-serif";
+        ctx.font = "bold 90px 'UncialAntiqua', serif"; // große, edle Schrift
         ctx.textAlign = "center";
         ctx.textBaseline = "middle";
 
-        ctx.shadowColor = "rgba(0,0,0,0.7)";
-        ctx.shadowBlur = 10;
-        ctx.fillStyle = `rgba(255,255,255,${this.alpha})`;
+        // Farbverlauf (Gold)
+        const gradient = ctx.createLinearGradient(
+            0, this.canvas.height / 2 - 60,
+            0, this.canvas.height / 2 + 60
+        );
+        gradient.addColorStop(0, "#fff8dc"); // helles Gold oben
+        gradient.addColorStop(1, "#e6b800"); // kräftiges Gold unten
+        ctx.fillStyle = gradient;
+
+        // Outline (dunkelbraun)
+        ctx.lineWidth = 6;
+        ctx.strokeStyle = "rgba(30,15,0,0.9)";
+        ctx.strokeText(this.text, this.canvas.width / 2, this.canvas.height / 2);
+
+        // Glow-Effekt (flackert leicht mit der Zeit)
+        const glowStrength = 40 + Math.sin(this.time * 3) * 10; 
+        ctx.shadowColor = "rgba(255,200,50,0.9)";
+        ctx.shadowBlur = glowStrength;
+
+        // Füllen
         ctx.fillText(this.text, this.canvas.width / 2, this.canvas.height / 2);
 
-        ctx.shadowBlur = 0;
-        ctx.globalAlpha = 1.0;
+        // Highlight oben (metallischer Glanz)
+        const highlight = ctx.createLinearGradient(
+            0, this.canvas.height / 2 - 60,
+            0, this.canvas.height / 2
+        );
+        highlight.addColorStop(0, "rgba(255,255,255,0.8)");
+        highlight.addColorStop(1, "rgba(255,255,255,0)");
+        ctx.fillStyle = highlight;
+        ctx.shadowBlur = 0; // kein Glow beim Highlight
+        ctx.fillText(this.text, this.canvas.width / 2, this.canvas.height / 2);
 
+        // Reset
+        ctx.globalAlpha = 1.0;
         ctx.restore();
     }
-
-    _roundedRect(ctx, x, y, w, h, r) {
-        ctx.beginPath();
-        ctx.moveTo(x + r, y);
-        ctx.lineTo(x + w - r, y);
-        ctx.quadraticCurveTo(x + w, y, x + w, y + r);
-        ctx.lineTo(x + w, y + h - r);
-        ctx.quadraticCurveTo(x + w, y + h, x + w - r, y + h);
-        ctx.lineTo(x + r, y + h);
-        ctx.quadraticCurveTo(x, y + h, x, y + h - r);
-        ctx.lineTo(x, y + r);
-        ctx.quadraticCurveTo(x, y, x + r, y);
-        ctx.closePath();
-    }
 }
+
+
 
