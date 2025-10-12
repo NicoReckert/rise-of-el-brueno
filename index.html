@@ -26,12 +26,21 @@
                     <div class="middle-button-box">
                         <button class="move-button" id="jump-button"><img class="mobile-button-icon"
                                 src="./assets/icons/jump.png" alt=""></button>
+                        <button class="move-button" id="log-button"><img class="mobile-button-icon"
+                                src="./assets/icons/log.png" alt=""></button>
                         <button class="move-button" id="throw-button"><img class="mobile-button-throw"
                                 src="./assets/icons/throw2.png" alt=""></button>
                     </div>
                     <button class="move-button" id="attack-button"><img class="mobile-button-icon"
                             src="./assets/icons/attack.png" alt=""></button>
                 </div>
+            </div>
+            <div class="level-complete-button-box d-none" id="level-complete-button-box">
+                <div class="menu-repeat-button-box">
+                    <button class="start-button" id="menu-level-button">Menü</button>
+                    <button class="start-button" id="repeat-level-button">Wiederholen</button>
+                </div>
+                <button class="start-button next-level-button" id="next-level-button">Weiter</button>
             </div>
             <canvas id="canvas" width="1280" height="720"></canvas>
         </div>
@@ -90,8 +99,8 @@
                 <button class="start-button" id="start-button">Start</button>
                 <button class="start-button" id="info-button" onclick="openStoryOverlay()">Story</button>
                 <button class="start-button" id="info-button" onclick="openOverlay()">Characters</button>
-                <button class="start-button" id="menu-button">Steuerung</button>
-                <button class="start-button" id="menu-button">Credits</button>
+                <button class="start-button" id="menu-button" onclick="openControlsOverlay()">Steuerung</button>
+                <button class="start-button" id="menu-button" onclick="openCreditsOverlay()">Credits</button>
             </div>
         </div>
     </div>
@@ -142,6 +151,40 @@
         </div>
     </div>
 
+    <div class="overlay-big-card d-none" id="overlay-controls">
+        <video muted autoplay loop playsinline preload="auto" disablePictureInPicture
+            controlsList="nodownload noremoteplayback" class="test-video">
+            <source src="assets/videos/test3/110586-689510310.mp4" type="video/mp4">
+            Dein Browser unterstützt kein HTML5-Video.
+        </video>
+        <div class="back-box">
+            <button class="start-button" onclick="closeControlsOverlay()">Back</button>
+        </div>
+        <h1 class="title-characters">Steuerung</h1>
+        <div class="ornament story-ornament-left"></div>
+        <div class="ornament story-ornament-right"></div>
+        <div class="controls-box" id="controls-box">
+
+        </div>
+    </div>
+
+    <div class="overlay-info d-none" id="overlay-credits">
+        <video muted autoplay loop playsinline preload="auto" disablePictureInPicture
+            controlsList="nodownload noremoteplayback" class="test-video">
+            <source src="assets/videos/test3/110586-689510310.mp4" type="video/mp4">
+            Dein Browser unterstützt kein HTML5-Video.
+        </video>
+        <div class="back-box">
+            <button class="start-button" onclick="closeCreditsOverlay()">Back</button>
+        </div>
+        <h1 class="title-characters">Credits</h1>
+        <div class="ornament story-ornament-left"></div>
+        <div class="ornament story-ornament-right"></div>
+        <div class="story-card-box" id="credits-box">
+
+        </div>
+    </div>
+
     <div class="overlay-big-card d-none" id="overlay-big-card">
         <div class="ornament ornament-left"></div>
         <div class="ornament ornament-right"></div>
@@ -167,8 +210,6 @@
     <script src="./classes/bottle-bar.class.js"></script>
     <script src="./classes/character.class.js"></script>
     <script src="./classes/not-movable-npc.js"></script>
-    <script src="./classes/chicken-basket.class.js"></script>
-    <script src="./classes/chicken-in-basket.class.js"></script>
     <script src="./classes/coin.class.js"></script>
     <script src="./classes/bottle.class.js"></script>
     <script src="./classes/speech-bubble.class.js"></script>
@@ -200,25 +241,31 @@
     <script src="./classes/event-manager.class.js"></script>
     <script src="./classes/quest-manager.class.js"></script>
     <script src="./classes/dialog-manager.class.js"></script>
-    <script src="./classes/cutscene-manager.class.js"></script>
     <script src="./classes/sandstorm-effect.class.js"></script>
     <script src="./classes/wind-particle.class.js"></script>
-    <script src="./levels/town-level.js"></script>
-    <script src="./levels/farm-level.js"></script>
-    <script src="./levels/stable-level.js"></script>
-    <script src="./levels/nayelis-house-level.js"></script>
-    <script src="./events/farm-level-events.js"></script>
-    <script src="./events/stable-level-events.js"></script>
-    <script src="./events/town-level-events.js"></script>
-    <script src="./events/nayelis-house-level-events.js"></script>
-    <script src="./events/level-complete-events.js"></script>
     <script src="./characterImageManifest.js"></script>
     <script src="./npcImageManifest.js"></script>
     <script src="./imageLoader.js"></script>
     <script src="./videoManifest.js"></script>
     <script src="./videoLoader.js"></script>
-    <script src="./script.js"></script>
+    <script src="audioManifest.js"></script>
+    <script src="audioLoader.js"></script>
     <script src="./js/game.js"></script>
+    <script src="./levels/town-level.js"></script>
+    <script src="./levels/farm-level.js"></script>
+    <script src="./levels/stable-level.js"></script>
+    <script src="./levels/nayelis-house-level.js"></script>
+    <script src="./events/farm-helper.js"></script>
+    <script src="./events/farm-events-part1.js"></script>
+    <script src="./events/farm-events-part2.js"></script>
+    <script src="./events/farm-events-part3.js"></script>
+    <script src="./events/farm-events-part4.js"></script>
+    <script src="./events/farm-level-events.js"></script>
+    <script src="./events/stable-level-events.js"></script>
+    <script src="./events/town-level-events.js"></script>
+    <script src="./events/nayelis-house-level-events.js"></script>
+    <script src="./events/level-complete-events.js"></script>
+    <script src="./script.js"></script>
 </body>
 
 </html>

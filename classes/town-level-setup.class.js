@@ -3,25 +3,30 @@ class TownLevelSetup {
         this.world = world;
         this.townLevel = townLevel;
         this.npcImages = this.world.npcImages;
+        this.allAudios = this.world.allAudios;
         this.townEvents = townEvents;
         this.world.camera_x = 0;
-        this.statusBar = new LifeEnergyCharacterBar();
-        this.statusBar2 = new LifeEnergyBossBar();
-        this.coinBar = new CoinBar();
-        this.bottleBar = new BottleBar();
+        this.statusBar = new LifeEnergyCharacterBar(this.npcImages);
+        this.statusBar2 = new LifeEnergyBossBar(this.npcImages);
+        this.coinBar = new CoinBar(this.npcImages);
+        this.bottleBar = new BottleBar(this.npcImages);
         this.throwableObjects = [];
-        this.chickenBasket = new ChickenBasket(this.world.character.x + 38, this.world.character.y + 228);
-        this.chickenInBasket = new ChickenInBasket(this.chickenBasket.x, this.chickenBasket.y - 20);
-        // this.npc1 = new Npc(1750, 130, 130, 300);
-        // this.npc2 = new Npc(2500, 170, 180, 250);
-        this.npcs = {
-            soul: new NotMovableNpc(this.npcImages, 'soul', 200, 200, this.townLevel.endboss.x + (this.townLevel.endboss.width / 2), this.townLevel.endboss.y + 100)
-        }
+        const endboss = new Endboss(this.npcImages);
+        const soul = new NotMovableNpc(
+            this.npcImages,
+            'soul',
+            200,
+            200,
+            endboss.x + (endboss.width / 2),
+            endboss.y + 100
+        );
+
+        this.npcs = { endboss, soul };
         this.sounds = {
-            notificationSound: new Audio('./assets/audio/notification-sound.opus'),
-            taskCompletedSound: new Audio('./assets/audio/task-completed-sound2.opus'),
-            soulMusic: new Audio('./assets/audio/soul-music.opus'),
-            soulSpeakSound: new Audio('./assets/audio/soul-speak-sound.opus')
+            notificationSound: this.allAudios.notificationSound,
+            taskCompletedSound: this.allAudios.taskCompletedSound,
+            soulMusic: this.allAudios.soulMusic,
+            soulSpeakSound: this.allAudios.soulSpeakSound
         };
         this.sounds.soulMusic.volume = 0;
         this.speechBubbles = {
@@ -41,7 +46,7 @@ class TownLevelSetup {
         this.endbossAlarmSound;
         this.endbossMusicIsPlayed = false;
         this.endbossAlarmSoundIsPlayed = false;
-        this.endbossAttack = new EndbossAttack();
+        this.endbossAttack = new EndbossAttack(this.npcImages);
         this.backgroundMusic = document.getElementById('background-music');
         this.backgroundMusic.volume = 0.6;
         this.jetPackMusic = document.getElementById('jet-pack-music');

@@ -1,8 +1,7 @@
 class LevelCompleteController {
-    constructor(setup, farmLevelSetup) {
+    constructor(setup) {
         this.setup = setup;
         this.world = setup.world;
-        this.farmLevelSetup = farmLevelSetup;
         this.ctx = this.world.ctx;
         this.canvas = this.world.canvas;
         this.addObject = this.world.addObject.bind(this.world);
@@ -20,7 +19,11 @@ class LevelCompleteController {
 
         this.heroTextAlpha = 0;
         this.heroTextScale = 0.5;
-        this.windParticles = new WindParticleEffect(this.canvas.width * 9, this.canvas.height, 1000);
+
+        this.charCanvas = document.createElement("canvas");
+        this.charCanvas.width = this.setup.npcs.levelComplete.width;
+        this.charCanvas.height = this.setup.npcs.levelComplete.height;
+        this.charCtx = this.charCanvas.getContext("2d");
     }
 
     update(timestamp) {
@@ -32,7 +35,6 @@ class LevelCompleteController {
         this.eventManager.update();
         // this.eventManager.debug = true;
         this.animateHeroText();
-        this.windParticles.update();
     }
 
     updateCamera() {
@@ -96,20 +98,18 @@ class LevelCompleteController {
 
 
     renderNPCs() {
+        this.charCtx.clearRect(0, 0, this.charCanvas.width, this.charCanvas.height);
         this.ctx.save();
         this.ctx.translate(-this.renderCameraX, 0);
 
         // === 1. Offscreen-Canvas für den Charakter ===
-        const charCanvas = document.createElement("canvas");
-        charCanvas.width = this.setup.npcs.levelComplete.width;
-        charCanvas.height = this.setup.npcs.levelComplete.height;
-        const charCtx = charCanvas.getContext("2d");
+       
 
         // Charakter normal ins Offscreen zeichnen
-        this.addToWorld({ ...this.setup.npcs.levelComplete, x: 0, y: 0 }, charCtx);
+        this.addToWorld({ ...this.setup.npcs.levelComplete, x: 0, y: 0 }, this.charCtx);
 
         // === 2. Eine Maske über das gesamte Bild legen ===
-        const mask = charCtx.createLinearGradient(0, 0, charCanvas.width, 0);
+        const mask = this.charCtx.createLinearGradient(0, 0, this.charCanvas.width, 0);
 
         const fs = 0.1; // 10% links/rechts Fade
         mask.addColorStop(0.0, "rgba(0,0,0,0)");
@@ -118,25 +118,25 @@ class LevelCompleteController {
         mask.addColorStop(1.0, "rgba(0,0,0,0)");
 
         // Maske auftragen
-        charCtx.globalCompositeOperation = "destination-in";
-        charCtx.fillStyle = mask;
-        charCtx.fillRect(0, 0, charCanvas.width, charCanvas.height);
+        this.charCtx.globalCompositeOperation = "destination-in";
+        this.charCtx.fillStyle = mask;
+        this.charCtx.fillRect(0, 0, this.charCanvas.width, this.charCanvas.height);
 
         // Extra: Fade von oben
-        const topMask = charCtx.createLinearGradient(0, 0, 0, charCanvas.height);
+        const topMask = this.charCtx.createLinearGradient(0, 0, 0, this.charCanvas.height);
         topMask.addColorStop(0.0, "rgba(0,0,0,0)");
         topMask.addColorStop(0.15, "rgba(0,0,0,1)");
         topMask.addColorStop(1.0, "rgba(0,0,0,1)");
 
-        charCtx.fillStyle = topMask;
-        charCtx.fillRect(0, 0, charCanvas.width, charCanvas.height);
+        this.charCtx.fillStyle = topMask;
+        this.charCtx.fillRect(0, 0, this.charCanvas.width, this.charCanvas.height);
 
-        charCtx.globalCompositeOperation = "source-over";
+        this.charCtx.globalCompositeOperation = "source-over";
 
         // === 3. Charakter mit Glow ins Hauptcanvas bringen ===
         this.ctx.shadowColor = "rgba(0, 200, 255, 0.9)";
         this.ctx.shadowBlur = 40;
-        this.ctx.drawImage(charCanvas, this.setup.npcs.levelComplete.x, this.setup.npcs.levelComplete.y);
+        this.ctx.drawImage(this.charCanvas, this.setup.npcs.levelComplete.x, this.setup.npcs.levelComplete.y);
 
         this.ctx.shadowBlur = 0;
 

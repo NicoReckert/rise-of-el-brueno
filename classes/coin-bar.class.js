@@ -1,14 +1,16 @@
+/**
+ * Represents a status bar that displays progress or collected items.
+ * @extends StatusBar
+ */
 class CoinBar extends StatusBar {
-    constructor() {
+    /**
+     * Creates a new status bar instance.
+     * @param {Object} npcImages - Image data containing status bar graphics.
+     */
+    constructor(npcImages) {
         super();
-        this.statusImages = [
-            './assets/img/7_statusbars/1_statusbar/1_statusbar_coin/green/0.webp',
-            './assets/img/7_statusbars/1_statusbar/1_statusbar_coin/green/20.webp',
-            './assets/img/7_statusbars/1_statusbar/1_statusbar_coin/green/40.webp',
-            './assets/img/7_statusbars/1_statusbar/1_statusbar_coin/green/60.webp',
-            './assets/img/7_statusbars/1_statusbar/1_statusbar_coin/green/80.webp',
-            './assets/img/7_statusbars/1_statusbar/1_statusbar_coin/green/100.webp',
-        ]
+        this.npcImages = npcImages;
+        this.statusImages = this.npcImages.coinBar_status || [];
         this.setPercentage(0);
         this.y = 50;
     }

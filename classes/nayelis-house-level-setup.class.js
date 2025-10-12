@@ -1,7 +1,8 @@
 class NayelisHouseLevelSetup {
     constructor(world) {
         this.world = world;
-        this.npcImages = this.world.npcImages
+        this.npcImages = this.world.npcImages;
+        this.allAudios = this.world.allAudios;
         this.nayelisHouseLevel = nayelisHouseLevel;
         this.nayelisHouseEvents = nayelisHouseEvents;
         this.isNotificationPlay = false;
@@ -14,13 +15,16 @@ class NayelisHouseLevelSetup {
             // bubbleStable2: new SpeechBubble("Yordi streicheln {F} drücken", 'canvas', 'speech')
         };
         this.sounds = {
-            notificationSound: new Audio('./assets/audio/notification-sound.opus'),
-            nayelisMusic: new Audio('./assets/audio/nayelis-music.mp3'),
-            nayelisSpeakSound: new Audio('./assets/audio/nayelis-speak-sound.mp3')
+            notificationSound: this.allAudios.notificationSound,
+            nayelisMusic: this.allAudios.nayelisMusic,
+            nayelisSpeakSound: this.allAudios.nayelisSpeakSound
         };
 
         this.video = document.createElement('video');
         this.video.src = './assets/videos/test/190522-888122666_medium.mp4';
-        document.body.appendChild(this.video);
+        this.video.preload = 'auto';
+        this.video.muted = true;
+        this.video.loop = true;
+        // document.body.appendChild(this.video);
     }
 }

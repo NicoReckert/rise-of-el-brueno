@@ -1,12 +1,13 @@
 class StableLevelSetup {
     constructor(world) {
         this.world = world;
-        this.npcImages = this.world.npcImages
+        this.npcImages = this.world.npcImages;
+        this.allAudios = this.world.allAudios;
         this.stableLevel = stableLevel;
         this.isNotificationPlay = false;
         this.popupTexts = [];
         this.stableEvents = stableEvents;
-        this.statusBar = new LifeEnergyCharacterBar();
+        this.statusBar = new LifeEnergyCharacterBar(this.npcImages);
 
 
         this.npcs = {
@@ -16,17 +17,18 @@ class StableLevelSetup {
         };
         this.npcs.chick.isFlipped = false;
         this.speechBubbles = {
-            bubbleStable1: new SpeechBubble("Den Hühnerstall verlassen? {F} drücken!", this.world.character, 'info'),
-            bubbleStable2: new SpeechBubble("Yordi streicheln {F} drücken", 'canvas', 'speech')
+            bubbleStable1: new SpeechBubble("Den Hühnerstall verlassen? {F} drücken!", this.world.character, 'info', this.allAudios),
+            bubbleStable2: new SpeechBubble("Yordi streicheln {F} drücken", 'canvas', 'speech', this.allAudios)
         };
         this.sounds = {
-            chickSound: new Audio('./assets/audio/chick-sound2.opus'),
-            chickenSound: new Audio('./assets/audio/chicken-sound.opus'),
-            notificationSound: new Audio('./assets/audio/notification-sound.opus'),
+            chickSound: this.allAudios.chickSound,
+            chickenSound: this.allAudios.chickenSound,
+            notificationSound: this.allAudios.notificationSound
         };
 
         this.video = document.createElement('video');
         this.video.src = './assets/videos/memory.mp4';
-        document.body.appendChild(this.video);
+        this.video.preload = 'auto';
+        // document.body.appendChild(this.video);
     }
 }

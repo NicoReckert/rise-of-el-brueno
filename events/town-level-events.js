@@ -3,8 +3,8 @@ const townEvents =
         {
             type: 'quest',
             action: (setup) => {
-                setup.backgroundMusic.play();
                 setup.backgroundMusic.loop = true;
+                fadeInAudio(setup.backgroundMusic, 2000, 0.6);
                 setup.world.character.x = 100;
                 setup.world.character.level_start_x = 0;
                 setup.world.farmLevelSetup.farmLevel.level_end_x = 25000;

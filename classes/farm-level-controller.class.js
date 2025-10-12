@@ -46,6 +46,7 @@ class FarmLevelController {
     }
 
     update(timestamp) {
+        console.log(this.world.camera_x)
         this.start();
         this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
         // this.timerManager.update();
@@ -83,7 +84,7 @@ class FarmLevelController {
         this.questManager.update();
         // this.eventManager.debug = true;
         this.renderAfterDark()
-        if(this.questManager.step >= 20)this.windParticles.update();
+        if (this.questManager.step >= 20) this.windParticles.update();
     }
 
     start() {
@@ -202,7 +203,7 @@ class FarmLevelController {
 
         this.ctx.restore();
         // this.sandstorm.draw(this.ctx, this.renderCameraX);
-        if(this.questManager.step >= 20) this.windParticles.draw(this.ctx, this.renderCameraX);
+        if (this.questManager.step >= 20) this.windParticles.draw(this.ctx, this.renderCameraX);
     }
 
     renderAfterDark() {

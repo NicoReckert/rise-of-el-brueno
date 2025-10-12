@@ -3,6 +3,7 @@ class FarmLevelSetup {
         this.world = world;
         this.farmLevel = farmLevel;
         this.npcImages = this.world.npcImages;
+        this.allAudios = this.world.allAudios;
         this.farmEvents = farmEvents;
         this.npcs = {
             cow: new NotMovableNpc(this.npcImages, 'cow', 200, 200, 500, 495), //255 Y
@@ -42,42 +43,42 @@ class FarmLevelSetup {
         this.npcs.bird.updateState('idle', 1000 / 7);
         this.npcs.drohne.updateState('idle', 1000 / 7);
         this.world.camera_x = 800;
-        this.statusBar = new LifeEnergyCharacterBar();
+        this.statusBar = new LifeEnergyCharacterBar(this.npcImages);
         this.sounds = {
-            farmMusic: new Audio('./assets/audio/farm-music.opus'),
-            notificationSound: new Audio('./assets/audio/notification-sound.opus'),
-            nightMusic: new Audio('./assets/audio/night-music.opus'),
-            drohneSound: new Audio('./assets/audio/drohne-sound.opus'),
-            drohneHypnoSound: new Audio('./assets/audio/drohne-sound2.opus'),
-            eveningSound: new Audio('./assets/audio/evening-sound.opus'),
-            yawningSound: new Audio('./assets/audio/yawning-sound.opus'),
-            snoringSound: new Audio('./assets/audio/snoring-sound.opus'),
-            earthquakeSound: new Audio('./assets/audio/earthquake-sound.opus'),
-            sadMusic: new Audio('./assets/audio/sad-music.opus'),
-            dragonRoarSound: new Audio('./assets/audio/dragon-roar-sound.opus'),
-            newTaskSound: new Audio('./assets/audio/task-completed-sound.opus'),
-            taskCompletedSound: new Audio('./assets/audio/task-completed-sound2.opus'),
-            taskCompletedSound2: new Audio('./assets/audio/task-completed-sound2.opus'),
-            cowSound: new Audio('./assets/audio/cow-sound.opus'),
-            cowSound2: new Audio('./assets/audio/cow-sound3.opus'),
-            doorOpeningSound: new Audio('./assets/audio/door-opening.opus'),
-            doorClosingSound: new Audio('./assets/audio/door-closing.opus'),
-            happyTogetherMusic: new Audio('./assets/audio/happy-together-music.opus'),
-            determinedMusic: new Audio('./assets/audio/determined-music.mp3'),
-            windSound: new Audio('./assets/audio/wind-sound.mp3')
+            farmMusic: this.allAudios.farmMusic,
+            notificationSound: this.allAudios.notificationSound,
+            nightMusic: this.allAudios.nightMusic,
+            drohneSound: this.allAudios.drohneSound,
+            drohneHypnoSound: this.allAudios.drohneHypnoSound,
+            eveningSound: this.allAudios.eveningSound,
+            yawningSound: this.allAudios.yawningSound,
+            snoringSound: this.allAudios.snoringSound,
+            earthquakeSound: this.allAudios.earthquakeSound,
+            sadMusic: this.allAudios.sadMusic,
+            dragonRoarSound: this.allAudios.dragonRoarSound,
+            newTaskSound: this.allAudios.newTaskSound,
+            taskCompletedSound: this.allAudios.taskCompletedSound,
+            taskCompletedSound2: this.allAudios.taskCompletedSound,
+            cowSound: this.allAudios.cowSound,
+            cowSound2: this.allAudios.cowSound2,
+            doorOpeningSound: this.allAudios.doorOpeningSound,
+            doorClosingSound: this.allAudios.doorClosingSound,
+            happyTogetherMusic: this.allAudios.happyTogetherMusic,
+            determinedMusic: this.allAudios.determinedMusic,
+            windSound: this.allAudios.windSound
         };
         this.speechBubbles = {
-            bubbleFarm: new SpeechBubble("In den Hühnerstall gehen? {F} drücken!", this.world.character, 'info'),
-            bubbleFarm2: new SpeechBubble("Ins Haus gehen? {F} drücken!", this.world.character, 'speech'),
-            bubbleFarm3: new SpeechBubble("Was ist hier passiert ???", this.world.character, 'speech'),
-            bubbleFarm4: new SpeechBubble("Freunde wo seit ihr ???", this.world.character, 'speech'),
-            bubbleFarm5: new SpeechBubble("Neeeeiiiinnnnn. *Weinen*", this.world.character, 'speech'),
-            bubbleFarm6: new SpeechBubble("Ich werde euch finden !!!", this.world.character, 'speech'),
-            bubbleFarm7: new SpeechBubble("Und wenn ich die ganze Welt nach euch absuchen muss !!!", this.world.character, 'speech'),
-            bubbleFarm8: new SpeechBubble("Haltet durch !!!", this.world.character, 'speech'),
-            bubbleFarm9: new SpeechBubble("Pollito", this.world.character, 'speech'),
-            bubbleFarm10: new SpeechBubble("Juanito", this.world.character, 'speech'),
-            bubbleFarm11: new SpeechBubble("Lola", this.world.character, 'speech'),
+            bubbleFarm: new SpeechBubble("In den Hühnerstall gehen? {F} drücken!", this.world.character, 'info', this.allAudios),
+            bubbleFarm2: new SpeechBubble("Ins Haus gehen? {F} drücken!", this.world.character, 'speech', this.allAudios),
+            bubbleFarm3: new SpeechBubble("Was ist hier passiert ???", this.world.character, 'speech', this.allAudios),
+            bubbleFarm4: new SpeechBubble("Freunde wo seit ihr ???", this.world.character, 'speech', this.allAudios),
+            bubbleFarm5: new SpeechBubble("Neeeeiiiinnnnn. *Weinen*", this.world.character, 'speech', this.allAudios),
+            bubbleFarm6: new SpeechBubble("Ich werde euch finden !!!", this.world.character, 'speech', this.allAudios),
+            bubbleFarm7: new SpeechBubble("Und wenn ich die ganze Welt nach euch absuchen muss !!!", this.world.character, 'speech', this.allAudios),
+            bubbleFarm8: new SpeechBubble("Haltet durch !!!", this.world.character, 'speech', this.allAudios),
+            bubbleFarm9: new SpeechBubble("Pollito", this.world.character, 'speech', this.allAudios),
+            bubbleFarm10: new SpeechBubble("Juanito", this.world.character, 'speech', this.allAudios),
+            bubbleFarm11: new SpeechBubble("Lola", this.world.character, 'speech', this.allAudios),
         };
         this.sounds.farmMusic.loop = true;
         this.sounds.farmMusic.volume = 0.6;

@@ -68,5 +68,14 @@ class Keyboard {
         document.getElementById('action-button').addEventListener('touchstart', () => {
             this.F = true;
         });
+        document.getElementById('action-button').addEventListener('touchend', () => {
+            this.F = false;
+        });
+        document.getElementById('log-button').addEventListener('touchstart', () => {
+            this.T = true;
+        });
+        document.getElementById('log-button').addEventListener('touchend', () => {
+            this.T = false;
+        });
     }
 }

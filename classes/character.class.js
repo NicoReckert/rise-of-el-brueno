@@ -1,484 +1,664 @@
+/**
+ * Represents a playable or controllable character with movement, animations, and state handling.
+ * Handles transitions, emotions, combat, and environmental interactions.
+ * @extends MovableObject
+ */
 class Character extends MovableObject {
-    intervalStand = null;
-    standCount = 0;
-    intervalWalk = null;
-    walkCount = 0;
-    jumpCount = 0;
-    deadCount = 0;
-    hurtCount = 0;
-    intervalMoveLeft = null;
-    intervalMoveRight = null;
-    intervalMoveUp = null;
-    intervalJump = null;
-    intervalDead = null;
-    intervalHurt = null;
-    isFlipped = false;
-    isMoving = false;
-    isMovingLeft = false;
-    isMovingRight = false;
-    isMeditation = false;
-    isDead = false;
-    isHurt = false;
-    isJumping;
-    isThrowing = false;
-    isGameCharacter = true;
-    throwableBottels = 0;
-    isCaress = false;
-    isWalk = false;
-    isNewWeapon = false;
-    isWalkDetermined = false;
+    VOIDLESS_ANIMS = new Set([
+        'kneel-and-cry', 'stand-up-and-look-determined', 'cry', 'look-determined',
+        'look-determined-and-stand-up', 'strong-determined', 'caress', 'caress-loop',
+        'sit-down-and-play-guitar', 'play-guitar-and-sing', 'play-guitar',
+        'light-a-campfire', 'meditation', 'meditation-loop', 'stand-up',
+        'walk-determined', 'stand-determined', 'stand-determined-loop'
+    ]);
+    TRANSITIONABLE_ANIMS = new Set([
+        'kneel-and-cry', 'stand-up-and-look-determined', 'look-determined-and-stand-up',
+        'caress', 'sit-down-and-play-guitar', 'light-a-campfire', 'attack',
+        'meditation', 'new-weapon', 'stand-up', 'stand-determined'
+    ]);
 
+    /**
+    * Creates a character instance with animation and movement settings.
+    * @param {Object} characterImages - Image data for character animations.
+    */
     constructor(characterImages) {
         super();
         this.characterImages = characterImages;
-        super.loadImage('./assets/img/2_character_pepe/1_idle/idle/I-1.webp');
-        this.height = 300; // 183 für voidless.dev sprite - 300 * 0.61
-        this.width = 130; // 158 für voidless.dev sprite - 130 * 1.216
-        this.x = 1000;
-        this.y = 370; // 487 für voidless.dev sprite - 370 * 1.9
-        // this.startMainLoop()
-        this.offset.top = 130;
-        this.offset.left = 20;
-        this.offset.right = 40;
-        this.offset.bottom = 15;
         this.speedX = 10;
-        this.isJumping = false;
-        this.isLanding = false;
-        this.isKneelAndCry = false;
-        this.isStandUpAndLookDetermined = false;
-        this.isLookDeterminedAndStandUp = false;
-        this.isSitDownAndPlayGuitar = false;
-        this.isPlayGuitarAndSing = false;
-        this.isPlayGuitar = false;
-        this.isLightACampfire = false;
-        this.isAttack = false;
-        this.isStandUp = false;
-        this.isStandDetermined = false;
-        this.lastFrameTime = 0;        // Timestamp des letzten Framewechsels
+        this.lastFrameTime = 0;
         this.currentAnimation = 'idle';
-        this.frameInterval = 1000 / 2.5; // Standard: 5 FPS
+        this.frameInterval = 1000 / 2.5;
         this.frameIndex = 0;
         this.level_start_x = 440;
         this.yNormal = 370;
         this.yVoidless = 487;
-
-
-
-
-        // this.preloadIdleAndWalkImages();
-        // this.preloadJumpAndDeadImages();
-        // this.preloadHurtAndJetpackImages();
-        // this.preloadCaressAndCaress2Images();
-        // this.preloadKneelDownAndCryImages();
-        // this.preloadStandUpAndLookDeterminedImages();
-        // this.preloadLookDeterminedStandUpAndStrongDeterminedImages();
-        // this.preloadPlayGuitarImages();
         this.init();
+        this.movementSpeed;
     }
 
+    /**
+    * Initializes character properties, images, and state configurations.
+    */
     init() {
+        this.setSizeAndPosition();
+        this.setOffset();
+        this.initMovementImages();
+        this.initEmotionImages();
+        this.initActionImages();
+        this.initSpecialImages();
+        this.initBasicStates();
+        this.initMovementStates();
+        this.initActionStates();
+        this.initEmotionStates();
+        this.initInteractionStates();
+    }
+
+    /**
+    * Sets the character's size and initial position on the screen.
+    */
+    setSizeAndPosition() {
+        this.height = 300; // 183 für voidless.dev sprite - 300 * 0.61
+        this.width = 130; // 158 für voidless.dev sprite - 130 * 1.216
+        this.x = 1000;
+        this.y = 370; // 487 für voidless.dev sprite - 370 * 1.9
+    }
+
+    /**
+    * Sets the character's collision or interaction offset values.
+    */
+    setOffset() {
+        this.offset.top = 130;
+        this.offset.left = 20;
+        this.offset.right = 40;
+        this.offset.bottom = 15;
+    }
+
+    /**
+    * Initializes character movement-related image sets.
+    */
+    initMovementImages() {
         this.idleImages = this.characterImages.idleImages || [];
         this.walkImages = this.characterImages.walkImages || [];
         this.jumpImages = this.characterImages.jumpImages || [];
-        this.deadImages = this.characterImages.deadImages || [];
+        this.walkDeterminedImages = this.characterImages.walkDeterminedImages || [];
+        this.standUpImages = this.characterImages.standUpImages || [];
+    }
+
+    /**
+    * Initializes character emotion-related image sets.
+    */
+    initEmotionImages() {
         this.hurtImages = this.characterImages.hurtImages || [];
-        this.jetPackImages = this.characterImages.jetPackImages || [];
-        this.caressImages = this.characterImages.caressImages || [];
-        this.caressImages2 = this.characterImages.caressImages2 || [];
+        this.deadImages = this.characterImages.deadImages || [];
         this.kneelDownAndCryImages = this.characterImages.kneelDownAndCryImages || [];
         this.cryImages = this.characterImages.cryImages || [];
-        this.standUpAndLookDeterminedImages = this.characterImages.standUpAndLookDeterminedImages || [];
         this.lookDeterminedImages = this.characterImages.lookDeterminedImages || [];
         this.lookDeterminedStandUpImages = this.characterImages.lookDeterminedStandUpImages || [];
         this.strongDeterminedImages = this.characterImages.strongDeterminedImages || [];
-        this.sitDownAndPlayGuitarImages = this.characterImages.sitDownAndPlayGuitarImages || [];
-        this.playGuitarAndSingImages = this.characterImages.playGuitarAndSingImages || [];
-        this.playGuitarImages = this.characterImages.playGuitarImages || [];
-        this.lightACampfireImages = this.characterImages.lightACampfireImages || [];
+        this.standDeterminedImages = this.characterImages.standDeterminedImages || [];
+        this.standDeterminedLoopImages = this.characterImages.standDeterminedLoopImages || [];
+    }
+
+    /**
+    * Initializes character action-related image sets.
+    */
+    initActionImages() {
         this.attackImages = this.characterImages.attackImages || [];
+        this.jetPackImages = this.characterImages.jetPackImages || [];
         this.meditationImages = this.characterImages.meditationImages || [];
         this.meditationLoopImages = this.characterImages.meditationLoopImages || [];
         this.newWeaponImages = this.characterImages.newWeaponImages || [];
         this.newWeaponLoopImages = this.characterImages.newWeaponLoopImages || [];
-        this.standUpImages = this.characterImages.standUpImages || [];
-        this.walkDeterminedImages = this.characterImages.walkDeterminedImages || [];
-        this.standDeterminedImages = this.characterImages.standDeterminedImages || [];
-        this.standDeterminedLoopImages = this.characterImages.standDeterminedLoopImages || [];
-
     }
 
-    preloadIdleAndWalkImages() {
-        this.idleImages = Array.from({ length: 10 }, (_, i) => {
-            const img = new Image();
-            img.src = `./assets/img/2_character_pepe/1_idle/idle/I-${i + 1}.webp`;
-            return img;
-        });
-        this.walkImages = Array.from({ length: 6 }, (_, i) => {
-            const img = new Image();
-            img.src = `./assets/img/2_character_pepe/2_walk/W-2${i + 1}.webp`;
-            return img;
-        });
+    /**
+    * Initializes character special interaction and event-related image sets.
+    */
+    initSpecialImages() {
+        this.caressImages = this.characterImages.caressImages || [];
+        this.caressLoopImages = this.characterImages.caressLoopImages || [];
+        this.sitDownAndPlayGuitarImages = this.characterImages.sitDownAndPlayGuitarImages || [];
+        this.playGuitarAndSingImages = this.characterImages.playGuitarAndSingImages || [];
+        this.playGuitarImages = this.characterImages.playGuitarImages || [];
+        this.lightACampfireImages = this.characterImages.lightACampfireImages || [];
+        this.standUpAndLookDeterminedImages = this.characterImages.standUpAndLookDeterminedImages || [];
     }
 
-    preloadJumpAndDeadImages() {
-        this.jumpImages = Array.from({ length: 9 }, (_, i) => {
-            const img = new Image();
-            img.src = `./assets/img/2_character_pepe/3_jump/J-3${i + 1}.webp`;
-            return img;
-        });
-        this.deadImages = Array.from({ length: 7 }, (_, i) => {
-            const img = new Image();
-            img.src = `./assets/img/2_character_pepe/5_dead/D-5${i + 1}.webp`;
-            return img;
-        });
+    /**
+    * Initializes the character's basic state properties.
+    */
+    initBasicStates() {
+        this.isFlipped = false;
+        this.isMoving = false;
+        this.isGameCharacter = true;
+        this.throwableBottels = 0;
     }
 
-    preloadHurtAndJetpackImages() {
-        this.hurtImages = Array.from({ length: 3 }, (_, i) => {
-            const img = new Image();
-            img.src = `./assets/img/2_character_pepe/4_hurt/H-4${i + 1}.webp`;
-            return img;
-        });
-        this.jetPackImages = Array.from({ length: 1 }, _ => {
-            const img = new Image();
-            img.src = `./assets/img/Pepe_Jetpack.webp`;
-            return img;
-        });
+    /**
+    * Initializes the character's movement state flags.
+    */
+    initMovementStates() {
+        this.isMovingLeft = false;
+        this.isMovingRight = false;
+        this.isWalk = false;
+        this.isWalkDetermined = false;
+        this.isJumping = false;
+        this.isLanding = false;
     }
 
-    preloadCaressAndCaress2Images() {
-        this.caressImages = Array.from({ length: 8 }, (_, i) => {
-            const img = new Image();
-            img.src = `./assets/img/2_character_pepe/6_caress/image_${i + 1}.webp`;
-            return img;
-        });
-        this.caressImages2 = Array.from({ length: 3 }, (_, i) => {
-            const img = new Image();
-            img.src = `./assets/img/2_character_pepe/6_caress/image_${6 + i}.webp`;
-            return img;
-        });
+    /**
+    * Initializes the character's action state flags.
+    */
+    initActionStates() {
+        this.isAttack = false;
+        this.isStandUp = false;
+        this.isStandDetermined = false;
+        this.isNewWeapon = false;
+        this.isDead = false;
+        this.isHurt = false;
+        this.isThrowing = false;
     }
 
-    preloadKneelDownAndCryImages() {
-        this.kneelDownAndCryImages = Array.from({ length: 8 }, (_, i) => {
-            const img = new Image();
-            img.src = `./assets/img/2_character_pepe/7_kneel-down-and-cry/image_${i + 1}.webp`;
-            return img;
-        });
-        this.cryImages = Array.from({ length: 3 }, (_, i) => {
-            const img = new Image();
-            img.src = `./assets/img/2_character_pepe/7_kneel-down-and-cry/image_${6 + i}.webp`;
-            return img;
-        });
+    /**
+    * Initializes the character's emotion state flags.
+    */
+    initEmotionStates() {
+        this.isMeditation = false;
+        this.isKneelAndCry = false;
+        this.isStandUpAndLookDetermined = false;
+        this.isLookDeterminedAndStandUp = false;
     }
 
-    preloadStandUpAndLookDeterminedImages() {
-        this.standUpAndLookDeterminedImages = Array.from({ length: 10 }, (_, i) => {
-            const img = new Image();
-            img.src = `./assets/img/2_character_pepe/8_stand_up_look_determined/image_${i + 1}.webp`;
-            return img;
-        });
-        this.lookDeterminedImages = Array.from({ length: 3 }, (_, i) => {
-            const img = new Image();
-            img.src = `./assets/img/2_character_pepe/8_stand_up_look_determined/image_${8 + i}.webp`;
-            return img;
-        });
+    /**
+    * Initializes the character's interaction state flags.
+    */
+    initInteractionStates() {
+        this.isCaress = false;
+        this.isSitDownAndPlayGuitar = false;
+        this.isPlayGuitarAndSing = false;
+        this.isPlayGuitar = false;
+        this.isLightACampfire = false;
     }
 
-    preloadLookDeterminedStandUpAndStrongDeterminedImages() {
-        this.lookDeterminedStandUpImages = Array.from({ length: 15 }, (_, i) => {
-            const img = new Image();
-            img.src = `./assets/img/2_character_pepe/10/image_${i + 1}.webp`;
-            return img;
-        });
-        this.strongDeterminedImages = Array.from({ length: 4 }, (_, i) => {
-            const img = new Image();
-            img.src = `./assets/img/2_character_pepe/10/image_${12 + i}.webp`;
-            return img;
-        });
-    }
-
-    preloadPlayGuitarImages() {
-        this.sitDownAndPlayGuitarImages = Array.from({ length: 6 }, (_, i) => {
-            const img = new Image();
-            img.src = `./assets/img/2_character_pepe/12/image_${i + 1}.webp`;
-            return img;
-        });
-
-        this.playGuitarAndSingImages = Array.from({ length: 23 }, (_, i) => {
-            const img = new Image();
-            img.src = `./assets/img/2_character_pepe/12/image_${6 + i}.webp`;
-            return img;
-        });
-
-        this.playGuitarImages = Array.from({ length: 20 }, (_, i) => {
-            const img = new Image();
-            img.src = `./assets/img/2_character_pepe/13/image_${i + 1}.webp`;
-            return img;
-        });
-
-        this.lightACampfireImages = Array.from({ length: 10 }, (_, i) => {
-            const img = new Image();
-            img.src = `./assets/img/2_character_pepe/14/image_${i + 1}.webp`;
-            return img;
-        });
-    }
-
+    /**
+    * Makes the character bounce by setting upward speed.
+    */
     bounce() {
-        this.speedY = 10; // kleiner Rücksprung nach oben
+        this.speedY = 10;
     }
 
+    /**
+    * Updates the character's state, movement, camera, and animation each frame.
+    * @param {number} timestamp - Current time in milliseconds.
+    */
     updateState(timestamp) {
-        // 1. Bewegung (immer erlaubt, auch beim Springen)
+        this.updateDeltaTime(timestamp);
+        this.handleMovement();
+        this.clampCamera();
+        this.handleCharacterAnimation();
+    }
 
+    /**
+    * Updates the delta time and calculates the character's movement speed.
+    * @param {number} timestamp - Current time in milliseconds.
+    */
+    updateDeltaTime(timestamp) {
         if (!this.lastUpdateTime) this.lastUpdateTime = timestamp;
         const deltaTime = (timestamp - this.lastUpdateTime) / 1000;
         this.lastUpdateTime = timestamp;
-
-        const movementSpeed = this.speedX * deltaTime * 60;
-
-        if (this.isMovingLeft) {
-            this.isFlipped = true;
-            if (this.x > this.level_start_x) {
-                this.x -= movementSpeed;
-                this.world.camera_x += ((this.x - 1060) - this.world.camera_x) * 0.05;
-            }
-        } else if (this.isMovingRight) {
-            this.isFlipped = false;
-            if (this.x < this.world.farmLevelSetup.farmLevel.level_end_x) {
-                this.x += movementSpeed;
-                this.world.camera_x += ((this.x - 100) - this.world.camera_x) * 0.05;
-            }
-        }
-
-        // Kamera auf Levelgrenzen begrenzen
-        this.world.camera_x = Math.max(0, Math.min(this.world.camera_x, this.world.farmLevelSetup.farmLevel.level_end_x - 720));
-
-
-        // 2. Animation (nach Priorität)
-        if (this.isDead) {
-            this.setAnimation('dead')
-            // this.currentAnimation = 'dead';
-            this.frameInterval = 1000 / 6;
-        } else if (this.isJumping) {
-            // this.setAnimation('jump')
-            this.currentAnimation = 'jump';
-            this.frameInterval = 1000 / 10;
-        } else if (this.isCaress) {
-            if (this.currentAnimation !== 'caress2') {
-                this.setAnimation('caress')
-                // this.currentAnimation = 'streicheln';
-                this.frameInterval = 1000 / 6;
-            }
-        } else if (this.isKneelAndCry) {
-            if (this.currentAnimation !== 'cry') {
-                this.setAnimation('kneel-and-cry');
-                this.frameInterval = 1000 / 5;
-                // this.setPropertiesVoidless();
-            }
-        } else if (this.isStandUpAndLookDetermined) {
-            if (this.currentAnimation !== 'look-determined') {
-                this.setAnimation('stand-up-and-look-determined');
-                this.frameInterval = 1000 / 6;
-                // this.setPropertiesVoidless();
-            }
-        } else if (this.isLookDeterminedAndStandUp) {
-            if (this.currentAnimation !== 'strong-determined') {
-                this.setAnimation('look-determined-and-stand-up');
-                this.frameInterval = 1000 / 6;
-                // this.setPropertiesVoidless();
-            }
-        } else if (this.isSitDownAndPlayGuitar) {
-            if (this.currentAnimation !== 'play-guitar') {
-                this.setAnimation('sit-down-and-play-guitar');
-                this.frameInterval = 1000 / 6;
-                // this.setPropertiesVoidless();
-            }
-        } else if (this.isPlayGuitar) {
-            this.currentAnimation = 'play-guitar';
-            this.frameInterval = 1000 / 10;
-        } else if (this.isPlayGuitarAndSing) {
-            this.currentAnimation = 'play-guitar-and-sing';
-            this.frameInterval = 1000 / 10;
-        } else if (this.isLightACampfire) {
-            if (this.currentAnimation !== 'sit-down-and-play-guitar') {
-                this.setAnimation('light-a-campfire');
-                this.frameInterval = 1000 / 6;
-            }
-        } else if (this.isAttack) {
-            this.setAnimation('attack');
-            this.frameInterval = 1000 / 7;
-        } else if (this.isMeditation) {
-            if (this.currentAnimation !== 'meditation-loop') {
-                this.setAnimation('meditation');
-                this.frameInterval = 1000 / 6;
-            }
-        } else if (this.isNewWeapon) {
-            if (this.currentAnimation !== 'new-weapon-loop') {
-                this.setAnimation('new-weapon');
-                this.frameInterval = 1000 / 6;
-            }
-        } else if (this.isStandUp) {
-            this.setAnimation('stand-up');
-            this.frameInterval = 1000 / 4;
-        } else if (this.isMovingLeft || this.isMovingRight) {
-            // this.setAnimation('walk');
-            this.currentAnimation = 'walk';
-            this.frameInterval = 1000 / 8;
-        } else if (this.isWalk) {
-            this.setAnimation('walk');
-            // this.currentAnimation = 'walk';
-            this.frameInterval = 1000 / 8;
-        } else if (this.isWalkDetermined) {
-            this.setAnimation('walk-determined');
-            // this.currentAnimation = 'walk';
-            this.frameInterval = 1000 / 5;
-        } else if (this.isStandDetermined) {
-            if (this.currentAnimation !== 'stand-determined-loop') {
-                this.setAnimation('stand-determined');
-                // this.currentAnimation = 'walk';
-                this.frameInterval = 1000 / 5;
-            }
-        } else {
-            this.setAnimation('idle');
-            // this.currentAnimation = 'idle';
-            this.frameInterval = 1000 / 2.5;
-            // this.setPropertiesNormal();
-        }
-
+        this.movementSpeed = this.speedX * deltaTime * 60;
     }
 
+    /**
+    * Handles horizontal character movement based on input states.
+    */
+    handleMovement() {
+        if (this.isMovingLeft) {
+            this.moveLeft();
+        } else if (this.isMovingRight) {
+            this.moveRight();
+        }
+    }
+
+    /**
+    * Moves the character to the left and adjusts the camera position.
+    */
+    moveLeft() {
+        this.isFlipped = true;
+        if (this.x > this.level_start_x) {
+            this.x -= this.movementSpeed;
+            this.world.camera_x += ((this.x - 1060) - this.world.camera_x) * 0.05;
+        }
+    }
+
+    /**
+    * Moves the character to the right and adjusts the camera position.
+    */
+    moveRight() {
+        this.isFlipped = false;
+        if (this.x < this.world.farmLevelSetup.farmLevel.level_end_x) {
+            this.x += this.movementSpeed;
+            this.world.camera_x += ((this.x - 100) - this.world.camera_x) * 0.05;
+        }
+    }
+
+    /**
+    * Clamps the camera position within the level boundaries.
+    */
+    clampCamera() {
+        const maxCameraX = this.world.farmLevelSetup.farmLevel.level_end_x - 720;
+        this.world.camera_x = Math.max(0, Math.min(this.world.camera_x, maxCameraX));
+    }
+
+    /**
+    * Handles character animation logic based on current states and actions.
+    */
+    handleCharacterAnimation() {
+        if (this.handleDeathOrJump()) return;
+        if (this.handleEmotionalAnimations()) return;
+        if (this.handleMusicAnimations()) return;
+        if (this.handleCombatAndMeditation()) return;
+        if (this.handleMovementAnimations()) return;
+        this.setAnim('idle', 2.5);
+    }
+
+    /**
+    * Handles death and jump animations.
+    * @returns {boolean} Whether an animation was handled.
+    */
+    handleDeathOrJump() {
+        if (this.isDead) return this.setAnim('dead', 6);
+        if (this.isJumping) return this.setSimpleAnim('jump', 10);
+        return false;
+    }
+
+    /**
+    * Handles emotional animations such as crying, determination, or caressing.
+    * @returns {boolean} Whether an emotional animation was handled.
+    */
+    handleEmotionalAnimations() {
+        if (this.isCaress) return this.setAnim('caress', 6, 'caress-loop');
+        if (this.isKneelAndCry) return this.setAnim('kneel-and-cry', 5, 'cry');
+        if (this.isStandUpAndLookDetermined)
+            return this.setAnim('stand-up-and-look-determined', 6, 'look-determined');
+        if (this.isLookDeterminedAndStandUp)
+            return this.setAnim('look-determined-and-stand-up', 6, 'strong-determined');
+        if (this.isStandDetermined)
+            return this.setAnim('stand-determined', 5, 'stand-determined-loop');
+        return false;
+    }
+
+    /**
+    * Handles music-related animations such as playing guitar or lighting a campfire.
+    * @returns {boolean} Whether a music animation was handled.
+    */
+    handleMusicAnimations() {
+        if (this.isSitDownAndPlayGuitar)
+            return this.setAnim('sit-down-and-play-guitar', 6, 'play-guitar');
+        if (this.isPlayGuitar) return this.setSimpleAnim('play-guitar', 10);
+        if (this.isPlayGuitarAndSing) return this.setSimpleAnim('play-guitar-and-sing', 10);
+        if (this.isLightACampfire)
+            return this.setAnim('light-a-campfire', 6, 'sit-down-and-play-guitar');
+        return false;
+    }
+
+    /**
+    * Handles combat and meditation animations.
+    * @returns {boolean} Whether a combat or meditation animation was handled.
+    */
+    handleCombatAndMeditation() {
+        if (this.isAttack) return this.setAnim('attack', 7);
+        if (this.isMeditation) return this.setAnim('meditation', 6, 'meditation-loop');
+        if (this.isNewWeapon) return this.setAnim('new-weapon', 6, 'new-weapon-loop');
+        if (this.isStandUp) return this.setAnim('stand-up', 4);
+        return false;
+    }
+
+    /**
+    * Handles movement animations such as walking or determined walking.
+    * @returns {boolean} Whether a movement animation was handled.
+    */
+    handleMovementAnimations() {
+        if (this.isMovingLeft || this.isMovingRight || this.isWalk)
+            return this.setSimpleAnim('walk', 8);
+        if (this.isWalkDetermined)
+            return this.setAnim('walk-determined', 5);
+        return false;
+    }
+
+    /**
+    * Sets a new animation with a specified frame rate.
+    * @param {string} name - The name of the animation to set.
+    * @param {number} fps - Frames per second for the animation speed.
+    * @param {string} [skipIf=null] - Optional animation name to skip if currently active.
+    * @returns {boolean} Always returns true after setting or skipping the animation.
+    */
+    setAnim(name, fps, skipIf = null) {
+        if (skipIf && this.currentAnimation === skipIf) return true;
+        this.setAnimation(name);
+        this.frameInterval = 1000 / fps;
+        return true;
+    }
+
+    /**
+    * Sets a simple animation with the given name and frame rate.
+    * @param {string} name - Animation name.
+    * @param {number} fps - Frames per second.
+    * @returns {boolean} True after setting the animation.
+    */
+    setSimpleAnim(name, fps) {
+        this.currentAnimation = name;
+        this.frameInterval = 1000 / fps;
+        return true;
+    }
+
+    /**
+    * Updates the current animation frame based on elapsed time.
+    * @param {number} timestamp - Current time in milliseconds.
+    */
     updateAnimation(timestamp) {
         if (!this.lastFrameTime) this.lastFrameTime = timestamp;
         const deltaTime = timestamp - this.lastFrameTime;
-
         if (deltaTime > this.frameInterval) {
-            let images = this.getAnimationImages(this.currentAnimation);
-
-            if (images && images.length > 0) {
-                this.img = images[this.frameIndex % images.length];
-                if (this.deferSizeUpdate) {
-                    if (['kneel-and-cry', 'stand-up-and-look-determined', 'cry', 'look-determined', 'look-determined-and-stand-up', 'strong-determined', 'caress', 'caress2', 'sit-down-and-play-guitar', 'play-guitar-and-sing', 'play-guitar', 'light-a-campfire', 'meditation', 'meditation-loop', 'stand-up', 'walk-determined', 'stand-determined', 'stand-determined-loop'].includes(this.currentAnimation)) {
-                        this.width = 158;
-                        this.height = 183;
-                        this.y = this.yVoidless;
-                        this.offset.top = 13;
-                        this.offset.left = 33;
-                        this.offset.right = 55;
-                        this.offset.bottom = 15;
-                    } else if (['attack', 'new-weapon', 'new-weapon-loop'].includes(this.currentAnimation)) {
-                        this.width = 290;
-                        this.height = 355;
-                        this.y = 315;
-                        this.offset.top = 13;
-                        this.offset.left = 33;
-                        this.offset.right = 55;
-                        this.offset.bottom = 15;
-                    } else {
-                        this.width = 130;
-                        this.height = 300;
-                        this.y = this.yNormal;
-                        this.offset.top = 130;
-                        this.offset.left = 20;
-                        this.offset.right = 40;
-                        this.offset.bottom = 15;
-
-                    }
-                    this.deferSizeUpdate = false;
-                }
+            const images = this.getAnimationImages(this.currentAnimation);
+            if (images?.length > 0) {
+                this.applyNextFrame(images);
+                this.handleDeferredSizeUpdate();
                 this.frameIndex++;
+                this.checkAnimationEnd(images);
             }
             this.lastFrameTime = timestamp;
-            if (this.frameIndex >= images.length && (this.currentAnimation == 'kneel-and-cry' || this.currentAnimation == 'stand-up-and-look-determined' || this.currentAnimation == 'look-determined-and-stand-up' || this.currentAnimation == 'caress' || this.currentAnimation == 'sit-down-and-play-guitar' || this.currentAnimation == 'light-a-campfire' || this.currentAnimation == 'attack' || this.currentAnimation == 'meditation' || this.currentAnimation == 'new-weapon' || this.currentAnimation == 'stand-up' || this.currentAnimation == 'stand-determined')) {
-                this.animationFinished = true;
-                switch (this.currentAnimation) {
-                    case 'stand-up-and-look-determined':
-                        this.setAnimation('look-determined');
-                        this.frameInterval = 1000 / 5.5;
-                        break;
-                    case 'kneel-and-cry':
-                        this.setAnimation('cry');
-                        // this.frameInterval = 1000 / 3;
-                        break;
-                    case 'look-determined-and-stand-up':
-                        this.setAnimation('strong-determined');
-                        this.frameInterval = 1000 / 4;
-                        break;
-                    case 'caress':
-                        this.setAnimation('caress2');
-                        this.frameInterval = 1000 / 6;
-                        break;
-                    case 'sit-down-and-play-guitar':
-                        this.setAnimation('play-guitar');
-                        this.frameInterval = 1000 / 10;
-                        break;
-                    case 'light-a-campfire':
-                        this.setAnimation('sit-down-and-play-guitar');
-                        this.frameInterval = 1000 / 4;
-                        this.isLightACampfire = false;        // Flag aufräumen
-                        this.isSitDownAndPlayGuitar = true;
-                        break;
-                    case 'attack':
-                        this.isAttack = false;
-                        break;
-                    case 'meditation':
-                        this.setAnimation('meditation-loop');
-                        this.frameInterval = 1000 / 4;
-                        break;
-                    case 'new-weapon':
-                        this.setAnimation('new-weapon-loop');
-                        this.frameInterval = 1000 / 6;
-                        break;
-                    case 'stand-up':
-                        this.isStandUp = false;
-                        break;
-                    case 'stand-determined':
-                         this.setAnimation('stand-determined-loop');
-                        break;
-                }
-            }
         }
     }
 
+    /**
+    * Applies the next animation frame from the given image set.
+    * @param {Array<string>} images - List of animation frame images.
+    */
+    applyNextFrame(images) {
+        this.img = images[this.frameIndex % images.length];
+    }
+
+    /**
+    * Updates the character's size and offsets after certain animations if needed.
+    */
+    handleDeferredSizeUpdate() {
+        if (!this.deferSizeUpdate) return;
+        const anim = this.currentAnimation;
+        if (this.isVoidlessAnimation(anim)) {
+            this.setCharacterSize(158, 183, this.yVoidless, { top: 13, left: 33, right: 55, bottom: 15 });
+        } else if (this.isLargeAnimation(anim)) {
+            this.setCharacterSize(290, 355, 315, { top: 13, left: 33, right: 55, bottom: 15 });
+        } else {
+            this.setCharacterSize(130, 300, this.yNormal, { top: 130, left: 20, right: 40, bottom: 15 });
+        }
+        this.deferSizeUpdate = false;
+    }
+
+    /**
+    * Checks if the given animation is a voidless-type animation.
+    * @param {string} anim - Animation name.
+    * @returns {boolean} True if the animation is voidless.
+    */
+    isVoidlessAnimation(anim) {
+        return this.VOIDLESS_ANIMS.has(anim);
+    }
+
+    /**
+    * Checks if the given animation is classified as a large animation.
+    * @param {string} anim - Animation name.
+    * @returns {boolean} True if the animation is large.
+    */
+    isLargeAnimation(anim) {
+        return ['attack', 'new-weapon', 'new-weapon-loop'].includes(anim);
+    }
+
+    /**
+    * Sets the character's size, vertical position, and offset values.
+    * @param {number} width - Character width.
+    * @param {number} height - Character height.
+    * @param {number} y - Vertical position on the screen.
+    * @param {Object} offset - Collision or interaction offset values.
+    */
+    setCharacterSize(width, height, y, offset) {
+        this.width = width;
+        this.height = height;
+        this.y = y;
+        this.offset = offset;
+    }
+
+    /**
+    * Checks if the current animation has finished and triggers transitions if applicable.
+    * @param {Array<string>} images - List of animation frame images.
+    */
+    checkAnimationEnd(images) {
+        if (this.frameIndex < images.length) return;
+        if (!this.TRANSITIONABLE_ANIMS.has(this.currentAnimation)) return;
+        this.animationFinished = true;
+        this.handleAnimationTransition(this.currentAnimation);
+    }
+
+    /**
+    * Handles transitions between animations after one finishes.
+    * @param {string} anim - The name of the completed animation.
+    */
+    handleAnimationTransition(anim) {
+        if (this.handleDeterminedTransitions(anim)) return;
+        if (this.handleEmotionalTransitions(anim)) return;
+        if (this.handleMusicTransitions(anim)) return;
+        if (this.handleCombatTransitions(anim)) return;
+    }
+
+    /**
+    * Handles animation transitions related to determined or standing-up states.
+    * @param {string} anim - The name of the completed animation.
+    * @returns {boolean} Whether a transition was applied.
+    */
+    handleDeterminedTransitions(anim) {
+        switch (anim) {
+            case 'stand-up-and-look-determined':
+                return this.setTransition('look-determined', 5.5);
+            case 'look-determined-and-stand-up':
+                return this.setTransition('strong-determined', 4);
+            case 'stand-up':
+                this.isStandUp = false;
+                return true;
+            case 'stand-determined':
+                return this.setTransition('stand-determined-loop');
+        }
+        return false;
+    }
+
+    /**
+    * Handles animation transitions for emotional states such as crying or caressing.
+    * @param {string} anim - The name of the completed animation.
+    * @returns {boolean} Whether an emotional transition was applied.
+    */
+    handleEmotionalTransitions(anim) {
+        switch (anim) {
+            case 'kneel-and-cry':
+                return this.setTransition('cry');
+            case 'caress':
+                return this.setTransition('caress-loop', 6);
+        }
+        return false;
+    }
+
+    /**
+    * Handles animation transitions related to music actions such as playing guitar or lighting a campfire.
+    * @param {string} anim - The name of the completed animation.
+    * @returns {boolean} Whether a music transition was applied.
+    */
+    handleMusicTransitions(anim) {
+        switch (anim) {
+            case 'sit-down-and-play-guitar':
+                return this.setTransition('play-guitar', 10);
+            case 'light-a-campfire':
+                this.isLightACampfire = false;
+                this.isSitDownAndPlayGuitar = true;
+                return this.setTransition('sit-down-and-play-guitar', 4);
+        }
+        return false;
+    }
+
+    /**
+    * Handles animation transitions for combat and meditation states.
+    * @param {string} anim - The name of the completed animation.
+    * @returns {boolean} Whether a combat-related transition was applied.
+    */
+    handleCombatTransitions(anim) {
+        switch (anim) {
+            case 'attack':
+                this.isAttack = false;
+                return true;
+            case 'meditation':
+                return this.setTransition('meditation-loop', 4);
+            case 'new-weapon':
+                return this.setTransition('new-weapon-loop', 6);
+        }
+        return false;
+    }
+
+    /**
+    * Transitions to a new animation, optionally adjusting its frame rate.
+    * @param {string} name - The name of the animation to transition to.
+    * @param {number} [fps=null] - Optional frames per second for the new animation.
+    * @returns {boolean} True after setting the transition.
+    */
+    setTransition(name, fps = null) {
+        this.setAnimation(name);
+        if (fps) this.frameInterval = 1000 / fps;
+        return true;
+    }
+
+    /**
+    * Retrieves the appropriate image set for the given animation state.
+    * @param {string} state - The current animation state.
+    * @returns {Array<string>} The list of images for the specified state.
+    */
     getAnimationImages(state) {
+        return (
+            this.getMovementImages(state) ??
+            this.getEmotionImages(state) ??
+            this.getDeterminedImages(state) ??
+            this.getMusicImages(state) ??
+            this.getCombatImages(state) ??
+            this.getSpecialImages(state) ??
+            this.idleImages
+        );
+    }
+
+    /**
+    * Returns the image set for the specified movement-related animation state.
+    * @param {string} state - The current movement animation state.
+    * @returns {Array<string>|null} The corresponding image set or null if not found.
+    */
+    getMovementImages(state) {
         switch (state) {
             case 'walk': return this.walkImages;
             case 'jump': return this.jumpImages;
+            case 'stand-up': return this.standUpImages;
+            case 'walk-determined': return this.walkDeterminedImages;
+        }
+        return null;
+    }
+
+    /**
+    * Returns the image set for the specified emotion-related animation state.
+    * @param {string} state - The current emotional animation state.
+    * @returns {Array<string>|null} The corresponding image set or null if not found.
+    */
+    getEmotionImages(state) {
+        switch (state) {
             case 'dead': return this.deadImages;
             case 'hurt': return this.hurtImages;
-            case 'caress': return this.caressImages;
-            case 'caress2': return this.caressImages2;
             case 'kneel-and-cry': return this.kneelDownAndCryImages;
             case 'cry': return this.cryImages;
+        }
+        return null;
+    }
+
+    /**
+    * Returns the image set for the specified determined or confident animation state.
+    * @param {string} state - The current determined animation state.
+    * @returns {Array<string>|null} The corresponding image set or null if not found.
+    */
+    getDeterminedImages(state) {
+        switch (state) {
             case 'stand-up-and-look-determined': return this.standUpAndLookDeterminedImages;
             case 'look-determined': return this.lookDeterminedImages;
             case 'look-determined-and-stand-up': return this.lookDeterminedStandUpImages;
             case 'strong-determined': return this.strongDeterminedImages;
+            case 'stand-determined': return this.standDeterminedImages;
+            case 'stand-determined-loop': return this.standDeterminedLoopImages;
+        }
+        return null;
+    }
+
+    /**
+    * Returns the image set for the specified music or interaction-related animation state.
+    * @param {string} state - The current music animation state.
+    * @returns {Array<string>|null} The corresponding image set or null if not found.
+    */
+    getMusicImages(state) {
+        switch (state) {
+            case 'caress': return this.caressImages;
+            case 'caress-loop': return this.caressLoopImages;
             case 'sit-down-and-play-guitar': return this.sitDownAndPlayGuitarImages;
             case 'play-guitar-and-sing': return this.playGuitarAndSingImages;
             case 'play-guitar': return this.playGuitarImages;
             case 'light-a-campfire': return this.lightACampfireImages;
+        }
+        return null;
+    }
+
+    /**
+    * Returns the image set for the specified combat or meditation-related animation state.
+    * @param {string} state - The current combat animation state.
+    * @returns {Array<string>|null} The corresponding image set or null if not found.
+    */
+    getCombatImages(state) {
+        switch (state) {
             case 'attack': return this.attackImages;
             case 'meditation': return this.meditationImages;
             case 'meditation-loop': return this.meditationLoopImages;
             case 'new-weapon': return this.newWeaponImages;
             case 'new-weapon-loop': return this.newWeaponLoopImages;
-            case 'stand-up': return this.standUpImages;
-            case 'walk-determined': return this.walkDeterminedImages;
-            case 'stand-determined': return this.standDeterminedImages;
-            case 'stand-determined-loop': return this.standDeterminedLoopImages;
-            case 'idle':
-            default: return this.idleImages;
         }
+        return null;
     }
 
+    /**
+    * Returns the image set for special or default animation states.
+    * @param {string} state - The current special animation state.
+    * @returns {Array<string>|null} The corresponding image set or null if not found.
+    */
+    getSpecialImages(state) {
+        switch (state) {
+            case 'idle': return this.idleImages;
+        }
+        return null;
+    }
+
+    /**
+    * Sets a new animation and resets related animation state properties.
+    * @param {string} newAnimation - The name of the new animation to set.
+    */
     setAnimation(newAnimation) {
         if (this.currentAnimation !== newAnimation) {
             this.currentAnimation = newAnimation;
-            this.frameIndex = 0;          // Frame-Index zurücksetzen
-            this.animationFinished = false; // Flag zurücksetzen
-            this.lastFrameTime = null;     // Timer zurücksetzen
+            this.frameIndex = 0;
+            this.animationFinished = false;
+            this.lastFrameTime = null;
             this.deferSizeUpdate = true;
         }
+    }
+
+    /**
+    * Resets the character's timing variables for updates and animations.
+    */
+    resetTimers() {
+        this.lastUpdateTime = null;
+        this.lastFrameTime = null;
     }
 }

@@ -45,9 +45,9 @@ class TownLevelController {
         this.updateCharacter(timestamp);
         this.updateNPCs(timestamp);
         this.updateEndboss(timestamp);
+        this.updateCoins(timestamp);
         this.handleInteractions();
         this.handlePopup();
-        this.handleChickenInBasket();
         this.sandstorm.update();
         this.sandstormNear.update();
         this.sandstormFar.update();
@@ -85,15 +85,13 @@ class TownLevelController {
         this.addToWorld(this.character);
         this.addObject(this.setup.townLevel.coins);
         this.addObject(this.setup.townLevel.bottles);
-        this.addToWorld(this.chickenBasket);
-        this.addToWorld(this.chickenInBasket);
         this.addObject(this.setup.townLevel.enemies);
         this.addToWorld(this.endbossAttack);
         this.addObject(this.setup.throwableObjects);
-        if (!this.setup.townLevel.endboss.isUnderTheGround) {
+        if (!this.setup.npcs.endboss.isUnderTheGround) {
             this.addToWorld(this.setup.npcs.soul);
             // this.setup.npcs.soul.updateState('idle', 1000 / 6);
-            this.addToWorld(this.setup.townLevel.endboss);
+            this.addToWorld(this.setup.npcs.endboss);
         }
         this.ctx.restore();
         this.sandstorm.draw(this.ctx, this.renderCameraX);
@@ -153,11 +151,15 @@ class TownLevelController {
     }
 
     updateEndboss(timestamp) {
-        this.setup.townLevel.endboss.updateState();
-        this.setup.townLevel.endboss.updateAnimation(timestamp);
+        this.setup.npcs.endboss.updateState();
+        this.setup.npcs.endboss.updateAnimation(timestamp);
         this.setup.endbossAttack.updateState();
         this.setup.endbossAttack.updateAnimation(timestamp);
-        if (this.setup.townLevel.endboss.isJumping) this.setup.townLevel.endboss.applyGravityBoss(timestamp);
+        if (this.setup.npcs.endboss.isJumping) this.setup.npcs.endboss.applyGravityBoss(timestamp);
+    }
+
+    updateCoins(timestamp) {
+        this.setup.townLevel.coins.forEach(coin => coin.updateAnimation(timestamp));
     }
 
     handleInteractions() {
@@ -175,29 +177,5 @@ class TownLevelController {
         const now = performance.now();
         this.popupTexts.forEach(p => p.draw(this.ctx, now));
         this.popupTexts = this.popupTexts.filter(p => p.active);
-    }
-
-    handleChickenInBasket() {
-        const basketWobble = Math.sin(Date.now() / 100) * 0.5;
-        if (this.character.isJumping) {
-            this.setup.chickenBasket.setCoordinates(this.character.x + 38, this.character.y + 220);
-        } else if (this.character.isMovingLeft || this.character.isMovingRight) {
-            this.setup.chickenBasket.setCoordinates(this.character.x + 38, this.character.y + 228 + basketWobble);
-        } else if (this.character.isFlipped) {
-            this.setup.chickenBasket.setCoordinates(this.character.x + 38 + 17.5, this.character.y + 228 + basketWobble);
-        } else {
-            this.setup.chickenBasket.setCoordinates(this.character.x + 38, this.character.y + 228);
-        }
-        if (this.setup.chickenInBasket.isIdle && !this.setup.chickenInBasket.isReturning && !this.setup.chickenInBasket.justLanded) {
-            this.setup.chickenInBasket.setCoordinates(
-                this.setup.chickenBasket.x,
-                this.setup.chickenBasket.y - 20
-            )
-        };
-        this.setup.chickenInBasket.chickenAttack(this.character.x, this.character.y, this.setup.chickenInBasket.x, this.setup.chickenInBasket.y - 20);
-        if (this.setup.chickenInBasket.isReturning) {
-            this.setup.chickenInBasket.updateReturnFlight();
-        }
-        this.world.endbossReaction();
     }
 }

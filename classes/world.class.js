@@ -4,14 +4,15 @@ class World {
     canvas;
     currentScene = 'farmLevel';
 
-    constructor(canvas, keyboard, characterImages, npcImages) {
+    constructor(canvas, keyboard, characterImages, npcImages, allAudios) {
         this.canvas = canvas;
         this.ctx = canvas.getContext('2d');
         this.keyboard = keyboard;
         this.characterImages = characterImages;
         this.npcImages = npcImages;
-        this.listenStartButton();
-        this.endbossMusic = new Audio('./assets/audio/endboss-music.opus');
+        this.allAudios = allAudios;
+        // this.listenStartButton();
+        this.endbossMusic = this.allAudios.endbossMusic;
         this.endbossMusic.volume = 0.6;
 
         this.lastThrowCheck = 0;
@@ -20,14 +21,14 @@ class World {
         this.lastStepCheck = 0;
         this.stepCheckDelay = 400;
         this.character = new Character(this.characterImages);
-        this.footStepSound = new Audio('./assets/audio/footstep-sound.opus');
-        this.jumpSound = new Audio('./assets/audio/jump-sound2.opus');
-        this.landingSound = new Audio('./assets/audio/landing-sound.opus');
+        this.footStepSound = this.allAudios.footStepSound;
+        this.jumpSound = this.allAudios.jumpSound;
+        this.landingSound = this.allAudios.landingSound;
         this.camera_x = 0;
 
         this.lastTime = performance.now();
         this.intro = new IntroScreen(this.ctx, this.canvas);
-        this.chapterSound = new Audio('./assets/audio/chapter-sound1.opus');
+        this.chapterSound = this.allAudios.chapterSound;
         this.isChapterSoundPlayed = false;
         this.isKeysStopp = false;
 
@@ -38,6 +39,9 @@ class World {
         this.volumeLevel3 = 0.1;
         this.minVolumeLevel3 = 1;
         this.isPlay = false;
+        this.paused = false;
+        this.isRunning = true;
+        this.frameId = null;
     }
 
     startGame() {
@@ -58,39 +62,56 @@ class World {
     }
 
     draw(timestamp) {
-        const deltaTime = timestamp - this.lastTime;
-        this.lastTime = timestamp;
-        if (!this.intro.done) {
-            this.intro.update(deltaTime);
-            this.intro.draw();
-            if (!this.isChapterSoundPlayed) {
-                this.chapterSound.play();
-                this.isChapterSoundPlayed = true;
-            }
-        } else {
-            switch (this.currentScene) {
 
-                case 'farmLevel':
-                    this.farmLevelController.update(timestamp);
-                    break;
-                case 'stableLevel':
-                    this.stableLevelController.update(timestamp);
-                    break;
-                case 'townLevel':
-                    this.townLevelController.update(timestamp);
-                    break;
-                case 'nayelisHouseLevel':
-                    this.nayelisHouseLevelController.update(timestamp);
-                    break;
-                case 'newWeaponLevel':
-                    this.newWeaponLevelController.update(timestamp);
-                    break;
-                case 'levelComplete':
-                    this.levelCompleteController.update(timestamp);
-                    break;
-            }
+        if (!this.isRunning) {
+            this._drawing = false;
+            return;
         }
-        requestAnimationFrame((timestamp) => {
+        if (this.paused) {
+            this.frameId = requestAnimationFrame((timestamp) => this.draw(timestamp));
+            return;
+        }
+        // const deltaTime = timestamp - this.lastTime;
+        // this.lastTime = timestamp;
+        // if (!this.intro.done) {
+        //     this.intro.update(deltaTime);
+        //     this.intro.draw();
+        //     if (!this.isChapterSoundPlayed) {
+        //         this.chapterSound.play();
+        //         this.isChapterSoundPlayed = true;
+        //     }
+        switch (this.currentScene) {
+
+            case 'farmLevel':
+                this.farmLevelController.update(timestamp);
+                break;
+            case 'stableLevel':
+                this.stableLevelController.update(timestamp);
+                break;
+            case 'townLevel':
+                const deltaTime = timestamp - this.lastTime;
+                this.lastTime = timestamp;
+                if (!this.intro.done) {
+                    this.intro.update(deltaTime);
+                    this.intro.draw();
+                    if (!this.isChapterSoundPlayed) {
+                        this.chapterSound.play();
+                        this.isChapterSoundPlayed = true;
+                    }
+                } else this.townLevelController.update(timestamp);
+                break;
+            case 'nayelisHouseLevel':
+                this.nayelisHouseLevelController.update(timestamp);
+                break;
+            case 'newWeaponLevel':
+                this.newWeaponLevelController.update(timestamp);
+                break;
+            case 'levelComplete':
+                this.levelCompleteController.update(timestamp);
+                break;
+            // }
+        }
+        this.frameId = requestAnimationFrame((timestamp) => {
             this.draw(timestamp);
         });
     }
@@ -341,11 +362,6 @@ class World {
             //     this.character.jumpCount = 0;
             //     if (this.character.isMoving) this.character.moveStop();
             // }
-            if (this.keyboard.S && this.townLevelSetup.chickenInBasket.isIdle && !this.townLevelSetup.chickenInBasket.isReturning && !this.townLevelSetup.chickenInBasket.justLanded) {
-                this.townLevelSetup.chickenInBasket.isAttack = true;
-                this.townLevelSetup.chickenInBasket.isIdle = false;
-                this.townLevelSetup.chickenInBasket.attackStartX = this.townLevelSetup.chickenInBasket.x;
-            }
 
             if (this.keyboard.T && !this.farmLevelSetup.tKeyPressed) {
                 this.farmLevelSetup.taskWindow.toggle();
@@ -419,9 +435,9 @@ class World {
             }
         }
 
-        if (this.townLevelSetup.townLevel.endboss.y >= 690 && this.townLevelSetup.townLevel.endboss.isDead) {
-            clearInterval(this.townLevelSetup.townLevel.endboss.intervalMoveDownAfterDead);
-            this.townLevelSetup.townLevel.endboss.isUnderTheGround = true;
+        if (this.townLevelSetup.npcs.endboss.y >= 690 && this.townLevelSetup.npcs.endboss.isDead) {
+            clearInterval(this.townLevelSetup.npcs.endboss.intervalMoveDownAfterDead);
+            this.townLevelSetup.npcs.endboss.isUnderTheGround = true;
         }
 
         for (let i = this.townLevelSetup.throwableObjects.length - 1; i >= 0; i--) {
@@ -477,21 +493,21 @@ class World {
                         }
                     }
                 }
-                if (bottle.isCollidingBefore(this.townLevelSetup.townLevel.endboss, 0, 50) && !this.townLevelSetup.townLevel.endboss.isDead) {
+                if (bottle.isCollidingBefore(this.townLevelSetup.npcs.endboss, 0, 50) && !this.townLevelSetup.npcs.endboss.isDead) {
                     if (!bottle.isBrokenSound) {
                         this.playBottelBrokenSound();
-                        this.townLevelSetup.townLevel.endboss.isHurt = true;
-                        this.townLevelSetup.townLevel.endboss.frameIndex = 0;
+                        this.townLevelSetup.npcs.endboss.isHurt = true;
+                        this.townLevelSetup.npcs.endboss.frameIndex = 0;
                         bottle.isBrokenSound = true;
                         bottle.isBroken = true;
                         bottle.isThrow = false;
                         bottle.isGravity = false;
                         bottle.isBrokenAnimation = true;
-                        this.townLevelSetup.townLevel.endboss.energy = this.townLevelSetup.townLevel.endboss.energy - 20;
-                        this.townLevelSetup.statusBar2.setPercentage(this.townLevelSetup.townLevel.endboss.energy);
-                        if (this.townLevelSetup.townLevel.endboss.energy <= 0) {
-                            this.townLevelSetup.townLevel.endboss.isDead = true;
-                            this.townLevelSetup.townLevel.endboss.frameIndex = 0;
+                        this.townLevelSetup.npcs.endboss.energy = this.townLevelSetup.npcs.endboss.energy - 20;
+                        this.townLevelSetup.statusBar2.setPercentage(this.townLevelSetup.npcs.endboss.energy);
+                        if (this.townLevelSetup.npcs.endboss.energy <= 0) {
+                            this.townLevelSetup.npcs.endboss.isDead = true;
+                            this.townLevelSetup.npcs.endboss.frameIndex = 0;
                         }
                         break;
                     }
@@ -510,44 +526,12 @@ class World {
         //     this.endbossAlarmSoundIsPlayed = true;
         // }
 
-        for (let j = 0; j < this.townLevelSetup.townLevel.enemies.length; j++) {
-            const enemy = this.townLevelSetup.townLevel.enemies[j];
-            if (this.townLevelSetup.chickenInBasket.isCollidingBefore(enemy, 25, 0) && !enemy.isDead) {
-                this.townLevelSetup.chickenInBasket.isAttack = false;
-                this.townLevelSetup.chickenInBasket.isIdle = true;
-                enemy.isDead = true;
-                enemy.isMovingLeft = false;
-                enemy.isMovingRight = false;
-                this.playChickenDeathSound();
-                const removeEnemyIndex = j;
-                setTimeout(() => {
-                    this.townLevelSetup.townLevel.enemies.splice(removeEnemyIndex, 1);
-                }, 2000);
-                break;
-            }
-        }
-        if (this.townLevelSetup.chickenInBasket.isCollidingBefore(this.townLevelSetup.townLevel.endboss, 0, 80) && !this.townLevelSetup.townLevel.endboss.isDead) {
-            this.townLevelSetup.chickenInBasket.isAttack = false;
-            this.townLevelSetup.chickenInBasket.isIdle = true;
-            this.townLevelSetup.townLevel.endboss.isHurt = true;
-            this.townLevelSetup.townLevel.endboss.energy = this.townLevelSetup.townLevel.endboss.energy - 5;
-            this.townLevelSetup.statusBar2.setPercentage(this.townLevelSetup.townLevel.endboss.energy);
-            if (this.townLevelSetup.townLevel.endboss.energy <= 0) {
-                this.townLevelSetup.townLevel.endboss.isDead = true;
-            }
+        if (!this.townLevelSetup.npcs.endboss.isDead) {
+            this.townLevelSetup.npcs.soul.x = this.townLevelSetup.npcs.endboss.x + 75;
+            this.townLevelSetup.npcs.soul.y = this.townLevelSetup.npcs.endboss.y + 200;
         }
 
-
-
-
-
-
-        if (!this.townLevelSetup.townLevel.endboss.isDead) {
-            this.townLevelSetup.npcs.soul.x = this.townLevelSetup.townLevel.endboss.x + 75;
-            this.townLevelSetup.npcs.soul.y = this.townLevelSetup.townLevel.endboss.y + 200;
-        }
-
-        if (this.townLevelSetup.townLevel.endboss.isDead && this.townLevelSetup.npcs.soul.y >= 250) {
+        if (this.townLevelSetup.npcs.endboss.isDead && this.townLevelSetup.npcs.soul.y >= 250) {
             this.townLevelSetup.npcs.soul.y -= 1.5;
         }
 
@@ -570,7 +554,7 @@ class World {
             if (this.townLevelSetup.sounds.soulSpeakSound.currentTime >= 18) {
                 this.character.isMeditation = true
                 this.townLevelSetup.npcs.soul.updateState('findsPeace', 1000 / 5);
-                this.townLevelSetup.townLevel.endboss.isFindsPeace = true;
+                this.townLevelSetup.npcs.endboss.isFindsPeace = true;
                 if (this.townLevelSetup.npcs.soul.y >= -500) {
                     this.townLevelSetup.npcs.soul.y -= 1;
                 }
@@ -617,53 +601,53 @@ class World {
         }
     }
 
-    listenStartButton() {
-        document.getElementById('start-button').addEventListener('click', () => {
-            this.startGame();
-            document.getElementById('overlay-startscreen').style.display = 'none';
-            document.getElementById('overlay-start-initialisation').style.display = 'none';
-            document.getElementById('canvas').style.display = 'block';
-            document.getElementById('move-button-box').classList.remove('d-none');
-            // document.getElementById('background-music').play();
-            // this.character.playSpeakSound();
-            setFullscreen();
-            titleMusic.pause();
-            titleMusic2.pause();
-        });
-    }
+    // listenStartButton() {
+    //     document.getElementById('start-button').addEventListener('click', () => {
+    //         this.startGame();
+    //         document.getElementById('overlay-startscreen').style.display = 'none';
+    //         document.getElementById('overlay-start-initialisation').style.display = 'none';
+    //         document.getElementById('canvas').style.display = 'block';
+    //         document.getElementById('move-button-box').classList.remove('d-none');
+    //         // document.getElementById('background-music').play();
+    //         // this.character.playSpeakSound();
+    //         setFullscreen();
+    //         titleMusic.pause();
+    //         titleMusic2.pause();
+    //     });
+    // }
 
     playCoinSound() {
-        const sound = new Audio('./assets/audio/coin2.opus');
+        const sound = this.allAudios.coinSound;
         sound.volume = 0.4;
         sound.play();
     }
 
     playBottleSound() {
-        const sound = new Audio('./assets/audio/bottle-clink1.opus');
+        const sound = this.allAudios.bottleClinkSound;
         sound.volume = 0.6;
         sound.play();
     }
 
     playChickenDeathSound() {
-        const sound = new Audio('./assets/audio/chicken-death.opus');
+        const sound = this.allAudios.chickenDeathSound;
         sound.volume = 0.6;
         sound.play();
     }
 
     playEmptyBottelsSound() {
-        const sound = new Audio('./assets/audio/empty-bottels2.opus');
+        const sound = this.allAudios.bottleEmptySound;
         sound.volume = 0.6;
         sound.play();
     }
 
     playBottelBrokenSound() {
-        const sound = new Audio('./assets/audio/bottle-shattering1.opus');
+        const sound = this.allAudios.bottleBrokenSound;
         sound.volume = 0.6;
         sound.play();
     }
 
     playBottelThrowSound() {
-        const sound = new Audio('./assets/audio/throw2.opus');
+        const sound = this.allAudios.bottleThrowSound;
         sound.volume = 0.6;
         sound.play();
     }
@@ -682,12 +666,12 @@ class World {
     }
 
     playEndbossAlarmSound() {
-        this.endbossAlarmSound = new Audio('./assets/audio/endboss-alarm.opus');
+        this.endbossAlarmSound = this.allAudios.endbossAlarmSound;
         this.endbossAlarmSound.play();
     }
 
     endbossReaction() {
-        const boss = this.townLevelSetup.townLevel.endboss;
+        const boss = this.townLevelSetup.npcs.endboss;
         const player = this.character;
         const distance = Math.abs((player.x + player.width / 2) - (boss.x + boss.width / 2));
 
@@ -736,4 +720,147 @@ class World {
             this.character.isLanding = false;
         }
     }
+
+    restartLevel(levelName) {
+        this.stop();
+        fadeOutAudio(this.levelCompleteSetup.sounds.levelCompleteMusic);
+        if (this.character) {
+            // 🧹 Eventuelle laufende Sounds stoppen
+            if (this.character.footStepSound) {
+                this.character.footStepSound.pause();
+                this.character.footStepSound.currentTime = 0;
+            }
+
+            // 🧹 Animationen, Timer oder eigene Loops stoppen
+            if (this.character.intervalJump) {
+                clearInterval(this.character.intervalJump);
+                this.character.intervalJump = null;
+            }
+
+            // 🔥 Referenz löschen
+            this.character = null;
+        }
+        setTimeout(() => {
+            this.character = new Character(this.characterImages);
+            // this.character.resetTimers();
+            this.setWorld();
+            this.camera_x = this.character.x - 100;   // Starte synchron zur Figur
+            this.lastTime = performance.now();
+            switch (levelName) {
+                case 'farmLevel':
+                    this.farmLevelSetup = new FarmLevelSetup(this);
+                    this.farmLevelController = new FarmLevelController(this.farmLevelSetup);
+                    this.stableLevelSetup = new StableLevelSetup(this);
+                    this.stableLevelController = new StableLevelController(this.stableLevelSetup);
+                    break;
+                // andere Levels, falls du das auch brauchst
+            }
+
+            this.currentScene = levelName;
+            document.getElementById('level-complete-button-box').classList.add('d-none');
+            this.isRunning = true;
+            this.draw();
+        }, 50);
+
+
+
+    }
+
+    destroy() {
+        // 🧩 Spiel pausieren und Rendering stoppen
+        this.paused = true;
+
+        // 🧹 Falls du den letzten Frame-Loop gespeichert hast, abbrechen
+        if (this.frameId) {
+            cancelAnimationFrame(this.frameId);
+            this.frameId = null;
+        }
+
+        // 🧹 Canvas leeren
+        if (this.ctx && this.canvas) {
+            this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+        }
+
+        // 🛑 Alle Sounds stoppen
+        const stopSound = (sound) => {
+            if (sound && !sound.paused) {
+                try {
+                    sound.pause();
+                    sound.currentTime = 0;
+                } catch (e) { }
+            }
+        };
+
+        // Liste aller Sounds im World-Scope
+        [
+            this.endbossMusic,
+            this.footStepSound,
+            this.jumpSound,
+            this.landingSound,
+            this.chapterSound,
+            ...(this.farmLevelSetup?.sounds ? Object.values(this.farmLevelSetup.sounds) : []),
+            ...(this.stableLevelSetup?.sounds ? Object.values(this.stableLevelSetup.sounds) : []),
+            ...(this.townLevelSetup?.sounds ? Object.values(this.townLevelSetup.sounds) : []),
+            ...(this.nayelisHouseLevelSetup?.sounds ? Object.values(this.nayelisHouseLevelSetup.sounds) : []),
+            ...(this.newWeaponLevelSetup?.sounds ? Object.values(this.newWeaponLevelSetup.sounds) : []),
+            ...(this.levelCompleteSetup?.sounds ? Object.values(this.levelCompleteSetup.sounds) : []),
+        ].forEach(stopSound);
+
+        // 🧱 Video-Elemente entfernen (z. B. aus Nayelis-House-Level)
+        const removeVideo = (setup) => {
+            if (setup?.video && setup.video.parentNode) {
+                setup.video.pause();
+                setup.video.src = "";
+                setup.video.parentNode.removeChild(setup.video);
+            }
+        };
+        [
+            this.farmLevelSetup,
+            this.stableLevelSetup,
+            this.townLevelSetup,
+            this.nayelisHouseLevelSetup,
+            this.newWeaponLevelSetup,
+            this.levelCompleteSetup
+        ].forEach(removeVideo);
+
+        // 🗑️ Controller und Setups dereferenzieren
+        this.farmLevelController = null;
+        this.stableLevelController = null;
+        this.townLevelController = null;
+        this.nayelisHouseLevelController = null;
+        this.newWeaponLevelController = null;
+        this.levelCompleteController = null;
+
+        this.farmLevelSetup = null;
+        this.stableLevelSetup = null;
+        this.townLevelSetup = null;
+        this.nayelisHouseLevelSetup = null;
+        this.newWeaponLevelSetup = null;
+        this.levelCompleteSetup = null;
+
+        // 👤 Charakter & andere Entities entfernen
+        this.character = null;
+
+        // 🎮 Input deaktivieren
+        this.isKeysStopp = true;
+        this.keyboard = null;
+
+        // 🔧 Welt-Referenzen
+        this.ctx = null;
+        this.canvas = null;
+        this.characterImages = null;
+        this.npcImages = null;
+        this.intro = null;
+
+        console.info("World wurde zerstört und kann neu initialisiert werden.");
+    }
+
+    stop() {
+        this.isRunning = false; // 👈 Nur Flag setzen – das reicht
+        if (this.frameId) {
+            cancelAnimationFrame(this.frameId);
+            this.frameId = null;
+        }
+    }
+
 }

@@ -1,14 +1,24 @@
+/**
+ * Represents a basic drawable object with position, size, and image properties.
+ * Provides image loading functionality for rendering.
+ */
 class DrawableObject {
-    x = 120;
-    y = 250;
-    img;
-    width = 100;
-    height = 150;
 
+    /**
+     * Initializes default position, size, and image properties.
+     */
     constructor() {
-
+        this.x = 120;
+        this.y = 250;
+        this.img;
+        this.width = 100;
+        this.height = 150;
     }
 
+    /**
+     * Loads an image from a given file path.
+     * @param {string} path - Path to the image file.
+     */
     loadImage(path) {
         this.img = new Image();
         this.img.src = path;

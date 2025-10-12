@@ -1,49 +1,52 @@
+/**
+ * Represents a collectible or animated movable object.
+ * Handles random positioning, simple animation, and collision offsets.
+ * @extends MovableObject
+ */
 class Coin extends MovableObject {
-    coinImages = [];
-
     isGameCharacter = true;
 
-    coinCount = 0;
-
-    constructor() {
+    /**
+     * Creates a new instance with randomized position and animation settings.
+     * @param {Object} npcImages - Image data containing animation frames.
+     */
+    constructor(npcImages) {
         super();
-        super.loadImage('./assets/img/8_coin/coin_1.webp')
+        this.npcImages = npcImages;
+        this.coinImages = npcImages.coin || [];
+        this.img = this.coinImages[0];
         this.x = 200 + Math.random() * 500;
         this.y = 340 + Math.random() * 20;
         this.height = 100;
+        this.setOffsets();
+        this.frameIndex = 0;
+        this.lastFrameTime = 0;
+        this.frameInterval = 1000 / 5;
+    }
+
+    /**
+     * Sets uniform collision or display offsets.
+     */
+    setOffsets() {
         this.offset.top = 35;
         this.offset.left = 35;
         this.offset.right = 35;
         this.offset.bottom = 35;
-
-        this.preloadCoinImages().then(() => {
-            this.animationCoin();
-        });
     }
 
-    animationCoin() {
-        setInterval(() => {
-            let index = this.coinCount % this.coinImages.length;
-            this.img = this.coinImages[index];
-            this.coinCount++
-        }, 1000 / 4);
-    }
-
-    loadImage2(src) {
-        return new Promise((resolve, reject) => {
-            const img = new Image();
-            img.onload = () => resolve(img);
-            img.onerror = reject;
-            img.src = src;
-        });
-    }
-
-    async preloadCoinImages() {
-        const paths = [
-            './assets/img/8_coin/coin_1.webp',
-            './assets/img/8_coin/coin_2.webp'
-        ];
-
-        this.coinImages = await Promise.all(paths.map(src => this.loadImage2(src)));
+    /**
+     * Updates the animation frame based on elapsed time.
+     * @param {number} timestamp - Current time in milliseconds.
+     */
+    updateAnimation(timestamp) {
+        if (!this.lastFrameTime) this.lastFrameTime = timestamp;
+        const deltaTime = timestamp - this.lastFrameTime;
+        if (deltaTime > this.frameInterval) {
+            if (this.coinImages && this.coinImages.length > 0) {
+                this.img = this.coinImages[this.frameIndex % this.coinImages.length];
+                this.frameIndex++;
+                this.lastFrameTime = timestamp;
+            }
+        }
     }
 }

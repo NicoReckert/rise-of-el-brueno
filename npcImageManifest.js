@@ -66,4 +66,18 @@ const npcImageManifest = {
   macuahuitl_idle: Array.from({ length: 30 }, (_, i) => `./assets/img/npcs/macuahuitl/idle/image_${i + 1}.webp`),
   memoryLight_idle: Array.from({ length: 10 }, (_, i) => `./assets/img/npcs/memory_light/idle/image_${i + 1}.webp`),
   levelComplete_idle: Array.from({ length: 10 }, (_, i) => `./assets/img/npcs/level_complete/idle/image_${i + 1}.webp`),
-}
+  endboss_idle: Array.from({ length: 12 }, (_, i) => `./assets/img/4_enemie_boss_chicken/0_idle/image_${i + 1}.webp`),
+  endboss_walk: Array.from({ length: 4 }, (_, i) => `./assets/img/4_enemie_boss_chicken/1_walk/G${i + 1}.webp`),
+  endboss_hurt: Array.from({ length: 6 }, (_, i) => `./assets/img/4_enemie_boss_chicken/4_hurt/image_${i + 1}.webp`),
+  endboss_dead: Array.from({ length: 8 }, (_, i) => `./assets/img/4_enemie_boss_chicken/5_dead/image_${i + 1}.webp`),
+  endboss_findsPeace: Array.from({ length: 20 }, (_, i) => `./assets/img/4_enemie_boss_chicken/6_finds_peace/image_${i + 1}.webp`),
+  endbossAttack_idle: Array.from({ length: 10 }, (_, i) => `./assets/img/tornado/image_${i + 1}.webp`),
+  chickenMutates_walk: Array.from({ length: 5 }, (_, i) => `./assets/img/3_enemies_chicken/chicken_mutates/image_${2 + i}.webp`),
+  chickenMutates_dead: Array.from({ length: 1 }, _ => `assets/img/3_enemies_chicken/chicken_mutates/dead/image_1.webp`),
+  lifeEnergyCharacter_status: Array.from({ length: 6 }, (_, i) => `./assets/img/7_statusbars/1_statusbar/2_statusbar_health/green/${i * 20}.webp`),
+  lifeEnergyBoss_status: Array.from({ length: 6 }, (_, i) => `./assets/img/7_statusbars/2_statusbar_endboss/green/green${i * 20}.webp`),
+  coinBar_status: Array.from({ length: 6 }, (_, i) => `./assets/img/7_statusbars/1_statusbar/1_statusbar_coin/green/${i * 20}.webp`),
+  bottleBar_status: Array.from({ length: 6 }, (_, i) => `./assets/img/7_statusbars/1_statusbar/3_statusbar_bottle/green/${i * 20}.webp`),
+  bottleOnGround: Array.from({ length: 2 }, (_, i) => `./assets/img/6_salsa_bottle/${i + 1}_salsa_bottle_on_ground.webp`),
+  coin: Array.from({ length: 2 }, (_, i) => `./assets/img/8_coin/coin_${i + 1}.webp`)
+}                                                               

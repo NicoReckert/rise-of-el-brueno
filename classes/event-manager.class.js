@@ -1,15 +1,26 @@
 class EventManager {
     constructor(setup, questManager) {
+        if (!setup?.world) throw new Error("EventManager: setup.world fehlt!");
         this.setup = setup;
         this.events = [];
         this.startTime = performance.now();
         this.questManager = questManager;
+        this.debugColors = { active: "lime", inactive: "red", hitA: "blue", hitB: "orange" };
     }
 
     resolveTarget(name) {
-        if (!name) return null;
+        if (!this.isValidName(name)) return null;
+        for (const pool of this.getTargetPools()) {
+            const target = this.findInPool(pool, name);
+            if (target) return target;
+        }
+        return null;
+    }
 
-        const pools = [
+    isValidName(name) { return typeof name === "string" && name.trim().length > 0; }
+
+    getTargetPools() {
+        return [
             this.setup.world,
             this.setup.npcs,
             this.setup.enemies,
@@ -18,13 +29,10 @@ class EventManager {
             this.setup.items,
             this.setup
         ];
+    }
 
-        for (const pool of pools) {
-            if (pool && pool[name]) {
-                return pool[name];
-            }
-        }
-        return null;
+    findInPool(pool, name) {
+        return pool && typeof pool === "object" ? pool[name] ?? null : null;
     }
 
     add(event) {
@@ -32,27 +40,13 @@ class EventManager {
             triggered: false,
             once: true,
             lastTrigger: 0,
-            lastLeave: 0, // neu für cooldown bei onLeave
+            lastLeave: 0,
             ...event
         });
     }
 
-    emit(eventName) {
-        this.events.forEach(e => {
-            if (e.resetOn === eventName) {
-                e._resetFlag = true;
-            }
-        });
-    }
-
-    emitNow(eventName) {
-        const now = performance.now();
-        this.events.forEach(e => {
-            if (e.resetOn === eventName) {
-                this.resetEvent(e, now); // sofort resetten
-            }
-        });
-    }
+    emit(eventName) { this.events.forEach(e => { if (e.resetOn === eventName) e._resetFlag = true; }); }
+    emitNow(eventName) { const now = performance.now(); this.events.forEach(e => { if (e.resetOn === eventName) this.resetEvent(e, now); }); }
 
     resetEvent(element, now) {
         element.startAt = now;
@@ -62,52 +56,54 @@ class EventManager {
     }
 
     resetEventByName(name) {
-        const event = this.events.find(e => e.name === name);
-        if (event) {
-            this.resetEvent(event, performance.now());
-        }
+        const e = this.events.find(ev => ev.name === name);
+        if (e) this.resetEvent(e, performance.now());
     }
 
-    // Hilfsfunktion: Hitbox berechnen + NORMALISIEREN
-    _getBox(obj, tol = { x: 0, y: 0, width: 0, height: 0 }) {
-        // robuste Defaults
-        const off = obj.offset || { left: 0, right: 0, top: 0, bottom: 0 };
-        const t = {
-            x: tol.x ?? 0,
-            y: tol.y ?? 0,
-            width: tol.width ?? 0,
-            height: tol.height ?? 0
+    _getBox(obj, tol = {}) {
+        const off = obj.offset ?? { left: 0, right: 0, top: 0, bottom: 0 };
+        const t = this.getDefaultTolerance(tol);
+        const { left, right, top, bottom } = this.calculateRawBox(obj, off, t);
+        const norm = this.normalizeBox({ left, right, top, bottom });
+        const camX = this.getCameraX();
+        return {
+            x: norm.left - camX,
+            y: norm.top,
+            width: Math.max(0.001, norm.right - norm.left),
+            height: Math.max(0.001, norm.bottom - norm.top)
         };
+    }
 
-        // Rohwerte (un-normalisiert)
-        let left = obj.isFlipped
-            ? obj.x + off.right + t.x
-            : obj.x + off.left + t.x;
+    getDefaultTolerance(tol) {
+        return {
+            x: tol?.x ?? 0,
+            y: tol?.y ?? 0,
+            width: tol?.width ?? 0,
+            height: tol?.height ?? 0
+        };
+    }
 
-        let right = obj.isFlipped
+    calculateRawBox(obj, off, t) {
+        const left = obj.isFlipped ? obj.x + off.right + t.x : obj.x + off.left + t.x;
+        const right = obj.isFlipped
             ? obj.x + obj.width - off.left - t.width
             : obj.x + obj.width - off.right - t.width;
+        const top = obj.y + off.top + t.y;
+        const bottom = obj.y + obj.height - off.bottom - t.height;
+        return { left, right, top, bottom };
+    }
 
-        let top = obj.y + off.top + t.y;
-        let bottom = obj.y + obj.height - off.bottom - t.height;
-
-        // NORMALISIEREN: sicherstellen, dass left<=right & top<=bottom
-        const normLeft = Math.min(left, right);
-        const normRight = Math.max(left, right);
-        const normTop = Math.min(top, bottom);
-        const normBottom = Math.max(top, bottom);
-
-        const camX = (this.setup && this.setup.world) ? this.setup.world.camera_x : 0;
-
+    normalizeBox(raw) {
         return {
-            x: normLeft - camX,
-            y: normTop,
-            width: Math.max(0.001, normRight - normLeft),
-            height: Math.max(0.001, normBottom - normTop)
+            left: Math.min(raw.left, raw.right),
+            right: Math.max(raw.left, raw.right),
+            top: Math.min(raw.top, raw.bottom),
+            bottom: Math.max(raw.top, raw.bottom)
         };
     }
 
-    // Hilfsfunktion: Hitbox zeichnen (immer!)
+    getCameraX() { return this.setup?.world?.camera_x ?? 0; }
+
     _drawBox(ctx, box, color) {
         ctx.save();
         ctx.strokeStyle = color;
@@ -116,224 +112,237 @@ class EventManager {
         ctx.restore();
     }
 
-
     update() {
         const now = performance.now();
+        this.events.forEach(e => this.handleEventUpdate(e, now));
+    }
 
-        this.events.forEach(element => {
-            if (element.triggered) return;
+    handleEventUpdate(event, now) {
+        if (this.shouldSkipEvent(event)) return;
+        const canTrigger = this.canTrigger(event, now);
+        const { objA, objB } = this.resolveEventObjects(event);
+        this.routeEventByType(event, now, canTrigger, objA, objB);
+    }
 
-            // Step-Check
-            if (element.step !== undefined && this.questManager?.step !== element.step) {
-                return;
-            }
+    shouldSkipEvent(e) {
+        if (e.triggered) return true;
+        if (e.step !== undefined && this.questManager?.step !== e.step) return true;
+        if (e.condition && !e.condition(this.setup)) return true;
+        return false;
+    }
 
-            // Condition-Check
-            if (element.condition && !element.condition(this.setup)) {
-                return;
-            }
+    canTrigger(e, now) { return !e.cooldown || now - (e.lastTrigger ?? 0) >= e.cooldown; }
 
-            const canTrigger = !element.cooldown || now - element.lastTrigger >= element.cooldown;
-            const objA = element.objectA ? this.resolveTarget(element.objectA) : this.setup.world.character;
-            const objB = element.objectB ? this.resolveTarget(element.objectB) : null;
+    resolveEventObjects(e) {
+        return {
+            objA: e.objectA ? this.resolveTarget(e.objectA) : this.setup.world.character,
+            objB: e.objectB ? this.resolveTarget(e.objectB) : null
+        };
+    }
 
-            switch (element.type) {
-                // --- Zeitbasiert ---
-                case "time": {
-                    if (element.startAt === undefined || element._lastStep !== this.questManager?.step) {
-                        element.startAt = now;
-                        element._lastStep = this.questManager?.step;
-                    } if (element._resetFlag) this.resetEvent(element, now);
+    routeEventByType(e, now, canTrigger, objA, objB) {
+        switch (e.type) {
+            case "time": return this.handleTimeEvent(e, now, canTrigger);
+            case "position": return this.handlePositionEvent(e, now, canTrigger, objA);
+            case "quest": return this.handleQuestEvent(e, now, canTrigger);
+            case "input": return this.handleInputEvent(e, now, canTrigger);
+            case "collision": return this.handleCollisionEvent(e, now, canTrigger, objA, objB);
+            case "hold": return this.handleHoldEvent(e, now, canTrigger, objA, objB);
+        }
+    }
 
-                    const elapsedTime = now - element.startAt;
-                    element.progress = element.to
-                        ? Math.min(elapsedTime / (element.to - (element.from ?? 0)), 1)
-                        : Math.min(elapsedTime / (element.delay ?? 1), 1);
+    handleTimeEvent(e, now, canTrigger) {
+        this.initTimeEvent(e, now);
+        const elapsed = now - e.startAt;
+        this.updateTimeProgress(e, elapsed);
+        if (this.isWithinTime(e, elapsed) && canTrigger) this.triggerTimeAction(e, now, elapsed);
+        else if (elapsed > (e.to ?? Infinity)) this.finishOrRepeatTimeEvent(e, now);
+    }
 
-                    const start = element.from ?? element.delay ?? 0;
-                    const end = element.to ?? Infinity;
+    initTimeEvent(e, now) {
+        if (e.startAt === undefined || e._lastStep !== this.questManager?.step) {
+            e.startAt = now;
+            e._lastStep = this.questManager?.step;
+        }
+        if (e._resetFlag) this.resetEvent(e, now);
+    }
 
-                    if (elapsedTime >= start && elapsedTime <= end && canTrigger) {
-                        if (element.action) element.action(this.setup, elapsedTime, element.progress);
-                        element.lastTrigger = now;
-                        if (element.once && !element.repeat) element.triggered = true;
-                    }
+    updateTimeProgress(e, elapsed) {
+        const from = e.from ?? e.delay ?? 0;
+        const to = e.to ?? Infinity;
+        e.progress = e.to
+            ? Math.min(elapsed / (e.to - from), 1)
+            : Math.min(elapsed / (e.delay ?? 1), 1);
+    }
 
-                    if (elapsedTime > end) {
-                        if (!element._ended && element.onEnd) {
-                            element.onEnd(this.setup);
-                            element._ended = true;
-                        }
-                        if (element.repeat) this.resetEvent(element, now);
-                    }
-                    break;
-                }
+    isWithinTime(e, elapsed) {
+        const start = e.from ?? e.delay ?? 0;
+        const end = e.to ?? Infinity;
+        return elapsed >= start && elapsed <= end;
+    }
 
-                // --- Position ---
-                case "position": {
-                    const areaBox = {
-                        x: element.area.x,
-                        y: element.area.y ?? 0,
-                        width: element.area.width ?? 50,
-                        height: element.area.height ?? this.setup.world.canvas.height,
-                        offset: { top: 0, left: 0, right: 0, bottom: 0 },
-                        isFlipped: false
-                    };
+    triggerTimeAction(e, now, elapsed) {
+        e.action?.(this.setup, elapsed, e.progress);
+        e.lastTrigger = now;
+        if (e.once && !e.repeat) e.triggered = true;
+    }
 
-                    const inArea =
-                        typeof objA?.isColliding === "function" &&
-                        objA.isColliding(areaBox) &&
-                        (!element.requireKey || this.setup.world.keyboard[element.requireKey]);
+    finishOrRepeatTimeEvent(e, now) {
+        if (!e._ended && e.onEnd) { e.onEnd(this.setup); e._ended = true; }
+        if (e.repeat) this.resetEvent(e, now);
+    }
 
-                    if (inArea && canTrigger) {
-                        if (element.action) element.action(this.setup, objA);
-                        element.lastTrigger = now;
-                        if (element.once) element.triggered = true;
-                    } else if (!inArea && element.onLeave) {
-                        if (!element.cooldown || now - element.lastLeave >= element.cooldown) {
-                            element.onLeave(this.setup, objA);
-                            element.lastLeave = now;
-                        }
-                    }
+    handlePositionEvent(e, now, canTrigger, objA) {
+        const area = this.getPositionArea(e);
+        const inside = this.isInsideArea(objA, area, e);
+        if (inside && canTrigger) this.triggerPositionEnter(e, now, objA);
+        else if (!inside) this.triggerPositionLeave(e, now, objA);
+        if (this.debug) this.drawPositionDebug(area, inside);
+    }
 
-                    // Debug
-                    if (this.debug) {
-                        const ctx = this.setup.world.ctx;
-                        ctx.save();
-                        ctx.strokeStyle = inArea ? "lime" : "red";
-                        ctx.lineWidth = 2;
-                        ctx.strokeRect(
-                            areaBox.x - this.setup.world.camera_x,
-                            areaBox.y,
-                            areaBox.width,
-                            areaBox.height
-                        );
-                        ctx.restore();
-                    }
-                    break;
-                }
+    getPositionArea(e) {
+        return {
+            x: e.area.x,
+            y: e.area.y ?? 0,
+            width: e.area.width ?? 50,
+            height: e.area.height ?? this.setup.world.canvas.height,
+            offset: { top: 0, left: 0, right: 0, bottom: 0 },
+            isFlipped: false
+        };
+    }
 
-                // --- Quest ---
-                case "quest": {
-                    if (canTrigger) {
-                        if (element.action) element.action(this.setup);
-                        element.lastTrigger = now;
-                        if (element.once) element.triggered = true;
-                    }
-                    break;
-                }
+    isInsideArea(objA, area, e) {
+        return typeof objA?.isColliding === "function" &&
+            objA.isColliding(area) &&
+            (!e.requireKey || this.setup.world.keyboard[e.requireKey]);
+    }
 
-                // --- Input ---
-                case "input": {
-                    if (this.setup.world.keyboard[element.key] && canTrigger) {
-                        if (element.action) element.action(this.setup);
-                        element.lastTrigger = now;
-                        if (element.once) element.triggered = true;
-                    }
-                    break;
-                }
+    triggerPositionEnter(e, now, objA) {
+        e.action?.(this.setup, objA);
+        e.lastTrigger = now;
+        if (e.once) e.triggered = true;
+    }
 
-                // --- Collision ---
-                case "collision": {
-                    if (!objA || !objB || typeof objA.isColliding !== "function") break;
+    triggerPositionLeave(e, now, objA) {
+        if (!e.onLeave) return;
+        if (!e.cooldown || now - (e.lastLeave ?? 0) >= e.cooldown) {
+            e.onLeave(this.setup, objA);
+            e.lastLeave = now;
+        }
+    }
 
-                    const toleranceA = element.toleranceA || { x: 0, y: 0, width: 0, height: 0 };
-                    const toleranceB = element.toleranceB || { x: 0, y: 0, width: 0, height: 0 };
+    drawPositionDebug(area, active) {
+        const ctx = this.setup.world.ctx;
+        ctx.save();
+        ctx.strokeStyle = active ? this.debugColors.active : this.debugColors.inactive;
+        ctx.lineWidth = 2;
+        ctx.strokeRect(area.x - this.getCameraX(), area.y, area.width, area.height);
+        ctx.restore();
+    }
 
-                    const colliding = objA.isColliding(objB, toleranceA, toleranceB);
-                    const keyDown = !element.requireKey || this.setup.world.keyboard[element.requireKey];
+    handleQuestEvent(e, now, canTrigger) {
+        if (!canTrigger) return;
+        e.action?.(this.setup);
+        e.lastTrigger = now;
+        if (e.once) e.triggered = true;
+    }
 
-                    if (colliding && keyDown && canTrigger) {
-                        if (element.action) element.action(this.setup, objA, objB);
-                        element.lastTrigger = now;
-                        if (element.once) element.triggered = true;
-                    } else if (!colliding && element.onLeave) {
-                        // Cooldown auch für onLeave berücksichtigen
-                        if (now - element.lastTrigger >= (element.cooldown || 0)) {
-                            element.onLeave(this.setup, objA, objB);
-                            element.lastTrigger = now;
-                        }
-                    }
+    handleInputEvent(e, now, canTrigger) {
+        if (!this.setup.world.keyboard[e.key] || !canTrigger) return;
+        e.action?.(this.setup);
+        e.lastTrigger = now;
+        if (e.once) e.triggered = true;
+    }
 
-                    // --- Debug ---
-                    if (this.debug) {
-                        const ctx = this.setup.world.ctx;
-                        ctx.save();
+    handleCollisionEvent(e, now, canTrigger, a, b) {
+        if (!a || !b || typeof a.isColliding !== "function") return;
+        const tolA = this.getDefaultTolerance(e.toleranceA);
+        const tolB = this.getDefaultTolerance(e.toleranceB);
+        const hit = a.isColliding(b, tolA, tolB);
+        const key = !e.requireKey || this.setup.world.keyboard[e.requireKey];
+        if (hit && key && canTrigger) this.triggerCollision(e, now, a, b);
+        else if (!hit) this.triggerCollisionLeave(e, now, a, b);
+        if (this.debug) this.drawCollisionDebug(a, b, tolA, tolB, hit);
+    }
 
-                        const a = this._getBox(objA, toleranceA);
-                        const b = this._getBox(objB, toleranceB);
+    triggerCollision(e, now, a, b) {
+        e.action?.(this.setup, a, b);
+        e.lastTrigger = now;
+        if (e.once) e.triggered = true;
+    }
 
-                        this._drawBox(ctx, a, colliding ? "lime" : "blue");
-                        this._drawBox(ctx, b, colliding ? "lime" : "orange");
+    triggerCollisionLeave(e, now, a, b) {
+        if (e.onLeave && now - (e.lastTrigger ?? 0) >= (e.cooldown || 0)) {
+            e.onLeave(this.setup, a, b);
+            e.lastTrigger = now;
+        }
+    }
 
-                        ctx.restore();
-                    }
-                    break;
-                }
-                // --- Hold ---
-                case "hold": {
-                    if (!objA || !objB || typeof objA.isColliding !== "function") break;
+    drawCollisionDebug(a, b, tolA, tolB, hit) {
+        const ctx = this.setup.world.ctx;
+        ctx.save();
+        const boxA = this._getBox(a, tolA);
+        const boxB = this._getBox(b, tolB);
+        this._drawBox(ctx, boxA, hit ? this.debugColors.active : this.debugColors.hitA);
+        this._drawBox(ctx, boxB, hit ? this.debugColors.active : this.debugColors.hitB);
+        ctx.restore();
+    }
 
-                    const toleranceA = element.toleranceA || { x: 0, y: 0, width: 0, height: 0 };
-                    const toleranceB = element.toleranceB || { x: 0, y: 0, width: 0, height: 0 };
+    handleHoldEvent(e, now, canTrigger, a, b) {
+        if (!a || !b || typeof a.isColliding !== "function") return;
+        const tolA = this.getDefaultTolerance(e.toleranceA);
+        const tolB = this.getDefaultTolerance(e.toleranceB);
+        const hit = a.isColliding(b, tolA, tolB);
+        const key = !e.requireKey || this.setup.world.keyboard[e.requireKey];
+        if (hit && key) this.updateHoldProgress(e, now, canTrigger, a, b);
+        else this.cancelHold(e, a, b);
+        if (this.debug) this.drawHoldDebug(e, a, b, tolA, tolB, hit);
+    }
 
-                    const colliding = objA.isColliding(objB, toleranceA, toleranceB);
-                    const keyDown = !element.requireKey || this.setup.world.keyboard[element.requireKey];
+    updateHoldProgress(e, now, canTrigger, a, b) {
+        if (!e.holdStart) e.holdStart = now;
+        const elapsed = now - e.holdStart;
+        e.progress = Math.min(elapsed / e.duration, 1);
+        if (elapsed >= e.duration && canTrigger) {
+            e.action?.(this.setup, a, b);
+            e.lastTrigger = now;
+            if (e.once) e.triggered = true;
+        }
+    }
 
-                    if (colliding && keyDown) {
-                        if (!element.holdStart) element.holdStart = now;
+    cancelHold(e, a, b) {
+        if (e.progress > 0 && e.onCancel) e.onCancel(this.setup, a, b);
+        e.holdStart = null;
+        e.progress = 0;
+    }
 
-                        const elapsedHold = now - element.holdStart;
-                        element.progress = Math.min(elapsedHold / element.duration, 1);
+    drawHoldDebug(e, a, b, tolA, tolB, hit) {
+        const ctx = this.setup.world.ctx;
+        ctx.save();
+        const boxA = this._getBox(a, tolA);
+        const boxB = this._getBox(b, tolB);
+        this._drawBox(ctx, boxA, hit ? this.debugColors.active : this.debugColors.hitA);
+        this._drawBox(ctx, boxB, hit ? this.debugColors.active : this.debugColors.hitB);
+        if (e.progress > 0) this.drawHoldProgressCircle(ctx, e, b);
+        ctx.restore();
+    }
 
-                        if (elapsedHold >= element.duration && canTrigger) {
-                            if (element.action) element.action(this.setup, objA, objB);
-                            element.lastTrigger = now;
-                            if (element.once) element.triggered = true;
-                        }
-                    } else {
-                        if (element.progress > 0 && element.onCancel) {
-                            element.onCancel(this.setup, objA, objB);
-                        }
-                        element.holdStart = null;
-                        element.progress = 0;
-                    }
+    drawHoldProgressCircle(ctx, e, objB) {
+        const x = objB.x - this.getCameraX() + objB.width / 2;
+        const y = objB.y - 40;
+        const r = 20;
+        ctx.beginPath();
+        ctx.arc(x, y, r, -Math.PI / 2, -Math.PI / 2 + e.progress * 2 * Math.PI);
+        ctx.strokeStyle = this.debugColors.active;
+        ctx.lineWidth = 4;
+        ctx.stroke();
+        if (e.requireKey) this.drawHoldKeyText(ctx, e, x, y);
+    }
 
-                    // --- Debug ---
-                    if (this.debug) {
-                        const ctx = this.setup.world.ctx;
-                        ctx.save();
-
-                        const a = this._getBox(objA, toleranceA);
-                        const b = this._getBox(objB, toleranceB);
-
-                        this._drawBox(ctx, a, colliding ? "lime" : "blue");
-                        this._drawBox(ctx, b, colliding ? "lime" : "orange");
-
-                        if (element.progress > 0) {
-                            const x = objB.x - this.setup.world.camera_x + objB.width / 2;
-                            const y = objB.y - 40;
-                            const radius = 20;
-
-                            ctx.beginPath();
-                            ctx.arc(x, y, radius, -Math.PI / 2, -Math.PI / 2 + element.progress * 2 * Math.PI);
-                            ctx.strokeStyle = "lime";
-                            ctx.lineWidth = 4;
-                            ctx.stroke();
-
-                            if (element.requireKey) {
-                                ctx.fillStyle = "white";
-                                ctx.font = "14px Arial";
-                                ctx.textAlign = "center";
-                                ctx.fillText(`Halte ${element.requireKey}`, x, y - 30);
-                            }
-                        }
-
-                        ctx.restore();
-                    }
-                    break;
-                }
-            }
-        });
+    drawHoldKeyText(ctx, e, x, y) {
+        ctx.fillStyle = "white";
+        ctx.font = "14px Arial";
+        ctx.textAlign = "center";
+        ctx.fillText(`Halte ${e.requireKey}`, x, y - 30);
     }
 }

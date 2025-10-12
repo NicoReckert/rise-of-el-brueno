@@ -8,6 +8,7 @@ const levelCompleteEvents =
                 setup.sounds.levelCompleteSound.play();
                 setup.video.play();
                 setup.npcs.levelComplete.isFlipped = false;
+                document.getElementById('level-complete-button-box').classList.remove('d-none');
             }
         }
     ]

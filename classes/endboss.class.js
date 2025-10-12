@@ -1,258 +1,266 @@
+/**
+ * Represents a complex movable object with gravity, animation, and state handling.
+ * Handles movement, jumping, falling, and transitions between animation states.
+ * @extends MovableObject
+ */
 class Endboss extends MovableObject {
-    speedX = 1;
-    speedY = 0;
     isGameCharacter = true;
-    isHurt = false;
-    isDead = false;
-    isDeadAnimationReady = false;
-    isMovingLeft = false;
-    isMovingRight = false;
-    isJumping = false;
-    isUnderTheGround = false;
-    isFindsPeace = false;
-    idleImages =
-        [
-            './assets/img/4_enemie_boss_chicken/0_idle/image_1.webp',
-            './assets/img/4_enemie_boss_chicken/0_idle/image_2.webp',
-            './assets/img/4_enemie_boss_chicken/0_idle/image_3.webp',
-            './assets/img/4_enemie_boss_chicken/0_idle/image_4.webp',
-            './assets/img/4_enemie_boss_chicken/0_idle/image_5.webp',
-            './assets/img/4_enemie_boss_chicken/0_idle/image_5.webp',
-            './assets/img/4_enemie_boss_chicken/0_idle/image_5.webp',
-            './assets/img/4_enemie_boss_chicken/0_idle/image_6.webp',
-            './assets/img/4_enemie_boss_chicken/0_idle/image_7.webp',
-            './assets/img/4_enemie_boss_chicken/0_idle/image_8.webp',
-            './assets/img/4_enemie_boss_chicken/0_idle/image_9.webp',
-            './assets/img/4_enemie_boss_chicken/0_idle/image_10.webp',
-            './assets/img/4_enemie_boss_chicken/0_idle/image_11.webp',
-            './assets/img/4_enemie_boss_chicken/0_idle/image_12.webp'
-        ]
-    walkImages =
-        [
-            './assets/img/4_enemie_boss_chicken/1_walk/G1.webp',
-            './assets/img/4_enemie_boss_chicken/1_walk/G2.webp',
-            './assets/img/4_enemie_boss_chicken/1_walk/G3.webp',
-            './assets/img/4_enemie_boss_chicken/1_walk/G4.webp',
-        ]
 
-    hurtImages =
-        [
-            './assets/img/4_enemie_boss_chicken/4_hurt/image_1.webp',
-            './assets/img/4_enemie_boss_chicken/4_hurt/image_2.webp',
-            './assets/img/4_enemie_boss_chicken/4_hurt/image_3.webp',
-            './assets/img/4_enemie_boss_chicken/4_hurt/image_4.webp',
-            './assets/img/4_enemie_boss_chicken/4_hurt/image_5.webp',
-            './assets/img/4_enemie_boss_chicken/4_hurt/image_6.webp'
-        ]
-
-    deadImages =
-        [
-            './assets/img/4_enemie_boss_chicken/5_dead/image_1.webp',
-            './assets/img/4_enemie_boss_chicken/5_dead/image_2.webp',
-            './assets/img/4_enemie_boss_chicken/5_dead/image_3.webp',
-            './assets/img/4_enemie_boss_chicken/5_dead/image_4.webp',
-            './assets/img/4_enemie_boss_chicken/5_dead/image_5.webp',
-            './assets/img/4_enemie_boss_chicken/5_dead/image_6.webp',
-            './assets/img/4_enemie_boss_chicken/5_dead/image_7.webp',
-            './assets/img/4_enemie_boss_chicken/5_dead/image_8.webp'
-
-        ]
-
-    findsPeaceImages =
-        [
-            './assets/img/4_enemie_boss_chicken/6_finds_peace/image_1.webp',
-            './assets/img/4_enemie_boss_chicken/6_finds_peace/image_2.webp',
-            './assets/img/4_enemie_boss_chicken/6_finds_peace/image_3.webp',
-            './assets/img/4_enemie_boss_chicken/6_finds_peace/image_4.webp',
-            './assets/img/4_enemie_boss_chicken/6_finds_peace/image_5.webp',
-            './assets/img/4_enemie_boss_chicken/6_finds_peace/image_6.webp',
-            './assets/img/4_enemie_boss_chicken/6_finds_peace/image_7.webp',
-            './assets/img/4_enemie_boss_chicken/6_finds_peace/image_8.webp',
-            './assets/img/4_enemie_boss_chicken/6_finds_peace/image_9.webp',
-            './assets/img/4_enemie_boss_chicken/6_finds_peace/image_10.webp',
-            './assets/img/4_enemie_boss_chicken/6_finds_peace/image_11.webp',
-            './assets/img/4_enemie_boss_chicken/6_finds_peace/image_12.webp',
-            './assets/img/4_enemie_boss_chicken/6_finds_peace/image_13.webp',
-            './assets/img/4_enemie_boss_chicken/6_finds_peace/image_14.webp',
-            './assets/img/4_enemie_boss_chicken/6_finds_peace/image_15.webp',
-            './assets/img/4_enemie_boss_chicken/6_finds_peace/image_16.webp',
-            './assets/img/4_enemie_boss_chicken/6_finds_peace/image_17.webp',
-            './assets/img/4_enemie_boss_chicken/6_finds_peace/image_18.webp',
-            './assets/img/4_enemie_boss_chicken/6_finds_peace/image_19.webp',
-            './assets/img/4_enemie_boss_chicken/6_finds_peace/image_20.webp'
-
-
-        ]
-
-    intervalMoveDownAfterDead = null;
-
-    constructor() {
+    /**
+     * Creates a new instance with default position, speed, and animation settings.
+     * @param {Object} npcImages - Image data containing animation frames.
+     */
+    constructor(npcImages) {
         super();
-        super.loadImage('./assets/img/4_enemie_boss_chicken/2_alert/G5.webp')
-        this.x = 16000; //6200
-        this.y = 205;
-        this.width = 350;
-        this.height = 500;
-        this.offset.top = 98;
-        this.offset.left = 15;
-        this.offset.right = 13;
-        this.offset.bottom = 14;
-
+        this.npcImages = npcImages;
+        this.speedX = 8;
+        this.speedY = 0;
         this.lastFrameTime = 0;
         this.currentAnimation = 'idle';
         this.frameInterval = 1000 / 8;
         this.frameIndex = 0;
-
+        this.gravityInterval = 1000 / 60;
+        this.init();
     }
 
-    // animation() {
-    //     setInterval(() => {
-    //         this.x -= this.speed;
-    //     }, 1000 / 60);
+    /**
+     * Initializes object size, offsets, images, and states.
+     */
+    init() {
+        this.setSizeAndPosition();
+        this.setOffset();
+        this.initBaseImages();
+        this.initStates();
+    }
 
-    // }
+    /**
+     * Sets the initial size and position.
+     */
+    setSizeAndPosition() {
+        this.x = 16000;
+        this.y = 205;
+        this.width = 350;
+        this.height = 500;
+    }
 
-    // animationIdle() {
-    //     this.intervalIdle = setInterval(() => {
-    //         let index = this.idleCount % this.idleImages.length;
-    //         this.img.src = this.idleImages[index];
-    //         this.idleCount++
-    //     }, 1000 / 4);
-    // }
+    /**
+     * Sets collision or interaction offset values.
+     */
+    setOffset() {
+        this.offset.top = 98;
+        this.offset.left = 15;
+        this.offset.right = 13;
+        this.offset.bottom = 14;
+    }
 
-    // animationWalk() {
-    //     this.intervalWalk = setInterval(() => {
-    //         let index = this.walkCount % this.walkImages.length;
-    //         this.img.src = this.walkImages[index];
-    //         this.walkCount++
-    //     }, 1000 / 8);
-    // }
+    /**
+     * Initializes base image sets.
+     */
+    initBaseImages() {
+        this.idleImages = this.npcImages.endboss_idle || [];
+        this.walkImages = this.npcImages.endboss_walk || [];
+        this.deadImages = this.npcImages.endboss_dead || [];
+        this.hurtImages = this.npcImages.endboss_hurt || [];
+        this.findsPeaceImages = this.npcImages.endboss_findsPeace || [];
+    }
 
-    // animationHurt() {
-    //     if (this.intervalHurt) return;
-    //     clearInterval(this.intervalIdle);
-    //     clearInterval(this.intervalWalk);
-    //     this.intervalIdle = null;
-    //     this.intervalWalk = null;
-    //     this.isHurt = true;
-    //     this.intervalHurt = setInterval(() => {
-    //         if (this.hurtCount != 4) {
-    //             let index = this.hurtCount % this.hurtImages.length;
-    //             this.img.src = this.hurtImages[index];
-    //             this.hurtCount++
-    //         } else {
-    //             clearInterval(this.intervalHurt);
-    //             this.intervalHurt = null;
-    //             this.hurtCount = 0;
-    //             this.isHurt = false;
-    //             if (!this.isDead) {
-    //                 this.animationIdle();
-    //             }
-    //         }
-    //     }, 1000 / 8);
-    // }
+    /**
+     * Initializes state flags.
+     */
+    initStates() {
+        this.isHurt = false;
+        this.isDead = false;
+        this.isDeadAnimationReady = false;
+        this.isMovingLeft = false;
+        this.isMovingRight = false;
+        this.isJumping = false;
+        this.isUnderTheGround = false;
+        this.isFindsPeace = false;
+    }
 
-    // animationDead() {
-    //     if (this.intervalDead) return;
-    //     clearInterval(this.intervalIdle);
-    //     clearInterval(this.intervalWalk);
-    //     this.intervalIdle = null;
-    //     this.intervalWalk = null;
-    //     this.intervalDead = setInterval(() => {
-    //         if (this.isHurt) return;
-    //         if (this.deadCount != 3) {
-    //             let index = this.deadCount % this.deadImages.length;
-    //             this.img.src = this.deadImages[index];
-    //             this.deadCount++
-    //         } else {
-    //             this.moveDownAfterDead();
-    //         }
-    //     }, 1000 / 8);
-    // }
-
+    /**
+     * Applies gravity by updating the vertical position over time.
+     * @param {number} timestamp - Current time in milliseconds.
+     */
     applyGravityBoss(timestamp) {
         if (!this.lastGravityUpdate) this.lastGravityUpdate = timestamp;
-
         const deltaTime = timestamp - this.lastGravityUpdate;
-
-        if (deltaTime > this.gravityInterval) {
-
-            if (this.isJumping || this.y < -35 || this.speedY > 0) {
-                this.y -= this.speedY;
-                this.speedY -= this.acceleration;
-                if (this.y >= -35) {
-                    this.y = -35;
-                    this.speedY = 0;
-                    this.isJumping = false;
-
-                }
-            } else {
-                this.speedY = 0;
-                this.isJumping = false;
-            }
-            this.lastGravityUpdate = timestamp;
-        }
+        if (deltaTime <= this.gravityInterval) return;
+        this.updateVerticalPosition();
+        this.lastGravityUpdate = timestamp;
     }
 
-    moveDownAfterDead() {
-        this.intervalMoveDownAfterDead = setInterval(() => {
-            clearInterval(this.intervalDead);
-            this.intervalDead = null;
-            this.y += 5;
-        }, 1000 / 60);
-    }
-
-    updateState() {
-        // if (this.isDeadAnimationReady && !this.isUnderTheGround) {
-        //     this.y += 3;
-        // }
-
-        if (this.isMovingLeft) {
-            this.isFlipped = false;
-            if (this.x > 0) {
-                this.x -= this.speedX;
-            }
-        } else if (this.isMovingRight) {
-            this.isFlipped = true;
-            // if (this.x < this.world.level1_end_x) {
-            this.x += this.speedX;
-            // }
-        }
-        if (this.isFindsPeace) {
-            this.currentAnimation = 'findsPeace';
-            this.frameInterval = 1000 / 6;
-            if (this.frameIndex >= this.findsPeaceImages.length) {
-                this.isFindsPeace = false;
-                this.frameIndex = 0;
-            }
-        } else if (this.isDead) {
-            if (!this.isDeadAnimationReady) {
-                this.currentAnimation = 'dead';
-                this.frameInterval = 1000 / 4;
-            } else {
-                this.currentAnimation = null;
-            }
-            return;
-
-        } else if (this.isHurt) {
-            this.currentAnimation = 'hurt';
-            this.frameInterval = 1000 / 8;
-            if (this.frameIndex >= this.hurtImages.length) {
-                this.isHurt = false;
-                this.frameIndex = 0;
-            }
-        } else if (this.isJumping) {
-            this.currentAnimation = 'jump';
-            this.frameInterval = 1000 / 10;
-        } else if (this.isMovingLeft || this.isMovingRight) {
-            this.currentAnimation = 'walk';
-            this.frameInterval = 1000 / 8;
+    /**
+     * Updates the vertical position based on gravity and collisions.
+     */
+    updateVerticalPosition() {
+        if (this.shouldApplyGravity()) {
+            this.applyJumpPhysics();
+            this.checkGroundCollision();
         } else {
-            this.currentAnimation = 'idle';
-            this.frameInterval = 1000 / 8;
+            this.resetVerticalMovement();
         }
     }
 
+    /**
+     * Determines whether gravity should currently be applied.
+     * @returns {boolean} True if gravity should be applied.
+     */
+    shouldApplyGravity() {
+        return this.isJumping || this.y < -35 || this.speedY > 0;
+    }
+
+    /**
+     * Applies basic jump physics.
+     */
+    applyJumpPhysics() {
+        this.y -= this.speedY;
+        this.speedY -= this.acceleration;
+    }
+
+    /**
+     * Checks for ground collision and resets vertical movement if necessary.
+     */
+    checkGroundCollision() {
+        if (this.y >= -35) {
+            this.y = -35;
+            this.speedY = 0;
+            this.isJumping = false;
+        }
+    }
+
+    /**
+     * Resets vertical movement and jump state.
+     */
+    resetVerticalMovement() {
+        this.speedY = 0;
+        this.isJumping = false;
+    }
+
+    /**
+     * Moves the object downward after death until it goes below the ground level.
+     * @param {number} timestamp - Current time in milliseconds.
+     */
+    moveDownAfterDead(timestamp) {
+        if (!this.lastMoveDownTime) this.lastMoveDownTime = timestamp;
+        const deltaTime = timestamp - this.lastMoveDownTime;
+        if (deltaTime <= 1000 / 60) return;
+        if (this.isDead && !this.isUnderTheGround) {
+            this.y += this.fallSpeed || 5;
+            if (this.y > 600) {
+                this.isUnderTheGround = true;
+            }
+        }
+        this.lastMoveDownTime = timestamp;
+    }
+
+    /**
+     * Updates movement and animation state each frame.
+     */
+    updateState() {
+        this.updateDeltaTime(timestamp);
+        this.handleMovement();
+        this.handleStateAnimations();
+    }
+
+    /**
+     * Updates delta time and calculates movement speed.
+     * @param {number} timestamp - Current time in milliseconds.
+     */
+    updateDeltaTime(timestamp) {
+        if (!this.lastUpdateTime) this.lastUpdateTime = timestamp;
+        const deltaTime = (timestamp - this.lastUpdateTime) / 1000;
+        this.lastUpdateTime = timestamp;
+        this.movementSpeed = this.speedX * deltaTime * 60;
+    }
+
+    /**
+     * Handles horizontal movement based on direction flags.
+     */
+    handleMovement() {
+        if (this.isMovingLeft) return this.moveLeft();
+        if (this.isMovingRight) return this.moveRight();
+    }
+
+    /**
+     * Moves the object to the left.
+     */
+    moveLeft() {
+        this.isFlipped = false;
+        if (this.x > 0) {
+            this.x -= this.movementSpeed;
+        }
+    }
+
+    /**
+     * Moves the object to the right.
+     */
+    moveRight() {
+        this.isFlipped = true;
+        this.x += this.movementSpeed;
+    }
+
+    /**
+     * Handles and updates the animation state based on current conditions.
+     */
+    handleStateAnimations() {
+        if (this.isFindsPeace) return this.playFindsPeace();
+        if (this.isDead) return this.playDeathAnimation();
+        if (this.isHurt) return this.playHurtAnimation();
+        if (this.isJumping) return this.setAnimation('jump', 10);
+        if (this.isMovingLeft || this.isMovingRight)
+            return this.setAnimation('walk', 8);
+        this.setAnimation('idle', 8);
+    }
+
+    /**
+     * Plays the "finds peace" animation and resets the state when finished.
+     */
+    playFindsPeace() {
+        this.setAnimation('findsPeace', 6);
+        if (this.frameIndex >= this.findsPeaceImages.length) {
+            this.isFindsPeace = false;
+            this.frameIndex = 0;
+        }
+    }
+
+    /**
+     * Plays the death animation and stops it when finished.
+     */
+    playDeathAnimation() {
+        if (!this.isDeadAnimationReady) {
+            this.setAnimation('dead', 4);
+        } else {
+            this.currentAnimation = null;
+        }
+    }
+
+    /**
+     * Plays the hurt animation and resets the state when finished.
+     */
+    playHurtAnimation() {
+        this.setAnimation('hurt', 8);
+        if (this.frameIndex >= this.hurtImages.length) {
+            this.isHurt = false;
+            this.frameIndex = 0;
+        }
+    }
+
+    /**
+     * Sets the current animation and adjusts its frame rate.
+     * @param {string} name - Animation name.
+     * @param {number} fps - Frames per second.
+     */
+    setAnimation(name, fps) {
+        this.currentAnimation = name;
+        this.frameInterval = 1000 / fps;
+    }
+
+    /**
+     * Returns the image set for a given animation state.
+     * @param {string} state - Animation state name.
+     * @returns {Array<string>|undefined} The corresponding image set.
+     */
     getAnimationImages(state) {
         switch (state) {
             case 'dead': return this.deadImages;
@@ -264,24 +272,37 @@ class Endboss extends MovableObject {
         }
     }
 
+    /**
+     * Updates the animation frame based on elapsed time.
+     * @param {number} timestamp - Current time in milliseconds.
+     */
     updateAnimation(timestamp) {
         if (!this.lastFrameTime) this.lastFrameTime = timestamp;
-
         const deltaTime = timestamp - this.lastFrameTime;
+        if (deltaTime <= this.frameInterval) return;
+        this.updateFrameImage();
+        this.handleDeathAnimation();
+        this.lastFrameTime = timestamp;
+    }
 
-        if (deltaTime > this.frameInterval) {
-            let images = this.getAnimationImages(this.currentAnimation);
+    /**
+     * Updates the currently displayed animation frame.
+     */
+    updateFrameImage() {
+        const images = this.getAnimationImages(this.currentAnimation);
+        if (!images || images.length === 0) return;
+        this.img = images[this.frameIndex % images.length];
+        this.frameIndex++;
+    }
 
-            if (images && images.length > 0) {
-                this.img.src = images[this.frameIndex % images.length];
-                this.frameIndex++;
-                this.lastFrameTime = timestamp;
-            }
-            if (this.currentAnimation === 'dead' && this.frameIndex >= this.deadImages.length) {
-                this.isDeadAnimationReady = true;
-                this.frameIndex = 0;
-                this.img.src = './assets/img/4_enemie_boss_chicken/5_dead/image_6.webp'
-            }
-        }
+    /**
+     * Handles logic for death animation progression and final frame handling.
+     */
+    handleDeathAnimation() {
+        if (this.currentAnimation !== 'dead') return;
+        if (this.frameIndex < this.deadImages.length) return;
+        this.isDeadAnimationReady = true;
+        this.frameIndex = 0;
+        this.img = this.deadImages[7];
     }
 }

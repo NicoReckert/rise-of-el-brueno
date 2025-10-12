@@ -1,14 +1,16 @@
+/**
+ * Represents a status bar that displays a fill level or progress value.
+ * @extends StatusBar
+ */
 class BottleBar extends StatusBar {
-    constructor() {
+    /**
+     * Creates a new status bar instance.
+     * @param {Object} npcImages - Image data containing status bar graphics.
+     */
+    constructor(npcImages) {
         super();
-        this.statusImages = [
-            './assets/img/7_statusbars/1_statusbar/3_statusbar_bottle/green/0.webp',
-            './assets/img/7_statusbars/1_statusbar/3_statusbar_bottle/green/20.webp',
-            './assets/img/7_statusbars/1_statusbar/3_statusbar_bottle/green/40.webp',
-            './assets/img/7_statusbars/1_statusbar/3_statusbar_bottle/green/60.webp',
-            './assets/img/7_statusbars/1_statusbar/3_statusbar_bottle/green/80.webp',
-            './assets/img/7_statusbars/1_statusbar/3_statusbar_bottle/green/100.webp',
-        ]
+        this.npcImages = npcImages;
+        this.statusImages = this.npcImages.bottleBar_status || [];
         this.setPercentage(0);
         this.y = 100;
     }

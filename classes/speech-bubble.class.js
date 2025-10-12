@@ -1,5 +1,6 @@
 class SpeechBubble {
-    constructor(text, target = 'canvas', type = 'speech') {
+    constructor(text, target = 'canvas', type = 'speech', allAudios) {
+        this.allAudios = allAudios;
         this.fullText = text;
         this.displayedText = '';
         this.target = target; // 'canvas' = HUD, sonst Character/NPC
@@ -10,7 +11,7 @@ class SpeechBubble {
 
         // Tipp-Sound nur bei speech
         if (this.type === "speech") {
-            this.speechSound = new Audio('./assets/audio/speech-sound5.opus');
+            this.speechSound = this.allAudios.speechSound;
             this.speechSound.volume = 0.5;
         }
     }
