@@ -10,6 +10,7 @@ const townEvents =
                 setup.world.farmLevelSetup.farmLevel.level_end_x = 25000;
                 setup.world.camera_x = 0;
                 setup.world.character.speedX = 10;
+                setup.world.character.isWalkDetermined = false;
             }
         },
 

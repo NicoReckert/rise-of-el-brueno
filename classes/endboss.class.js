@@ -157,7 +157,7 @@ class Endboss extends MovableObject {
     /**
      * Updates movement and animation state each frame.
      */
-    updateState() {
+    updateState(timestamp) {
         this.updateDeltaTime(timestamp);
         this.handleMovement();
         this.handleStateAnimations();

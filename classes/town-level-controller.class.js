@@ -151,7 +151,7 @@ class TownLevelController {
     }
 
     updateEndboss(timestamp) {
-        this.setup.npcs.endboss.updateState();
+        this.setup.npcs.endboss.updateState(timestamp);
         this.setup.npcs.endboss.updateAnimation(timestamp);
         this.setup.endbossAttack.updateState();
         this.setup.endbossAttack.updateAnimation(timestamp);

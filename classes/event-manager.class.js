@@ -1,4 +1,12 @@
+/**
+ * Manages world events and their state.
+ */
 class EventManager {
+    /**
+     * Creates a new EventManager instance.
+     * @param {object} setup - The game setup containing world and objects.
+     * @param {object} questManager - The quest manager instance.
+     */
     constructor(setup, questManager) {
         if (!setup?.world) throw new Error("EventManager: setup.world fehlt!");
         this.setup = setup;
@@ -8,6 +16,11 @@ class EventManager {
         this.debugColors = { active: "lime", inactive: "red", hitA: "blue", hitB: "orange" };
     }
 
+    /**
+     * Resolves a target by name.
+     * @param {string} name - The target name.
+     * @returns {object|null} The resolved target or null.
+     */
     resolveTarget(name) {
         if (!this.isValidName(name)) return null;
         for (const pool of this.getTargetPools()) {
@@ -17,8 +30,19 @@ class EventManager {
         return null;
     }
 
-    isValidName(name) { return typeof name === "string" && name.trim().length > 0; }
+    /**
+     * Checks if a name is valid.
+     * @param {string} name - The name to validate.
+     * @returns {boolean} True if valid, otherwise false.
+     */
+    isValidName(name) {
+        return typeof name === "string" && name.trim().length > 0;
+    }
 
+    /**
+     * Returns all available target pools.
+     * @returns {object[]} The list of target pools.
+     */
     getTargetPools() {
         return [
             this.setup.world,
@@ -31,10 +55,20 @@ class EventManager {
         ];
     }
 
+    /**
+     * Finds an object by name in a pool.
+     * @param {object} pool - The object pool.
+     * @param {string} name - The target name.
+     * @returns {object|null} The found object or null.
+     */
     findInPool(pool, name) {
         return pool && typeof pool === "object" ? pool[name] ?? null : null;
     }
 
+    /**
+     * Adds a new event.
+     * @param {object} event - The event data.
+     */
     add(event) {
         this.events.push({
             triggered: false,
@@ -45,9 +79,28 @@ class EventManager {
         });
     }
 
-    emit(eventName) { this.events.forEach(e => { if (e.resetOn === eventName) e._resetFlag = true; }); }
-    emitNow(eventName) { const now = performance.now(); this.events.forEach(e => { if (e.resetOn === eventName) this.resetEvent(e, now); }); }
+    /**
+     * Emits a reset flag for matching events.
+     * @param {string} eventName - The event name to reset.
+     */
+    emit(eventName) {
+        this.events.forEach(e => { if (e.resetOn === eventName) e._resetFlag = true; });
+    }
 
+    /**
+     * Immediately resets matching events.
+     * @param {string} eventName - The event name to reset.
+     */
+    emitNow(eventName) {
+        const now = performance.now();
+        this.events.forEach(e => { if (e.resetOn === eventName) this.resetEvent(e, now); });
+    }
+
+    /**
+     * Resets an event state.
+     * @param {object} element - The event element.
+     * @param {number} now - The current timestamp.
+     */
     resetEvent(element, now) {
         element.startAt = now;
         element.triggered = false;
@@ -55,11 +108,21 @@ class EventManager {
         element._resetFlag = false;
     }
 
+    /**
+     * Resets an event by name.
+     * @param {string} name - The event name.
+     */
     resetEventByName(name) {
         const e = this.events.find(ev => ev.name === name);
         if (e) this.resetEvent(e, performance.now());
     }
 
+    /**
+     * Creates a normalized bounding box.
+     * @param {object} obj - The target object.
+     * @param {object} [tol={}] - The tolerance values.
+     * @returns {object} The normalized box.
+     */
     _getBox(obj, tol = {}) {
         const off = obj.offset ?? { left: 0, right: 0, top: 0, bottom: 0 };
         const t = this.getDefaultTolerance(tol);
@@ -74,6 +137,11 @@ class EventManager {
         };
     }
 
+    /**
+     * Returns default tolerance values.
+     * @param {object} tol - Partial tolerance overrides.
+     * @returns {object} The full tolerance object.
+     */
     getDefaultTolerance(tol) {
         return {
             x: tol?.x ?? 0,
@@ -83,6 +151,13 @@ class EventManager {
         };
     }
 
+    /**
+     * Calculates raw box coordinates.
+     * @param {object} obj - The object.
+     * @param {object} off - The offset.
+     * @param {object} t - The tolerance.
+     * @returns {object} The raw box coordinates.
+     */
     calculateRawBox(obj, off, t) {
         const left = obj.isFlipped ? obj.x + off.right + t.x : obj.x + off.left + t.x;
         const right = obj.isFlipped
@@ -93,6 +168,11 @@ class EventManager {
         return { left, right, top, bottom };
     }
 
+    /**
+     * Normalizes box coordinates.
+     * @param {object} raw - The raw box.
+     * @returns {object} The normalized box.
+     */
     normalizeBox(raw) {
         return {
             left: Math.min(raw.left, raw.right),
@@ -102,8 +182,20 @@ class EventManager {
         };
     }
 
-    getCameraX() { return this.setup?.world?.camera_x ?? 0; }
+    /**
+     * Returns the camera X position.
+     * @returns {number} The camera X value.
+     */
+    getCameraX() {
+        return this.setup?.world?.camera_x ?? 0;
+    }
 
+    /**
+     * Draws a debug box.
+     * @param {CanvasRenderingContext2D} ctx - The canvas context.
+     * @param {object} box - The box to draw.
+     * @param {string} color - The box color.
+     */
     _drawBox(ctx, box, color) {
         ctx.save();
         ctx.strokeStyle = color;
@@ -112,11 +204,19 @@ class EventManager {
         ctx.restore();
     }
 
+    /**
+     * Updates all events.
+     */
     update() {
         const now = performance.now();
         this.events.forEach(e => this.handleEventUpdate(e, now));
     }
 
+    /**
+     * Handles event update logic.
+     * @param {object} event - The event object.
+     * @param {number} now - The current time.
+     */
     handleEventUpdate(event, now) {
         if (this.shouldSkipEvent(event)) return;
         const canTrigger = this.canTrigger(event, now);
@@ -124,6 +224,11 @@ class EventManager {
         this.routeEventByType(event, now, canTrigger, objA, objB);
     }
 
+    /**
+     * Determines if an event should be skipped.
+     * @param {object} e - The event.
+     * @returns {boolean} True if skipped.
+     */
     shouldSkipEvent(e) {
         if (e.triggered) return true;
         if (e.step !== undefined && this.questManager?.step !== e.step) return true;
@@ -131,8 +236,21 @@ class EventManager {
         return false;
     }
 
-    canTrigger(e, now) { return !e.cooldown || now - (e.lastTrigger ?? 0) >= e.cooldown; }
+    /**
+     * Checks if an event can trigger.
+     * @param {object} e - The event.
+     * @param {number} now - The current time.
+     * @returns {boolean} True if it can trigger.
+     */
+    canTrigger(e, now) {
+        return !e.cooldown || now - (e.lastTrigger ?? 0) >= e.cooldown;
+    }
 
+    /**
+     * Resolves event objects.
+     * @param {object} e - The event.
+     * @returns {{objA: object, objB: object|null}} The resolved objects.
+     */
     resolveEventObjects(e) {
         return {
             objA: e.objectA ? this.resolveTarget(e.objectA) : this.setup.world.character,
@@ -140,6 +258,14 @@ class EventManager {
         };
     }
 
+    /**
+     * Routes event logic by type.
+     * @param {object} e - The event.
+     * @param {number} now - The current time.
+     * @param {boolean} canTrigger - Whether it can trigger.
+     * @param {object} objA - The first object.
+     * @param {object} objB - The second object.
+     */
     routeEventByType(e, now, canTrigger, objA, objB) {
         switch (e.type) {
             case "time": return this.handleTimeEvent(e, now, canTrigger);
@@ -151,6 +277,12 @@ class EventManager {
         }
     }
 
+    /**
+     * Handles time-based events.
+     * @param {object} e - The event.
+     * @param {number} now - The current time.
+     * @param {boolean} canTrigger - Whether it can trigger.
+     */
     handleTimeEvent(e, now, canTrigger) {
         this.initTimeEvent(e, now);
         const elapsed = now - e.startAt;
@@ -159,6 +291,11 @@ class EventManager {
         else if (elapsed > (e.to ?? Infinity)) this.finishOrRepeatTimeEvent(e, now);
     }
 
+    /**
+     * Initializes time event data.
+     * @param {object} e - The event.
+     * @param {number} now - The current time.
+     */
     initTimeEvent(e, now) {
         if (e.startAt === undefined || e._lastStep !== this.questManager?.step) {
             e.startAt = now;
@@ -167,6 +304,11 @@ class EventManager {
         if (e._resetFlag) this.resetEvent(e, now);
     }
 
+    /**
+     * Updates time event progress.
+     * @param {object} e - The event.
+     * @param {number} elapsed - Elapsed time.
+     */
     updateTimeProgress(e, elapsed) {
         const from = e.from ?? e.delay ?? 0;
         const to = e.to ?? Infinity;
@@ -175,23 +317,47 @@ class EventManager {
             : Math.min(elapsed / (e.delay ?? 1), 1);
     }
 
+    /**
+     * Checks if a time event is within range.
+     * @param {object} e - The event.
+     * @param {number} elapsed - Elapsed time.
+     * @returns {boolean} True if within range.
+     */
     isWithinTime(e, elapsed) {
         const start = e.from ?? e.delay ?? 0;
         const end = e.to ?? Infinity;
         return elapsed >= start && elapsed <= end;
     }
 
+    /**
+     * Triggers a time event action.
+     * @param {object} e - The event.
+     * @param {number} now - The current time.
+     * @param {number} elapsed - Elapsed time.
+     */
     triggerTimeAction(e, now, elapsed) {
         e.action?.(this.setup, elapsed, e.progress);
         e.lastTrigger = now;
         if (e.once && !e.repeat) e.triggered = true;
     }
 
+    /**
+     * Finishes or repeats a time event.
+     * @param {object} e - The event.
+     * @param {number} now - The current time.
+     */
     finishOrRepeatTimeEvent(e, now) {
         if (!e._ended && e.onEnd) { e.onEnd(this.setup); e._ended = true; }
         if (e.repeat) this.resetEvent(e, now);
     }
 
+    /**
+     * Handles position-based events.
+     * @param {object} e - The event.
+     * @param {number} now - The current time.
+     * @param {boolean} canTrigger - Whether it can trigger.
+     * @param {object} objA - The object to check.
+     */
     handlePositionEvent(e, now, canTrigger, objA) {
         const area = this.getPositionArea(e);
         const inside = this.isInsideArea(objA, area, e);
@@ -200,6 +366,11 @@ class EventManager {
         if (this.debug) this.drawPositionDebug(area, inside);
     }
 
+    /**
+     * Gets position area data.
+     * @param {object} e - The event.
+     * @returns {object} The position area.
+     */
     getPositionArea(e) {
         return {
             x: e.area.x,
@@ -211,18 +382,37 @@ class EventManager {
         };
     }
 
+    /**
+     * Checks if object is inside area.
+     * @param {object} objA - The object.
+     * @param {object} area - The area.
+     * @param {object} e - The event.
+     * @returns {boolean} True if inside.
+     */
     isInsideArea(objA, area, e) {
         return typeof objA?.isColliding === "function" &&
             objA.isColliding(area) &&
             (!e.requireKey || this.setup.world.keyboard[e.requireKey]);
     }
 
+    /**
+     * Triggers position enter action.
+     * @param {object} e - The event.
+     * @param {number} now - The current time.
+     * @param {object} objA - The object.
+     */
     triggerPositionEnter(e, now, objA) {
         e.action?.(this.setup, objA);
         e.lastTrigger = now;
         if (e.once) e.triggered = true;
     }
 
+    /**
+     * Triggers position leave action.
+     * @param {object} e - The event.
+     * @param {number} now - The current time.
+     * @param {object} objA - The object.
+     */
     triggerPositionLeave(e, now, objA) {
         if (!e.onLeave) return;
         if (!e.cooldown || now - (e.lastLeave ?? 0) >= e.cooldown) {
@@ -231,6 +421,11 @@ class EventManager {
         }
     }
 
+    /**
+     * Draws debug area.
+     * @param {object} area - The area.
+     * @param {boolean} active - Active state.
+     */
     drawPositionDebug(area, active) {
         const ctx = this.setup.world.ctx;
         ctx.save();
@@ -240,6 +435,12 @@ class EventManager {
         ctx.restore();
     }
 
+    /**
+     * Handles quest events.
+     * @param {object} e - The event.
+     * @param {number} now - The current time.
+     * @param {boolean} canTrigger - Whether it can trigger.
+     */
     handleQuestEvent(e, now, canTrigger) {
         if (!canTrigger) return;
         e.action?.(this.setup);
@@ -247,6 +448,12 @@ class EventManager {
         if (e.once) e.triggered = true;
     }
 
+    /**
+     * Handles input events.
+     * @param {object} e - The event.
+     * @param {number} now - The current time.
+     * @param {boolean} canTrigger - Whether it can trigger.
+     */
     handleInputEvent(e, now, canTrigger) {
         if (!this.setup.world.keyboard[e.key] || !canTrigger) return;
         e.action?.(this.setup);
@@ -254,6 +461,14 @@ class EventManager {
         if (e.once) e.triggered = true;
     }
 
+    /**
+     * Handles collision events.
+     * @param {object} e - The event.
+     * @param {number} now - The current time.
+     * @param {boolean} canTrigger - Whether it can trigger.
+     * @param {object} a - The first object.
+     * @param {object} b - The second object.
+     */
     handleCollisionEvent(e, now, canTrigger, a, b) {
         if (!a || !b || typeof a.isColliding !== "function") return;
         const tolA = this.getDefaultTolerance(e.toleranceA);
@@ -265,12 +480,26 @@ class EventManager {
         if (this.debug) this.drawCollisionDebug(a, b, tolA, tolB, hit);
     }
 
+    /**
+     * Executes collision action.
+     * @param {object} e - The event.
+     * @param {number} now - The current time.
+     * @param {object} a - The first object.
+     * @param {object} b - The second object.
+     */
     triggerCollision(e, now, a, b) {
         e.action?.(this.setup, a, b);
         e.lastTrigger = now;
         if (e.once) e.triggered = true;
     }
 
+    /**
+     * Handles collision leave.
+     * @param {object} e - The event.
+     * @param {number} now - The current time.
+     * @param {object} a - The first object.
+     * @param {object} b - The second object.
+     */
     triggerCollisionLeave(e, now, a, b) {
         if (e.onLeave && now - (e.lastTrigger ?? 0) >= (e.cooldown || 0)) {
             e.onLeave(this.setup, a, b);
@@ -278,6 +507,14 @@ class EventManager {
         }
     }
 
+    /**
+     * Draws collision debug boxes.
+     * @param {object} a - First object.
+     * @param {object} b - Second object.
+     * @param {object} tolA - Tolerance A.
+     * @param {object} tolB - Tolerance B.
+     * @param {boolean} hit - Collision state.
+     */
     drawCollisionDebug(a, b, tolA, tolB, hit) {
         const ctx = this.setup.world.ctx;
         ctx.save();
@@ -288,6 +525,14 @@ class EventManager {
         ctx.restore();
     }
 
+    /**
+     * Handles hold events.
+     * @param {object} e - The event.
+     * @param {number} now - The current time.
+     * @param {boolean} canTrigger - Whether it can trigger.
+     * @param {object} a - First object.
+     * @param {object} b - Second object.
+     */
     handleHoldEvent(e, now, canTrigger, a, b) {
         if (!a || !b || typeof a.isColliding !== "function") return;
         const tolA = this.getDefaultTolerance(e.toleranceA);
@@ -299,6 +544,14 @@ class EventManager {
         if (this.debug) this.drawHoldDebug(e, a, b, tolA, tolB, hit);
     }
 
+    /**
+     * Updates hold progress.
+     * @param {object} e - The event.
+     * @param {number} now - The current time.
+     * @param {boolean} canTrigger - Whether it can trigger.
+     * @param {object} a - First object.
+     * @param {object} b - Second object.
+     */
     updateHoldProgress(e, now, canTrigger, a, b) {
         if (!e.holdStart) e.holdStart = now;
         const elapsed = now - e.holdStart;
@@ -310,12 +563,27 @@ class EventManager {
         }
     }
 
+    /**
+     * Cancels a hold event.
+     * @param {object} e - The event.
+     * @param {object} a - First object.
+     * @param {object} b - Second object.
+     */
     cancelHold(e, a, b) {
         if (e.progress > 0 && e.onCancel) e.onCancel(this.setup, a, b);
         e.holdStart = null;
         e.progress = 0;
     }
 
+    /**
+     * Draws hold event debug visuals.
+     * @param {object} e - The event.
+     * @param {object} a - First object.
+     * @param {object} b - Second object.
+     * @param {object} tolA - Tolerance A.
+     * @param {object} tolB - Tolerance B.
+     * @param {boolean} hit - Collision state.
+     */
     drawHoldDebug(e, a, b, tolA, tolB, hit) {
         const ctx = this.setup.world.ctx;
         ctx.save();
@@ -327,6 +595,12 @@ class EventManager {
         ctx.restore();
     }
 
+    /**
+     * Draws hold progress circle.
+     * @param {CanvasRenderingContext2D} ctx - The canvas context.
+     * @param {object} e - The event.
+     * @param {object} objB - The target object.
+     */
     drawHoldProgressCircle(ctx, e, objB) {
         const x = objB.x - this.getCameraX() + objB.width / 2;
         const y = objB.y - 40;
@@ -339,6 +613,13 @@ class EventManager {
         if (e.requireKey) this.drawHoldKeyText(ctx, e, x, y);
     }
 
+    /**
+     * Draws key hint text for hold events.
+     * @param {CanvasRenderingContext2D} ctx - The canvas context.
+     * @param {object} e - The event.
+     * @param {number} x - X position.
+     * @param {number} y - Y position.
+     */
     drawHoldKeyText(ctx, e, x, y) {
         ctx.fillStyle = "white";
         ctx.font = "14px Arial";

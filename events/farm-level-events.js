@@ -1,11 +1,11 @@
-const farmEvents = [
+const farmEvents2 = [
     ...farmEvents_part1,
     ...farmEvents_part2,
     ...farmEvents_part3,
     ...farmEvents_part4
 ];
 
-const farmEvents2 =
+const farmEvents =
     [
         {
             type: 'quest',

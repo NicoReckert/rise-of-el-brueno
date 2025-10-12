@@ -2,7 +2,7 @@ class World {
 
     ctx;
     canvas;
-    currentScene = 'farmLevel';
+    currentScene = 'levelComplete';
 
     constructor(canvas, keyboard, characterImages, npcImages, allAudios) {
         this.canvas = canvas;
