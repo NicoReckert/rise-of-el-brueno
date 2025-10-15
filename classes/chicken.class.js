@@ -8,11 +8,11 @@ class Chicken extends MovableObject {
 
     /**
      * Creates a new instance with randomized speed and default animation settings.
-     * @param {Object} npcImages - Image data containing animation frames.
+     * @param {Object} entityImages - Image data containing animation frames.
      */
-    constructor(npcImages) {
+    constructor(entityImages) {
         super();
-        this.npcImages = npcImages;
+        this.entityImages = entityImages;
         this.speed = 0.5 + Math.random() * 0.5;
         this.lastFrameTime = 0;
         this.currentAnimation = 'walk';
@@ -27,8 +27,8 @@ class Chicken extends MovableObject {
      * Initializes image sets, size, and offset configuration.
      */
     init() {
-        this.walkImages = this.npcImages.chickenMutates_walk || [];
-        this.deadImages = this.npcImages.chickenMutates_dead || [];
+        this.walkImages = this.entityImages.chickenMutates_walk || [];
+        this.deadImages = this.entityImages.chickenMutates_dead || [];
         this.setSizeAndPosition();
         this.setOffset();
     }

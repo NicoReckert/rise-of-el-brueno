@@ -2,48 +2,58 @@ class FarmLevelSetup {
     constructor(world) {
         this.world = world;
         this.farmLevel = farmLevel;
-        this.npcImages = this.world.npcImages;
+        this.entityImages = this.world.entityImages;
         this.allAudios = this.world.allAudios;
         this.farmEvents = farmEvents;
-        this.npcs = {
-            cow: new NotMovableNpc(this.npcImages, 'cow', 200, 200, 500, 495), //255 Y
-            cowPortrait: new NotMovableNpc(this.npcImages, 'cow', 400, 400, 5200, 100),
-            bird: new NotMovableNpc(this.npcImages, 'bird', 80, 80, 1400, 178),
-            pond: new NotMovableNpc(this.npcImages, 'pond', 500, 600, -28, 320),//500, 600, 150, 120
-            tree: new NotMovableNpc(this.npcImages, 'tree', 450, 450, 500, 250),
-            tree2: new NotMovableNpc(this.npcImages, 'tree2', 450, 450, 4600, 250),
-            tree3: new NotMovableNpc(this.npcImages, 'tree3', 450, 450, 5700, 255),
-            flower: new NotMovableNpc(this.npcImages, 'flower', 65, 65, 5650, 600),
-            flower2: new NotMovableNpc(this.npcImages, 'flower2', 65, 65, 5600, 600),
-            flower3: new NotMovableNpc(this.npcImages, 'flower3', 65, 65, 5550, 600),
-            flower4: new NotMovableNpc(this.npcImages, 'flower', 65, 65, 5070, 600),
-            flower5: new NotMovableNpc(this.npcImages, 'flower2', 65, 65, 5120, 600),
-            flower6: new NotMovableNpc(this.npcImages, 'flower3', 65, 65, 5170, 600),
-            flower7: new NotMovableNpc(this.npcImages, 'flower', 65, 65, 4730, 600),
-            flower8: new NotMovableNpc(this.npcImages, 'flower', 65, 65, 4800, 600),
-            drohne: new NotMovableNpc(this.npcImages, 'drohne', 300, 300, 5000, 190),
-            chicken: new NotMovableNpc(this.npcImages, 'chicken', 90, 90, 200, 580),
-            cowHypno: new NotMovableNpc(this.npcImages, 'cowHypno', 200, 200, -100, 492),
-            chickHypno: new NotMovableNpc(this.npcImages, 'chickHypno', 60, 60, 500, 600),
-            blackDragon: new NotMovableNpc(this.npcImages, 'blackDragon', 600, 600, 1000, 132),
-            barrier: new NotMovableNpc(this.npcImages, 'barrier', 450, 120, 7050, 305),
-            house: new NotMovableNpc(this.npcImages, 'house', 900, 900, 800, -30),
-            stable: new NotMovableNpc(this.npcImages, 'stable', 600, 600, 1550, 177),
-            clock: new NotMovableNpc(this.npcImages, 'clock', 150, 150, 5320, 400),
-            campfire: new NotMovableNpc(this.npcImages, 'campfire', 200, 200, 650, 520),
-            chicken2: new NotMovableNpc(this.npcImages, 'chicken', 150, 150, 1600, 540), // 500, 540
-            chickenPortrait: new NotMovableNpc(this.npcImages, 'chicken', 400, 400, 5200, 100), // 500, 540
-            chick: new NotMovableNpc(this.npcImages, 'chick', 120, 120, 1680, 587), // 575, 587
-            chickPortrait: new NotMovableNpc(this.npcImages, 'chick', 400, 400, 5200, 100), // 575, 587
-            sun: new NotMovableNpc(this.npcImages, 'sun', 250, 250, 3000, 50),
-            moon: new NotMovableNpc(this.npcImages, 'moon', 200, 200, 3000, 50)
+        this.characters = {
+            chicken: new AnimatedEntity(this.entityImages, 'chicken', 150, 150, 1600, 540), // 500, 540
+            chick: new AnimatedEntity(this.entityImages, 'chick', 120, 120, 1680, 587), // 575, 587
+            cow: new AnimatedEntity(this.entityImages, 'cow', 200, 200, 500, 495), //255 Y
+            bird: new AnimatedEntity(this.entityImages, 'bird', 80, 80, 1400, 178),
+            drone: new AnimatedEntity(this.entityImages, 'drone', 300, 300, 5000, 190),
+            portraits: {
+                chicken: new AnimatedEntity(this.entityImages, 'chicken', 400, 400, 5200, 100), // 500, 540
+                chick: new AnimatedEntity(this.entityImages, 'chick', 400, 400, 5200, 100), // 575, 587
+                cow: new AnimatedEntity(this.entityImages, 'cow', 400, 400, 5200, 100)
+            }
         };
-        this.npcs.pond.isFlipped = false;
-        this.npcs.cowHypno.isFlipped = true;
-        this.npcs.bird.updateState('idle', 1000 / 7);
-        this.npcs.drohne.updateState('idle', 1000 / 7);
+
+        this.cutsceneActors = {
+            chickenHypno: new AnimatedEntity(this.entityImages, 'chickenHypno', 90, 90, 200, 580),
+            chickHypno: new AnimatedEntity(this.entityImages, 'chickHypno', 60, 60, 500, 600),
+            cowHypno: new AnimatedEntity(this.entityImages, 'cowHypno', 200, 200, -100, 492)
+        }
+
+        this.environment = {
+            pond: new AnimatedEntity(this.entityImages, 'pond', 500, 600, -28, 320),//500, 600, 150, 120
+            trees: [
+                new AnimatedEntity(this.entityImages, 'tree', 450, 450, 500, 250),
+                new AnimatedEntity(this.entityImages, 'tree2', 450, 450, 4600, 250),
+                new AnimatedEntity(this.entityImages, 'tree3', 450, 450, 5700, 255)
+            ],
+            flowers: [
+                new AnimatedEntity(this.entityImages, 'flower', 65, 65, 5650, 600),
+                new AnimatedEntity(this.entityImages, 'flower2', 65, 65, 5600, 600),
+                new AnimatedEntity(this.entityImages, 'flower3', 65, 65, 5550, 600),
+                new AnimatedEntity(this.entityImages, 'flower', 65, 65, 5070, 600),
+                new AnimatedEntity(this.entityImages, 'flower2', 65, 65, 5120, 600),
+                new AnimatedEntity(this.entityImages, 'flower3', 65, 65, 5170, 600),
+                new AnimatedEntity(this.entityImages, 'flower', 65, 65, 4730, 600),
+                new AnimatedEntity(this.entityImages, 'flower', 65, 65, 4800, 600)
+            ],
+            house: new AnimatedEntity(this.entityImages, 'house', 900, 900, 800, -30),
+            stable: new AnimatedEntity(this.entityImages, 'stable', 600, 600, 1550, 177),
+            clock: new AnimatedEntity(this.entityImages, 'clock', 150, 150, 5320, 400),
+            campfire: new AnimatedEntity(this.entityImages, 'campfire', 200, 200, 650, 520),
+            sun: new AnimatedEntity(this.entityImages, 'sun', 250, 250, 3000, 50),
+            moon: new AnimatedEntity(this.entityImages, 'moon', 200, 200, 3000, 50)
+        }
+        this.environment.pond.isFlipped = false;
+        this.cutsceneActors.cowHypno.isFlipped = true;
+        this.characters.bird.updateAnimationState('idle', 1000 / 7);
+        this.characters.drone.updateAnimationState('idle', 1000 / 7);
         this.world.camera_x = 800;
-        this.statusBar = new LifeEnergyCharacterBar(this.npcImages);
+        this.statusBar = new LifeEnergyCharacterBar(this.entityImages);
         this.sounds = {
             farmMusic: this.allAudios.farmMusic,
             notificationSound: this.allAudios.notificationSound,
@@ -58,7 +68,7 @@ class FarmLevelSetup {
             dragonRoarSound: this.allAudios.dragonRoarSound,
             newTaskSound: this.allAudios.newTaskSound,
             taskCompletedSound: this.allAudios.taskCompletedSound,
-            taskCompletedSound2: this.allAudios.taskCompletedSound,
+            taskCompletedSound2: this.allAudios.taskCompletedSound.cloneNode(),
             cowSound: this.allAudios.cowSound,
             cowSound2: this.allAudios.cowSound2,
             doorOpeningSound: this.allAudios.doorOpeningSound,
@@ -116,5 +126,10 @@ class FarmLevelSetup {
         this.comeFromStable = false;
         this.lyrics = [];
         this.earthquakeStart = false;
+        this.doorState = 'closed';
+        this.timeOnStable = null;
+        this.lyricsRenderer = new LyricsRenderer(this.world, this.sounds.happyTogetherMusic);
+        this.sunCycle = new SunCycle(this);
+        this.moonCycle = new MoonCycle(this);
     }
 }

@@ -57,7 +57,7 @@ const FarmHelper = {
         if (!obj) return;
         if ((direction > 0 && obj.x <= limit) || (direction < 0 && obj.x >= limit)) {
             obj.x += direction * speed;
-            obj.updateState('walk');
+            obj.updateAnimationState('walk');
         } else if (nextStep) this.nextQuest(setup, nextStep);
     },
 
@@ -66,18 +66,18 @@ const FarmHelper = {
         const cow = setup.npcs.cow;
         if (cow.x <= maxX) {
             cow.x += speed;
-            cow.updateState('walk');
+            cow.updateAnimationState('walk');
         } else if (nextStep) this.nextQuest(setup, nextStep);
     },
 
     /** 🐄 Kuh frisst */
     makeCowEat(setup) {
-        setup.npcs.cow.updateState('eat', 1000 / 5.5);
+        setup.npcs.cow.updateAnimationState('eat', 1000 / 5.5);
     },
 
     /** 🐄 Kuh erschreckt */
     makeCowAfraid(setup, duration = 1000 / 5) {
-        setup.npcs.cow.updateState('afraid', duration);
+        setup.npcs.cow.updateAnimationState('afraid', duration);
     },
 
     /** 💬 Standard-Sprechblase rendern */
@@ -157,14 +157,14 @@ const FarmHelper = {
 
     /** 🔥 Lagerfeuer aktivieren + Musik wechseln */
     startCampfireScene(setup) {
-        setup.npcs.campfire.updateState('fireGoesOn');
+        setup.npcs.campfire.updateAnimationState('fireGoesOn');
         this.playSound(setup, 'happyTogetherMusic');
         setup.sounds.farmMusic.loop = false;
         this.playSound(setup, 'eveningSound', { loop: true });
-        setup.npcs.cow.updateState('swingToMusic', 1000 / 6.5);
-        setup.npcs.chick.updateState('swingToMusic', 1000 / 6.5);
-        setup.npcs.chicken2.updateState('swingToMusic', 1000 / 6.5);
-        setup.npcs.moon.updateState('swingToMusic');
+        setup.npcs.cow.updateAnimationState('swingToMusic', 1000 / 6.5);
+        setup.npcs.chick.updateAnimationState('swingToMusic', 1000 / 6.5);
+        setup.npcs.chicken.updateAnimationState('swingToMusic', 1000 / 6.5);
+        setup.npcs.moon.updateAnimationState('swingToMusic');
     },
 };
 

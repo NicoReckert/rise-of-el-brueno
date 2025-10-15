@@ -7,11 +7,11 @@ class EndbossAttack extends MovableObject {
 
     /**
      * Creates a new instance with default position, size, and animation settings.
-     * @param {Object} npcImages - Image data containing animation frames.
+     * @param {Object} entityImages - Image data containing animation frames.
      */
-    constructor(npcImages) {
+    constructor(entityImages) {
         super();
-        this.npcImages = npcImages;
+        this.entityImages = entityImages;
         this.x = 800; // 6200
         this.y = 35;
         this.width = 300;
@@ -27,7 +27,7 @@ class EndbossAttack extends MovableObject {
      * Initializes image sets used for animations.
      */
     init() {
-        this.idleImages = this.npcImages.endbossAttack_idle || [];
+        this.idleImages = this.entityImages.endbossAttack_idle || [];
     }
 
     /**

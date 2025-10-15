@@ -24,14 +24,14 @@ const townSrcTown =
 
 let townLevel = null;
 
-function createTownLevel(npcImages) {
+function createTownLevel(entityImages) {
     townLevel = new Level(
         {
             enemies:
                 [
-                    new Chicken(npcImages),
-                    new Chicken(npcImages),
-                    new Chicken(npcImages)
+                    new Chicken(entityImages),
+                    new Chicken(entityImages),
+                    new Chicken(entityImages)
 
                 ],
             clouds:
@@ -108,23 +108,23 @@ function createTownLevel(npcImages) {
                 ],
             coins:
                 [
-                    new Coin(npcImages),
-                    new Coin(npcImages),
-                    new Coin(npcImages),
-                    new Coin(npcImages),
-                    new Coin(npcImages),
-                    new Coin(npcImages)
+                    new Coin(entityImages),
+                    new Coin(entityImages),
+                    new Coin(entityImages),
+                    new Coin(entityImages),
+                    new Coin(entityImages),
+                    new Coin(entityImages)
                 ],
             bottles:
                 [
-                    new Bottle(npcImages),
-                    new Bottle(npcImages),
-                    new Bottle(npcImages),
-                    new Bottle(npcImages),
-                    new Bottle(npcImages),
-                    new Bottle(npcImages),
-                    new Bottle(npcImages),
-                    new Bottle(npcImages)
+                    new Bottle(entityImages),
+                    new Bottle(entityImages),
+                    new Bottle(entityImages),
+                    new Bottle(entityImages),
+                    new Bottle(entityImages),
+                    new Bottle(entityImages),
+                    new Bottle(entityImages),
+                    new Bottle(entityImages)
                 ]
         }
 

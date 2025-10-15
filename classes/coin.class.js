@@ -8,12 +8,12 @@ class Coin extends MovableObject {
 
     /**
      * Creates a new instance with randomized position and animation settings.
-     * @param {Object} npcImages - Image data containing animation frames.
+     * @param {Object} entityImages - Image data containing animation frames.
      */
-    constructor(npcImages) {
+    constructor(entityImages) {
         super();
-        this.npcImages = npcImages;
-        this.coinImages = npcImages.coin || [];
+        this.entityImages = entityImages;
+        this.coinImages = entityImages.coin || [];
         this.img = this.coinImages[0];
         this.x = 200 + Math.random() * 500;
         this.y = 340 + Math.random() * 20;

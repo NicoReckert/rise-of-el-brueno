@@ -2,18 +2,17 @@ class World {
 
     ctx;
     canvas;
-    currentScene = 'levelComplete';
+    currentScene = 'farmLevel';
 
-    constructor(canvas, keyboard, characterImages, npcImages, allAudios) {
+    constructor(canvas, keyboard, characterImages, entityImages, allAudios) {
         this.canvas = canvas;
         this.ctx = canvas.getContext('2d');
         this.keyboard = keyboard;
         this.characterImages = characterImages;
-        this.npcImages = npcImages;
+        this.entityImages = entityImages;
         this.allAudios = allAudios;
         // this.listenStartButton();
-        this.endbossMusic = this.allAudios.endbossMusic;
-        this.endbossMusic.volume = 0.6;
+        
 
         this.lastThrowCheck = 0;
         this.throwCheckDelay = 120;
@@ -330,7 +329,7 @@ class World {
                     this.jetPackMusic.currentTime = 0;
                     this.jetPackSound.pause();
                     this.jetPackSound.currentTime = 0;
-                    if (this.endbossMusicIsPlayed) {
+                    if (this.townLevelController.endbossMusicIsPlayed) {
                         this.playEndbossMusic("play")
                     } else {
                         this.backgroundMusic.play();
@@ -435,9 +434,9 @@ class World {
             }
         }
 
-        if (this.townLevelSetup.npcs.endboss.y >= 690 && this.townLevelSetup.npcs.endboss.isDead) {
-            clearInterval(this.townLevelSetup.npcs.endboss.intervalMoveDownAfterDead);
-            this.townLevelSetup.npcs.endboss.isUnderTheGround = true;
+        if (this.townLevelSetup.characters.endboss.y >= 690 && this.townLevelSetup.characters.endboss.isDead) {
+            clearInterval(this.townLevelSetup.characters.endboss.intervalMoveDownAfterDead);
+            this.townLevelSetup.characters.endboss.isUnderTheGround = true;
         }
 
         for (let i = this.townLevelSetup.throwableObjects.length - 1; i >= 0; i--) {
@@ -493,21 +492,21 @@ class World {
                         }
                     }
                 }
-                if (bottle.isCollidingBefore(this.townLevelSetup.npcs.endboss, 0, 50) && !this.townLevelSetup.npcs.endboss.isDead) {
+                if (bottle.isCollidingBefore(this.townLevelSetup.characters.endboss, 0, 50) && !this.townLevelSetup.characters.endboss.isDead) {
                     if (!bottle.isBrokenSound) {
                         this.playBottelBrokenSound();
-                        this.townLevelSetup.npcs.endboss.isHurt = true;
-                        this.townLevelSetup.npcs.endboss.frameIndex = 0;
+                        this.townLevelSetup.characters.endboss.isHurt = true;
+                        this.townLevelSetup.characters.endboss.frameIndex = 0;
                         bottle.isBrokenSound = true;
                         bottle.isBroken = true;
                         bottle.isThrow = false;
                         bottle.isGravity = false;
                         bottle.isBrokenAnimation = true;
-                        this.townLevelSetup.npcs.endboss.energy = this.townLevelSetup.npcs.endboss.energy - 20;
-                        this.townLevelSetup.statusBar2.setPercentage(this.townLevelSetup.npcs.endboss.energy);
-                        if (this.townLevelSetup.npcs.endboss.energy <= 0) {
-                            this.townLevelSetup.npcs.endboss.isDead = true;
-                            this.townLevelSetup.npcs.endboss.frameIndex = 0;
+                        this.townLevelSetup.characters.endboss.energy = this.townLevelSetup.characters.endboss.energy - 20;
+                        this.townLevelSetup.statusBar2.setPercentage(this.townLevelSetup.characters.endboss.energy);
+                        if (this.townLevelSetup.characters.endboss.energy <= 0) {
+                            this.townLevelSetup.characters.endboss.isDead = true;
+                            this.townLevelSetup.characters.endboss.frameIndex = 0;
                         }
                         break;
                     }
@@ -517,28 +516,28 @@ class World {
 
         }
         // if (this.character.x >= 1050 && this.character.x <= 1250) {
-        //     if (this.endbossMusicIsPlayed || this.endbossAlarmSoundIsPlayed) return;
+        //     if (this.townLevelController.endbossMusicIsPlayed || this.endbossAlarmSoundIsPlayed) return;
         // document.getElementById('background-music').pause();
         // this.playEndbossMusic("play");
         // this.playEndbossAlarmSound();
         // this.level1.endboss.animationHurt();
-        //     this.endbossMusicIsPlayed = true;
+        //     this.townLevelController.townLevelController.endbossMusicIsPlayed = true;
         //     this.endbossAlarmSoundIsPlayed = true;
         // }
 
-        if (!this.townLevelSetup.npcs.endboss.isDead) {
-            this.townLevelSetup.npcs.soul.x = this.townLevelSetup.npcs.endboss.x + 75;
-            this.townLevelSetup.npcs.soul.y = this.townLevelSetup.npcs.endboss.y + 200;
+        if (!this.townLevelSetup.characters.endboss.isDead) {
+            this.townLevelSetup.characters.soul.x = this.townLevelSetup.characters.endboss.x + 75;
+            this.townLevelSetup.characters.soul.y = this.townLevelSetup.characters.endboss.y + 200;
         }
 
-        if (this.townLevelSetup.npcs.endboss.isDead && this.townLevelSetup.npcs.soul.y >= 250) {
-            this.townLevelSetup.npcs.soul.y -= 1.5;
+        if (this.townLevelSetup.characters.endboss.isDead && this.townLevelSetup.characters.soul.y >= 250) {
+            this.townLevelSetup.characters.soul.y -= 1.5;
         }
 
-        if (this.townLevelSetup.npcs.soul.y <= 250) {
+        if (this.townLevelSetup.characters.soul.y <= 250) {
             if (this.volumeLevel > this.minVolumeLevel) {
                 this.volumeLevel = Math.max(this.volumeLevel - 0.010, this.minVolumeLevel);
-                this.endbossMusic.volume = this.volumeLevel;
+                this.townLevelController.endbossMusic.volume = this.volumeLevel;
             } else {
                 if (!this.isPlay) {
                     this.townLevelSetup.sounds.soulSpeakSound.play();
@@ -553,10 +552,10 @@ class World {
 
             if (this.townLevelSetup.sounds.soulSpeakSound.currentTime >= 18) {
                 this.character.isMeditation = true
-                this.townLevelSetup.npcs.soul.updateState('findsPeace', 1000 / 5);
-                this.townLevelSetup.npcs.endboss.isFindsPeace = true;
-                if (this.townLevelSetup.npcs.soul.y >= -500) {
-                    this.townLevelSetup.npcs.soul.y -= 1;
+                this.townLevelSetup.characters.soul.updateState('findsPeace', 1000 / 5);
+                this.townLevelSetup.characters.endboss.isFindsPeace = true;
+                if (this.townLevelSetup.characters.soul.y >= -500) {
+                    this.townLevelSetup.characters.soul.y -= 1;
                 }
                 if (this.volumeLevel3 < this.minVolumeLevel3) {
                     this.volumeLevel3 = Math.min(this.volumeLevel3 + 0.005, this.minVolumeLevel3);
@@ -617,13 +616,15 @@ class World {
     // }
 
     playCoinSound() {
-        const sound = this.allAudios.coinSound;
+        const baseSound = this.allAudios.coinSound;
+        const sound = baseSound.cloneNode();
         sound.volume = 0.4;
         sound.play();
     }
 
     playBottleSound() {
-        const sound = this.allAudios.bottleClinkSound;
+        const baseSound = this.allAudios.bottleClinkSound;
+        const sound = baseSound.cloneNode();
         sound.volume = 0.6;
         sound.play();
     }
@@ -655,12 +656,12 @@ class World {
     playEndbossMusic(state) {
         switch (state) {
             case "play":
-                this.endbossMusic.play();
+                this.townLevelController.endbossMusic.play();
                 break;
 
             case "stop":
-                this.endbossMusic.pause();
-                this.endbossMusic.currentTime = 0;
+                this.townLevelController.endbossMusic.pause();
+                this.townLevelController.endbossMusic.currentTime = 0;
                 break;
         }
     }
@@ -671,7 +672,7 @@ class World {
     }
 
     endbossReaction() {
-        const boss = this.townLevelSetup.npcs.endboss;
+        const boss = this.townLevelSetup.characters.endboss;
         const player = this.character;
         const distance = Math.abs((player.x + player.width / 2) - (boss.x + boss.width / 2));
 
@@ -793,7 +794,7 @@ class World {
 
         // Liste aller Sounds im World-Scope
         [
-            this.endbossMusic,
+            this.townLevelController.endbossMusic,
             this.footStepSound,
             this.jumpSound,
             this.landingSound,
@@ -849,7 +850,7 @@ class World {
         this.ctx = null;
         this.canvas = null;
         this.characterImages = null;
-        this.npcImages = null;
+        this.entityImages = null;
         this.intro = null;
 
         console.info("World wurde zerstört und kann neu initialisiert werden.");

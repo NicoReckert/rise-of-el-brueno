@@ -1,0 +1,37 @@
+const characterImageManifest = {
+    idleImages: Array.from({ length: 10 }, (_, i) => `./assets/img/2_character_pepe/1_idle/idle/I-${i + 1}.webp`),
+    walkImages: Array.from({ length: 6 }, (_, i) => `./assets/img/2_character_pepe/2_walk/W-2${i + 1}.webp`),
+    jumpImages: Array.from({ length: 9 }, (_, i) => `./assets/img/2_character_pepe/3_jump/J-3${i + 1}.webp`),
+    deadImages: Array.from({ length: 7 }, (_, i) => `./assets/img/2_character_pepe/5_dead/D-5${i + 1}.webp`),
+    hurtImages: Array.from({ length: 3 }, (_, i) => `./assets/img/2_character_pepe/4_hurt/H-4${i + 1}.webp`),
+    jetPackImages: Array.from({ length: 1 }, _ => `./assets/img/Pepe_Jetpack.webp`),
+    caressImages: Array.from({ length: 8 }, (_, i) => `./assets/img/2_character_pepe/6_caress/image_${i + 1}.webp`),
+    caressLoopImages: Array.from({ length: 3 }, (_, i) => `./assets/img/2_character_pepe/6_caress/image_${6 + i}.webp`),
+    kneelDownAndCryImages: Array.from({ length: 8 }, (_, i) => `./assets/img/2_character_pepe/7_kneel-down-and-cry/image_${i + 1}.webp`),
+    cryImages: Array.from({ length: 3 }, (_, i) => `./assets/img/2_character_pepe/7_kneel-down-and-cry/image_${6 + i}.webp`),
+    standUpAndLookDeterminedImages: Array.from({ length: 10 }, (_, i) => `./assets/img/2_character_pepe/8_stand_up_look_determined/image_${i + 1}.webp`),
+    lookDeterminedImages: Array.from({ length: 3 }, (_, i) => `./assets/img/2_character_pepe/8_stand_up_look_determined/image_${8 + i}.webp`),
+    lookDeterminedStandUpImages: Array.from({ length: 15 }, (_, i) => `./assets/img/2_character_pepe/10/image_${i + 1}.webp`),
+    strongDeterminedImages: Array.from({ length: 4 }, (_, i) => `./assets/img/2_character_pepe/10/image_${12 + i}.webp`),
+    sitDownAndPlayGuitarImages: Array.from({ length: 6 }, (_, i) => `./assets/img/2_character_pepe/12/image_${i + 1}.webp`),
+    playGuitarAndSingImages: Array.from({ length: 23 }, (_, i) => `./assets/img/2_character_pepe/12/image_${6 + i}.webp`),
+    playGuitarImages: Array.from({ length: 20 }, (_, i) => `./assets/img/2_character_pepe/13/image_${i + 1}.webp`),
+    lightACampfireImages: Array.from({ length: 10 }, (_, i) => `./assets/img/2_character_pepe/14/image_${i + 1}.webp`),
+    attackImages: Array.from({ length: 4 }, (_, i) => `./assets/img/2_character_pepe/15/image_${i + 1}.webp`),
+    meditationImages: Array.from({ length: 10 }, (_, i) => `./assets/img/2_character_pepe/16/image_${i + 1}.webp`),
+    meditationLoopImages: Array.from({ length: 4 }, (_, i) => `./assets/img/2_character_pepe/16/image_${7 + i}.webp`),
+    newWeaponImages: Array.from({ length: 58 }, (_, i) => `./assets/img/2_character_pepe/17/image_${i + 1}.webp`),
+    newWeaponLoopImages: Array.from({ length: 22 }, (_, i) => `./assets/img/2_character_pepe/17/image_${31 + i}.webp`),
+    standUpImages: Array.from({ length: 3 }, (_, i) => `./assets/img/2_character_pepe/18/image_${i + 1}.webp`),
+    walkDeterminedImages: Array.from({ length: 4 }, (_, i) => `./assets/img/2_character_pepe/19/image_${4 + i}.webp`),
+    standDeterminedImages: Array.from({ length: 8 }, (_, i) => `./assets/img/2_character_pepe/20/image_${i + 1}.webp`),
+    standDeterminedLoopImages: Array.from({ length: 2 }, (_, i) => `./assets/img/2_character_pepe/20/image_${7 + i}.webp`)
+};
+
+// const characterManifestImmediate = {
+//     idleImages: Array.from({ length: 10 }, (_, i) => `./assets/img/2_character_pepe/1_idle/idle/I-${i + 1}.webp`),
+//     walkImages: Array.from({ length: 6 }, (_, i) => `./assets/img/2_character_pepe/2_walk/W-2${i + 1}.webp`),
+//     jumpImages: Array.from({ length: 9 }, (_, i) => `./assets/img/2_character_pepe/3_jump/J-3${i + 1}.webp`),
+//     caressImages: Array.from({ length: 8 }, (_, i) => `./assets/img/2_character_pepe/6_caress/image_${i + 1}.webp`),
+//     caressLoopImages: Array.from({ length: 3 }, (_, i) => `./assets/img/2_character_pepe/6_caress/image_${6 + i}.webp`),
+// } 

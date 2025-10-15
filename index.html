@@ -10,7 +10,12 @@
     <link rel="stylesheet" href="./css/font.css">
 </head>
 
-<body id="body" onload="init()">
+<body id="body">
+    <div id="loading-overlay">
+  <div id="loading-bar"></div>
+  <span id="loading-text">Loading... 0%</span>
+</div>
+
     <div class="all-content" id="all-content">
         <div class="canvas-button-box" id="canvas-button-box">
             <div class="move-button-box d-none" id="move-button-box">
@@ -46,18 +51,6 @@
         </div>
         <audio id="background-music" loop>
             <source src="./assets/audio/background-music-level1.opus" type="audio/mpeg">
-        </audio>
-        <audio id="jet-pack-music" loop>
-            <source src="./assets/audio/jet-pack-music.opus" type="audio/mpeg">
-        </audio>
-        <audio id="jet-pack-sound">
-            <source src="./assets/audio/jet-pack-sound.opus" type="audio/mpeg">
-        </audio>
-        <audio id="speak-sound">
-            <source src="./assets/audio/speak1.opus" type="audio/mpeg">
-        </audio>
-        <audio id="coin-sound">
-            <source src="./assets/audio/coin2.opus" type="audio/mpeg">
         </audio>
     </div>
     <div class="overlay-startscreen opacity-none" id="overlay-startscreen">
@@ -209,7 +202,7 @@
     <script src="./classes/coin-bar.class.js"></script>
     <script src="./classes/bottle-bar.class.js"></script>
     <script src="./classes/character.class.js"></script>
-    <script src="./classes/not-movable-npc.js"></script>
+    <script src="./classes/animated-entity.class.js"></script>
     <script src="./classes/coin.class.js"></script>
     <script src="./classes/bottle.class.js"></script>
     <script src="./classes/speech-bubble.class.js"></script>
@@ -243,13 +236,17 @@
     <script src="./classes/dialog-manager.class.js"></script>
     <script src="./classes/sandstorm-effect.class.js"></script>
     <script src="./classes/wind-particle.class.js"></script>
-    <script src="./characterImageManifest.js"></script>
-    <script src="./npcImageManifest.js"></script>
-    <script src="./imageLoader.js"></script>
-    <script src="./videoManifest.js"></script>
-    <script src="./videoLoader.js"></script>
-    <script src="audioManifest.js"></script>
-    <script src="audioLoader.js"></script>
+    <script src="./classes/lyrics-renderer.class.js"></script>
+    <script src="./classes/earthquake-effect.class.js"></script>
+    <script src="./classes/sun-cycle.class.js"></script>
+    <script src="./classes/moon-cycle.class.js"></script>
+    <script src="./character-image-manifest.js"></script>
+    <script src="./entity-image-manifest.js"></script>
+    <script src="./image-loader.js"></script>
+    <script src="./video-manifest.js"></script>
+    <script src="./video-loader.js"></script>
+    <script src="./audio-manifest.js"></script>
+    <script src="./audio-loader.js"></script>
     <script src="./js/game.js"></script>
     <script src="./levels/town-level.js"></script>
     <script src="./levels/farm-level.js"></script>

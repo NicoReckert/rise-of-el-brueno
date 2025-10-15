@@ -21,8 +21,8 @@ class LevelCompleteController {
         this.heroTextScale = 0.5;
 
         this.charCanvas = document.createElement("canvas");
-        this.charCanvas.width = this.setup.npcs.levelComplete.width;
-        this.charCanvas.height = this.setup.npcs.levelComplete.height;
+        this.charCanvas.width = this.setup.characters.levelCompleteCharacter.width;
+        this.charCanvas.height = this.setup.characters.levelCompleteCharacter.height;
         this.charCtx = this.charCanvas.getContext("2d");
     }
 
@@ -31,7 +31,7 @@ class LevelCompleteController {
         this.updateCamera();
         this.renderBackgrounds();
         this.renderNPCs();
-        this.updateNPCs(timestamp);
+        this.updateEntities(timestamp);
         this.eventManager.update();
         // this.eventManager.debug = true;
         this.animateHeroText();
@@ -82,10 +82,10 @@ class LevelCompleteController {
             // 4) Spotlight hinter dem Charakter (trennt Figur vom BG)
             ctx.save();
             ctx.globalCompositeOperation = 'screen';
-            const cx = this.setup.npcs.levelComplete.x + this.setup.npcs.levelComplete.width * 0.5;
-            const cy = this.setup.npcs.levelComplete.y + this.setup.npcs.levelComplete.height * 0.6;
+            const cx = this.setup.characters.levelCompleteCharacter.x + this.setup.characters.levelCompleteCharacter.width * 0.5;
+            const cy = this.setup.characters.levelCompleteCharacter.y + this.setup.characters.levelCompleteCharacter.height * 0.6;
             const spot = ctx.createRadialGradient(cx, cy, 0, cx, cy,
-                Math.max(this.setup.npcs.levelComplete.width, this.setup.npcs.levelComplete.height) * 1.2);
+                Math.max(this.setup.characters.levelCompleteCharacter.width, this.setup.characters.levelCompleteCharacter.height) * 1.2);
             spot.addColorStop(0, 'rgba(0,150,255,0.35)'); // innerer Glow
             spot.addColorStop(1, 'rgba(0,150,255,0)');
             ctx.fillStyle = spot;
@@ -103,10 +103,10 @@ class LevelCompleteController {
         this.ctx.translate(-this.renderCameraX, 0);
 
         // === 1. Offscreen-Canvas für den Charakter ===
-       
+
 
         // Charakter normal ins Offscreen zeichnen
-        this.addToWorld({ ...this.setup.npcs.levelComplete, x: 0, y: 0 }, this.charCtx);
+        this.addToWorld({ ...this.setup.characters.levelCompleteCharacter, x: 0, y: 0 }, this.charCtx);
 
         // === 2. Eine Maske über das gesamte Bild legen ===
         const mask = this.charCtx.createLinearGradient(0, 0, this.charCanvas.width, 0);
@@ -136,23 +136,17 @@ class LevelCompleteController {
         // === 3. Charakter mit Glow ins Hauptcanvas bringen ===
         this.ctx.shadowColor = "rgba(0, 200, 255, 0.9)";
         this.ctx.shadowBlur = 40;
-        this.ctx.drawImage(this.charCanvas, this.setup.npcs.levelComplete.x, this.setup.npcs.levelComplete.y);
+        this.ctx.drawImage(this.charCanvas, this.setup.characters.levelCompleteCharacter.x, this.setup.characters.levelCompleteCharacter.y);
 
         this.ctx.shadowBlur = 0;
-
-        // === 4. Andere NPCs normal zeichnen ===
-        this.addToWorld(this.setup.npcs.macuahuitl);
-
         this.ctx.restore();
-                // this.windParticles.draw(this.ctx, this.renderCameraX);
+        // this.windParticles.draw(this.ctx, this.renderCameraX);
 
     }
 
-    updateNPCs(timestamp) {
-        const npcs = ['levelComplete'];
-        npcs.forEach(name => {
-            this.setup.npcs[name].updateState(timestamp);
-            this.setup.npcs[name].updateAnimation(timestamp);
+    updateEntities(timestamp) {
+        Object.values(this.setup.characters).forEach(element => {
+            element.updateState(timestamp);
         });
     }
 

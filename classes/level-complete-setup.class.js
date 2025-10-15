@@ -1,11 +1,11 @@
 class LevelCompleteSetup {
     constructor(world) {
         this.world = world;
-        this.npcImages = this.world.npcImages;
+        this.entityImages = this.world.entityImages;
         this.allAudios = this.world.allAudios;
         this.levelCompleteEvents = levelCompleteEvents;
-        this.npcs = {
-            levelComplete: new NotMovableNpc(this.npcImages, 'levelComplete', 512, 512, 410, 180)
+        this.characters = {
+            levelCompleteCharacter: new AnimatedEntity(this.entityImages, 'levelCompleteCharacter', 512, 512, 410, 180)
         };
         this.sounds = {
             levelCompleteMusic: this.allAudios.levelCompleteMusic,

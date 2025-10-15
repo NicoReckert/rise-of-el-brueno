@@ -92,11 +92,11 @@ const farmEvents_part3 = [
         action: (setup) => {
             const m = setup.sounds.happyTogetherMusic;
             if (m.currentTime >= 97.0) {
-                setup.npcs.cow.updateState("sleep", 1000 / 5.5);
-                setup.npcs.chick.updateState("sleep", 1000 / 5.5);
-                setup.npcs.chicken2.updateState("sleep", 1000 / 5.5);
-                setup.npcs.campfire.updateState("fireGoesOut");
-                setup.npcs.moon.updateState("idle");
+                setup.characters.cow.updateAnimationState("sleep", 1000 / 5.5);
+                setup.characters.chick.updateAnimationState("sleep", 1000 / 5.5);
+                setup.characters.chicken.updateAnimationState("sleep", 1000 / 5.5);
+                setup.environment.campfire.updateAnimationState("fireGoesOut");
+                setup.environment.moon.updateAnimationState("idle");
                 setup.world.character.isPlayGuitar = false;
                 setup.world.character.isStandUp = true;
                 FarmHelper.nextQuest(setup, 11);
@@ -199,13 +199,13 @@ const farmEvents_part3 = [
         step: 14,
         once: false,
         action: (setup) => {
-            const { drohne } = setup.npcs;
+            const { drone } = setup.characters;
             FarmHelper.withCtx(setup, (ctx) => {
                 ctx.translate(-setup.world.farmLevelController.renderCameraX, 0);
-                setup.world.addToWorld(drohne);
+                setup.world.addToWorld(drone);
             });
 
-            const targetX = drohne.x - 300;
+            const targetX = drone.x - 300;
             const diff = targetX - setup.world.camera_x;
             if (Math.abs(diff) >= 3)
                 setup.world.camera_x += Math.sign(diff) * 10;

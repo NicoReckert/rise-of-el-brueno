@@ -2,18 +2,18 @@ class TownLevelSetup {
     constructor(world) {
         this.world = world;
         this.townLevel = townLevel;
-        this.npcImages = this.world.npcImages;
+        this.entityImages = this.world.entityImages;
         this.allAudios = this.world.allAudios;
         this.townEvents = townEvents;
         this.world.camera_x = 0;
-        this.statusBar = new LifeEnergyCharacterBar(this.npcImages);
-        this.statusBar2 = new LifeEnergyBossBar(this.npcImages);
-        this.coinBar = new CoinBar(this.npcImages);
-        this.bottleBar = new BottleBar(this.npcImages);
+        this.statusBar = new LifeEnergyCharacterBar(this.entityImages);
+        this.statusBar2 = new LifeEnergyBossBar(this.entityImages);
+        this.coinBar = new CoinBar(this.entityImages);
+        this.bottleBar = new BottleBar(this.entityImages);
         this.throwableObjects = [];
-        const endboss = new Endboss(this.npcImages);
-        const soul = new NotMovableNpc(
-            this.npcImages,
+        const endboss = new Endboss(this.entityImages);
+        const soul = new AnimatedEntity(
+            this.entityImages,
             'soul',
             200,
             200,
@@ -21,7 +21,7 @@ class TownLevelSetup {
             endboss.y + 100
         );
 
-        this.npcs = { endboss, soul };
+        this.characters = { endboss, soul };
         this.sounds = {
             notificationSound: this.allAudios.notificationSound,
             taskCompletedSound: this.allAudios.taskCompletedSound,
@@ -42,17 +42,13 @@ class TownLevelSetup {
         this.taskWindow = new TaskWindow(this.world.canvas, this.tasks);
         this.tKeyPressed = false;
 
-        this.endbossMusic;
+        this.endbossMusic = this.allAudios.endbossMusic;
+        this.endbossMusic.volume = 0.6;
         this.endbossAlarmSound;
         this.endbossMusicIsPlayed = false;
         this.endbossAlarmSoundIsPlayed = false;
-        this.endbossAttack = new EndbossAttack(this.npcImages);
+        this.endbossAttack = new EndbossAttack(this.entityImages);
         this.backgroundMusic = document.getElementById('background-music');
         this.backgroundMusic.volume = 0.6;
-        this.jetPackMusic = document.getElementById('jet-pack-music');
-        this.jetPackSound = document.getElementById('jet-pack-sound');
-        this.bubble = new SpeechBubble("Ich bin Brünö ein Hühnerexperte, Compadre Amigo!", this.world.character, performance.now());
-        this.bubble2 = new SpeechBubble("Ich bin Aria und wir haben große Probleme mit motierten Hühnern", this.npc2, performance.now());
-        this.video = document.getElementById('portal-video');
     }
 }

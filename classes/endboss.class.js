@@ -8,11 +8,11 @@ class Endboss extends MovableObject {
 
     /**
      * Creates a new instance with default position, speed, and animation settings.
-     * @param {Object} npcImages - Image data containing animation frames.
+     * @param {Object} entityImages - Image data containing animation frames.
      */
-    constructor(npcImages) {
+    constructor(entityImages) {
         super();
-        this.npcImages = npcImages;
+        this.entityImages = entityImages;
         this.speedX = 8;
         this.speedY = 0;
         this.lastFrameTime = 0;
@@ -20,6 +20,9 @@ class Endboss extends MovableObject {
         this.frameInterval = 1000 / 8;
         this.frameIndex = 0;
         this.gravityInterval = 1000 / 60;
+        this.isMovingLeft = false;
+        this.isMovingRight = false;
+        this.movementSpeed = 5;
         this.init();
     }
 
@@ -57,11 +60,11 @@ class Endboss extends MovableObject {
      * Initializes base image sets.
      */
     initBaseImages() {
-        this.idleImages = this.npcImages.endboss_idle || [];
-        this.walkImages = this.npcImages.endboss_walk || [];
-        this.deadImages = this.npcImages.endboss_dead || [];
-        this.hurtImages = this.npcImages.endboss_hurt || [];
-        this.findsPeaceImages = this.npcImages.endboss_findsPeace || [];
+        this.idleImages = this.entityImages.endboss_idle || [];
+        this.walkImages = this.entityImages.endboss_walk || [];
+        this.deadImages = this.entityImages.endboss_dead || [];
+        this.hurtImages = this.entityImages.endboss_hurt || [];
+        this.findsPeaceImages = this.entityImages.endboss_findsPeace || [];
     }
 
     /**

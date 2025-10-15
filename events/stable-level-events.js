@@ -39,7 +39,7 @@ const stableEvents =
                     setup.world.isKeysStopp = true
                     setup.world.character.x = 560;
                     setup.world.character.isFlipped = false
-                    setup.npcs.chicken.updateState('love')
+                    setup.characters.chicken.updateAnimationState('love')
                     setup.sounds.chickenSound.loop = true
                     setup.sounds.chickenSound.play()
                     setup.world.stableLevelController.eventManager.emitNow('caressStartChicken');
@@ -57,7 +57,7 @@ const stableEvents =
                 setup.world.character.isCaress = false
                 setup.world.keyboard.F = false
                 setup.world.isKeysStopp = false
-                setup.npcs.chicken.updateState('idle')
+                setup.characters.chicken.updateAnimationState('idle')
                 setup.sounds.chickenSound.loop = false;
                 setup.world.stableLevelController.questManager.advance(1)
             }
@@ -90,7 +90,7 @@ const stableEvents =
                     setup.world.isKeysStopp = true
                     setup.world.character.x = 720;
                     setup.world.character.isFlipped = false
-                    setup.npcs.chick.updateState('love')
+                    setup.characters.chick.updateAnimationState('love')
                     setup.sounds.chickSound.loop = true
                     setup.sounds.chickSound.play()
                     setup.world.stableLevelController.eventManager.emitNow('caressStartChick');
@@ -108,7 +108,7 @@ const stableEvents =
                 setup.world.character.isCaress = false
                 setup.world.keyboard.F = false
                 setup.world.isKeysStopp = false
-                setup.npcs.chick.updateState('idle')
+                setup.characters.chick.updateAnimationState('idle')
                 setup.sounds.chickSound.loop = false;
                 setup.world.stableLevelController.questManager.advance(1)
             }

@@ -15,6 +15,11 @@ class NayelisHouseLevelController {
         this.eventManager = new EventManager(this.setup);
         this.questManager = new QuestManager(this.setup, this.eventManager, this.setup.nayelisHouseEvents);
         this.eventManager.questManager = this.questManager;
+        this.init();
+    }
+
+    init() {
+       
     }
 
     update(timestamp) {
@@ -23,9 +28,8 @@ class NayelisHouseLevelController {
         this.renderBackgrounds();
         this.renderStatusBar();
         this.renderNPCsAndCharacter();
-        // this.handleSpeechBubble();
         this.updateCharacter(timestamp);
-        this.updateNPCs(timestamp);
+        this.updateEntities(timestamp);
         this.handlePopup();
         this.eventManager.update();
         this.eventManager.debug = true;
@@ -84,10 +88,6 @@ class NayelisHouseLevelController {
         this.ctx.restore();
     }
 
-
-
-
-
     renderStatusBar() {
         this.addToWorld(this.setup.statusBar);
     }
@@ -101,49 +101,10 @@ class NayelisHouseLevelController {
         this.ctx.shadowBlur = 0;
         this.ctx.shadowColor = 'rgba(255, 255, 200, 0.8)';
         this.ctx.shadowBlur = 20;
-        this.addToWorld(this.setup.npcs.nayeli);
+        this.addToWorld(this.setup.characters.nayeli);
         this.ctx.shadowBlur = 0;
         this.ctx.restore();
     }
-
-    // handleSpeechBubble() {
-    //     this.ctx.save();
-    //     this.ctx.translate(-this.renderCameraX, 0);
-    //     if (this.character.x > 280 && this.character.x < 430) {
-    //         if (!this.setup.speechBubbles.bubbleStable1.startTime) {
-    //             this.setup.speechBubbles.bubbleStable1.start();
-    //         }
-    //         this.setup.speechBubbles.bubbleStable1.update(performance.now());
-    //         this.setup.speechBubbles.bubbleStable1.draw(this.ctx);
-    //         if (!this.setup.isNotificationPlay) {
-    //             this.setup.sounds.notificationSound.currentTime = 0;
-    //             this.setup.sounds.notificationSound.play();
-    //             this.setup.isNotificationPlay = true;
-    //         }
-    //     } else {
-    //         this.setup.isNotificationPlay = false;
-    //         this.setup.speechBubbles.bubbleStable1.startTime = null;
-    //     }
-    //     if (this.character.isColliding(this.setup.npcs.chicken, 0, 0)) {
-    //         this.ctx.save();
-    //         this.ctx.translate(-this.renderCameraX, 0);
-    // if (!this.setup.speechBubbles.bubbleStable2.startTime) {
-    //     this.setup.speechBubbles.bubbleStable2.start();
-    // }
-    // this.setup.speechBubbles.bubbleStable2.update(performance.now());
-    // this.setup.speechBubbles.bubbleStable2.draw(this.ctx, 0);
-    // }
-    // if (this.character.isColliding(this.setup.npcs.chick, 0, 0)) {
-    //     this.ctx.save();
-    //     this.ctx.translate(-this.renderCameraX, 0);
-    // if (!this.setup.speechBubbles.bubbleStable2.startTime) {
-    //     this.setup.speechBubbles.bubbleStable2.start();
-    // }
-    // this.setup.speechBubbles.bubbleStable2.update(performance.now());
-    // this.setup.speechBubbles.bubbleStable2.draw(this.ctx, 0);
-    // }
-    // this.ctx.restore();
-    // }
 
     updateCharacter(timestamp) {
         this.checkPressKey();
@@ -154,13 +115,12 @@ class NayelisHouseLevelController {
         this.landingSoundCharacter();
     }
 
-    updateNPCs(timestamp) {
-        const npcs = ['nayeli'];
-        npcs.forEach(name => {
-            this.setup.npcs[name].updateState(timestamp);
-            this.setup.npcs[name].updateAnimation(timestamp);
+    updateEntities(timestamp) {
+        Object.values(this.setup.characters).forEach(element => {
+            element.updateState(timestamp);
         });
     }
+
 
     handlePopup() {
         const now = performance.now();

@@ -5,12 +5,12 @@
 class CoinBar extends StatusBar {
     /**
      * Creates a new status bar instance.
-     * @param {Object} npcImages - Image data containing status bar graphics.
+     * @param {Object} entityImages - Image data containing status bar graphics.
      */
-    constructor(npcImages) {
+    constructor(entityImages) {
         super();
-        this.npcImages = npcImages;
-        this.statusImages = this.npcImages.coinBar_status || [];
+        this.entityImages = entityImages;
+        this.statusImages = this.entityImages.coinBar.status || [];
         this.setPercentage(0);
         this.y = 50;
     }

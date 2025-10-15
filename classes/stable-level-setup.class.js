@@ -1,21 +1,24 @@
 class StableLevelSetup {
     constructor(world) {
         this.world = world;
-        this.npcImages = this.world.npcImages;
+        this.entityImages = this.world.entityImages;
         this.allAudios = this.world.allAudios;
         this.stableLevel = stableLevel;
         this.isNotificationPlay = false;
         this.popupTexts = [];
         this.stableEvents = stableEvents;
-        this.statusBar = new LifeEnergyCharacterBar(this.npcImages);
+        this.statusBar = new LifeEnergyCharacterBar(this.entityImages);
 
 
-        this.npcs = {
-            chicken: new NotMovableNpc(this.npcImages, 'chicken', 150, 150, 635, 460, 0, 100, -20, 0),
-            chick: new NotMovableNpc(this.npcImages, 'chick', 120, 120, 805, 515),
-            memoryLight: new NotMovableNpc(this.npcImages, 'memoryLight', 200, 200, 590, 473),
+        this.characters = {
+            chicken: new AnimatedEntity(this.entityImages, 'chicken', 150, 150, 635, 460, 0, 100, -20, 0),
+            chick: new AnimatedEntity(this.entityImages, 'chick', 120, 120, 805, 515)
         };
-        this.npcs.chick.isFlipped = false;
+
+        this.environment = {
+            memoryLight: new AnimatedEntity(this.entityImages, 'memoryLight', 200, 200, 590, 473)
+        };
+        this.characters.chick.isFlipped = false;
         this.speechBubbles = {
             bubbleStable1: new SpeechBubble("Den Hühnerstall verlassen? {F} drücken!", this.world.character, 'info', this.allAudios),
             bubbleStable2: new SpeechBubble("Yordi streicheln {F} drücken", 'canvas', 'speech', this.allAudios)

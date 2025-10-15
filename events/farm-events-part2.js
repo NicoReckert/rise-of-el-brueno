@@ -12,12 +12,12 @@ const farmEvents_part2 = [
         requireKey: "F",
         action: (setup) => {
             const c = setup.world.character;
-            const cow = setup.npcs.cow;
+            const cow = setup.characters.cow;
             c.isCaress = true;
             c.isMovingLeft = false;
             c.isMovingRight = false;
             setup.world.isKeysStopp = true;
-            cow.updateState("love");
+            cow.updateAnimationState("love");
             c.x = cow.x + 135;
             if (cow.isFlipped) c.isFlipped = true;
             FarmHelper.playSound(setup, "cowSound2");
@@ -33,7 +33,7 @@ const farmEvents_part2 = [
         step: 6,
         once: false,
         action: (setup) => {
-            if (setup.npcs.cow.currentAnimation === "love") {
+            if (setup.characters.cow.currentAnimation === "love") {
                 FarmHelper.playSound(setup, "cowSound2");
             }
         },
@@ -75,8 +75,8 @@ const farmEvents_part2 = [
         step: 7,
         action: (setup) => {
             FarmHelper.addTask(setup, "6. Bringe Lola wieder zurück");
-            const cow = setup.npcs.cow;
-            cow.updateState("walk");
+            const cow = setup.characters.cow;
+            cow.updateAnimationState("walk");
             cow.isFlipped = false;
         },
     },
@@ -90,13 +90,13 @@ const farmEvents_part2 = [
         step: 7,
         once: false,
         action: (setup) => {
-            const cow = setup.npcs.cow;
+            const cow = setup.characters.cow;
             if (cow.x >= 500) {
                 cow.x -= 2;
-                cow.updateState("walk");
+                cow.updateAnimationState("walk");
             } else {
                 FarmHelper.completeTask(setup, 5);
-                cow.updateState("idle");
+                cow.updateAnimationState("idle");
                 FarmHelper.nextQuest(setup, 8);
             }
         },
@@ -120,16 +120,16 @@ const farmEvents_part2 = [
         type: "quest",
         step: 8,
         action: (setup) => {
-            const { chicken2, chick } = setup.npcs;
+            const { chicken, chick } = setup.characters;
             const c = setup.world.character;
             c.isMovingLeft = false;
             c.isMovingRight = false;
             setup.world.isKeysStopp = true;
             c.isFlipped = false;
-            setup.npcs.cow.isFlipped = true;
-            chicken2.updateState("walk2", 1000 / 8);
-            chick.updateState("walk", 1000 / 8);
-            chicken2.isFlipped = true;
+            setup.characters.cow.isFlipped = true;
+            chicken.updateAnimationState("walk", 1000 / 8);
+            chick.updateAnimationState("walk", 1000 / 8);
+            chicken.isFlipped = true;
             chick.isFlipped = false;
         },
     },
@@ -140,8 +140,8 @@ const farmEvents_part2 = [
         step: 8,
         once: false,
         action: (setup) => {
-            const { chicken2, chick } = setup.npcs;
-            if (chicken2.x >= 500) chicken2.x -= 3;
+            const { chicken, chick } = setup.characters;
+            if (chicken.x >= 500) chicken.x -= 3;
             if (chick.x >= 575) chick.x -= 3;
         },
     },
@@ -160,10 +160,10 @@ const farmEvents_part2 = [
         type: "quest",
         step: 9,
         action: (setup) => {
-            const { chicken2, chick } = setup.npcs;
-            chicken2.updateState("idle");
-            chicken2.isFlipped = false;
-            chick.updateState("idle");
+            const { chicken, chick } = setup.characters;
+            chicken.updateAnimationState("idle");
+            chicken.isFlipped = false;
+            chick.updateAnimationState("idle");
             chick.isFlipped = true;
             setup.world.character.isWalk = true;
         },

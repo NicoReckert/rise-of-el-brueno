@@ -15,6 +15,11 @@ class StableLevelController {
         this.eventManager = new EventManager(this.setup);
         this.questManager = new QuestManager(this.setup, this.eventManager, this.setup.stableEvents);
         this.eventManager.questManager = this.questManager;
+        this.init();
+    }
+
+    init() {
+        
     }
 
     update(timestamp) {
@@ -25,7 +30,7 @@ class StableLevelController {
         this.renderNPCsAndCharacter();
         // this.handleSpeechBubble();
         this.updateCharacter(timestamp);
-        this.updateNPCs(timestamp);
+        this.updateEntities(timestamp);
         this.handlePopup();
         this.eventManager.update();
         // this.eventManager.debug = true;
@@ -54,15 +59,15 @@ class StableLevelController {
         if (this.character.isCaress) {
             this.addToWorld(this.character);
             if (this.setup.world.farmLevelController.questManager.step < 8) {
-                this.addToWorld(this.setup.npcs.chicken);
-                this.addToWorld(this.setup.npcs.chick);
+                this.addToWorld(this.setup.characters.chicken);
+                this.addToWorld(this.setup.characters.chick);
             }
         } else {
             if (this.setup.world.farmLevelController.questManager.step < 8) {
-                this.addToWorld(this.setup.npcs.chicken);
-                this.addToWorld(this.setup.npcs.chick);
+                this.addToWorld(this.setup.characters.chicken);
+                this.addToWorld(this.setup.characters.chick);
             }
-            if(this.setup.world.farmLevelController.questManager.step >= 20)this.addToWorld(this.setup.npcs.memoryLight);
+            if (this.setup.world.farmLevelController.questManager.step >= 20) this.addToWorld(this.setup.environment.memoryLight);
             this.addToWorld(this.character);
         }
         this.ctx.restore();
@@ -86,7 +91,7 @@ class StableLevelController {
             this.setup.isNotificationPlay = false;
             this.setup.speechBubbles.bubbleStable1.startTime = null;
         }
-        if (this.character.isColliding(this.setup.npcs.chicken, 0, 0)) {
+        if (this.character.isColliding(this.setup.characters.chicken, 0, 0)) {
             this.ctx.save();
             this.ctx.translate(-this.renderCameraX, 0);
             // if (!this.setup.speechBubbles.bubbleStable2.startTime) {
@@ -95,7 +100,7 @@ class StableLevelController {
             // this.setup.speechBubbles.bubbleStable2.update(performance.now());
             // this.setup.speechBubbles.bubbleStable2.draw(this.ctx, 0);
         }
-        if (this.character.isColliding(this.setup.npcs.chick, 0, 0)) {
+        if (this.character.isColliding(this.setup.characters.chick, 0, 0)) {
             this.ctx.save();
             this.ctx.translate(-this.renderCameraX, 0);
             // if (!this.setup.speechBubbles.bubbleStable2.startTime) {
@@ -116,13 +121,15 @@ class StableLevelController {
         this.landingSoundCharacter();
     }
 
-    updateNPCs(timestamp) {
-        const npcs = ['chicken', 'chick', 'memoryLight'];
-        npcs.forEach(name => {
-            this.setup.npcs[name].updateState(timestamp);
-            this.setup.npcs[name].updateAnimation(timestamp);
+    updateEntities(timestamp) {
+        Object.values(this.setup.characters).forEach(element => {
+            element.updateState(timestamp);
+        });
+        Object.values(this.setup.environment).forEach(element => {
+            element.updateState(timestamp);
         });
     }
+
 
     handlePopup() {
         const now = performance.now();

@@ -2,17 +2,129 @@ let canvas;
 let world;
 let keyboard = new Keyboard();
 let characterImages;
-let npcImages;
+let entityImages;
+let allAudios;
+
+// async function init() {
+//     canvas = document.getElementById('canvas');
+//     characterImages = await preloadManifestImages(characterImageManifest);
+//     entityImages = await preloadManifestImages(entityImageManifest);
+//     allAudios = await preloadManifestAudio(audioManifest);
+//     world = new World(canvas, keyboard, characterImages, entityImages, allAudios);
+//     createTownLevel(entityImages);
+//     listenStartButton();
+// }
+
+function countManifestFiles(manifests) {
+  let count = 0;
+  for (const manifest of manifests) {
+    for (const value of Object.values(manifest)) {
+      if (Array.isArray(value)) {
+        count += value.length; // mehrere Einträge (z. B. Animationframes)
+      } else if (typeof value === "object" && value !== null) {
+        // verschachteltes Manifest (z. B. npc: { walk: [...], idle: [...] })
+        count += countManifestFiles([value]);
+      } else {
+        count++; // einzelner Pfad
+      }
+    }
+  }
+  return count;
+}
+
 
 async function init() {
+    const overlay = document.getElementById('loading-overlay');
+    const bar = document.getElementById('loading-bar');
+    const text = document.getElementById('loading-text');
+
+    const manifests = [characterImageManifest, entityImageManifest, audioManifest];
+    const totalFiles = countManifestFiles(manifests);
+    let loaded = 0;
+
+    const updateProgress = () => {
+        const percent = Math.round((loaded / totalFiles) * 100);
+        bar.style.width = `${percent}%`;
+        text.textContent = `Loading... ${percent}%`;
+    };
+
+    const loadFile = async (path) => {
+        try {
+            if (path.endsWith('.webp') || path.endsWith('.png')) {
+                await preloadImage(path);
+            } else if (path.endsWith('.opus') || path.endsWith('.mp3')) {
+                await preloadAudio(path);
+            }
+        } catch (e) {
+            console.warn('Fehler beim Laden:', path, e);
+        } finally {
+            loaded++;
+            updateProgress();
+        }
+    };
+
+    const loadManifestDeep = async (obj) => {
+        for (const value of Object.values(obj)) {
+            if (Array.isArray(value)) {
+                for (const v of value) await loadFile(v);
+            } else if (typeof value === 'object') {
+                await loadManifestDeep(value);
+            } else if (typeof value === 'string') {
+                await loadFile(value);
+            }
+        }
+    };
+
+    updateProgress();
+    for (const m of manifests) await loadManifestDeep(m);
+
+    // Alles fertig
+    overlay.style.opacity = 0;
+    setTimeout(() => overlay.remove(), 500);
+
+    // Jetzt dein Spiel starten
     canvas = document.getElementById('canvas');
     characterImages = await preloadManifestImages(characterImageManifest);
-    npcImages = await preloadManifestImages(npcImageManifest);
+    entityImages = await preloadManifestImages(entityImageManifest);
     allAudios = await preloadManifestAudio(audioManifest);
-    world = new World(canvas, keyboard, characterImages, npcImages, allAudios);
-    createTownLevel(npcImages);
+    world = new World(canvas, keyboard, characterImages, entityImages, allAudios);
+    createTownLevel(entityImages);
     listenStartButton();
 }
+
+// Hilfsfunktionen
+function countManifestFiles(manifests) {
+    let count = 0;
+    for (const manifest of manifests) {
+        for (const value of Object.values(manifest)) {
+            if (Array.isArray(value)) count += value.length;
+            else if (typeof value === 'object') count += countManifestFiles([value]);
+            else if (typeof value === 'string') count++;
+        }
+    }
+    return count;
+}
+
+function preloadImage(src) {
+    return new Promise((resolve, reject) => {
+        const img = new Image();
+        img.onload = resolve;
+        img.onerror = reject;
+        img.src = src;
+    });
+}
+
+function preloadAudio(src) {
+    return new Promise((resolve, reject) => {
+        const audio = new Audio();
+        audio.oncanplaythrough = resolve;
+        audio.onerror = reject;
+        audio.src = src;
+        audio.load();
+    });
+}
+
+
 
 window.addEventListener('keydown', (event) => {
     keyboard.setKeyTrue(event.key);
@@ -56,7 +168,7 @@ document.getElementById('menu-level-button').addEventListener('click', () => {
     }
     world.stop();
     // world.destroy();
-    world = new World(canvas, keyboard, characterImages, npcImages);
+    world = new World(canvas, keyboard, characterImages, entityImages);
     // init();
 });
 
@@ -76,3 +188,4 @@ function listenStartButton() {
 }
 
 init();
+

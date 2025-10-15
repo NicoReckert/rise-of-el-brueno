@@ -46,7 +46,10 @@ class EventManager {
     getTargetPools() {
         return [
             this.setup.world,
-            this.setup.npcs,
+            this.setup.characters,
+            this.setup.characters.portraits,
+            this.setup.cutsceneActors,
+            this.setup.environment,
             this.setup.enemies,
             this.setup.bosses,
             this.setup.throwables,

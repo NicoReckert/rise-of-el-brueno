@@ -1,14 +1,14 @@
 class NayelisHouseLevelSetup {
     constructor(world) {
         this.world = world;
-        this.npcImages = this.world.npcImages;
+        this.entityImages = this.world.entityImages;
         this.allAudios = this.world.allAudios;
         this.nayelisHouseLevel = nayelisHouseLevel;
         this.nayelisHouseEvents = nayelisHouseEvents;
         this.isNotificationPlay = false;
         this.popupTexts = [];
-        this.npcs = {
-            nayeli: new NotMovableNpc(this.npcImages, 'nayeli', 180, 180, 800, 485)
+        this.characters = {
+            nayeli: new AnimatedEntity(this.entityImages, 'nayeli', 180, 180, 800, 485)
         };
         this.speechBubbles = {
             // bubbleStable1: new SpeechBubble("Den Hühnerstall verlassen? {F} drücken!", this.world.character, 'info'),

@@ -41,8 +41,8 @@ const farmEvents_part1 = [
         objectB: "cow",
         step: 1,
         once: false,
-        action: (setup) => setup.npcs.cow.updateState("happy", 1000 / 5.5),
-        onLeave: (setup) => setup.npcs.cow.updateState("idle", 1000 / 5.5),
+        action: (setup) => setup.characters.cow.updateAnimationState("happy", 1000 / 5.5),
+        onLeave: (setup) => setup.characters.cow.updateAnimationState("idle", 1000 / 5.5),
     },
 
     // 🐄 KUH – SOUND ================================================
@@ -83,8 +83,8 @@ const farmEvents_part1 = [
         duration: 2000,
         once: false,
         action: (setup) => {
-            setup.npcs.cow.updateState("standUp", 1000 / 5.5);
-            setup.npcs.cow.y = 485;
+            setup.characters.cow.updateAnimationState("standUp", 1000 / 5.5);
+            setup.characters.cow.y = 485;
             FarmHelper.nextQuest(setup, 3);
         },
     },
@@ -95,7 +95,7 @@ const farmEvents_part1 = [
         delay: 600,
         step: 3,
         action: (setup) => {
-            setup.npcs.cow.updateState("walk");
+            setup.characters.cow.updateAnimationState("walk");
             setup.world.keyboard.F = false;
         },
     },
@@ -152,7 +152,7 @@ const farmEvents_part1 = [
         action: (setup) => {
             FarmHelper.withCtx(setup, (ctx) => {
                 ctx.translate(-setup.world.farmLevelController.renderCameraX, 0);
-                setup.world.addToWorld(setup.npcs.clock);
+                setup.world.addToWorld(setup.environment.clock);
             });
         },
     },

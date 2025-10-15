@@ -53,21 +53,22 @@ const controls =
     ]
 
 const audios = {
-    nayelisMusic: new Audio('./assets/audio/nayelis-music.mp3'),
-    sollitasMusic: new Audio('./assets/audio/sollitas-music.mp3'),
-    tadeoMusic: new Audio('./assets/audio/tadeo-music.mp3'),
+    nayelisMusic: new Audio('./assets/audio/nayelis-music.opus'),
+    sollitasMusic: new Audio('./assets/audio/sollitas-music.opus'),
+    tadeoMusic: new Audio('./assets/audio/tadeo-music.opus'),
     soulMusic: new Audio('./assets/audio/soul-music.opus'),
     happyTogetherMusic: new Audio('./assets/audio/happy-together-music.opus'),
-    infoScreenMusic: new Audio('./assets/audio/info-screen-music4.mp3'),
-    brünöTextSpeechSound: new Audio('./assets/audio/brünö-character-text-speech.mp3'),
-    juanitoTextSpeechSound: new Audio('./assets/audio/juanito-character-text-speech.mp3'),
-    pollitoTextSpeechSound: new Audio('./assets/audio/pollito-character-text-speech.mp3'),
-    lolaTextSpeechSound: new Audio('./assets/audio/lola-character-text-speech.mp3'),
-    sollitaTextSpeechSound: new Audio('./assets/audio/sollita-character-text-speech.mp3'),
-    nayeliTextSpeechSound: new Audio('./assets/audio/nayeli-character-text-speech.mp3'),
-    tadeoTextSpeechSound: new Audio('./assets/audio/tadeo-character-text-speech.mp3'),
-    storyTextSpeechSound: new Audio('./assets/audio/story-text-speech.mp3')
+    infoScreenMusic: new Audio('./assets/audio/info-screen-music4.opus'),
+    brünöTextSpeechSound: new Audio('./assets/audio/brünö-character-text-speech.opus'),
+    juanitoTextSpeechSound: new Audio('./assets/audio/juanito-character-text-speech.opus'),
+    pollitoTextSpeechSound: new Audio('./assets/audio/pollito-character-text-speech.opus'),
+    lolaTextSpeechSound: new Audio('./assets/audio/lola-character-text-speech.opus'),
+    sollitaTextSpeechSound: new Audio('./assets/audio/sollita-character-text-speech.opus'),
+    nayeliTextSpeechSound: new Audio('./assets/audio/nayeli-character-text-speech.opus'),
+    tadeoTextSpeechSound: new Audio('./assets/audio/tadeo-character-text-speech.opus'),
+    storyTextSpeechSound: new Audio('./assets/audio/story-text-speech.opus')
 }
+
 const characters =
     [
         {
@@ -311,7 +312,6 @@ function renderBigCard(nameCharacter) {
     const character = characters.find(element => element.name === nameCharacter);
     if (character) bigCardBox.innerHTML = template2(character.name, character.text2);
     character.music.currentTime = 0;
-    fadeOutAudio(audios.infoScreenMusic, 1000);
     fadeOutAudio(audios.infoScreenMusic, 1000);
     fadeInAudio(character.music, 2000, 0.2);
     currentCharacterMusic = character.music;

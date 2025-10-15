@@ -41,9 +41,8 @@ class TownLevelController {
         this.renderNPCsAndCharacter();
         this.setup.taskWindow.update();
         this.setup.taskWindow.draw(this.ctx);
-        this.handleSpeechBubble();
         this.updateCharacter(timestamp);
-        this.updateNPCs(timestamp);
+        this.updateEntities(timestamp);
         this.updateEndboss(timestamp);
         this.updateCoins(timestamp);
         this.handleInteractions();
@@ -76,7 +75,6 @@ class TownLevelController {
         this.addToWorld(this.setup.statusBar2);
         this.addToWorld(this.setup.coinBar);
         this.addToWorld(this.setup.bottleBar);
-
     }
 
     renderNPCsAndCharacter() {
@@ -88,37 +86,16 @@ class TownLevelController {
         this.addObject(this.setup.townLevel.enemies);
         this.addToWorld(this.endbossAttack);
         this.addObject(this.setup.throwableObjects);
-        if (!this.setup.npcs.endboss.isUnderTheGround) {
-            this.addToWorld(this.setup.npcs.soul);
-            // this.setup.npcs.soul.updateState('idle', 1000 / 6);
-            this.addToWorld(this.setup.npcs.endboss);
+        if (!this.setup.characters.endboss.isUnderTheGround) {
+            this.addToWorld(this.setup.characters.soul);
+            // this.setup.characters.soul.updateState('idle', 1000 / 6);
+            this.addToWorld(this.setup.characters.endboss);
         }
         this.ctx.restore();
         this.sandstorm.draw(this.ctx, this.renderCameraX);
         this.sandstormFar.draw(this.ctx, this.renderCameraX);
         this.sandstormNear.draw(this.ctx, this.renderCameraX);
 
-    }
-
-    handleSpeechBubble() {
-        this.ctx.save();
-        this.ctx.translate(-this.renderCameraX, 0);
-        // if (this.character.x > 1550 && this.character.x < 1700) {
-        //     if (!this.setup.speechBubbles.bubbleFarm.startTime) {
-        //         this.setup.speechBubbles.bubbleFarm.start(); // Jetzt beginnt das Schreiben
-        //     }
-        //     this.setup.speechBubbles.bubbleFarm.update(performance.now());
-        //     this.setup.speechBubbles.bubbleFarm.draw(this.ctx);
-        //     if (!this.setup.isNotificationPlay) {
-        //         this.setup.sounds.notificationSound.currentTime = 0;
-        //         this.setup.sounds.notificationSound.play();
-        //         this.setup.isNotificationPlay = true;
-        //     }
-        // } else {
-        //     this.setup.isNotificationPlay = false;
-        //     this.setup.speechBubbles.bubbleFarm.startTime = null;
-        // }
-        this.ctx.restore();
     }
 
     updateCharacter(timestamp) {
@@ -138,11 +115,9 @@ class TownLevelController {
 
     }
 
-    updateNPCs(timestamp) {
-        const npcs = ['soul'];
-        npcs.forEach(name => {
-            this.setup.npcs[name].updateState(timestamp);
-            this.setup.npcs[name].updateAnimation(timestamp);
+    updateEntities(timestamp) {
+        Object.values(this.setup.characters).forEach(element => {
+            element.updateState(timestamp);
         });
         this.setup.townLevel.enemies.forEach(enemy => {
             enemy.updateState();
@@ -151,11 +126,11 @@ class TownLevelController {
     }
 
     updateEndboss(timestamp) {
-        this.setup.npcs.endboss.updateState(timestamp);
-        this.setup.npcs.endboss.updateAnimation(timestamp);
+        this.setup.characters.endboss.updateState(timestamp);
+        this.setup.characters.endboss.updateAnimation(timestamp);
         this.setup.endbossAttack.updateState();
         this.setup.endbossAttack.updateAnimation(timestamp);
-        if (this.setup.npcs.endboss.isJumping) this.setup.npcs.endboss.applyGravityBoss(timestamp);
+        if (this.setup.characters.endboss.isJumping) this.setup.characters.endboss.applyGravityBoss(timestamp);
     }
 
     updateCoins(timestamp) {

@@ -22,6 +22,67 @@ const farmEvents =
             }
         },
 
+        // {
+        //     type: "position",
+        //     area: { x: 1620, width: 190 },
+        //     objectA: "character",
+        //     once: false,
+        //     cooldown: 3000,
+        //     action: (setup) => {
+        //         const anim = setup.environment.stable.currentAnimation;
+        //         if (setup.doorState !== 'open' && anim !== 'doorOpens' && anim !== 'idleOpen') {
+        //             setup.doorState = 'open';
+        //             setup.environment.stable.updateAnimationState("doorOpens");
+        //             setup.sounds.doorOpeningSound.play();
+        //         }
+        //     },
+        //     onLeave: (setup) => {
+        //         const anim = setup.environment.stable.currentAnimation;
+        //         if (setup.doorState !== 'closed' && anim !== 'doorCloses' && anim !== 'idle') {
+        //             setup.doorState = 'closed';
+        //             setup.environment.stable.updateAnimationState("doorCloses");
+        //             setup.sounds.doorClosingSound.play();
+        //         }
+        //     }
+
+        // },
+
+        {
+            type: "quest",
+            once: false,
+            action: (setup) => {
+                const c = setup.world.character;
+                const a = setup.environment.stable.currentAnimation;
+                if (c.x >= 1620 && c.x <= 1810) {
+                    if (!setup.timeOnStable) setup.timeOnStable = performance.now();
+                    const elapsed = performance.now() - setup.timeOnStable;
+                    if (setup.doorState !== 'open' && a !== 'doorOpens' && a !== 'idleOpen' && elapsed >= 350) {
+                        setup.doorState = 'open';
+                        setup.environment.stable.updateAnimationState('doorOpens');
+                        setup.sounds.doorOpeningSound.play();
+                    }
+                } else {
+                    setup.timeOnStable = null;
+                    if (setup.doorState !== 'closed' && a !== 'doorCloses' && a !== 'idle') {
+                        setup.doorState = 'closed';
+                        setup.environment.stable.updateAnimationState('doorCloses');
+                        setup.sounds.doorClosingSound.play();
+                    }
+                }
+            }
+        },
+
+        {
+            type: 'time',
+            delay: 2000,
+            step: 1,
+            action: (setup) => {
+                setup.sounds.newTaskSound.play();
+                setup.popupTexts.push(new PopupText("Neue Aufgaben im Log!", setup.world.canvas.width / 2, 400));
+            }
+
+        },
+
         {
             type: 'position',
             name: 'changeLevel',
@@ -42,8 +103,8 @@ const farmEvents =
             objectB: 'cow',
             step: 1,
             once: false,
-            action: (setup) => setup.npcs.cow.updateState('happy', 1000 / 5.5),
-            onLeave: (setup) => setup.npcs.cow.updateState('idle', 1000 / 5.5)
+            action: (setup) => setup.characters.cow.updateAnimationState('happy', 1000 / 5.5),
+            onLeave: (setup) => setup.characters.cow.updateAnimationState('idle', 1000 / 5.5)
         },
 
         {
@@ -83,8 +144,8 @@ const farmEvents =
             duration: 2000,
             once: false,
             action: (setup) => {
-                setup.npcs.cow.updateState('standUp', 1000 / 5.5)
-                setup.npcs.cow.y = 485
+                setup.characters.cow.updateAnimationState('standUp', 1000 / 5.5)
+                setup.characters.cow.y = 485
                 setup.world.farmLevelController.questManager.advance(3)
             }
         },
@@ -94,8 +155,9 @@ const farmEvents =
             delay: 600,
             step: 3,
             action: (setup) => {
-                setup.npcs.cow.updateState('walk')
-                setup.world.keyboard.F = false
+                setup.characters.cow.updateAnimationState('walk');
+                setup.characters.cow.speedX = 2;
+                setup.world.keyboard.F = false;
             }
         },
 
@@ -107,12 +169,15 @@ const farmEvents =
             step: 3,
             once: false,
             action: (setup) => {
-                if (setup.npcs.cow.x <= 5300) {
-                    setup.npcs.cow.x += 2
-                    setup.npcs.cow.updateState('walk')
+                if (setup.characters.cow.x <= 5300) {
+                    setup.characters.cow.isMovingRight = true;
+                    setup.characters.cow.updateAnimationState('walk')
                 } else setup.world.farmLevelController.questManager.advance(4)
             },
-            onLeave: (setup) => setup.npcs.cow.updateState('afraid', 1000 / 5)
+            onLeave: (setup) => {
+                setup.characters.cow.isMovingRight = false;
+                setup.characters.cow.updateAnimationState('afraid', 1000 / 5)
+            }
         },
 
         {
@@ -133,7 +198,8 @@ const farmEvents =
                 setup.taskWindow.markDone(2);
                 setup.popupTexts.push(new PopupText("Aufgabe Erledigt!", setup.world.canvas.width / 2, 400));
                 setup.sounds.taskCompletedSound.play();
-                setup.npcs.cow.updateState('eat', 1000 / 5.5);
+                setup.characters.cow.isMovingRight = false;
+                setup.characters.cow.updateAnimationState('eat', 1000 / 5.5);
             }
         },
 
@@ -157,7 +223,7 @@ const farmEvents =
             action: (setup) => {
                 setup.world.ctx.save();
                 setup.world.ctx.translate(-setup.world.farmLevelController.renderCameraX, 0)
-                setup.world.addToWorld(setup.npcs.clock)
+                setup.world.addToWorld(setup.environment.clock)
                 setup.world.ctx.restore()
             }
         },
@@ -196,9 +262,9 @@ const farmEvents =
                 setup.world.character.isMovingLeft = false
                 setup.world.character.isMovingRight = false
                 setup.world.isKeysStopp = true;
-                setup.npcs.cow.updateState('love');
-                setup.world.character.x = setup.npcs.cow.x + 135;
-                if (setup.npcs.cow.isFlipped) setup.world.character.isFlipped = true
+                setup.characters.cow.updateAnimationState('love');
+                setup.world.character.x = setup.characters.cow.x + 135;
+                if (setup.characters.cow.isFlipped) setup.world.character.isFlipped = true
                 setup.sounds.cowSound2.play();
                 setup.world.farmLevelController.questManager.advance(6)
             }
@@ -211,7 +277,7 @@ const farmEvents =
             step: 6,
             once: false,
             action: (setup) => {
-                if (setup.npcs.cow.currentAnimation === 'love') setup.sounds.cowSound2.play()
+                if (setup.characters.cow.currentAnimation === 'love') setup.sounds.cowSound2.play()
             }
         },
 
@@ -220,7 +286,7 @@ const farmEvents =
             delay: 5000,
             step: 6,
             action: (setup) => {
-                setup.npcs.cow.updateState('eat', 1000 / 5.5);
+                setup.characters.cow.updateAnimationState('eat', 1000 / 5.5);
                 setup.world.character.isCaress = false;
                 setup.world.isKeysStopp = false;
                 setup.world.keyboard.F = false;
@@ -254,8 +320,8 @@ const farmEvents =
                 setup.taskWindow.addTask('6. Bringe Lola wieder zurück', { active: true });
                 setup.sounds.newTaskSound.play();
                 setup.popupTexts.push(new PopupText("Neue Aufgabe im Log!", setup.world.canvas.width / 2, 400));
-                setup.npcs.cow.updateState('walk');
-                setup.npcs.cow.isFlipped = false;
+                setup.characters.cow.updateAnimationState('walk');
+                setup.characters.cow.isFlipped = false;
             },
         },
 
@@ -267,18 +333,22 @@ const farmEvents =
             step: 7,
             once: false,
             action: (setup) => {
-                if (setup.npcs.cow.x >= 500) {
-                    setup.npcs.cow.x -= 2
-                    setup.npcs.cow.updateState('walk');
+                if (setup.characters.cow.x >= 500) {
+                    setup.characters.cow.isMovingLeft = true;
+                    setup.characters.cow.updateAnimationState('walk');
                 } else {
+                    setup.characters.cow.isMovingLeft = false;
                     setup.taskWindow.markDone(5);
                     setup.sounds.taskCompletedSound.play();
                     setup.popupTexts.push(new PopupText("Aufgabe erledigt!", setup.world.canvas.width / 2, 400));
-                    setup.npcs.cow.updateState('idle');
+                    setup.characters.cow.updateAnimationState('idle');
                     setup.world.farmLevelController.questManager.advance(8)
                 }
             },
-            onLeave: (setup) => setup.npcs.cow.updateState('afraid', 1000 / 5)
+            onLeave: (setup) => {
+                setup.characters.cow.updateAnimationState('afraid', 1000 / 5);
+                setup.characters.cow.isMovingLeft = false;
+            }
         },
 
         {
@@ -300,11 +370,15 @@ const farmEvents =
                 setup.world.character.isMovingRight = false;
                 setup.world.isKeysStopp = true;
                 setup.world.character.isFlipped = false;
-                setup.npcs.cow.isFlipped = true;
-                setup.npcs.chicken2.updateState('walk2', 1000 / 8);
-                setup.npcs.chick.updateState('walk', 1000 / 8);
-                setup.npcs.chicken2.isFlipped = true;
-                setup.npcs.chick.isFlipped = false;
+                setup.characters.cow.isFlipped = true;
+                setup.characters.chicken.updateAnimationState('walk', 1000 / 8);
+                setup.characters.chick.updateAnimationState('walk', 1000 / 8);
+                setup.characters.chicken.speedX = 3;
+                setup.characters.chicken.isMovingLeft = true;
+                setup.characters.chick.speedX = 3;
+                setup.characters.chick.isMovingLeft = true;
+                setup.characters.chicken.isFlipped = true;
+                setup.characters.chick.isFlipped = false;
             }
         },
 
@@ -313,8 +387,8 @@ const farmEvents =
             step: 8,
             once: false,
             action: (setup) => {
-                if (setup.npcs.chicken2.x >= 500) setup.npcs.chicken2.x -= 3;
-                if (setup.npcs.chick.x >= 575) setup.npcs.chick.x -= 3;
+                if (setup.characters.chicken.x <= 500) setup.characters.chicken.isMovingLeft = false;
+                if (setup.characters.chick.x <= 575) setup.characters.chick.isMovingLeft = false;
             }
         },
 
@@ -332,11 +406,12 @@ const farmEvents =
             type: 'quest',
             step: 9,
             action: (setup) => {
-                setup.npcs.chicken2.updateState('idle');
-                setup.npcs.chicken2.isFlipped = false;
-                setup.npcs.chick.updateState('idle');
-                setup.npcs.chick.isFlipped = true;
+                setup.characters.chicken.updateAnimationState('idle');
+                setup.characters.chicken.isFlipped = false;
+                setup.characters.chick.updateAnimationState('idle');
+                setup.characters.chick.isFlipped = true;
                 setup.world.character.isWalk = true;
+                setup.world.character.speedX = 5;
             }
         },
 
@@ -382,18 +457,11 @@ const farmEvents =
                 }
             }
         },
+
         {
             type: 'quest',
             step: 10,
-            once: false,
-            action: (setup) => {
-                if (setup.world.farmLevelController.sunAngle < Math.PI) {
-                    setup.world.farmLevelController.sunAngle += 0.004;
-
-                }
-                setup.npcs.sun.x = setup.world.farmLevelController.sunCenterX + setup.world.farmLevelController.sunRadius * Math.cos(setup.world.farmLevelController.sunAngle);
-                setup.npcs.sun.y = setup.world.farmLevelController.sunCenterY - setup.world.farmLevelController.sunRadius * Math.sin(setup.world.farmLevelController.sunAngle);
-            }
+            action: (setup) => setup.sunCycle.start()
         },
 
         {
@@ -412,14 +480,7 @@ const farmEvents =
             type: 'time',
             delay: 5000,
             step: 10,
-            once: false,
-            action: (setup) => {
-                if (setup.world.farmLevelController.moonAngle < Math.PI * 0.85) {
-                    setup.world.farmLevelController.moonAngle += 0.004;
-                }
-                setup.npcs.moon.x = setup.world.farmLevelController.moonCenterX + setup.world.farmLevelController.moonRadius * Math.cos(setup.world.farmLevelController.moonAngle);
-                setup.npcs.moon.y = setup.world.farmLevelController.moonCenterY - setup.world.farmLevelController.moonRadius * Math.sin(setup.world.farmLevelController.moonAngle);
-            }
+            action: (setup) => setup.moonCycle.start()
         },
 
         {
@@ -449,15 +510,15 @@ const farmEvents =
             delay: 1500,
             step: 10,
             action: (setup) => {
-                setup.npcs.campfire.updateState('fireGoesOn');
+                setup.environment.campfire.updateAnimationState('fireGoesOn');
                 setup.sounds.happyTogetherMusic.play();
                 setup.sounds.farmMusic.loop = false;
                 setup.sounds.eveningSound.loop = true;
                 setup.sounds.eveningSound.play();
-                setup.npcs.cow.updateState('swingToMusic', 1000 / 6.5);
-                setup.npcs.chick.updateState('swingToMusic', 1000 / 6.5);
-                setup.npcs.chicken2.updateState('swingToMusic', 1000 / 6.5);
-                setup.npcs.moon.updateState('swingToMusic');
+                setup.characters.cow.updateAnimationState('swingToMusic', 1000 / 6.5);
+                setup.characters.chick.updateAnimationState('swingToMusic', 1000 / 6.5);
+                setup.characters.chicken.updateAnimationState('swingToMusic', 1000 / 6.5);
+                setup.environment.moon.updateAnimationState('swingToMusic');
             }
         },
 
@@ -467,79 +528,21 @@ const farmEvents =
             step: 10,
             once: false,
             action: (setup) => {
-                setup.lyrics = [
-                    { time: 7.2, text: "Bailamos en la plaza," },
-                    { time: 9.3, text: "Cantando sin parar," },
-                    { time: 11.4, text: "Con mis amigos cerca," },
-                    { time: 13.5, text: "Es un día para amar." },
-
-                    { time: 15.7, text: "Juanito, Pollito, Lola, we sing," },
-                    { time: 20.2, text: "Happy together, joy that we bring," },
-                    { time: 24.1, text: "Juanito, Pollito, Lola, my friends," },
-                    { time: 28.2, text: "Our love and our laughter will never end." },
-                    { time: 32.1, text: "" },
-
-                    { time: 39.5, text: "Caminamos la calle," },
-                    { time: 41, text: "con sonrisas y fe," },
-                    { time: 43, text: "cada paso juntos," },
-                    { time: 45.5, text: "la vida se ve bien." },
-
-                    { time: 46.8, text: "Juanito, Pollito, Lola my friends," },
-                    { time: 52, text: "Singing together, the joy never ends," },
-                    { time: 55.5, text: "Juanito, Pollito, Lola we sing," },
-                    { time: 60, text: "Friendship forever, the joy that we bring." },
-                    { time: 64.5, text: "" },
-
-                    { time: 71.2, text: "Siempre cantando, amigos de verdad," },
-                    { time: 75.7, text: "Juanito, Pollito, y Lola están," },
-                    { time: 79.7, text: "Juanito, Pollito, Lola my friends," },
-                    { time: 84.1, text: "Amigos por siempre, love never ends.", duration: 1 },
-                    { time: 89.9, text: "" }
-                ];
-
-                switch (true) {
-                    case (setup.sounds.happyTogetherMusic.currentTime >= 0 && setup.sounds.happyTogetherMusic.currentTime <= 7.2):
-                        setup.world.character.isSitDownAndPlayGuitar = true;
-                        break;
-                    case (setup.sounds.happyTogetherMusic.currentTime >= 7.2 && setup.sounds.happyTogetherMusic.currentTime <= 32.1):
-                        setup.world.character.isSitDownAndPlayGuitar = false;
-                        setup.world.character.isPlayGuitarAndSing = true;
-                        break;
-                    case (setup.sounds.happyTogetherMusic.currentTime >= 32.1 && setup.sounds.happyTogetherMusic.currentTime <= 39.5):
-                        setup.world.character.isPlayGuitarAndSing = false;
-                        setup.world.character.isPlayGuitar = true;
-                        break;
-                    case (setup.sounds.happyTogetherMusic.currentTime >= 39.5 && setup.sounds.happyTogetherMusic.currentTime <= 64.5):
-                        setup.world.character.isPlayGuitar = false;
-                        setup.world.character.isPlayGuitarAndSing = true;
-                        break;
-                    case (setup.sounds.happyTogetherMusic.currentTime >= 64.5 && setup.sounds.happyTogetherMusic.currentTime <= 71.2):
-                        setup.world.character.isPlayGuitarAndSing = false;
-                        setup.world.character.isPlayGuitar = true;
-                        break;
-                    case (setup.sounds.happyTogetherMusic.currentTime >= 71.2 && setup.sounds.happyTogetherMusic.currentTime <= 89.9):
-                        setup.world.character.isPlayGuitar = false;
-                        setup.world.character.isPlayGuitarAndSing = true;
-                        break;
-                    case (setup.sounds.happyTogetherMusic.currentTime >= 89.9 && setup.sounds.happyTogetherMusic.currentTime <= 97.0):
-                        setup.world.character.isPlayGuitarAndSing = false;
-                        setup.world.character.isPlayGuitar = true;
-                        break;
-                }
-                setup.world.farmLevelController.renderLyrics();
+                setup.lyricsRenderer.render();
             }
         },
+
         {
             type: 'quest',
             step: 10,
             once: false,
             action: (setup) => {
                 if (setup.sounds.happyTogetherMusic.currentTime >= 97.0) {
-                    setup.npcs.cow.updateState('sleep', 1000 / 5.5);
-                    setup.npcs.chick.updateState('sleep', 1000 / 5.5);
-                    setup.npcs.chicken2.updateState('sleep', 1000 / 5.5);
-                    setup.npcs.campfire.updateState('fireGoesOut');
-                    setup.npcs.moon.updateState('idle');
+                    setup.characters.cow.updateAnimationState('sleep', 1000 / 5.5);
+                    setup.characters.chick.updateAnimationState('sleep', 1000 / 5.5);
+                    setup.characters.chicken.updateAnimationState('sleep', 1000 / 5.5);
+                    setup.environment.campfire.updateAnimationState('fireGoesOut');
+                    setup.environment.moon.updateAnimationState('idle');
                     setup.world.character.isPlayGuitar = false;
                     setup.world.character.isStandUp = true;
                     setup.world.farmLevelController.questManager.advance(11);
@@ -641,9 +644,9 @@ const farmEvents =
             action: (setup) => {
                 setup.world.ctx.save();
                 setup.world.ctx.translate(-setup.world.farmLevelController.renderCameraX, 0);
-                setup.world.addToWorld(setup.npcs.drohne);
+                setup.world.addToWorld(setup.characters.drone);
                 setup.world.ctx.restore();
-                const targetX = setup.npcs.drohne.x - 300;
+                const targetX = setup.characters.drone.x - 300;
                 const differenceX = targetX - setup.world.camera_x;
                 if (Math.abs(differenceX) >= 3) {
                     setup.world.camera_x += Math.sign(differenceX) * 10;
@@ -660,12 +663,12 @@ const farmEvents =
             once: false,
             action: (setup) => {
                 const targetX = 1500;
-                const differenceX = targetX - setup.npcs.drohne.x;
+                const differenceX = targetX - setup.characters.drone.x;
                 if (Math.abs(differenceX) >= 3) {
-                    setup.npcs.drohne.x += Math.sign(differenceX) * 5;
-                    setup.world.camera_x += ((setup.npcs.drohne.x - 300) - setup.world.camera_x) * 0.1;
+                    setup.characters.drone.x += Math.sign(differenceX) * 5;
+                    setup.world.camera_x += ((setup.characters.drone.x - 300) - setup.world.camera_x) * 0.1;
                 } else {
-                    setup.npcs.drohne.x = targetX;
+                    setup.characters.drone.x = targetX;
                     setup.world.farmLevelController.questManager.advance(16)
                 }
             }
@@ -692,10 +695,10 @@ const farmEvents =
                 setup.sounds.drohneSound.pause();
                 setup.sounds.drohneHypnoSound.loop = true;
                 setup.sounds.drohneHypnoSound.play();
-                setup.npcs.drohne.updateState('hypno', 1000 / 7);
-                setup.npcs.chicken.updateState('walk', 1000 / 7);
-                setup.npcs.cowHypno.updateState('walk', 1000 / 5);
-                setup.npcs.chickHypno.updateState('walk', 1000 / 7);
+                setup.characters.drone.updateAnimationState('hypno', 1000 / 7);
+                setup.cutsceneActors.chickenHypno.updateAnimationState('walk', 1000 / 7);
+                setup.cutsceneActors.cowHypno.updateAnimationState('walk', 1000 / 5);
+                setup.cutsceneActors.chickHypno.updateAnimationState('walk', 1000 / 7);
             }
         },
 
@@ -705,16 +708,16 @@ const farmEvents =
             step: 16,
             once: false,
             action: (setup) => {
-                if (setup.npcs.chicken.x < 2600) {
-                    setup.npcs.chicken.x += 1.5;
+                if (setup.cutsceneActors.chickenHypno.x < 2600) {
+                    setup.cutsceneActors.chickenHypno.x += 1.5;
                 }
-                if (setup.npcs.cowHypno.x < 2600) {
-                    setup.npcs.cowHypno.x += 1.5;
+                if (setup.cutsceneActors.cowHypno.x < 2600) {
+                    setup.cutsceneActors.cowHypno.x += 1.5;
                 } else {
                     setup.world.farmLevelController.questManager.advance(17);
                 }
-                if (setup.npcs.chickHypno.x < 2600) {
-                    setup.npcs.chickHypno.x += 1.5;
+                if (setup.cutsceneActors.chickHypno.x < 2600) {
+                    setup.cutsceneActors.chickHypno.x += 1.5;
                 }
             }
         },
@@ -725,7 +728,7 @@ const farmEvents =
             action: (setup) => {
                 setup.sounds.drohneHypnoSound.pause();
                 setup.sounds.drohneSound.play();
-                setup.npcs.drohne.updateState('idle', 1000 / 7);
+                setup.characters.drone.updateAnimationState('idle', 1000 / 7);
             }
         },
 
@@ -734,8 +737,8 @@ const farmEvents =
             step: 17,
             once: false,
             action: (setup) => {
-                if (setup.npcs.drohne.x <= 3500) {
-                    setup.npcs.drohne.x += 5;
+                if (setup.characters.drone.x <= 3500) {
+                    setup.characters.drone.x += 5;
                 } else {
                     setup.world.farmLevelController.questManager.advance(18);
                 }
@@ -902,14 +905,16 @@ const farmEvents =
             step: 19,
             once: false,
             action: (setup) => {
-                setup.world.ctx.save();
-                setup.world.ctx.translate(-setup.world.farmLevelController.renderCameraX, 0);
-                if (!setup.speechBubbles.bubbleFarm8.startTime) {
-                    setup.speechBubbles.bubbleFarm8.start();
-                }
-                setup.speechBubbles.bubbleFarm8.update(performance.now());
-                setup.speechBubbles.bubbleFarm8.draw(setup.world.ctx, 0);
-                setup.world.ctx.restore();
+                setup.speechBubbles.bubbleFarm8.start(5000)
+                setup.speechBubbles.bubbleFarm8.render(setup.world.ctx, setup.world.farmLevelController.renderCameraX, 0);
+                // setup.world.ctx.save();
+                // setup.world.ctx.translate(-setup.world.farmLevelController.renderCameraX, 0);
+                // if (!setup.speechBubbles.bubbleFarm8.startTime) {
+                //     setup.speechBubbles.bubbleFarm8.start();
+                // }
+                // setup.speechBubbles.bubbleFarm8.update(performance.now());
+                // setup.speechBubbles.bubbleFarm8.draw(setup.world.ctx, 0);
+                // setup.world.ctx.restore();
             }
         },
 
@@ -969,10 +974,10 @@ const farmEvents =
             action: (setup) => {
                 setup.world.character.isWalkDetermined = false;
                 setup.world.character.isStandDetermined = true;
-                setup.npcs.chickPortrait.fadeIn(setup.world.farmLevelController.timestamp, 10000);
-                setup.npcs.chickPortrait.updateState('portrait', 1000 / 5);
-                setup.npcs.chickenPortrait.updateState('portrait', 1000 / 5);
-                setup.npcs.cowPortrait.updateState('portrait', 1000 / 5);
+                setup.characters.portraits.chick.fadeIn(setup.world.farmLevelController.timestamp, 10000);
+                setup.characters.portraits.chick.updateAnimationState('portrait', 1000 / 5);
+                setup.characters.portraits.chicken.updateAnimationState('portrait', 1000 / 5);
+                setup.characters.portraits.cow.updateAnimationState('portrait', 1000 / 5);
             }
         },
 
@@ -989,6 +994,14 @@ const farmEvents =
 
         {
             type: 'time',
+            delay: 500,
+            step: 22,
+            action: (setup) => setup.speechBubbles.bubbleFarm9.start(4500)
+        },
+
+
+        {
+            type: 'time',
             from: 500,
             to: 5500,
             once: false,
@@ -996,7 +1009,7 @@ const farmEvents =
             action: (setup) => {
                 // setup.world.ctx.save();
                 // setup.world.ctx.translate(-setup.world.farmLevelController.renderCameraX, 0);
-                // setup.world.addToWorld(setup.npcs.chickPortrait);
+                // setup.world.addToWorld(setup.characters.portraits.chick);
                 // setup.world.ctx.restore();
 
 
@@ -1005,7 +1018,7 @@ const farmEvents =
                 setup.world.ctx.translate(-setup.world.farmLevelController.renderCameraX, 0);
 
                 // === 1. Offscreen-Canvas vorbereiten ===
-                const portrait = setup.npcs.chickPortrait;
+                const portrait = setup.characters.portraits.chick;
                 const fadeOpacity = 0.75;
 
                 const offscreen = document.createElement("canvas");
@@ -1048,15 +1061,15 @@ const farmEvents =
                 setup.world.ctx.globalAlpha = 1.0;
                 setup.world.ctx.restore();
 
-                setup.world.ctx.save();
-                setup.world.ctx.translate(-setup.world.farmLevelController.renderCameraX, 0);
-                if (!setup.speechBubbles.bubbleFarm9.startTime) {
-                    setup.speechBubbles.bubbleFarm9.start();
-                }
-                setup.speechBubbles.bubbleFarm9.update(performance.now());
-                setup.speechBubbles.bubbleFarm9.draw(setup.world.ctx, 0);
-                setup.world.ctx.restore();
+                setup.speechBubbles.bubbleFarm9.render(setup.world.ctx, setup.world.farmLevelController.renderCameraX, 0);
             }
+        },
+
+        {
+            type: 'time',
+            delay: 5500,
+            step: 22,
+            action: (setup) => setup.speechBubbles.bubbleFarm10.start(4500)
         },
 
         {
@@ -1068,14 +1081,14 @@ const farmEvents =
             action: (setup) => {
                 // setup.world.ctx.save();
                 // setup.world.ctx.translate(-setup.world.farmLevelController.renderCameraX, 0);
-                // setup.world.addToWorld(setup.npcs.chickenPortrait);
+                // setup.world.addToWorld(setup.characters.portraits.chicken);
                 // setup.world.ctx.restore();
 
                 setup.world.ctx.save();
                 setup.world.ctx.translate(-setup.world.farmLevelController.renderCameraX, 0);
 
                 // === 1. Offscreen-Canvas vorbereiten ===
-                const portrait = setup.npcs.chickenPortrait;
+                const portrait = setup.characters.portraits.chicken;
                 const fadeOpacity = 0.75;
 
                 const offscreen = document.createElement("canvas");
@@ -1118,16 +1131,15 @@ const farmEvents =
                 setup.world.ctx.globalAlpha = 1.0;
                 setup.world.ctx.restore();
 
-
-                setup.world.ctx.save();
-                setup.world.ctx.translate(-setup.world.farmLevelController.renderCameraX, 0);
-                if (!setup.speechBubbles.bubbleFarm10.startTime) {
-                    setup.speechBubbles.bubbleFarm10.start();
-                }
-                setup.speechBubbles.bubbleFarm10.update(performance.now());
-                setup.speechBubbles.bubbleFarm10.draw(setup.world.ctx, 0);
-                setup.world.ctx.restore();
+                setup.speechBubbles.bubbleFarm10.render(setup.world.ctx, setup.world.farmLevelController.renderCameraX, 0);
             }
+        },
+
+        {
+            type: 'time',
+            delay: 10500,
+            step: 22,
+            action: (setup) => setup.speechBubbles.bubbleFarm11.start(4500)
         },
 
         {
@@ -1139,13 +1151,13 @@ const farmEvents =
             action: (setup) => {
                 // setup.world.ctx.save();
                 // setup.world.ctx.translate(-setup.world.farmLevelController.renderCameraX, 0);
-                // setup.world.addToWorld(setup.npcs.cowPortrait);
+                // setup.world.addToWorld(setup.characters.portraits.cow);
                 // setup.world.ctx.restore();
                 setup.world.ctx.save();
                 setup.world.ctx.translate(-setup.world.farmLevelController.renderCameraX, 0);
 
                 // === 1. Offscreen-Canvas vorbereiten ===
-                const portrait = setup.npcs.cowPortrait;
+                const portrait = setup.characters.portraits.cow;
                 const fadeOpacity = 0.75;
 
                 const offscreen = document.createElement("canvas");
@@ -1188,16 +1200,15 @@ const farmEvents =
                 setup.world.ctx.globalAlpha = 1.0;
                 setup.world.ctx.restore();
 
-                setup.world.ctx.save();
-                setup.world.ctx.translate(-setup.world.farmLevelController.renderCameraX, 0);
-                if (!setup.speechBubbles.bubbleFarm11.startTime) {
-                    setup.speechBubbles.bubbleFarm11.start();
-                }
-                setup.speechBubbles.bubbleFarm11.update(performance.now());
-                setup.speechBubbles.bubbleFarm11.draw(setup.world.ctx, 0);
-                setup.world.ctx.restore();
-
+                setup.speechBubbles.bubbleFarm11.render(setup.world.ctx, setup.world.farmLevelController.renderCameraX, 0);
             }
+        },
+
+        {
+            type: 'time',
+            delay: 15500,
+            step: 22,
+            action: (setup) => setup.speechBubbles.bubbleFarm8.start(4500)
         },
 
         {
@@ -1206,16 +1217,7 @@ const farmEvents =
             to: 20500,
             once: false,
             step: 22,
-            action: (setup) => {
-                setup.world.ctx.save();
-                setup.world.ctx.translate(-setup.world.farmLevelController.renderCameraX, 0);
-                if (!setup.speechBubbles.bubbleFarm8.startTime) {
-                    setup.speechBubbles.bubbleFarm8.start();
-                }
-                setup.speechBubbles.bubbleFarm8.update(performance.now());
-                setup.speechBubbles.bubbleFarm8.draw(setup.world.ctx, 0);
-                setup.world.ctx.restore();
-            }
+            action: (setup) => setup.speechBubbles.bubbleFarm8.render(setup.world.ctx, setup.world.farmLevelController.renderCameraX, -20)
         },
 
         {
