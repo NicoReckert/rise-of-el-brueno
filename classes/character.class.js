@@ -34,6 +34,17 @@ class Character extends MovableObject {
         this.yVoidless = 487;
         this.init();
         this.movementSpeed;
+
+        this.isGamecharacter = false;
+        this.attackHitbox = {
+            top: 220,     // Abstand von oben
+            left: 200,    // Abstand von links
+            right: 8,     // Abstand von rechts
+            bottom: 52,   // Abstand von unten
+            active: false
+        };
+        this.hasHitEnemyThisAttack = false;
+
     }
 
     /**
@@ -77,51 +88,51 @@ class Character extends MovableObject {
     * Initializes character movement-related image sets.
     */
     initMovementImages() {
-        this.idleImages = this.characterImages.idleImages || [];
-        this.walkImages = this.characterImages.walkImages || [];
-        this.jumpImages = this.characterImages.jumpImages || [];
-        this.walkDeterminedImages = this.characterImages.walkDeterminedImages || [];
-        this.standUpImages = this.characterImages.standUpImages || [];
+        this.idleImages = this.characterImages.idleImages ?? (this.characterImages.idleImages = []);
+        this.walkImages = this.characterImages.walkImages ?? (this.characterImages.walkImages = []);
+        this.jumpImages = this.characterImages.jumpImages ?? (this.characterImages.jumpImages = []);
+        this.walkDeterminedImages = this.characterImages.walkDeterminedImages ?? (this.characterImages.walkDeterminedImages = []);
+        this.standUpImages = this.characterImages.standUpImages ?? (this.characterImages.standUpImages = []);
     }
 
     /**
     * Initializes character emotion-related image sets.
     */
     initEmotionImages() {
-        this.hurtImages = this.characterImages.hurtImages || [];
-        this.deadImages = this.characterImages.deadImages || [];
-        this.kneelDownAndCryImages = this.characterImages.kneelDownAndCryImages || [];
-        this.cryImages = this.characterImages.cryImages || [];
-        this.lookDeterminedImages = this.characterImages.lookDeterminedImages || [];
-        this.lookDeterminedStandUpImages = this.characterImages.lookDeterminedStandUpImages || [];
-        this.strongDeterminedImages = this.characterImages.strongDeterminedImages || [];
-        this.standDeterminedImages = this.characterImages.standDeterminedImages || [];
-        this.standDeterminedLoopImages = this.characterImages.standDeterminedLoopImages || [];
+        this.hurtImages = this.characterImages.hurtImages ?? (this.characterImages.hurtImages = []);
+        this.deadImages = this.characterImages.deadImages ?? (this.characterImages.deadImages = []);
+        this.kneelDownAndCryImages = this.characterImages.kneelDownAndCryImages ?? (this.characterImages.kneelDownAndCryImages = []);
+        this.cryImages = this.characterImages.cryImages ?? (this.characterImages.cryImages = []);
+        this.lookDeterminedImages = this.characterImages.lookDeterminedImages ?? (this.characterImages.lookDeterminedImages = []);
+        this.lookDeterminedStandUpImages = this.characterImages.lookDeterminedStandUpImages ?? (this.characterImages.lookDeterminedStandUpImages = []);
+        this.strongDeterminedImages = this.characterImages.strongDeterminedImages ?? (this.characterImages.strongDeterminedImages = []);
+        this.standDeterminedImages = this.characterImages.standDeterminedImages ?? (this.characterImages.standDeterminedImages = []);
+        this.standDeterminedLoopImages = this.characterImages.standDeterminedLoopImages ?? (this.characterImages.standDeterminedLoopImages = []);
     }
 
     /**
     * Initializes character action-related image sets.
     */
     initActionImages() {
-        this.attackImages = this.characterImages.attackImages || [];
-        this.jetPackImages = this.characterImages.jetPackImages || [];
-        this.meditationImages = this.characterImages.meditationImages || [];
-        this.meditationLoopImages = this.characterImages.meditationLoopImages || [];
-        this.newWeaponImages = this.characterImages.newWeaponImages || [];
-        this.newWeaponLoopImages = this.characterImages.newWeaponLoopImages || [];
+        this.attackImages = this.characterImages.attackImages ?? (this.characterImages.attackImages = []);
+        this.jetPackImages = this.characterImages.jetPackImages ?? (this.characterImages.jetPackImages = []);
+        this.meditationImages = this.characterImages.meditationImages ?? (this.characterImages.meditationImages = []);
+        this.meditationLoopImages = this.characterImages.meditationLoopImages ?? (this.characterImages.meditationLoopImages = []);
+        this.newWeaponImages = this.characterImages.newWeaponImages ?? (this.characterImages.newWeaponImages = []);
+        this.newWeaponLoopImages = this.characterImages.newWeaponLoopImages ?? (this.characterImages.newWeaponLoopImages = []);
     }
 
     /**
     * Initializes character special interaction and event-related image sets.
     */
     initSpecialImages() {
-        this.caressImages = this.characterImages.caressImages || [];
-        this.caressLoopImages = this.characterImages.caressLoopImages || [];
-        this.sitDownAndPlayGuitarImages = this.characterImages.sitDownAndPlayGuitarImages || [];
-        this.playGuitarAndSingImages = this.characterImages.playGuitarAndSingImages || [];
-        this.playGuitarImages = this.characterImages.playGuitarImages || [];
-        this.lightACampfireImages = this.characterImages.lightACampfireImages || [];
-        this.standUpAndLookDeterminedImages = this.characterImages.standUpAndLookDeterminedImages || [];
+        this.caressImages = this.characterImages.caressImages ?? (this.characterImages.caressImages = []);
+        this.caressLoopImages = this.characterImages.caressLoopImages ?? (this.characterImages.caressLoopImages = []);
+        this.sitDownAndPlayGuitarImages = this.characterImages.sitDownAndPlayGuitarImages ?? (this.characterImages.sitDownAndPlayGuitarImages = []);
+        this.playGuitarAndSingImages = this.characterImages.playGuitarAndSingImages ?? (this.characterImages.playGuitarAndSingImages = []);
+        this.playGuitarImages = this.characterImages.playGuitarImages ?? (this.characterImages.playGuitarImages = []);
+        this.lightACampfireImages = this.characterImages.lightACampfireImages ?? (this.characterImages.lightACampfireImages = []);
+        this.standUpAndLookDeterminedImages = this.characterImages.standUpAndLookDeterminedImages ?? (this.characterImages.standUpAndLookDeterminedImages = []);
     }
 
     /**
@@ -224,10 +235,12 @@ class Character extends MovableObject {
     * Moves the character to the left and adjusts the camera position.
     */
     moveLeft() {
+        const isMobile = window.innerWidth <= 900;
+        const cameraOffset = isMobile ? 920 : 1060;
         this.isFlipped = true;
         if (this.x > this.level_start_x) {
             this.x -= this.movementSpeed;
-            this.world.camera_x += ((this.x - 1060) - this.world.camera_x) * 0.05;
+            this.world.camera_x += ((this.x - cameraOffset) - this.world.camera_x) * 0.05;
         }
     }
 
@@ -235,10 +248,12 @@ class Character extends MovableObject {
     * Moves the character to the right and adjusts the camera position.
     */
     moveRight() {
+        const isMobile = window.innerWidth <= 900;
+        const cameraOffset = isMobile ? 150 : 100;
         this.isFlipped = false;
         if (this.x < this.world.farmLevelSetup.farmLevel.level_end_x) {
             this.x += this.movementSpeed;
-            this.world.camera_x += ((this.x - 100) - this.world.camera_x) * 0.05;
+            this.world.camera_x += ((this.x - cameraOffset) - this.world.camera_x) * 0.05;
         }
     }
 
@@ -366,6 +381,25 @@ class Character extends MovableObject {
                 this.handleDeferredSizeUpdate();
                 this.frameIndex++;
                 this.checkAnimationEnd(images);
+
+
+
+                if (this.currentAnimation === 'attack') {
+                    // Immer dann aktiv, wenn ein Vielfaches von 6 erreicht ist
+                    const everySixthFrame = this.frameIndex % 6 === 0 && this.frameIndex !== 0;
+
+                    this.attackHitbox.active = everySixthFrame;
+
+                    // Optional: Reset nach jedem „Trefferfenster“
+                    if (this.frameIndex >= 6) {
+                        this.frameIndex = 0;
+                    }
+                } else {
+                    this.attackHitbox.active = false;
+                }
+
+
+
             }
             this.lastFrameTime = timestamp;
         }
@@ -388,7 +422,7 @@ class Character extends MovableObject {
         if (this.isVoidlessAnimation(anim)) {
             this.setCharacterSize(158, 183, this.yVoidless, { top: 13, left: 33, right: 55, bottom: 15 });
         } else if (this.isLargeAnimation(anim)) {
-            this.setCharacterSize(290, 355, 315, { top: 13, left: 33, right: 55, bottom: 15 });
+            this.setCharacterSize(240 /*290*/, 280 /*355*/, 390 /*315*/, { top: 110 /*220*/, left: 30 /*200*/, right: 115 /*8*/, bottom: 10 /*52*/ });
         } else {
             this.setCharacterSize(130, 300, this.yNormal, { top: 130, left: 20, right: 40, bottom: 15 });
         }
@@ -510,6 +544,7 @@ class Character extends MovableObject {
         switch (anim) {
             case 'attack':
                 this.isAttack = false;
+                this.hasHitEnemyThisAttack = false;
                 return true;
             case 'meditation':
                 return this.setTransition('meditation-loop', 4);

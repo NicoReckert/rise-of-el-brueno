@@ -108,7 +108,7 @@ canvas {
   bottom: 0px;
   display: none;
   justify-content: space-between;
-  align-items: center;
+  align-items: flex-end;
   width: 100%;
 }
 
@@ -116,30 +116,48 @@ canvas {
   display: flex;
   justify-content: center;
   align-items: center;
-  padding: 8px;
+  padding: 6px;
   gap: 8px;
   border-radius: 25px;
   opacity: 0.9;
-  margin-left: 10px;
 }
 
 .right-button-box {
   display: flex;
   justify-content: center;
-  align-items: center;
-  padding: 8px;
+  align-items: flex-end;
+  padding: 6px;
   flex-direction: column;
   border-radius: 25px;
   opacity: 0.9;
-  margin-right: 10px;
+  gap: 3px;
 }
 
-.middle-button-box {
+#action-button {
+  width: 45px;
+  height: 45px;
+}
+
+#attack-button {
+  width: 80px;
+  height: 80px;
+  border-color: orangered;
+}
+
+#log-button {
+  width: 45px;
+  height: 45px;
+}
+
+
+
+
+.bottom-button-box {
   display: flex;
   justify-content: center;
-  align-items: center;
-  gap: 6px;
-  padding: 6px 0;
+  align-items: flex-end;
+  gap: 3px;
+  /* padding: 3px 0; */
 }
 
 
@@ -147,9 +165,9 @@ canvas {
   display: flex;
   justify-content: center;
   align-items: center;
-  width: 60px;
+  width: 45px;
   /* etwas kleiner als vorher */
-  height: 60px;
+  height: 45px;
   border-radius: 50%;
   background: rgba(255, 255, 255, 0.15);
   /* transparenter Hintergrund */
@@ -168,13 +186,64 @@ canvas {
   user-select: none;
 }
 
-.move-button:active {
-  background: rgba(255, 255, 255, 0.3);
+/* .move-button:active { */
+  /* background: rgba(255, 255, 255, 0.3); */
   /* beim Drücken heller */
-  transform: scale(0.95);
+  /* transform: scale(0.95); */
   /* kleineres "Klick"-Feedback */
-  transition: transform 0.1s, background 0.1s;
+  /* transition: transform 0.1s, background 0.1s; */
+/* } */
+
+.move-button {
+  position: relative;
+  overflow: visible;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(6px);
+  border: 2px solid rgba(255, 255, 255, 0.2);
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.4);
+  color: white;
+  font-size: 22px;
+  transition: transform 0.1s ease;
 }
+
+.move-button:active {
+  transform: scale(0.9);
+}
+
+/* ---- der animierte Glow-Ring ---- */
+.move-button::after {
+  content: "";
+  position: absolute;
+  inset: -3px; /* etwas größer als der Button */
+  border-radius: 50%;
+  border: 2px solid transparent;
+  pointer-events: none;
+  opacity: 0;
+}
+
+
+/* ---- Animation beim Drücken ---- */
+.move-button.pulse::after {
+  animation: ringPulse 0.7s ease-out forwards;
+}
+.move-button.hold {
+  transform: scale(0.9);
+  background: rgba(255, 255, 255, 0.25);
+  box-shadow: 0 0 10px rgba(255, 200, 100, 0.4);
+}
+
+@keyframes ringPulse {
+  0% { opacity: .9; transform: scale(1); border-color: #ffd070; box-shadow: 0 0 12px #ffd070; }
+  50% { opacity: .5; transform: scale(1.5); border-color: #ff9933; box-shadow: 0 0 18px #ff9933; }
+  100% { opacity: 0; transform: scale(2.0); border-color: transparent; box-shadow: none; }
+}
+
 
 .mobile-button-icon {
   width: 25px;
@@ -184,6 +253,10 @@ canvas {
   -webkit-user-select: none;
   -webkit-touch-callout: none;
   user-select: none;
+}
+
+#attack-button img {
+  width: 40px;
 }
 
 .mobile-button-throw {
@@ -199,9 +272,9 @@ canvas {
 .overlay-startscreen {
   position: absolute;
   top: 0;
-  bottom: 0;
+  /* bottom: 0; */
   left: 0;
-  right: 0;
+  /* right: 0; */
   display: flex;
   justify-content: center;
   align-items: center;
@@ -1553,39 +1626,39 @@ canvas {
 }
 
 .level-complete-button-box {
-    position: absolute;
-    /* top: 0;
+  position: absolute;
+  /* top: 0;
     left: 0;
     right: 0; */
-    display: flex;
-    bottom: 0px;
-    justify-content: flex-end;
-    align-items: center;
-    width: 100%;
-    gap: 64px;
-    padding-right: 64px;
-    padding-bottom: 48px;
-  }
+  display: flex;
+  bottom: 0px;
+  justify-content: flex-end;
+  align-items: center;
+  width: 100%;
+  gap: 64px;
+  padding-right: 64px;
+  padding-bottom: 48px;
+}
 
-  .menu-repeat-button-box {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 16px;
-  }
+.menu-repeat-button-box {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 16px;
+}
 
-  .next-level-button {
-    font-size: 32px;
-    width: fit-content;
-  }
+.next-level-button {
+  font-size: 32px;
+  width: fit-content;
+}
 
-  .next-level-button:hover {
+.next-level-button:hover {
   box-shadow: 0 0 12px gold;
   transform: scale(1.05);
   transition: all 0.2s ease;
 }
 
-  .d-none {
+.d-none {
   display: none;
 }
 
@@ -1628,6 +1701,7 @@ canvas {
 
   .canvas-button-box {
     gap: 6px;
+    height: 100dvh !important;
   }
 
   .move-button-box {
@@ -1688,7 +1762,8 @@ canvas {
 
   .dragon-img-box {
     width: 180px;
-    height: 140px;
+    height: 130px;
+    /* 140*/
   }
 
   .dragon {
@@ -1699,11 +1774,12 @@ canvas {
   .img-box {
     height: fit-content;
     gap: 10px;
-    margin-top: 20px;
+    margin-top: 0px;
+    /*20px*/
   }
 
   .overlay-startscreen {
-    height: 100dvh;
+    height: 100dvh !important;
     overflow: hidden;
   }
 
@@ -1742,4 +1818,70 @@ canvas {
   canvas {
     height: 100dvh;
   }
+
+
+  .bruno-img,
+  .kuecken-img,
+  .huhn-img,
+  .earth-video,
+  .portal-video {
+    transform-origin: bottom center;
+    transform: scale(0.65);
+  }
+
+  .img-div-box {
+    justify-content: flex-end;
+    height: calc(100dvh - 140px);
+  }
+
+  .img-box {
+    /* flex: 1 1 auto; */
+    max-height: calc(100dvh - 180px);
+  }
+
+  .start-button {
+    z-index: 4;
+  }
+
+  /* .bruno-img,
+  .kuecken-img,
+  .huhn-img {
+    margin-bottom: 0;
+  } */
+
+  .img-box2 {
+    z-index: 3;
+  }
+
+  
+}
+
+/* @media only screen and (max-height: 650px) {
+  .startscreen {
+
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 18px;
+    /* padding: 6px; */
+/* background: linear-gradient(0deg, rgba(10, 8, 6, .75), rgba(10, 8, 6, .45));
+    border-top: 2px solid rgba(255, 220, 160, 0.3);
+    backdrop-filter: blur(4px);
+    z-index: 5;
+    box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.5);
+ */
+
+/* } */
+/* } */
+
+body.fullscreen-active .bruno-img,
+body.fullscreen-active .kuecken-img,
+body.fullscreen-active .huhn-img,
+body.fullscreen-active .earth-video,
+body.fullscreen-active .portal-video {
+  transform: scale(1) !important;
 }

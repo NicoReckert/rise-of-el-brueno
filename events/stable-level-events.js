@@ -25,6 +25,20 @@ const stableEvents =
             }
         },
 
+        {
+            type: 'position',
+            area: { x: 360, width: 100 },
+            objectA: 'character',
+            once: false,
+            step: 1,
+            action: (setup) => {
+                setup.hints[2].show();
+            },
+            onLeave: (setup) => {
+                setup.hints[2].hide();
+            }
+        },
+
 
         {
             type: 'collision',
@@ -45,6 +59,20 @@ const stableEvents =
                     setup.world.stableLevelController.eventManager.emitNow('caressStartChicken');
                     setup.world.stableLevelController.questManager.advance(2)
                 }
+            }
+        },
+
+        {
+            type: 'collision',
+            objectA: 'character',
+            objectB: 'chicken',
+            once: false,
+            step: 1,
+            action: (setup) => {
+                setup.hints[0].show();
+            },
+            onLeave: (setup) => {
+                setup.hints[0].hide();
             }
         },
 
@@ -96,6 +124,20 @@ const stableEvents =
                     setup.world.stableLevelController.eventManager.emitNow('caressStartChick');
                     setup.world.stableLevelController.questManager.advance(3)
                 }
+            }
+        },
+
+        {
+            type: 'collision',
+            objectA: 'character',
+            objectB: 'chick',
+            once: false,
+            step: 1,
+            action: (setup) => {
+                setup.hints[1].show();
+            },
+            onLeave: (setup) => {
+                setup.hints[1].hide();
             }
         },
 

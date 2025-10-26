@@ -75,7 +75,8 @@ class FarmLevelSetup {
             doorClosingSound: this.allAudios.doorClosingSound,
             happyTogetherMusic: this.allAudios.happyTogetherMusic,
             determinedMusic: this.allAudios.determinedMusic,
-            windSound: this.allAudios.windSound
+            windSound: this.allAudios.windSound,
+            hintSound: this.allAudios.hintSound9
         };
         this.speechBubbles = {
             bubbleFarm: new SpeechBubble("In den Hühnerstall gehen? {F} drücken!", this.world.character, 'info', this.allAudios),
@@ -131,5 +132,13 @@ class FarmLevelSetup {
         this.lyricsRenderer = new LyricsRenderer(this.world, this.sounds.happyTogetherMusic);
         this.sunCycle = new SunCycle(this);
         this.moonCycle = new MoonCycle(this);
+        this.hints = [
+            new HollowHint("Betreten", this.world.character, 80, 'desert'),
+            new HollowHint("Begleiten", this.characters.cow, 80, 'desert'),
+            new HollowHint("Warten", this.characters.cow, 120, 'desert'),
+            new HollowHint("Belohnen", this.characters.cow, 80, 'rose')
+        ];
+
+
     }
 }

@@ -19,7 +19,7 @@ class StableLevelController {
     }
 
     init() {
-        
+
     }
 
     update(timestamp) {
@@ -31,6 +31,7 @@ class StableLevelController {
         // this.handleSpeechBubble();
         this.updateCharacter(timestamp);
         this.updateEntities(timestamp);
+        this.handleHint();
         this.handlePopup();
         this.eventManager.update();
         // this.eventManager.debug = true;
@@ -136,4 +137,10 @@ class StableLevelController {
         this.setup.popupTexts.forEach(p => p.draw(this.ctx, now));
         this.setup.popupTexts = this.setup.popupTexts.filter(p => p.active);
     }
+
+    handleHint() {
+        this.setup.hints.forEach(hint => hint.draw(this.ctx, this.renderCameraX));
+
+    }
+
 }

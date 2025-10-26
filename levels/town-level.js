@@ -23,16 +23,23 @@ const townSrcTown =
     ]
 
 let townLevel = null;
+let images = {};
 
-function createTownLevel(entityImages) {
+function setImages(entityImages) {
+    images = { ...entityImages };
+}
+
+function createTownLevel(allAudios) {
     townLevel = new Level(
         {
             enemies:
                 [
-                    new Chicken(entityImages),
-                    new Chicken(entityImages),
-                    new Chicken(entityImages)
-
+                    new Chicken('chickenMutatesSmall', images, 120, 120, 545, allAudios),
+                    new Chicken('chickenMutatesSmall', images, 120, 120, 545, allAudios),
+                    new Chicken('chickenMutatesSmall', images, 120, 120, 545, allAudios),
+                    new Chicken('chickenMutatesBig', images, 160, 160, 505, allAudios),
+                    new Chicken('chickenMutatesBig', images, 160, 160, 505, allAudios),
+                    new Chicken('chickenMutatesBig', images, 160, 160, 505, allAudios)
                 ],
             clouds:
                 [
@@ -108,29 +115,28 @@ function createTownLevel(entityImages) {
                 ],
             coins:
                 [
-                    new Coin(entityImages),
-                    new Coin(entityImages),
-                    new Coin(entityImages),
-                    new Coin(entityImages),
-                    new Coin(entityImages),
-                    new Coin(entityImages)
+                    new Coin(images),
+                    new Coin(images),
+                    new Coin(images),
+                    new Coin(images),
+                    new Coin(images),
+                    new Coin(images)
                 ],
             bottles:
                 [
-                    new Bottle(entityImages),
-                    new Bottle(entityImages),
-                    new Bottle(entityImages),
-                    new Bottle(entityImages),
-                    new Bottle(entityImages),
-                    new Bottle(entityImages),
-                    new Bottle(entityImages),
-                    new Bottle(entityImages)
+                    new Bottle(images),
+                    new Bottle(images),
+                    new Bottle(images),
+                    new Bottle(images),
+                    new Bottle(images),
+                    new Bottle(images),
+                    new Bottle(images),
+                    new Bottle(images)
                 ]
         }
 
 
     );
-
     let groundX = [];
     let start = -719;
     let step = 719;
@@ -158,4 +164,5 @@ function createTownLevel(entityImages) {
         townLevel.grounds.push(new Ground(groundSrcTown[7], `${calculationX}`, 572, 150, 300));
         calculationX = calculationX + 100;
     }
+    return townLevel;
 }

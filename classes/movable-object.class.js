@@ -121,6 +121,40 @@ class MovableObject extends DrawableObject {
             a_top < b_bottom;
     }
 
+    isCollidingBeforeWithAttackHitbox(object, collidingToleranceTop = 0, collidingToleranceLeft = 0, attackHitbox = null) {
+        // === Wähle aktive Hitbox (Attack-Hitbox oder Standard-Offset) ===
+        const hb = attackHitbox && attackHitbox.active ? attackHitbox : this.offset;
+
+        // === Berechne A-Seiten (dieses Objekt) ===
+        const a_left = this.isFlipped
+            ? this.x + hb.right
+            : this.x + hb.left;
+        const a_right = this.isFlipped
+            ? this.x + this.width - hb.left
+            : this.x + this.width - hb.right;
+        const a_top = this.y + hb.top;
+        const a_bottom = this.y + this.height - hb.bottom;
+
+        // === Berechne B-Seiten (Zielobjekt) ===
+        const b_left = object.isFlipped
+            ? object.x + object.offset.right
+            : object.x + object.offset.left;
+        const b_right = object.isFlipped
+            ? object.x + object.width - object.offset.left
+            : object.x + object.width - object.offset.right;
+        const b_top = object.y + object.offset.top;
+        const b_bottom = object.y + object.height - object.offset.bottom;
+
+        // === AABB-Kollision prüfen ===
+        return (
+            a_right > b_left + collidingToleranceLeft &&
+            a_left < b_right &&
+            a_bottom > b_top + collidingToleranceTop &&
+            a_top < b_bottom
+        );
+    }
+
+
 
     //letzte funktionierende Funktion
     isCollidingBeforeBefore(object, collidingToleranceTop, collidingToleranceLeft) {

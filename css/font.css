@@ -1,7 +1,7 @@
 @font-face {
     font-display: swap;
     font-family: 'Adventure';
-    src: url('../assets/fonts/Adventure.otf') format('opentype');
+    src: url('../assets/fonts/Adventure.ttf') format('truetype');
     font-style: normal;
     font-weight: 100 900;
 }
@@ -76,4 +76,28 @@
     src: url('../assets/fonts/CormorantGaramond.ttf') format('truetype');
     font-style: normal;
     font-weight: 100 900;
+}
+
+@font-face {
+    font-display: swap;
+    font-family: 'AlegreyaSC';
+    src: url('../assets/fonts/AlegreyaSC-Regular.ttf') format('truetype');
+    font-style: normal;
+    font-weight: 400;
+}
+
+@font-face {
+    font-display: swap;
+    font-family: 'AlegreyaSC';
+    src: url('../assets/fonts/AlegreyaSC-Black.ttf') format('truetype');
+    font-style: normal;
+    font-weight: 900;
+}
+
+@font-face {
+    font-display: swap;
+    font-family: 'Lusitana';
+    src: url('../assets/fonts/Lusitana-Bold.ttf') format('truetype');
+    font-style: normal;
+    font-weight: 700;
 }

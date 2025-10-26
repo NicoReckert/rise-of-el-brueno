@@ -6,6 +6,6 @@ class Sky extends MovableObject {
         this.x = x;
         this.y = 0;
         this.height = 720;
-        this.width = 720;
+        this.width = 722;
     }
 }

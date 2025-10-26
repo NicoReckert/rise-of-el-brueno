@@ -1,9 +1,9 @@
 let canvas;
 let world;
 let keyboard = new Keyboard();
-let characterImages;
-let entityImages;
-let allAudios;
+let characterImages = {};
+let entityImages = {};
+let allAudios = {};
 
 // async function init() {
 //     canvas = document.getElementById('canvas');
@@ -16,20 +16,20 @@ let allAudios;
 // }
 
 function countManifestFiles(manifests) {
-  let count = 0;
-  for (const manifest of manifests) {
-    for (const value of Object.values(manifest)) {
-      if (Array.isArray(value)) {
-        count += value.length; // mehrere Einträge (z. B. Animationframes)
-      } else if (typeof value === "object" && value !== null) {
-        // verschachteltes Manifest (z. B. npc: { walk: [...], idle: [...] })
-        count += countManifestFiles([value]);
-      } else {
-        count++; // einzelner Pfad
-      }
+    let count = 0;
+    for (const manifest of manifests) {
+        for (const value of Object.values(manifest)) {
+            if (Array.isArray(value)) {
+                count += value.length; // mehrere Einträge (z. B. Animationframes)
+            } else if (typeof value === "object" && value !== null) {
+                // verschachteltes Manifest (z. B. npc: { walk: [...], idle: [...] })
+                count += countManifestFiles([value]);
+            } else {
+                count++; // einzelner Pfad
+            }
+        }
     }
-  }
-  return count;
+    return count;
 }
 
 
@@ -38,91 +38,133 @@ async function init() {
     const bar = document.getElementById('loading-bar');
     const text = document.getElementById('loading-text');
 
-    const manifests = [characterImageManifest, entityImageManifest, audioManifest];
+    const manifests = [characterManifestImmediate, farmEntityManifestImmediate, farmAudioManifestImmediate];
     const totalFiles = countManifestFiles(manifests);
     let loaded = 0;
-
     const updateProgress = () => {
         const percent = Math.round((loaded / totalFiles) * 100);
         bar.style.width = `${percent}%`;
         text.textContent = `Loading... ${percent}%`;
     };
+    const onFileLoaded = () => { loaded++; updateProgress(); };
 
-    const loadFile = async (path) => {
-        try {
-            if (path.endsWith('.webp') || path.endsWith('.png')) {
-                await preloadImage(path);
-            } else if (path.endsWith('.opus') || path.endsWith('.mp3')) {
-                await preloadAudio(path);
-            }
-        } catch (e) {
-            console.warn('Fehler beim Laden:', path, e);
-        } finally {
-            loaded++;
-            updateProgress();
-        }
-    };
+    const [chars, entities, audios] = await Promise.all([
+        preloadManifestImages(characterManifestImmediate, onFileLoaded),
+        preloadManifestImages(farmEntityManifestImmediate, onFileLoaded),
+        preloadManifestAudio(farmAudioManifestImmediate)
+    ]);
 
-    const loadManifestDeep = async (obj) => {
-        for (const value of Object.values(obj)) {
-            if (Array.isArray(value)) {
-                for (const v of value) await loadFile(v);
-            } else if (typeof value === 'object') {
-                await loadManifestDeep(value);
-            } else if (typeof value === 'string') {
-                await loadFile(value);
-            }
-        }
-    };
+    Object.assign(characterImages, chars);
+    smartMerge(entityImages, entities);
+    Object.assign(allAudios, audios);
 
-    updateProgress();
-    for (const m of manifests) await loadManifestDeep(m);
-
-    // Alles fertig
     overlay.style.opacity = 0;
-    setTimeout(() => overlay.remove(), 500);
+    setTimeout(() => overlay.remove(), 600);
 
-    // Jetzt dein Spiel starten
     canvas = document.getElementById('canvas');
-    characterImages = await preloadManifestImages(characterImageManifest);
-    entityImages = await preloadManifestImages(entityImageManifest);
-    allAudios = await preloadManifestAudio(audioManifest);
     world = new World(canvas, keyboard, characterImages, entityImages, allAudios);
-    createTownLevel(entityImages);
+    // setImages(entityImages);
+    // createTownLevel();
     listenStartButton();
+
+    loadDeferredAssets(characterImages, entityImages, allAudios);
+    loadLazyAssets(characterImages, entityImages, allAudios);
 }
 
-// Hilfsfunktionen
 function countManifestFiles(manifests) {
-    let count = 0;
-    for (const manifest of manifests) {
+    return manifests.reduce((count, manifest) => {
         for (const value of Object.values(manifest)) {
             if (Array.isArray(value)) count += value.length;
-            else if (typeof value === 'object') count += countManifestFiles([value]);
-            else if (typeof value === 'string') count++;
+            else if (typeof value === "object" && value) count += countManifestFiles([value]);
+            else count++;
+        }
+        return count;
+    }, 0);
+}
+
+async function loadDeferredAssets() {
+    try {
+        const [charDeferred, entityDeferred, audioDeferred] = await Promise.all([
+            preloadManifestImages(characterManifestDeferred),
+            preloadManifestImages(farmEntityManifestDeferred),
+            preloadManifestAudio(farmAudioManifestDeferred)
+        ]);
+
+        Object.assign(characterImages, charDeferred);
+        smartMerge(entityImages, entityDeferred);
+        Object.assign(allAudios, audioDeferred);
+
+        if (world) {
+            Object.assign(world.characterImages, charDeferred);
+            smartMerge(world.entityImages, entityDeferred);
+            Object.assign(world.allAudios, audioDeferred);
+            world.character?.initMovementImages();
+            world.character?.initEmotionImages();
+            world.character?.initActionImages();
+            world.character?.initSpecialImages();
+        }
+    } catch { }
+}
+
+async function loadLazyAssets() {
+    try {
+        await new Promise(r =>
+            ("requestIdleCallback" in window)
+                ? requestIdleCallback(r, { timeout: 1500 })
+                : setTimeout(r, 1500)
+        );
+
+        const [charLazy, entityLazy, audioLazy] = await Promise.all([
+            preloadManifestImages(otherLevelCharacterManifestLazy),
+            preloadManifestImages(otherLevelEntityManifestLazy),
+            preloadManifestAudio(otherLevelAudioManifestLazy)
+        ]);
+
+        Object.assign(characterImages, charLazy, world.characterImages);
+        smartMerge(entityImages, entityLazy, world.entityImages);
+        Object.assign(allAudios, audioLazy, world.allAudios);
+
+        world.character?.initMovementImages();
+        world.character?.initEmotionImages();
+        world.character?.initActionImages();
+        world.character?.initSpecialImages();
+
+        setImages(entityImages);
+        createTownLevel(allAudios);
+
+
+        // ✅ Alle Lazy-Assets geladen → zusätzliche Level initialisieren
+        if (world && typeof world.initRemainingSetups === "function") {
+            world.initRemainingSetups();
+        }
+
+    } catch { }
+}
+
+
+
+
+
+function smartMerge(target, source) {
+    if (!source || typeof source !== "object") return target || {};
+    if (!target || typeof target !== "object") target = {};
+
+    for (const key of Object.keys(source)) {
+        const value = source[key];
+        if (value && typeof value === "object" && !Array.isArray(value)) {
+            if (!target[key]) target[key] = {};
+            smartMerge(target[key], value);
+        } else {
+            target[key] = value;
         }
     }
-    return count;
+    return target;
 }
 
-function preloadImage(src) {
-    return new Promise((resolve, reject) => {
-        const img = new Image();
-        img.onload = resolve;
-        img.onerror = reject;
-        img.src = src;
-    });
-}
 
-function preloadAudio(src) {
-    return new Promise((resolve, reject) => {
-        const audio = new Audio();
-        audio.oncanplaythrough = resolve;
-        audio.onerror = reject;
-        audio.src = src;
-        audio.load();
-    });
-}
+
+
+
 
 
 

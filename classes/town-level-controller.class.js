@@ -45,7 +45,6 @@ class TownLevelController {
         this.updateEntities(timestamp);
         this.updateEndboss(timestamp);
         this.updateCoins(timestamp);
-        this.handleInteractions();
         this.handlePopup();
         this.sandstorm.update();
         this.sandstormNear.update();
@@ -72,7 +71,7 @@ class TownLevelController {
 
     renderStatusBar() {
         this.addToWorld(this.setup.statusBar);
-        this.addToWorld(this.setup.statusBar2);
+        if (this.questManager.step >= 10) this.addToWorld(this.setup.statusBar2);
         this.addToWorld(this.setup.coinBar);
         this.addToWorld(this.setup.bottleBar);
     }
@@ -84,6 +83,7 @@ class TownLevelController {
         this.addObject(this.setup.townLevel.coins);
         this.addObject(this.setup.townLevel.bottles);
         this.addObject(this.setup.townLevel.enemies);
+        this.addObject(this.setup.townLevel.projectiles);
         this.addToWorld(this.endbossAttack);
         this.addObject(this.setup.throwableObjects);
         if (!this.setup.characters.endboss.isUnderTheGround) {
@@ -91,10 +91,11 @@ class TownLevelController {
             // this.setup.characters.soul.updateState('idle', 1000 / 6);
             this.addToWorld(this.setup.characters.endboss);
         }
+        this.addToWorld(this.setup.characters.tadeo);
         this.ctx.restore();
-        this.sandstorm.draw(this.ctx, this.renderCameraX);
-        this.sandstormFar.draw(this.ctx, this.renderCameraX);
-        this.sandstormNear.draw(this.ctx, this.renderCameraX);
+        // this.sandstorm.draw(this.ctx, this.renderCameraX);
+        // this.sandstormFar.draw(this.ctx, this.renderCameraX);
+        // this.sandstormNear.draw(this.ctx, this.renderCameraX);
 
     }
 
@@ -112,7 +113,9 @@ class TownLevelController {
             bottle.updateAnimation(timestamp);
             bottle.applyGravity2(timestamp);
         });
-
+        this.setup.townLevel.projectiles.forEach(projectile => {
+            projectile.updateState(timestamp);
+        });
     }
 
     updateEntities(timestamp) {
@@ -120,8 +123,9 @@ class TownLevelController {
             element.updateState(timestamp);
         });
         this.setup.townLevel.enemies.forEach(enemy => {
-            enemy.updateState();
+            enemy.updateState(timestamp);
             enemy.updateAnimation(timestamp);
+            // enemy.applyGravity3(timestamp);
         });
     }
 
@@ -135,17 +139,6 @@ class TownLevelController {
 
     updateCoins(timestamp) {
         this.setup.townLevel.coins.forEach(coin => coin.updateAnimation(timestamp));
-    }
-
-    handleInteractions() {
-        // if (this.keyboard.F && this.character.x > 1550 && this.character.x < 1700) {
-        //     this.camera_x = 0;
-        //     this.character.x = 380;
-        //     this.world.currentScene = 'stableLevel';
-        //     this.keyboard.F = false;
-        //     this.setup.farmLevel.level_end_x = 720;
-        //     this.world.character.level_start_x = 360;
-        // }
     }
 
     handlePopup() {

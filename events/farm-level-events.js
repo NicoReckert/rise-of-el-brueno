@@ -98,6 +98,19 @@ const farmEvents =
         },
 
         {
+            type: 'position',
+            area: { x: 1705, width: 125 },
+            objectA: 'character',
+            once: false,
+            action: (setup) => {
+                setup.hints[0].show();
+            },
+            onLeave: (setup) => {
+                setup.hints[0].hide();
+            }
+        },
+
+        {
             type: 'collision',
             objectA: 'character',
             objectB: 'cow',
@@ -136,18 +149,24 @@ const farmEvents =
         },
 
         {
-            type: 'hold',
+            type: 'collision',
             objectA: 'character',
             objectB: 'cow',
             step: 2,
             requireKey: "F",
-            duration: 2000,
             once: false,
             action: (setup) => {
                 setup.characters.cow.updateAnimationState('standUp', 1000 / 5.5)
                 setup.characters.cow.y = 485
+                setup.hints[1].hide()
                 setup.world.farmLevelController.questManager.advance(3)
             }
+        },
+
+        {
+            type: 'quest',
+            step: 2,
+            action: (setup) => setup.hints[1].show()
         },
 
         {
@@ -169,12 +188,14 @@ const farmEvents =
             step: 3,
             once: false,
             action: (setup) => {
+                setup.hints[1].hide()
                 if (setup.characters.cow.x <= 5300) {
                     setup.characters.cow.isMovingRight = true;
                     setup.characters.cow.updateAnimationState('walk')
                 } else setup.world.farmLevelController.questManager.advance(4)
             },
             onLeave: (setup) => {
+                setup.hints[1].show()
                 setup.characters.cow.isMovingRight = false;
                 setup.characters.cow.updateAnimationState('afraid', 1000 / 5)
             }
@@ -195,6 +216,7 @@ const farmEvents =
             type: 'quest',
             step: 4,
             action: (setup) => {
+                setup.hints[1].hide();
                 setup.taskWindow.markDone(2);
                 setup.popupTexts.push(new PopupText("Aufgabe Erledigt!", setup.world.canvas.width / 2, 400));
                 setup.sounds.taskCompletedSound.play();
@@ -208,6 +230,7 @@ const farmEvents =
             delay: 3000,
             step: 4,
             action: (setup) => {
+                setup.hints[2].show();
                 setup.taskWindow.addTask('4. Warte bis Lola fertig ist', { active: true });
                 setup.sounds.newTaskSound.play();
                 setup.popupTexts.push(new PopupText("Neue Aufgabe im Log!", setup.world.canvas.width / 2, 400));
@@ -233,6 +256,7 @@ const farmEvents =
             delay: 15000,
             step: 4,
             action: (setup) => {
+                setup.hints[2].hide();
                 setup.taskWindow.markDone(3)
                 setup.sounds.taskCompletedSound.play()
                 setup.popupTexts.push(new PopupText("Aufgabe erledigt!", setup.world.canvas.width / 2, 400))
@@ -244,6 +268,7 @@ const farmEvents =
             delay: 18000,
             step: 4,
             action: (setup) => {
+                setup.hints[3].show();
                 setup.taskWindow.addTask('5. Belohne Lola', { active: true })
                 setup.sounds.newTaskSound.play()
                 setup.popupTexts.push(new PopupText("Neue Aufgabe im Log!", setup.world.canvas.width / 2, 400))
@@ -298,6 +323,7 @@ const farmEvents =
             delay: 6000,
             step: 6,
             action: (setup) => {
+                setup.hints[3].hide();
                 setup.taskWindow.markDone(4);
                 setup.sounds.taskCompletedSound.play();
                 setup.popupTexts.push(new PopupText("Aufgabe erledigt!", setup.world.canvas.width / 2, 400));
@@ -333,6 +359,7 @@ const farmEvents =
             step: 7,
             once: false,
             action: (setup) => {
+                setup.hints[1].hide();
                 if (setup.characters.cow.x >= 500) {
                     setup.characters.cow.isMovingLeft = true;
                     setup.characters.cow.updateAnimationState('walk');
@@ -346,6 +373,7 @@ const farmEvents =
                 }
             },
             onLeave: (setup) => {
+                setup.hints[1].show();
                 setup.characters.cow.updateAnimationState('afraid', 1000 / 5);
                 setup.characters.cow.isMovingLeft = false;
             }

@@ -4,7 +4,7 @@ class AnimatedEntity extends MovableObject {
         super();
         this.entityImages = entityImages;
         this.currentEntity = currentEntity;
-        this.loadImgFromCurrentEntity(currentEntity);
+        this.loadImgFromCurrentEntity(this.currentEntity);
         this.height = height;
         this.width = width;
         this.x = x;

@@ -2,7 +2,7 @@ class World {
 
     ctx;
     canvas;
-    currentScene = 'farmLevel';
+    currentScene = 'townLevel';
 
     constructor(canvas, keyboard, characterImages, entityImages, allAudios) {
         this.canvas = canvas;
@@ -12,7 +12,7 @@ class World {
         this.entityImages = entityImages;
         this.allAudios = allAudios;
         // this.listenStartButton();
-        
+
 
         this.lastThrowCheck = 0;
         this.throwCheckDelay = 120;
@@ -48,14 +48,6 @@ class World {
         this.farmLevelController = new FarmLevelController(this.farmLevelSetup);
         this.stableLevelSetup = new StableLevelSetup(this);
         this.stableLevelController = new StableLevelController(this.stableLevelSetup);
-        this.townLevelSetup = new TownLevelSetup(this);
-        this.townLevelController = new TownLevelController(this.townLevelSetup);
-        this.nayelisHouseLevelSetup = new NayelisHouseLevelSetup(this);
-        this.nayelisHouseLevelController = new NayelisHouseLevelController(this.nayelisHouseLevelSetup);
-        this.newWeaponLevelSetup = new NewWeaponLevelSetup(this);
-        this.newWeaponLevelController = new NewWeaponLevelController(this.newWeaponLevelSetup);
-        this.levelCompleteSetup = new LevelCompleteSetup(this);
-        this.levelCompleteController = new LevelCompleteController(this.levelCompleteSetup);
         this.setWorld();
         this.draw();
     }
@@ -262,12 +254,17 @@ class World {
                 ctx.strokeRect(0, 0, object.width, object.height);
 
                 // Hitbox: bei Spiegeln muss left/right getauscht werden
-                const left = off.right;   // swap
+                const left = object.width - off.left - (object.width - off.right); // gespiegelt
                 const top = off.top;
                 const w = object.width - off.left - off.right;
                 const h = object.height - off.top - off.bottom;
+
+                // In einfacherer Form:
+                const hitX = object.width - off.right - w; // Startpunkt nach links gespiegelt
+                const hitY = off.top;
+
                 ctx.strokeStyle = 'blue';
-                ctx.strokeRect(left, top, w, h);
+                ctx.strokeRect(hitX, hitY, w, h);
             }
         } else {
             // nicht gespiegelt: normale Koordinaten verwenden
@@ -293,7 +290,89 @@ class World {
         ctx.restore();
     }
 
+    addToWorldTEST(object, ctx = this.ctx) {
+        if (!object || !object.img) return;
 
+        const flipped = !!(object.isFlipped ?? false);
+        const flippedNPC = !!(object.isNpcFlipped ?? false);
+        const isFlipped = flipped || flippedNPC;
+        const off = Object.assign({ left: 0, right: 0, top: 0, bottom: 0 }, object.offset || {});
+
+        ctx.save();
+        ctx.globalAlpha = object.opacity !== undefined ? object.opacity : 1;
+
+        if (isFlipped) {
+            // Koordinatensystem für Spiegelung verschieben
+            ctx.translate(object.x + object.width, Math.round(object.y));
+            ctx.scale(-1, 1);
+
+            // Offsets für gespiegelte Richtung tauschen
+            const drawOffsetX = off.right; // swap left/right
+            const drawOffsetY = off.top;
+
+            // Bild zeichnen
+            ctx.drawImage(object.img, drawOffsetX, drawOffsetY, object.width, object.height);
+
+
+            // Lokale Debugrahmen (spiegelungsabhängig)
+            ctx.lineWidth = 2;
+            ctx.strokeStyle = 'red';
+            ctx.strokeRect(drawOffsetX, drawOffsetY, object.width, object.height);
+
+            const w = object.width - off.left - off.right;
+            const h = object.height - off.top - off.bottom;
+            ctx.strokeStyle = 'blue';
+            ctx.strokeRect(drawOffsetX + off.right, drawOffsetY + off.top, w, h);
+
+
+        } else {
+            // Normale, nicht gespiegelte Darstellung
+            const drawX = Math.round(object.x - off.left);
+            const drawY = Math.round(object.y - off.top);
+
+            ctx.drawImage(object.img, drawX, drawY, object.width, object.height);
+
+            if (object.isGamecharacter) {
+                // Lokale Debugrahmen
+                ctx.lineWidth = 2;
+                ctx.strokeStyle = 'red';
+                ctx.strokeRect(drawX, drawY, object.width, object.height);
+
+                ctx.strokeStyle = 'blue';
+                ctx.strokeRect(
+                    drawX + off.left,
+                    drawY + off.top,
+                    object.width - off.left - off.right,
+                    object.height - off.top - off.bottom
+                );
+            }
+        }
+
+        ctx.restore();
+
+        // Globale Debug-Rahmen (unabhängig von Transform / Flip)
+        if (object.isGamecharacter) {
+            ctx.save();
+            ctx.setTransform(1, 0, 0, 1, 0, 0); // zurücksetzen auf globale Koordinaten
+            ctx.lineWidth = 2;
+
+            // Grüner globaler Rahmen (volle Bildgröße)
+            ctx.strokeStyle = 'lime';
+            ctx.strokeRect(object.x, object.y, object.width, object.height);
+
+            // Magenta globale Hitbox (mit Offsets)
+            const off = Object.assign({ left: 0, right: 0, top: 0, bottom: 0 }, object.offset || {});
+            ctx.strokeStyle = 'magenta';
+            ctx.strokeRect(
+                object.x + off.left,
+                object.y + off.top,
+                object.width - off.left - off.right,
+                object.height - off.top - off.bottom
+            );
+
+            ctx.restore();
+        }
+    }
 
 
     addObject(objectArray) {
@@ -329,7 +408,7 @@ class World {
                     this.jetPackMusic.currentTime = 0;
                     this.jetPackSound.pause();
                     this.jetPackSound.currentTime = 0;
-                    if (this.townLevelController.endbossMusicIsPlayed) {
+                    if (this.townLevelSetup.endbossMusicIsPlayed) {
                         this.playEndbossMusic("play")
                     } else {
                         this.backgroundMusic.play();
@@ -372,6 +451,7 @@ class World {
 
             if (this.keyboard.A && !this.character.isAttack) {
                 this.character.isAttack = true;
+                this.townLevelSetup.sounds.attackSound.play();
             }
         }
     }
@@ -386,15 +466,15 @@ class World {
                 this.character.hit();
                 this.townLevelSetup.statusBar.setPercentage(this.character.energy);
             }
-            if (this.character.isCollidingBefore(element, 0, 0) && !this.character.isJumpOn(element) && !element.isDead) {
-                if (this.character.speedX > 0 && this.character.x < element.x) {
-                    this.character.speedX = 0;
-                } else if (this.character.speedX < 0 && this.character.x > element.x) {
-                    this.character.speedX = 0;
-                } else {
-                    this.character.speedX = 10;
-                }
-            }
+            // if (this.character.isCollidingBefore(element, 0, 0) && !this.character.isJumpOn(element) && !element.isDead) {
+            //     if (this.character.speedX > 0 && this.character.x < element.x) {
+            //         this.character.speedX = 0;
+            //     } else if (this.character.speedX < 0 && this.character.x > element.x) {
+            //         this.character.speedX = 0;
+            //     } else {
+            //         this.character.speedX = 10;
+            //     }
+            // }
         })
 
         for (let i = this.townLevelSetup.townLevel.enemies.length - 1; i >= 0; i--) {
@@ -516,12 +596,12 @@ class World {
 
         }
         // if (this.character.x >= 1050 && this.character.x <= 1250) {
-        //     if (this.townLevelController.endbossMusicIsPlayed || this.endbossAlarmSoundIsPlayed) return;
+        //     if (this.townLevelSetup.endbossMusicIsPlayed || this.endbossAlarmSoundIsPlayed) return;
         // document.getElementById('background-music').pause();
         // this.playEndbossMusic("play");
         // this.playEndbossAlarmSound();
         // this.level1.endboss.animationHurt();
-        //     this.townLevelController.townLevelController.endbossMusicIsPlayed = true;
+        //     this.townLevelController.townLevelSetup.endbossMusicIsPlayed = true;
         //     this.endbossAlarmSoundIsPlayed = true;
         // }
 
@@ -537,7 +617,7 @@ class World {
         if (this.townLevelSetup.characters.soul.y <= 250) {
             if (this.volumeLevel > this.minVolumeLevel) {
                 this.volumeLevel = Math.max(this.volumeLevel - 0.010, this.minVolumeLevel);
-                this.townLevelController.endbossMusic.volume = this.volumeLevel;
+                this.townLevelSetup.endbossMusic.volume = this.volumeLevel;
             } else {
                 if (!this.isPlay) {
                     this.townLevelSetup.sounds.soulSpeakSound.play();
@@ -564,6 +644,83 @@ class World {
             }
         }
 
+        for (let j = 0; j < this.townLevelSetup.townLevel.enemies.length; j++) {
+            const enemy = this.townLevelSetup.townLevel.enemies[j];
+            if (this.character.isCollidingBeforeWithAttackHitbox(enemy, 25, 0, this.character.attackHitbox) && !this.character.hasHitEnemyThisAttack && !enemy.isDead) {
+                enemy.health--;
+                this.character.hasHitEnemyThisAttack = true;
+
+                if (enemy.isAttack) {
+                    enemy.isAttack = false;        // Angriff sofort stoppen
+                    enemy.hasFiredThisAttack = false; // sicherheitshalber verhindern, dass der Schuss noch kommt
+                }
+
+
+                const knockbackPowerX = 12;  // seitlicher Impuls
+                const knockbackPowerY = 12; // vertikaler Impuls
+
+                enemy.speedX = this.character.isFlipped ? -knockbackPowerX : knockbackPowerX;
+                enemy.speedY = knockbackPowerY;
+                enemy.isGravity = true;
+                enemy.knockbackActive = true;
+                if (enemy.health <= 0) {
+                    enemy.isDead = true;
+                    enemy.isMovingLeft = false;
+                    enemy.isMovingRight = false;
+                    this.playChickenDeathSound();
+                    const removeEnemyIndex = j;
+                    setTimeout(() => {
+                        this.townLevelSetup.townLevel.enemies.splice(removeEnemyIndex, 1);
+                    }, 2000);
+                } else {
+                    this.townLevelSetup.sounds.enemyHurtSound.play();
+                    enemy.isMovingLeft = false;
+                    enemy.isHurt = true;
+                    setTimeout(() => {
+                        if (enemy.isDead) return;
+                        enemy.isHurt = false;
+                        enemy.isGravity = false;
+                        enemy.knockbackActive = false;
+                        enemy.isMovingLeft = true;
+                    }, 1000);
+                }
+                break;
+            }
+
+            // Nur für große Mutations-Hühner
+            if (enemy.currentEnemy !== "chickenMutatesBig" || enemy.isDead || enemy.isHurt) continue;
+
+            const attackRange = 250;   // Entfernung in px, ab der er angreift
+            const attackCooldown = 3000; // ms zwischen zwei Angriffen
+
+            // Abstand zum Charakter
+            const dx = (this.character.x + this.character.width / 2) - (enemy.x + enemy.width / 2);
+            const distance = Math.abs(dx);
+
+            // Prüfen, ob in Reichweite und kein aktiver Cooldown
+            if (distance < attackRange && !enemy.attackOnCooldown) {
+                const baseSound = this.allAudios.fireballLoadUpSound;
+                const audio = new Audio(baseSound.src);
+                audio.play();
+                enemy.isAttack = true;
+                enemy.frameIndex = 0;
+                enemy.attackOnCooldown = true;
+                enemy.isMovingLeft = false;
+
+                // Richtung setzen
+                enemy.isFlipped = dx > 0; // Charakter ist rechts → Huhn schaut nach rechts
+                setTimeout(() => {
+                    if (enemy.isDead) return;
+                    enemy.isAttack = false;
+                    enemy.isMovingLeft = true;
+                }, 2000); // Dauer des Angriffs
+
+                // Cooldown
+                setTimeout(() => {
+                    enemy.attackOnCooldown = false;
+                }, attackCooldown);
+            }
+        }
     }
 
     checkThrowObjects(timestamp) {
@@ -615,6 +772,17 @@ class World {
     //     });
     // }
 
+    initRemainingSetups() {
+        this.townLevelSetup = new TownLevelSetup(this);
+        this.townLevelController = new TownLevelController(this.townLevelSetup);
+        this.nayelisHouseLevelSetup = new NayelisHouseLevelSetup(this);
+        this.nayelisHouseLevelController = new NayelisHouseLevelController(this.nayelisHouseLevelSetup);
+        this.newWeaponLevelSetup = new NewWeaponLevelSetup(this);
+        this.newWeaponLevelController = new NewWeaponLevelController(this.newWeaponLevelSetup);
+        this.levelCompleteSetup = new LevelCompleteSetup(this);
+        this.levelCompleteController = new LevelCompleteController(this.levelCompleteSetup);
+    }
+
     playCoinSound() {
         const baseSound = this.allAudios.coinSound;
         const sound = baseSound.cloneNode();
@@ -656,12 +824,12 @@ class World {
     playEndbossMusic(state) {
         switch (state) {
             case "play":
-                this.townLevelController.endbossMusic.play();
+                this.townLevelSetup.endbossMusic.play();
                 break;
 
             case "stop":
-                this.townLevelController.endbossMusic.pause();
-                this.townLevelController.endbossMusic.currentTime = 0;
+                this.townLevelSetup.endbossMusic.pause();
+                this.townLevelSetup.endbossMusic.currentTime = 0;
                 break;
         }
     }
@@ -794,7 +962,7 @@ class World {
 
         // Liste aller Sounds im World-Scope
         [
-            this.townLevelController.endbossMusic,
+            this.townLevelSetup.endbossMusic,
             this.footStepSound,
             this.jumpSound,
             this.landingSound,

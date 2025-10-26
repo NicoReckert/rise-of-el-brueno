@@ -77,5 +77,12 @@ class Keyboard {
         document.getElementById('log-button').addEventListener('touchend', () => {
             this.T = false;
         });
+        document.getElementById('attack-button').addEventListener('touchstart', () => {
+            this.A = true;
+        });
+        document.getElementById('attack-button').addEventListener('touchend', () => {
+            this.A = false;
+        });
+
     }
 }

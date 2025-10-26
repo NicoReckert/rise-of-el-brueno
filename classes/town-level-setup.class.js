@@ -20,13 +20,24 @@ class TownLevelSetup {
             endboss.x + (endboss.width / 2),
             endboss.y + 100
         );
+        const tadeo = new AnimatedEntity(
+            this.entityImages,
+            'tadeo',
+            150,
+            150,
+            1500,
+            515
+        );
 
-        this.characters = { endboss, soul };
+        this.characters = { endboss, soul, tadeo };
         this.sounds = {
             notificationSound: this.allAudios.notificationSound,
             taskCompletedSound: this.allAudios.taskCompletedSound,
             soulMusic: this.allAudios.soulMusic,
-            soulSpeakSound: this.allAudios.soulSpeakSound
+            soulSpeakSound: this.allAudios.soulSpeakSound,
+            tadeosMusic: this.allAudios.tadeosMusic,
+            enemyHurtSound: this.allAudios.enemyHurtSound,
+            attackSound: this.allAudios.attackSound
         };
         this.sounds.soulMusic.volume = 0;
         this.speechBubbles = {
@@ -50,5 +61,20 @@ class TownLevelSetup {
         this.endbossAttack = new EndbossAttack(this.entityImages);
         this.backgroundMusic = document.getElementById('background-music');
         this.backgroundMusic.volume = 0.6;
+
+        this.speechBubbles = [
+            new SpeechBubble("Hey Brünö bist du es?", this.characters.tadeo, 'speech', this.allAudios),
+            new SpeechBubble("Ja ich bin es Brünö. Wer bist du?", this.world.character, 'speech', this.allAudios),
+            new SpeechBubble("Ich bin Tadeo und Nayeli hat mich geschickt um dir zu helfen", this.characters.tadeo, 'speech', this.allAudios)
+        ];
+        if (this.townLevel?.enemies) {
+            this.townLevel.enemies.forEach(enemy => {
+                enemy.world = this.world;
+            });
+        }
+this.townLevel.projectiles = [];
+this.world.projectiles = this.townLevel.projectiles;
+
+
     }
 }
