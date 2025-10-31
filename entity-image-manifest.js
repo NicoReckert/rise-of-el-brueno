@@ -401,7 +401,8 @@ const otherLevelEntityManifestLazy = {
   coin: Array.from({ length: 2 }, (_, i) => `./assets/img/8_coin/coin_${i + 1}.webp`),
 
   tadeo: {
-    idle: Array.from({ length: 10 }, (_, i) => `./assets/img/npcs/tadeo/idle/image_${i + 1}.webp`)
+    idle: Array.from({ length: 10 }, (_, i) => `./assets/img/npcs/tadeo/idle/image_${i + 1}.webp`),
+    walk: Array.from({ length: 8 }, (_, i) => `./assets/img/npcs/tadeo/walk/image_${i + 1}.png`)
   },
 
   projectile: {

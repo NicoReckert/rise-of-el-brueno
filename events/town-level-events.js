@@ -33,6 +33,7 @@ const townEvents =
             action: (setup) => {
                 fadeOutAudio(setup.backgroundMusic, 1000);
                 fadeInAudio(setup.sounds.tadeosMusic, 2000, 0.6);
+                setup.characters.tadeo.updateAnimationState('walk');
                 setup.world.townLevelController.questManager.advance(2)
             }
         },
@@ -46,6 +47,7 @@ const townEvents =
                     setup.characters.tadeo.isMovingLeft = true;
                 } else {
                     setup.characters.tadeo.isMovingLeft = false;
+                    setup.characters.tadeo.updateAnimationState('idle');
                     setup.speechBubbles[0].start(4500);
                     setup.world.townLevelController.questManager.advance(3);
                 }
@@ -65,7 +67,7 @@ const townEvents =
             type: "time",
             delay: 5000,
             step: 3,
-            action: (setup) =>  setup.speechBubbles[1].start(4500)
+            action: (setup) => setup.speechBubbles[1].start(4500)
         },
 
         {
@@ -81,7 +83,7 @@ const townEvents =
             type: "time",
             delay: 10000,
             step: 3,
-            action: (setup) =>  setup.speechBubbles[2].start(4500)
+            action: (setup) => setup.speechBubbles[2].start(4500)
         },
 
         {
