@@ -10,7 +10,7 @@ class Chicken extends MovableObject {
      * Creates a new instance with randomized speed and default animation settings.
      * @param {Object} entityImages - Image data containing animation frames.
      */
-    constructor(currentEnemy, entityImages, width = 120, height = 120, y = 545, allAudios) {
+    constructor(currentEnemy, entityImages, width = 120, height = 120, y = 545, x = null, allAudios) {
         super();
         this.currentEnemy = currentEnemy;
         this.entityImages = entityImages;
@@ -25,16 +25,17 @@ class Chicken extends MovableObject {
         this.isHurt = false;
         this.isAttack = false;
         this.health = 3;
-        this.init(this.currentEnemy);
         this.speedX = 0;
         this.knockbackActive = false;
         this.acceleration = 1.5;
 
         this.y = y;
+        this.x = x;
         this.spawnY = y
         this.height = height;
         this.width = width;
         this.attackOnCooldown = false;
+        this.init(this.currentEnemy);
     }
 
     /**
@@ -45,7 +46,7 @@ class Chicken extends MovableObject {
         this.hurtImages = this.entityImages[currentEnemy]?.hurt || [];
         this.deadImages = this.entityImages[currentEnemy]?.dead || [];
         this.attackImages = this.entityImages[currentEnemy]?.attack || []
-        this.setSizeAndPosition();
+        if (this.x == null) this.setSizeAndPosition();
         this.setOffset();
     }
 
@@ -89,11 +90,11 @@ class Chicken extends MovableObject {
 
         this.handleAnimation();
         if (!this.isDead && !this.isGravity && !this.knockbackActive) {
-    const diff = this.y - this.spawnY;
-    if (Math.abs(diff) > 0.5) {
-        this.y = this.spawnY;
-    }
-}
+            const diff = this.y - this.spawnY;
+            if (Math.abs(diff) > 0.5) {
+                this.y = this.spawnY;
+            }
+        }
 
     }
 
@@ -187,21 +188,21 @@ class Chicken extends MovableObject {
     }
 
     applyGravity3() {
-    if (!this.isGravity) return;
+        if (!this.isGravity) return;
 
-    const groundY = this.spawnY;
+        const groundY = this.spawnY;
 
-    this.y -= this.speedY;
-    this.speedY -= this.acceleration;
+        this.y -= this.speedY;
+        this.speedY -= this.acceleration;
 
-    // ✨ Stabiler Boden-Check
-    if (this.y >= groundY) {
-        this.y = groundY;
-        this.speedY = 0;
-        this.isGravity = false;
-        this.knockbackActive = false;
+        // ✨ Stabiler Boden-Check
+        if (this.y >= groundY) {
+            this.y = groundY;
+            this.speedY = 0;
+            this.isGravity = false;
+            this.knockbackActive = false;
+        }
     }
-}
 
 
     shootProjectile(type, character) {

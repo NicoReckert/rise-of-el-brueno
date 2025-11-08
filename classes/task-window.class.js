@@ -1,5 +1,5 @@
 class TaskWindow {
-    constructor(canvas, tasks = [], width = 360) {
+    constructor(canvas, tasks = [], width = 360, y = 70) {
         this.tasks = tasks.map((text, i) => ({
             text,
             done: false,
@@ -22,7 +22,7 @@ class TaskWindow {
         // Start-Position (oben links)
         this.x = -this.width;
         this.targetX = 20;
-        this.y = 70;
+        this.y = y;
         this.speed = 15;
         this.isOpen = false;
 

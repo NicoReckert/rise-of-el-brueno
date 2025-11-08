@@ -13,19 +13,27 @@ class TownLevelController {
         this.keyboard = this.world.keyboard;
         this.stepSoundCharacter = this.world.stepSoundCharacter.bind(this.world);
         this.landingSoundCharacter = this.world.landingSoundCharacter.bind(this.world);
-        this.popupTexts = [];
         this.sandstorm = new SandstormEffect(this.canvas);
         this.sandstormNear = new SandstormEffect(this.canvas); // schneller, heller
         this.sandstormFar = new SandstormEffect(this.canvas); // langsamer, dunkler
 
-        this.sandstorm.setAlpha(0.5);
-        this.sandstorm.setSpeed(20); // 1.2
+        // this.sandstorm.setAlpha(0.5);
+        // this.sandstorm.setSpeed(20); // 1.2
 
-        this.sandstormNear.setAlpha(0.12);
-        this.sandstormNear.setSpeed(10); // 1.2
+        // this.sandstormNear.setAlpha(0.12);
+        // this.sandstormNear.setSpeed(10); // 1.2
 
-        this.sandstormFar.setAlpha(0.08);
-        this.sandstormFar.setSpeed(5); // 0.3
+        // this.sandstormFar.setAlpha(0.08);
+        // this.sandstormFar.setSpeed(5); // 0.3
+
+        this.sandstorm.setAlpha(0.25);
+        this.sandstorm.setSpeed(1.0); // 1.2
+
+        this.sandstormNear.setAlpha(0.3);
+        this.sandstormNear.setSpeed(3); // 1.2
+
+        this.sandstormFar.setAlpha(0.8);
+        this.sandstormFar.setSpeed(8); // 0.3
 
         this.eventManager = new EventManager(this.setup);
         this.questManager = new QuestManager(this.setup, this.eventManager, this.setup.townEvents);
@@ -37,7 +45,6 @@ class TownLevelController {
         this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
         this.updateCamera();
         this.renderBackgrounds();
-        this.renderStatusBar();
         this.renderNPCsAndCharacter();
         this.setup.taskWindow.update();
         this.setup.taskWindow.draw(this.ctx);
@@ -51,6 +58,7 @@ class TownLevelController {
         this.sandstormFar.update();
         this.eventManager.update();
         this.eventManager.debug = true;
+        this.renderStatusBar();
     }
 
     updateCamera() {
@@ -93,7 +101,7 @@ class TownLevelController {
         }
         this.addToWorld(this.setup.characters.tadeo);
         this.ctx.restore();
-        // this.sandstorm.draw(this.ctx, this.renderCameraX);
+        this.sandstorm.draw(this.ctx, this.renderCameraX);
         // this.sandstormFar.draw(this.ctx, this.renderCameraX);
         // this.sandstormNear.draw(this.ctx, this.renderCameraX);
 
@@ -143,7 +151,7 @@ class TownLevelController {
 
     handlePopup() {
         const now = performance.now();
-        this.popupTexts.forEach(p => p.draw(this.ctx, now));
-        this.popupTexts = this.popupTexts.filter(p => p.active);
+        this.setup.popupTexts.forEach(p => p.draw(this.ctx, now));
+        this.setup.popupTexts = this.setup.popupTexts.filter(p => p.active);
     }
 }

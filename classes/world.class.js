@@ -440,13 +440,13 @@ class World {
             //     this.character.jumpCount = 0;
             //     if (this.character.isMoving) this.character.moveStop();
             // }
-
-            if (this.keyboard.T && !this.farmLevelSetup.tKeyPressed) {
-                this.farmLevelSetup.taskWindow.toggle();
-                this.farmLevelSetup.tKeyPressed = true;
+            const currentSetup = this.currentScene === 'farmLevel' ? this.farmLevelSetup : this.townLevelSetup;
+            if (this.keyboard.T && !currentSetup.tKeyPressed) {
+                currentSetup.taskWindow.toggle();
+                currentSetup.tKeyPressed = true;
             }
             if (!this.keyboard.T) {
-                this.farmLevelSetup.tKeyPressed = false;
+                currentSetup.tKeyPressed = false;
             }
 
             if (this.keyboard.A && !this.character.isAttack) {

@@ -34,12 +34,12 @@ function createTownLevel(allAudios) {
         {
             enemies:
                 [
-                    new Chicken('chickenMutatesSmall', images, 120, 120, 545, allAudios),
-                    new Chicken('chickenMutatesSmall', images, 120, 120, 545, allAudios),
-                    new Chicken('chickenMutatesSmall', images, 120, 120, 545, allAudios),
-                    new Chicken('chickenMutatesBig', images, 160, 160, 505, allAudios),
-                    new Chicken('chickenMutatesBig', images, 160, 160, 505, allAudios),
-                    new Chicken('chickenMutatesBig', images, 160, 160, 505, allAudios)
+                    new Chicken('chickenMutatesSmall', images, 120, 120, 545, null, allAudios),
+                    new Chicken('chickenMutatesSmall', images, 120, 120, 545, null,  allAudios),
+                    new Chicken('chickenMutatesSmall', images, 120, 120, 545, null,  allAudios),
+                    new Chicken('chickenMutatesBig', images, 160, 160, 505, null,  allAudios),
+                    new Chicken('chickenMutatesBig', images, 160, 160, 505, null, allAudios),
+                    new Chicken('chickenMutatesBig', images, 160, 160, 505, null, allAudios)
                 ],
             clouds:
                 [
@@ -115,23 +115,23 @@ function createTownLevel(allAudios) {
                 ],
             coins:
                 [
-                    new Coin(images),
-                    new Coin(images),
-                    new Coin(images),
-                    new Coin(images),
-                    new Coin(images),
-                    new Coin(images)
+                    // new Coin(images),
+                    // new Coin(images),
+                    // new Coin(images),
+                    // new Coin(images),
+                    // new Coin(images),
+                    // new Coin(images)
                 ],
             bottles:
                 [
-                    new Bottle(images),
-                    new Bottle(images),
-                    new Bottle(images),
-                    new Bottle(images),
-                    new Bottle(images),
-                    new Bottle(images),
-                    new Bottle(images),
-                    new Bottle(images)
+                    new Bottle(images, 1500),
+                    new Bottle(images, 1550),
+                    // new Bottle(images, 530),
+                    // new Bottle(images, 550),
+                    // new Bottle(images, 560),
+                    // new Bottle(images, 580),
+                    // new Bottle(images, 590),
+                    // new Bottle(images, 600)
                 ]
         }
 

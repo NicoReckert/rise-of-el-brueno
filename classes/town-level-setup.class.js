@@ -25,7 +25,7 @@ class TownLevelSetup {
             'tadeo',
             150,
             150,
-            1500,
+            10000, //1500
             515
         );
 
@@ -37,7 +37,8 @@ class TownLevelSetup {
             soulSpeakSound: this.allAudios.soulSpeakSound,
             tadeosMusic: this.allAudios.tadeosMusic,
             enemyHurtSound: this.allAudios.enemyHurtSound,
-            attackSound: this.allAudios.attackSound
+            attackSound: this.allAudios.attackSound,
+            newTaskSound: this.allAudios.newTaskSound
         };
         this.sounds.soulMusic.volume = 0;
         this.speechBubbles = {
@@ -46,13 +47,10 @@ class TownLevelSetup {
         this.sounds.notificationSound.volume = 0.5;
         this.isNotificationPlay = false;
         this.tasks = [
-            // "1. Kümmere dich um Juanito",
-            // "2. Kümmere dich um Pollito",
-            // "3. Kümmere dich um Lola"
+            "1. Finde einen weg in die Stadt"
         ];
-        this.taskWindow = new TaskWindow(this.world.canvas, this.tasks);
+        this.taskWindow = new TaskWindow(this.world.canvas, this.tasks, 360, 180);
         this.tKeyPressed = false;
-
         this.endbossMusic = this.allAudios.endbossMusic;
         this.endbossMusic.volume = 0.6;
         this.endbossAlarmSound;
@@ -72,8 +70,10 @@ class TownLevelSetup {
                 enemy.world = this.world;
             });
         }
-this.townLevel.projectiles = [];
-this.world.projectiles = this.townLevel.projectiles;
+        this.townLevel.projectiles = [];
+        this.world.projectiles = this.townLevel.projectiles;
+        this.popupTexts = [];
+
 
 
     }

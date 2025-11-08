@@ -10,13 +10,14 @@ class Bottle extends MovableObject {
      * Creates a new instance with randomized image and position.
      * @param {Object} entityImages - Image data containing object graphics.
      */
-    constructor(entityImages) {
+    constructor(entityImages, x) {
         super();
         this.entityImages = entityImages;
         this.bottleImages = entityImages.bottleOnGround || [];
         this.randomImage = this.bottleImages[Math.floor(Math.random() * this.bottleImages.length)];
         this.img = this.randomImage;
-        this.x = 200 + Math.random() * 1000;
+        // this.x = 200 + Math.random() * 1000;
+        this.x = x;
         this.y = 583;
         this.height = 80;
         this.width = 80;
