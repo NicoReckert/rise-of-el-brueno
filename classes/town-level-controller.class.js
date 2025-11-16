@@ -38,6 +38,13 @@ class TownLevelController {
         this.eventManager = new EventManager(this.setup);
         this.questManager = new QuestManager(this.setup, this.eventManager, this.setup.townEvents);
         this.eventManager.questManager = this.questManager;
+        this.magicShield = new MagicShieldEffect(this.canvas);
+        this.magicShield.onShockwave = () => {
+    this.sandstorm.pressure = 0.5;
+    this.sandstormNear.pressure = 0.8;
+    this.sandstormFar.pressure = 0.3;
+};
+
 
     }
 
@@ -59,6 +66,8 @@ class TownLevelController {
         this.eventManager.update();
         this.eventManager.debug = true;
         this.renderStatusBar();
+        this.setup.panel.update(timestamp);
+        this.setup.panel.draw(this.ctx);
     }
 
     updateCamera() {
@@ -101,10 +110,25 @@ class TownLevelController {
         }
         this.addToWorld(this.setup.characters.tadeo);
         this.ctx.restore();
-        this.sandstorm.draw(this.ctx, this.renderCameraX);
+        // this.sandstorm.draw(this.ctx, this.renderCameraX);
         // this.sandstormFar.draw(this.ctx, this.renderCameraX);
         // this.sandstormNear.draw(this.ctx, this.renderCameraX);
+        // Tadeo screen position
+const sx = this.setup.characters.tadeo.x - this.renderCameraX + this.setup.characters.tadeo.width / 2;
+const sy = this.setup.characters.tadeo.y + this.setup.characters.tadeo.height * 0.2;
 
+const now = performance.now();
+this.magicShield.update(sx, sy, now);
+this.magicShield.draw(this.ctx, sx, sy);
+
+
+        const shieldInfo = this.magicShield.active
+    ? { x: sx, y: sy, radius: this.magicShield.radius }
+    : null;
+
+this.sandstormFar.draw(this.ctx, this.renderCameraX, shieldInfo);
+this.sandstorm.draw(this.ctx, this.renderCameraX, shieldInfo);
+this.sandstormNear.draw(this.ctx, this.renderCameraX, shieldInfo);
     }
 
     updateCharacter(timestamp) {
@@ -154,4 +178,16 @@ class TownLevelController {
         this.setup.popupTexts.forEach(p => p.draw(this.ctx, now));
         this.setup.popupTexts = this.setup.popupTexts.filter(p => p.active);
     }
+
+    cutSandstormInsideShield(ctx, x, y, radius) {
+    ctx.save();
+    ctx.globalCompositeOperation = "destination-out";
+
+    ctx.beginPath();
+    ctx.arc(x, y, radius * 0.9, 0, Math.PI * 2);
+    ctx.fill();
+
+    ctx.restore();
+}
+
 }

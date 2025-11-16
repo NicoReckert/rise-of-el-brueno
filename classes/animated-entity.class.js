@@ -54,6 +54,9 @@ class AnimatedEntity extends MovableObject {
         this.findsPeaceLoopImages = this.entityImages[currentEntity]?.findsPeaceLoop || [];
         this.sleepImages = this.entityImages[currentEntity]?.sleep || [];
         this.portraitImages = this.entityImages[currentEntity]?.portrait || [];
+        this.walkWithStoneImages = this.entityImages[currentEntity]?.walkWithStone || [];
+        this.idleWithStoneImages = this.entityImages[currentEntity]?.idleWithStone || [];
+        this.stoneActivatedImages = this.entityImages[currentEntity]?.stoneActivated || [];
     }
 
     fade(direction = "in", timestamp, duration = 1000) {
@@ -185,8 +188,21 @@ class AnimatedEntity extends MovableObject {
                 this.setAnimation('portrait');
                 this.frameInterval = frameInterval;
                 break;
+            case 'walkWithStone':
+                this.setAnimation('walkWithStone');
+                this.frameInterval = frameInterval;
+                break;
+            case 'idleWithStone':
+                this.setAnimation('idleWithStone');
+                this.frameInterval = frameInterval;
+                break;
+            case 'stoneActivated':
+                if (this.currentAnimation !== 'idleWithStone') {
+                    this.setAnimation('stoneActivated');
+                    this.frameInterval = frameInterval;
+                }
+                break;
         }
-
     }
 
     updateDeltaTime(timestamp) {
@@ -256,7 +272,7 @@ class AnimatedEntity extends MovableObject {
                 this.frameIndex++;
             }
             this.lastFrameTime = timestamp;
-            if (this.frameIndex >= images.length && (this.currentAnimation == 'doorOpens' || this.currentAnimation == 'doorCloses' || this.currentAnimation == 'fireGoesOn' || this.currentAnimation == 'fireGoesOut' || this.currentAnimation == 'findsPeace')) {
+            if (this.frameIndex >= images.length && (this.currentAnimation == 'doorOpens' || this.currentAnimation == 'doorCloses' || this.currentAnimation == 'fireGoesOn' || this.currentAnimation == 'fireGoesOut' || this.currentAnimation == 'findsPeace' || this.currentAnimation == 'stoneActivated')) {
                 this.animationFinished = true;
                 switch (this.currentAnimation) {
                     case 'doorOpens':
@@ -273,6 +289,9 @@ class AnimatedEntity extends MovableObject {
                         break;
                     case 'findsPeace':
                         this.setAnimation('findsPeaceLoop');
+                        break;
+                    case 'stoneActivated':
+                        this.setAnimation('idleWithStone');
                         break;
                 }
             }
@@ -305,6 +324,9 @@ class AnimatedEntity extends MovableObject {
             case 'findsPeaceLoop': return this.findsPeaceLoopImages;
             case 'sleep': return this.sleepImages;
             case 'portrait': return this.portraitImages;
+            case 'walkWithStone': return this.walkWithStoneImages;
+            case 'idleWithStone': return this.idleWithStoneImages;
+            case 'stoneActivated': return this.stoneActivatedImages;
         }
     }
 

@@ -402,7 +402,10 @@ const otherLevelEntityManifestLazy = {
 
   tadeo: {
     idle: Array.from({ length: 10 }, (_, i) => `./assets/img/npcs/tadeo/idle/image_${i + 1}.webp`),
-    walk: Array.from({ length: 8 }, (_, i) => `./assets/img/npcs/tadeo/walk/image_${i + 1}.png`)
+    walk: Array.from({ length: 8 }, (_, i) => `./assets/img/npcs/tadeo/walk/image_${i + 1}.png`),
+    walkWithStone: Array.from({ length: 5 }, (_, i) => `./assets/img/npcs/tadeo/walk_with_stone/image_${i + 1}.png`),
+    idleWithStone: Array.from({ length: 20 }, (_, i) => `./assets/img/npcs/tadeo/idle_with_stone/image_${i + 1}.png`),
+    stoneActivated: Array.from({ length: 55 }, (_, i) => `./assets/img/npcs/tadeo/stone_activated/image_${i + 1}.png`)
   },
 
   projectile: {

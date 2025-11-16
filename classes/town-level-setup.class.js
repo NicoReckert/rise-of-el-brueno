@@ -25,7 +25,7 @@ class TownLevelSetup {
             'tadeo',
             150,
             150,
-            10000, //1500
+            5000, //1500
             515
         );
 
@@ -38,7 +38,8 @@ class TownLevelSetup {
             tadeosMusic: this.allAudios.tadeosMusic,
             enemyHurtSound: this.allAudios.enemyHurtSound,
             attackSound: this.allAudios.attackSound,
-            newTaskSound: this.allAudios.newTaskSound
+            newTaskSound: this.allAudios.newTaskSound,
+            tadeoHoldStoneMusic: this.allAudios.tadeoHoldStoneMusic
         };
         this.sounds.soulMusic.volume = 0;
         this.speechBubbles = {
@@ -73,8 +74,6 @@ class TownLevelSetup {
         this.townLevel.projectiles = [];
         this.world.projectiles = this.townLevel.projectiles;
         this.popupTexts = [];
-
-
-
+        this.panel = new ComicPanel(this.world.canvas, this.entityImages.tadeo.stoneActivated);
     }
 }

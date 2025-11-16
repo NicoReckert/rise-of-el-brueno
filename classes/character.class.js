@@ -9,12 +9,12 @@ class Character extends MovableObject {
         'look-determined-and-stand-up', 'strong-determined', 'caress', 'caress-loop',
         'sit-down-and-play-guitar', 'play-guitar-and-sing', 'play-guitar',
         'light-a-campfire', 'meditation', 'meditation-loop', 'stand-up',
-        'walk-determined', 'stand-determined', 'stand-determined-loop'
+        'walk-determined', 'stand-determined', 'stand-determined-loop', 'walk-in-storm', 'collapse', 'collapse-loop'
     ]);
     TRANSITIONABLE_ANIMS = new Set([
         'kneel-and-cry', 'stand-up-and-look-determined', 'look-determined-and-stand-up',
         'caress', 'sit-down-and-play-guitar', 'light-a-campfire', 'attack',
-        'meditation', 'new-weapon', 'stand-up', 'stand-determined'
+        'meditation', 'new-weapon', 'stand-up', 'stand-determined', 'collapse'
     ]);
 
     /**
@@ -92,6 +92,7 @@ class Character extends MovableObject {
         this.walkImages = this.characterImages.walkImages ?? (this.characterImages.walkImages = []);
         this.jumpImages = this.characterImages.jumpImages ?? (this.characterImages.jumpImages = []);
         this.walkDeterminedImages = this.characterImages.walkDeterminedImages ?? (this.characterImages.walkDeterminedImages = []);
+        this.walkInStormImages = this.characterImages.walkInStormImages ?? (this.characterImages.walkInStormImages = []);
         this.standUpImages = this.characterImages.standUpImages ?? (this.characterImages.standUpImages = []);
     }
 
@@ -108,6 +109,8 @@ class Character extends MovableObject {
         this.strongDeterminedImages = this.characterImages.strongDeterminedImages ?? (this.characterImages.strongDeterminedImages = []);
         this.standDeterminedImages = this.characterImages.standDeterminedImages ?? (this.characterImages.standDeterminedImages = []);
         this.standDeterminedLoopImages = this.characterImages.standDeterminedLoopImages ?? (this.characterImages.standDeterminedLoopImages = []);
+        this.collapseImages = this.characterImages.collapseImages ?? (this.characterImages.collapseImages = []);
+        this.collapseLoopImages = this.characterImages.collapseLoopImages ?? (this.characterImages.collapseLoopImages = []);
     }
 
     /**
@@ -153,6 +156,7 @@ class Character extends MovableObject {
         this.isMovingRight = false;
         this.isWalk = false;
         this.isWalkDetermined = false;
+        this.isWalkInStorm = false;
         this.isJumping = false;
         this.isLanding = false;
     }
@@ -178,6 +182,7 @@ class Character extends MovableObject {
         this.isKneelAndCry = false;
         this.isStandUpAndLookDetermined = false;
         this.isLookDeterminedAndStandUp = false;
+        this.isCollapse = false;
     }
 
     /**
@@ -300,6 +305,7 @@ class Character extends MovableObject {
             return this.setAnim('look-determined-and-stand-up', 6, 'strong-determined');
         if (this.isStandDetermined)
             return this.setAnim('stand-determined', 5, 'stand-determined-loop');
+        if (this.isCollapse) return this.setAnim('collapse', 6, 'collapse-loop');
         return false;
     }
 
@@ -335,7 +341,7 @@ class Character extends MovableObject {
     */
     handleMovementAnimations() {
         if (this.isMovingLeft || this.isMovingRight || this.isWalk)
-            return this.setSimpleAnim('walk', 8);
+            return this.isWalkInStorm ? this.setAnim('walk-in-storm', 5) : this.setSimpleAnim('walk', 8);
         if (this.isWalkDetermined)
             return this.setAnim('walk-determined', 5);
         return false;
@@ -514,6 +520,8 @@ class Character extends MovableObject {
                 return this.setTransition('cry');
             case 'caress':
                 return this.setTransition('caress-loop', 6);
+            case 'collapse':
+                return this.setTransition('collapse-loop', 5);
         }
         return false;
     }
@@ -594,6 +602,7 @@ class Character extends MovableObject {
             case 'jump': return this.jumpImages;
             case 'stand-up': return this.standUpImages;
             case 'walk-determined': return this.walkDeterminedImages;
+            case 'walk-in-storm': return this.walkInStormImages;
         }
         return null;
     }
@@ -609,6 +618,8 @@ class Character extends MovableObject {
             case 'hurt': return this.hurtImages;
             case 'kneel-and-cry': return this.kneelDownAndCryImages;
             case 'cry': return this.cryImages;
+            case 'collapse': return this.collapseImages;
+            case 'collapse-loop': return this.collapseLoopImages;
         }
         return null;
     }

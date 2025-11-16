@@ -12,6 +12,10 @@ const townEvents =
                 setup.world.character.speedX = 10;
                 setup.world.character.isWalkDetermined = false;
                 setup.characters.tadeo.updateAnimationState('idle', 1000 / 5);
+
+                setup.world.character.isWalkInStorm = true;
+                setup.world.character.speedX = 2;
+
             }
         },
 
@@ -37,17 +41,17 @@ const townEvents =
 
         },
 
-        // {
-        //     type: "position",
-        //     area: { x: 500, width: 100 },
-        //     step: 1,
-        //     action: (setup) => {
-        //         fadeOutAudio(setup.backgroundMusic, 1000);
-        //         fadeInAudio(setup.sounds.tadeosMusic, 2000, 0.6);
-        //         setup.characters.tadeo.updateAnimationState('walk');
-        //         setup.world.townLevelController.questManager.advance(2)
-        //     }
-        // },
+        {
+            type: "position",
+            area: { x: 1700, width: 100 },
+            step: 1,
+            action: (setup) => {
+                setup.characters.tadeo.updateAnimationState('walk');
+                setup.world.character.isCollapse = true;
+                setup.world.townLevelController.questManager.advance(2)
+
+            }
+        },
 
         // {
         //     type: "position",
@@ -66,8 +70,8 @@ const townEvents =
         //             new Chicken('chickenMutatesBig', images, 160, 160, 505, 2100, allAudios),
         //             new Chicken('chickenMutatesBig', images, 160, 160, 505, 2100, allAudios),
         //             new Chicken('chickenMutatesBig', images, 160, 160, 505, 2100, allAudios),
-                    
-        
+
+
 
         //         )
         //         setup.townLevel.enemies.forEach(enemy => {
@@ -76,21 +80,32 @@ const townEvents =
         //     }
         // },
 
-        // {
-        //     type: "quest",
-        //     step: 2,
-        //     once: false,
-        //     action: (setup) => {
-        //         if (setup.characters.tadeo.x >= 800) {
-        //             setup.characters.tadeo.isMovingLeft = true;
-        //         } else {
-        //             setup.characters.tadeo.isMovingLeft = false;
-        //             setup.characters.tadeo.updateAnimationState('idle');
-        //             setup.speechBubbles[0].start(4500);
-        //             setup.world.townLevelController.questManager.advance(3);
-        //         }
-        //     }
-        // },
+        {
+            type: "quest",
+            step: 2,
+            once: false,
+            action: (setup) => {
+                if (setup.characters.tadeo.x >= 2000) {
+                    setup.characters.tadeo.isMovingLeft = true;
+                } else {
+                    setup.characters.tadeo.isMovingLeft = false;
+                    setup.characters.tadeo.updateAnimationState('idle');
+                    setup.speechBubbles[0].start(4500);
+                    setup.world.townLevelController.questManager.advance(3);
+                }
+            }
+        },
+
+        {
+            type: "time",
+            delay: 2000,
+            step: 2,
+            action: (setup) => {
+                fadeOutAudio(setup.backgroundMusic, 1000);
+                fadeInAudio(setup.sounds.tadeosMusic, 2000, 0.6);
+
+            }
+        },
 
         // {
         //     type: "time",
@@ -132,6 +147,30 @@ const townEvents =
         //     once: false,
         //     action: (setup) => setup.speechBubbles[2].render(setup.world.ctx, setup.world.townLevelController.renderCameraX, 0)
         // }
+
+        {
+            type: "time",
+            delay: 3000,
+            step: 3,
+            action: (setup) => {
+                // setup.sounds.tadeoHoldStoneMusic.currentTime = 35;
+                fadeInAudio(setup.sounds.tadeoHoldStoneMusic, 2000, 0.6);
+                fadeOutAudio(setup.sounds.tadeosMusic, 1000);
+                setup.characters.tadeo.updateAnimationState('stoneActivated', 1000 / 5.5);
+                setup.panel.activate(performance.now());
+                setup.world.townLevelController.magicShield.start();
+
+            }
+        },
+
+        {
+            type: "time",
+            delay: 6000,
+            step: 3,
+            action: (setup) => {
+                setup.world.character.isCollapse = true;
+            }
+        }
     ];
 
 
