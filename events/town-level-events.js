@@ -5,16 +5,16 @@ const townEvents =
             action: (setup) => {
                 setup.backgroundMusic.loop = true;
                 fadeInAudio(setup.backgroundMusic, 2000, 0.6);
-                setup.world.character.x = 100;
+                setup.world.character.x = 18500; // 100
                 setup.world.character.level_start_x = 0;
                 setup.world.farmLevelSetup.farmLevel.level_end_x = 25000;
-                setup.world.camera_x = 0;
+                setup.world.camera_x = 18400; //0
                 setup.world.character.speedX = 10;
                 setup.world.character.isWalkDetermined = false;
                 setup.characters.tadeo.updateAnimationState('idle', 1000 / 5);
 
-                setup.world.character.isWalkInStorm = true;
-                setup.world.character.speedX = 2;
+                // setup.world.character.isWalkInStorm = true;
+                setup.world.character.speedX = 5; //2
 
             }
         },
@@ -300,5 +300,31 @@ const townEvents =
                 if (hero.x > right) hero.x = right;
             }
         },
+
+        {
+            type: 'collision',
+            objectA: 'character',
+            objectB: 'musician',
+
+            toleranceB: { x: -150, width: -150 },
+            once: false,
+            cooldown: 500,
+            action: (setup) => {
+                if (!setup.isNearMusician) {
+                    setup.isNearMusician = true;
+                    setup.sounds.musicianTownMusic.currentTime = 0;
+                    fadeOutAudio(setup.backgroundMusic, 1000);
+                    fadeInAudio(setup.sounds.musicianTownMusic, 2000, 0.6);
+                }
+            },
+            onLeave: (setup) => {
+                if (setup.isNearMusician) {
+                    setup.isNearMusician = false;
+                    setup.backgroundMusic.currentTime = 0;
+                    fadeOutAudio(setup.sounds.musicianTownMusic, 1000);
+                    fadeInAudio(setup.backgroundMusic, 2000, 0.6);
+                }
+            }
+        }
 
     ];

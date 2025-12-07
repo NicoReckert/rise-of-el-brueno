@@ -410,5 +410,13 @@ const otherLevelEntityManifestLazy = {
 
   projectile: {
     fireball: Array.from({ length: 6 }, (_, i) => `./assets/img/npcs/projectile/fireball/image_${i + 1}.png`)
+  },
+
+  musician: {
+    idle: Array.from({ length: 6 }, (_, i) => `./assets/img/npcs/musician/idle/image_${i + 1}.png`)
+  },
+
+  solita: {
+    idle: Array.from({ length: 20 }, (_, i) => `./assets/img/npcs/solita/idle/image_${i + 1}.png`)
   }
 }

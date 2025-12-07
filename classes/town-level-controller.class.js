@@ -101,6 +101,8 @@ class TownLevelController {
             this.addToWorld(this.setup.characters.endboss);
         }
         this.addToWorld(this.setup.characters.tadeo);
+        this.addToWorld(this.setup.characters.solita);
+        this.addToWorld(this.setup.characters.musician);
         this.ctx.restore();
         // this.sandstorm.draw(this.ctx, this.renderCameraX);
         // this.sandstormFar.draw(this.ctx, this.renderCameraX);
@@ -188,6 +190,8 @@ class TownLevelController {
     }
 
     setSandstorm(t) {
+        // t = 0  → leicht
+        // t = 1  → stark
         t = Math.max(0, Math.min(1, t));
 
         this.sandstormFar.setAlpha(0.04 + (0.15 - 0.04) * t);
