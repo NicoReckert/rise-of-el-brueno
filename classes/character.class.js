@@ -9,12 +9,12 @@ class Character extends MovableObject {
         'look-determined-and-stand-up', 'strong-determined', 'caress', 'caress-loop',
         'sit-down-and-play-guitar', 'play-guitar-and-sing', 'play-guitar',
         'light-a-campfire', 'meditation', 'meditation-loop', 'stand-up',
-        'walk-determined', 'stand-determined', 'stand-determined-loop', 'walk-in-storm', 'collapse', 'collapse-loop'
+        'walk-determined', 'stand-determined', 'stand-determined-loop', 'walk-in-storm', 'collapse', 'collapse-loop', 'stand-up-after-collapse'
     ]);
     TRANSITIONABLE_ANIMS = new Set([
         'kneel-and-cry', 'stand-up-and-look-determined', 'look-determined-and-stand-up',
         'caress', 'sit-down-and-play-guitar', 'light-a-campfire', 'attack',
-        'meditation', 'new-weapon', 'stand-up', 'stand-determined', 'collapse'
+        'meditation', 'new-weapon', 'stand-up', 'stand-determined', 'collapse', 'stand-up-after-collapse'
     ]);
 
     /**
@@ -111,6 +111,7 @@ class Character extends MovableObject {
         this.standDeterminedLoopImages = this.characterImages.standDeterminedLoopImages ?? (this.characterImages.standDeterminedLoopImages = []);
         this.collapseImages = this.characterImages.collapseImages ?? (this.characterImages.collapseImages = []);
         this.collapseLoopImages = this.characterImages.collapseLoopImages ?? (this.characterImages.collapseLoopImages = []);
+        this.standUpAfterCollapseImages = this.characterImages.standUpAfterCollapseImages ?? (this.characterImages.standUpAfterCollapseImages = []);
     }
 
     /**
@@ -183,6 +184,7 @@ class Character extends MovableObject {
         this.isStandUpAndLookDetermined = false;
         this.isLookDeterminedAndStandUp = false;
         this.isCollapse = false;
+        this.isStandUpAfterCollapse = false;
     }
 
     /**
@@ -306,6 +308,7 @@ class Character extends MovableObject {
         if (this.isStandDetermined)
             return this.setAnim('stand-determined', 5, 'stand-determined-loop');
         if (this.isCollapse) return this.setAnim('collapse', 6, 'collapse-loop');
+        if (this.isStandUpAfterCollapse) return this.setAnim('stand-up-after-collapse', 4);
         return false;
     }
 
@@ -522,6 +525,8 @@ class Character extends MovableObject {
                 return this.setTransition('caress-loop', 6);
             case 'collapse':
                 return this.setTransition('collapse-loop', 5);
+            case 'stand-up-after-collapse':
+                this.isStandUpAfterCollapse = false;
         }
         return false;
     }
@@ -620,6 +625,7 @@ class Character extends MovableObject {
             case 'cry': return this.cryImages;
             case 'collapse': return this.collapseImages;
             case 'collapse-loop': return this.collapseLoopImages;
+            case 'stand-up-after-collapse': return this.standUpAfterCollapseImages;
         }
         return null;
     }

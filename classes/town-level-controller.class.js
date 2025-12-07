@@ -17,33 +17,25 @@ class TownLevelController {
         this.sandstormNear = new SandstormEffect(this.canvas); // schneller, heller
         this.sandstormFar = new SandstormEffect(this.canvas); // langsamer, dunkler
 
-        // this.sandstorm.setAlpha(0.5);
-        // this.sandstorm.setSpeed(20); // 1.2
 
-        // this.sandstormNear.setAlpha(0.12);
-        // this.sandstormNear.setSpeed(10); // 1.2
-
-        // this.sandstormFar.setAlpha(0.08);
-        // this.sandstormFar.setSpeed(5); // 0.3
-
-        this.sandstorm.setAlpha(0.25);
-        this.sandstorm.setSpeed(1.0); // 1.2
-
-        this.sandstormNear.setAlpha(0.3);
-        this.sandstormNear.setSpeed(3); // 1.2
-
-        this.sandstormFar.setAlpha(0.8);
-        this.sandstormFar.setSpeed(8); // 0.3
+        // this.sandstormFar.setAlpha(0.04);
+        // this.sandstormFar.setSpeed(0.20);
+        // this.sandstorm.setAlpha(0.10);
+        // this.sandstorm.setSpeed(0.5);
+        // this.sandstormNear.setAlpha(0.16);
+        // this.sandstormNear.setSpeed(1.2);
+        this.sandstormIntensity = 0; 
+        this.setSandstorm(this.sandstormIntensity);
 
         this.eventManager = new EventManager(this.setup);
         this.questManager = new QuestManager(this.setup, this.eventManager, this.setup.townEvents);
         this.eventManager.questManager = this.questManager;
         this.magicShield = new MagicShieldEffect(this.canvas);
         this.magicShield.onShockwave = () => {
-    this.sandstorm.pressure = 0.5;
-    this.sandstormNear.pressure = 0.8;
-    this.sandstormFar.pressure = 0.3;
-};
+            this.sandstorm.pressure = 0.4;
+            this.sandstormNear.pressure = 0.6;
+            this.sandstormFar.pressure = 0.2;
+        };
 
 
     }
@@ -114,21 +106,26 @@ class TownLevelController {
         // this.sandstormFar.draw(this.ctx, this.renderCameraX);
         // this.sandstormNear.draw(this.ctx, this.renderCameraX);
         // Tadeo screen position
-const sx = this.setup.characters.tadeo.x - this.renderCameraX + this.setup.characters.tadeo.width / 2;
-const sy = this.setup.characters.tadeo.y + this.setup.characters.tadeo.height * 0.2;
+        const sx = this.setup.characters.tadeo.x - this.renderCameraX + this.setup.characters.tadeo.width / 2;
+        const sy = this.setup.characters.tadeo.y + this.setup.characters.tadeo.height * 0.2;
 
-const now = performance.now();
-this.magicShield.update(sx, sy, now);
-this.magicShield.draw(this.ctx, sx, sy);
+        const now = performance.now();
+        this.magicShield.update(sx, sy, now);
+        this.magicShield.draw(this.ctx, sx, sy);
 
 
         const shieldInfo = this.magicShield.active
-    ? { x: sx, y: sy, radius: this.magicShield.radius }
-    : null;
+            ? {
+                x: sx + this.magicShield.clipJitterX,
+                y: sy + this.magicShield.clipJitterY,
+                radius: this.magicShield.radius
+            }
+            : null;
 
-this.sandstormFar.draw(this.ctx, this.renderCameraX, shieldInfo);
-this.sandstorm.draw(this.ctx, this.renderCameraX, shieldInfo);
-this.sandstormNear.draw(this.ctx, this.renderCameraX, shieldInfo);
+
+        this.sandstormFar.draw(this.ctx, this.renderCameraX, shieldInfo);
+        this.sandstorm.draw(this.ctx, this.renderCameraX, shieldInfo);
+        this.sandstormNear.draw(this.ctx, this.renderCameraX, shieldInfo);
     }
 
     updateCharacter(timestamp) {
@@ -180,14 +177,27 @@ this.sandstormNear.draw(this.ctx, this.renderCameraX, shieldInfo);
     }
 
     cutSandstormInsideShield(ctx, x, y, radius) {
-    ctx.save();
-    ctx.globalCompositeOperation = "destination-out";
+        ctx.save();
+        ctx.globalCompositeOperation = "destination-out";
 
-    ctx.beginPath();
-    ctx.arc(x, y, radius * 0.9, 0, Math.PI * 2);
-    ctx.fill();
+        ctx.beginPath();
+        ctx.arc(x, y, radius * 0.9, 0, Math.PI * 2);
+        ctx.fill();
 
-    ctx.restore();
-}
+        ctx.restore();
+    }
+
+    setSandstorm(t) {
+        t = Math.max(0, Math.min(1, t));
+
+        this.sandstormFar.setAlpha(0.04 + (0.15 - 0.04) * t);
+        this.sandstormFar.setSpeed(0.20 + (0.60 - 0.20) * t);
+
+        this.sandstorm.setAlpha(0.10 + (0.35 - 0.10) * t);
+        this.sandstorm.setSpeed(0.50 + (1.60 - 0.50) * t);
+
+        this.sandstormNear.setAlpha(0.16 + (0.45 - 0.16) * t);
+        this.sandstormNear.setSpeed(1.20 + (4.50 - 1.20) * t);
+    }
 
 }

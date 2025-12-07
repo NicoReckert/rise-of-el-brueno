@@ -43,12 +43,68 @@ const townEvents =
 
         {
             type: "position",
-            area: { x: 1700, width: 100 },
+            area: { x: 1000, width: 100 },
             step: 1,
+            action: (setup) => {
+                setup.world.townLevelController.questManager.advance(2)
+            }
+        },
+
+        {
+            type: "time",
+            from: 0,
+            to: 5000,
+            step: 2,
+            once: false,
+            action: (setup, elapsed, progress) => {
+                const ctrl = setup.world.townLevelController;
+                const intensity = progress * 0.5;
+
+                ctrl.setSandstorm(intensity);
+            },
+            onEnd: (setup) => {
+                const ctrl = setup.world.townLevelController;
+                ctrl.setSandstorm(0.5);
+                ctrl.questManager.advance(3);
+            }
+        },
+
+        {
+            type: "position",
+            area: { x: 1300, width: 100 },
+            step: 3,
+            action: (setup) => {
+                setup.world.townLevelController.questManager.advance(4)
+            }
+        },
+
+        {
+            type: "time",
+            from: 0,
+            to: 5000,
+            step: 4,
+            once: false,
+            action: (setup, elapsed, progress) => {
+                const ctrl = setup.world.townLevelController;
+                const intensity = 0.5 + progress * 0.5;
+                ctrl.setSandstorm(intensity);
+            },
+            onEnd: (setup) => {
+                const ctrl = setup.world.townLevelController;
+                ctrl.setSandstorm(1.0);
+                ctrl.questManager.advance(5);
+            }
+        },
+
+
+        {
+            type: "position",
+            area: { x: 1700, width: 100 },
+            step: 5,
             action: (setup) => {
                 setup.characters.tadeo.updateAnimationState('walk');
                 setup.world.character.isCollapse = true;
-                setup.world.townLevelController.questManager.advance(2)
+                setup.world.townLevelController.questManager.advance(6)
 
             }
         },
@@ -82,7 +138,7 @@ const townEvents =
 
         {
             type: "quest",
-            step: 2,
+            step: 6,
             once: false,
             action: (setup) => {
                 if (setup.characters.tadeo.x >= 2000) {
@@ -91,7 +147,7 @@ const townEvents =
                     setup.characters.tadeo.isMovingLeft = false;
                     setup.characters.tadeo.updateAnimationState('idle');
                     setup.speechBubbles[0].start(4500);
-                    setup.world.townLevelController.questManager.advance(3);
+                    setup.world.townLevelController.questManager.advance(7);
                 }
             }
         },
@@ -99,7 +155,7 @@ const townEvents =
         {
             type: "time",
             delay: 2000,
-            step: 2,
+            step: 6,
             action: (setup) => {
                 fadeOutAudio(setup.backgroundMusic, 1000);
                 fadeInAudio(setup.sounds.tadeosMusic, 2000, 0.6);
@@ -151,7 +207,7 @@ const townEvents =
         {
             type: "time",
             delay: 3000,
-            step: 3,
+            step: 7,
             action: (setup) => {
                 // setup.sounds.tadeoHoldStoneMusic.currentTime = 35;
                 fadeInAudio(setup.sounds.tadeoHoldStoneMusic, 2000, 0.6);
@@ -166,11 +222,83 @@ const townEvents =
         {
             type: "time",
             delay: 6000,
-            step: 3,
+            step: 7,
             action: (setup) => {
                 setup.world.character.isCollapse = true;
             }
-        }
+        },
+
+        {
+            type: "time",
+            delay: 8000,
+            step: 7,
+            action: (setup) => {
+                setup.world.character.isCollapse = false;
+                setup.world.character.isStandUpAfterCollapse = true;
+                setup.world.character.isWalkInStorm = false;
+                setup.world.character.speedX = 5;
+                setup.characters.tadeo.updateAnimationState('walkWithStone');
+                setup.characters.tadeo.speedX = 0.5;
+                setup.characters.tadeo.isFlipped = false;
+                setup.world.townLevelController.questManager.advance(8);
+            }
+        },
+
+        // {
+        //     type: "time",
+        //     delay: 3000,
+        //     step: 8,
+        //     once: false,
+        //     action: (setup) => {
+        //         if (setup.characters.tadeo.x <= 10275 /*&& setup.world.character.x >= setup.characters.tadeo.x - 170 && setup.world.character.x <= setup.characters.tadeo.x + 170*/) {
+        //             setup.characters.tadeo.isMovingRight = true;
+        //             setup.characters.tadeo.updateAnimationState('walkWithStone');
+        //             // setup.world.character.level_start_x = setup.characters.tadeo.x - 170;
+        //             // setup.world.farmLevelSetup.farmLevel.level_end_x = setup.characters.tadeo.x + 170;
+        //         } else {
+        //             setup.characters.tadeo.isMovingRight = false;
+        //             setup.characters.tadeo.updateAnimationState('idleWithStone');
+        //             // setup.world.character.level_start_x = setup.characters.tadeo.x - 170;
+        //             // setup.world.farmLevelSetup.farmLevel.level_end_x = setup.characters.tadeo.x + 170;
+        //             // setup.world.townLevelController.questManager.advance(9);
+        //         }
+        //     }
+        // },
+
+        {
+            type: 'collision',
+            objectA: 'character',
+            objectB: 'tadeo',
+            toleranceB: { x: -50, width: -50 },
+            step: 8,
+            once: false,
+            action: (setup) => {
+                if (setup.characters.tadeo.x <= 10275 /*&& setup.world.character.x >= setup.characters.tadeo.x - 170 && setup.world.character.x <= setup.characters.tadeo.x + 170*/) {
+                    setup.characters.tadeo.isMovingRight = true;
+                    setup.characters.tadeo.updateAnimationState('walkWithStone');
+                }
+            },
+            onLeave: (setup) => {
+                setup.characters.tadeo.isMovingRight = false;
+                setup.characters.tadeo.updateAnimationState('idleWithStone');
+            }
+        },
+
+        {
+            type: 'quest',
+            step: 8,
+            once: false,
+            action: (setup) => {
+                const hero = setup.world.character;
+                const tadeo = setup.characters.tadeo;
+                const radius = 180;
+
+                const left = tadeo.x - radius;
+                const right = tadeo.x + radius;
+
+                if (hero.x < left) hero.x = left;
+                if (hero.x > right) hero.x = right;
+            }
+        },
+
     ];
-
-

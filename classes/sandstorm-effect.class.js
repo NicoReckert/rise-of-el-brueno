@@ -13,12 +13,21 @@ class SandstormEffect {
 
         this.worldWidth = worldWidth;
         this.pressure = 0; 
+        this.currentAlpha = this.alpha;
     }
 
     update() {
         if (!this.enabled) return;
         this.scrollX = (this.scrollX + this.scrollSpeed) % this.image.width;
-        this.pressure *= 0.96;
+       this.pressure *= 0.9;
+        if (this.pressure < 0.01) this.pressure = 0;
+
+        const p = Math.min(1, Math.max(0, this.pressure));
+        const targetAlpha = this.alpha * (1 - p);
+
+        // Sanft in Richtung targetAlpha interpolieren (kein Flackern)
+        const smoothing = 0.2; // 0.1–0.3 ist gut
+        this.currentAlpha += (targetAlpha - this.currentAlpha) * smoothing;
     }
 
     draw(ctx, cameraX = 0, shield = null) {
@@ -65,27 +74,28 @@ class SandstormEffect {
 
 
 drawSand(ctx, cameraX) {
-    ctx.save();
-    ctx.globalAlpha = Math.max(0, this.alpha - this.pressure);
+        ctx.save();
 
+        ctx.globalAlpha = this.currentAlpha;  // NICHT mehr alpha - pressure
 
-    const imgWidth = this.image.width;
-    const offset = (cameraX + this.scrollX) % imgWidth;
-    const startX = -offset;
-    const repeats = Math.ceil(this.canvas.width / imgWidth) + 1;
+        const imgWidth = this.image.width;
+        const offset = (cameraX + this.scrollX) % imgWidth;
+        const startX = -offset;
+        const repeats = Math.ceil(this.canvas.width / imgWidth) + 1;
 
-    for (let i = 0; i < repeats; i++) {
-        ctx.drawImage(
-            this.image,
-            startX + i * imgWidth,
-            0,
-            imgWidth,
-            this.canvas.height
-        );
+        for (let i = 0; i < repeats; i++) {
+            ctx.drawImage(
+                this.image,
+                startX + i * imgWidth,
+                0,
+                imgWidth,
+                this.canvas.height
+            );
+        }
+
+        ctx.restore();
     }
 
-    ctx.restore();
-}
 
 
 
@@ -95,6 +105,8 @@ drawSand(ctx, cameraX) {
 
     setAlpha(alpha) {
         this.alpha = alpha;
+        // optional: currentAlpha beim Setup mitziehen
+        if (this.currentAlpha == null) this.currentAlpha = alpha;
     }
 
     setSpeed(speed) {

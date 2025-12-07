@@ -70,6 +70,13 @@ class MagicShieldEffect {
             p.alpha -= 0.02;
         });
         this.particles = this.particles.filter(p => p.alpha > 0);
+
+        // Flimmern im Schild – bewegt den Clip minimal
+        this.clipJitterX = Math.sin(timestamp * 0.004) * 4;
+        this.clipJitterY = Math.cos(timestamp * 0.003) * 4;
+
+        
+
     }
 
 
