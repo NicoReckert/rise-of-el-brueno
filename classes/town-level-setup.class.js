@@ -94,5 +94,7 @@ class TownLevelSetup {
         this.panel = new ComicPanel(this.world.canvas, this.entityImages.tadeo.stoneActivated);
         this.characters.solita.isFlipped = false;
         this.isNearMusician = false;
+
+        this.endbossFlyPhase = 0;
     }
 }

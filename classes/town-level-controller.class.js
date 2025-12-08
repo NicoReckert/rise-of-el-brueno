@@ -93,7 +93,7 @@ class TownLevelController {
         this.addObject(this.setup.townLevel.bottles);
         this.addObject(this.setup.townLevel.enemies);
         this.addObject(this.setup.townLevel.projectiles);
-        this.addToWorld(this.endbossAttack);
+        this.addToWorld(this.setup.endbossAttack);
         this.addObject(this.setup.throwableObjects);
         if (!this.setup.characters.endboss.isUnderTheGround) {
             this.addToWorld(this.setup.characters.soul);

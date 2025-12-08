@@ -38,6 +38,7 @@ class AnimatedEntity extends MovableObject {
         this.loveImages = this.entityImages[currentEntity]?.love || [];
         this.eatImages = this.entityImages[currentEntity]?.eat || [];
         this.flyUpImages = this.entityImages[currentEntity]?.flyUp || [];
+        this.flyImages = this.entityImages[currentEntity]?.fly || [];
         this.afraidImages = this.entityImages[currentEntity]?.afraid || [];
         this.halfSizeFlyImages = this.entityImages[currentEntity]?.halfSizeFly || [];
         this.fullSizeFlyImages = this.entityImages[currentEntity]?.fullSizeFly || [];
@@ -122,6 +123,10 @@ class AnimatedEntity extends MovableObject {
                 break;
             case 'flyUp':
                 this.currentAnimation = 'flyUp';
+                this.frameInterval = frameInterval;
+                break;
+            case 'fly':
+                this.currentAnimation = 'fly';
                 this.frameInterval = frameInterval;
                 break;
             case 'afraid':
@@ -308,6 +313,7 @@ class AnimatedEntity extends MovableObject {
             case 'love': return this.loveImages;
             case 'eat': return this.eatImages;
             case 'flyUp': return this.flyUpImages;
+            case 'fly': return this.flyImages;
             case 'afraid': return this.afraidImages;
             case 'halfSizeFly': return this.halfSizeFlyImages;
             case 'fullSizeFly': return this.fullSizeFlyImages;

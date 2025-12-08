@@ -5,10 +5,10 @@ const townEvents =
             action: (setup) => {
                 setup.backgroundMusic.loop = true;
                 fadeInAudio(setup.backgroundMusic, 2000, 0.6);
-                setup.world.character.x = 18500; // 100
+                setup.world.character.x = 23000; // 100 //18500
                 setup.world.character.level_start_x = 0;
                 setup.world.farmLevelSetup.farmLevel.level_end_x = 25000;
-                setup.world.camera_x = 18400; //0
+                setup.world.camera_x = 22900; //0 // 18400
                 setup.world.character.speedX = 10;
                 setup.world.character.isWalkDetermined = false;
                 setup.characters.tadeo.updateAnimationState('idle', 1000 / 5);
@@ -325,6 +325,43 @@ const townEvents =
                     fadeInAudio(setup.backgroundMusic, 2000, 0.6);
                 }
             }
-        }
+        },
+
+        {
+            type: "position",
+            area: { x: 22500, width: 100 },
+            action: (setup) => {
+                setup.characters.endboss.x = 22000;
+                setup.characters.endboss.y = -100;
+                setup.characters.endboss.isFlipped = true;
+                setup.characters.endboss.isFly = true;
+                setup.world.townLevelController.questManager.advance(12);
+
+            }
+        },
+        {
+            type: "quest",
+            step: 12,
+            once: false,
+            action: (setup) => {
+                if(setup.characters.endboss.x <= 23000) setup.characters.endboss.x += 3;
+                // if(setup.characters.endboss.y <= 220) setup.characters.endboss.y += 1; 
+                // const centerX = 23000;
+                // const centerY = 220;
+                // const radiusX = 300;   // wie weit links/rechts
+                // const radiusY = 120;   // wie weit hoch/runter
+                // const speed = 0.02;    // Geschwindigkeit der Ellipse
+
+                // // Phase erhöhen
+                // setup.endbossFlyPhase += speed;
+
+                // // Position berechnen
+                // const boss = setup.characters.endboss;
+                // boss.x = centerX + Math.cos(setup.endbossFlyPhase) * radiusX;
+                // boss.y = centerY + Math.sin(setup.endbossFlyPhase) * radiusY;
+
+            }
+        },
+
 
     ];

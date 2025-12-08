@@ -40,7 +40,7 @@ class Endboss extends MovableObject {
      * Sets the initial size and position.
      */
     setSizeAndPosition() {
-        this.x = 16000;
+        this.x = 23000;
         this.y = 205;
         this.width = 350;
         this.height = 500;
@@ -60,11 +60,12 @@ class Endboss extends MovableObject {
      * Initializes base image sets.
      */
     initBaseImages() {
-        this.idleImages = this.entityImages.endboss_idle || [];
-        this.walkImages = this.entityImages.endboss_walk || [];
-        this.deadImages = this.entityImages.endboss_dead || [];
-        this.hurtImages = this.entityImages.endboss_hurt || [];
-        this.findsPeaceImages = this.entityImages.endboss_findsPeace || [];
+        this.idleImages = this.entityImages.endboss.idle || [];
+        this.walkImages = this.entityImages.endboss.walk || [];
+        this.deadImages = this.entityImages.endboss.dead || [];
+        this.hurtImages = this.entityImages.endboss.hurt || [];
+        this.flyImages = this.entityImages.endboss.fly || [];
+        this.findsPeaceImages = this.entityImages.endboss.findsPeace || [];
     }
 
     /**
@@ -79,6 +80,7 @@ class Endboss extends MovableObject {
         this.isJumping = false;
         this.isUnderTheGround = false;
         this.isFindsPeace = false;
+        this.isFly = false;
     }
 
     /**
@@ -210,6 +212,7 @@ class Endboss extends MovableObject {
         if (this.isFindsPeace) return this.playFindsPeace();
         if (this.isDead) return this.playDeathAnimation();
         if (this.isHurt) return this.playHurtAnimation();
+        if (this.isFly) return this.playFlyAnimation();
         if (this.isJumping) return this.setAnimation('jump', 10);
         if (this.isMovingLeft || this.isMovingRight)
             return this.setAnimation('walk', 8);
@@ -250,6 +253,17 @@ class Endboss extends MovableObject {
     }
 
     /**
+     * Plays the fly animation and resets the state when finished.
+     */
+    playFlyAnimation() {
+        this.setAnimation('fly', 6);
+        // if (this.frameIndex >= this.flyImages.length) {
+        //     this.isFly = false;
+        //     this.frameIndex = 0;
+        // }
+    }
+
+    /**
      * Sets the current animation and adjusts its frame rate.
      * @param {string} name - Animation name.
      * @param {number} fps - Frames per second.
@@ -268,6 +282,7 @@ class Endboss extends MovableObject {
         switch (state) {
             case 'dead': return this.deadImages;
             case 'hurt': return this.hurtImages;
+            case 'fly': return this.flyImages;
             case 'jump': return this.jumpImages;
             case 'walk': return this.walkImages;
             case 'findsPeace': return this.findsPeaceImages;
