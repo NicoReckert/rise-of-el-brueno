@@ -28,9 +28,9 @@ class TownLevelSetup {
             5000, //1500
             515
         );
-        const solita = new AnimatedEntity(
+        const sollita = new AnimatedEntity(
             this.entityImages,
-            'solita',
+            'sollita',
             180,
             180,
             19000,
@@ -45,7 +45,7 @@ class TownLevelSetup {
             435
         );
 
-        this.characters = { endboss, soul, tadeo, solita, musician };
+        this.characters = { endboss, soul, tadeo, sollita, musician };
         this.sounds = {
             notificationSound: this.allAudios.notificationSound,
             taskCompletedSound: this.allAudios.taskCompletedSound,
@@ -56,7 +56,8 @@ class TownLevelSetup {
             attackSound: this.allAudios.attackSound,
             newTaskSound: this.allAudios.newTaskSound,
             tadeoHoldStoneMusic: this.allAudios.tadeoHoldStoneMusic,
-            musicianTownMusic: this.allAudios.musicianTownMusic
+            musicianTownMusic: this.allAudios.musicianTownMusic,
+            sollitasMusic: this.allAudios.sollitasMusic
         };
         this.sounds.soulMusic.volume = 0;
         this.speechBubbles = {
@@ -92,8 +93,9 @@ class TownLevelSetup {
         this.world.projectiles = this.townLevel.projectiles;
         this.popupTexts = [];
         this.panel = new ComicPanel(this.world.canvas, this.entityImages.tadeo.stoneActivated);
-        this.characters.solita.isFlipped = false;
+        this.characters.sollita.isFlipped = false;
         this.isNearMusician = false;
+        this.isNearSollita = false;
 
         this.endbossFlyPhase = 0;
     }

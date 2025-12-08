@@ -328,6 +328,31 @@ const townEvents =
         },
 
         {
+            type: 'collision',
+            objectA: 'character',
+            objectB: 'sollita',
+            toleranceB: { x: -80, width: -80 },
+            once: false,
+            cooldown: 500,
+            action: (setup) => {
+                if (!setup.isNearSollita) {
+                    setup.isNearSollita = true;
+                    setup.sounds.sollitasMusic.currentTime = 0;
+                    fadeOutAudio(setup.backgroundMusic, 1000);
+                    fadeInAudio(setup.sounds.sollitasMusic, 2000, 0.6);
+                }
+            },
+            onLeave: (setup) => {
+                if (setup.isNearSollita) {
+                    setup.isNearSollita = false;
+                    setup.backgroundMusic.currentTime = 0;
+                    fadeOutAudio(setup.sounds.sollitasMusic, 1000);
+                    fadeInAudio(setup.backgroundMusic, 2000, 0.6);
+                }
+            }
+        },
+
+        {
             type: "position",
             area: { x: 22500, width: 100 },
             action: (setup) => {
@@ -344,7 +369,7 @@ const townEvents =
             step: 12,
             once: false,
             action: (setup) => {
-                if(setup.characters.endboss.x <= 23000) setup.characters.endboss.x += 3;
+                if (setup.characters.endboss.x <= 23000) setup.characters.endboss.x += 3;
                 // if(setup.characters.endboss.y <= 220) setup.characters.endboss.y += 1; 
                 // const centerX = 23000;
                 // const centerY = 220;

@@ -101,7 +101,7 @@ class TownLevelController {
             this.addToWorld(this.setup.characters.endboss);
         }
         this.addToWorld(this.setup.characters.tadeo);
-        this.addToWorld(this.setup.characters.solita);
+        this.addToWorld(this.setup.characters.sollita);
         this.addToWorld(this.setup.characters.musician);
         this.ctx.restore();
         // this.sandstorm.draw(this.ctx, this.renderCameraX);

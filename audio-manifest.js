@@ -111,5 +111,6 @@ const otherLevelAudioManifestLazy = {
     fireballLoadUpSound: './assets/audio/fireball-load-up-sound2.mp3',
     fireballShotSound: './assets/audio/fireball-shot-sound.mp3',
     tadeoHoldStoneMusic: './assets/audio/tadeo-hold-stone-music3.mp3',
-    musicianTownMusic: './assets/audio/musician-town-music.mp3'
+    musicianTownMusic: './assets/audio/musician-town-music.mp3',
+    sollitasMusic: './assets/audio/sollitas-music.opus'
 }
