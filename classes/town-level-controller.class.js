@@ -98,6 +98,7 @@ class TownLevelController {
         if (!this.setup.characters.endboss.isUnderTheGround) {
             this.addToWorld(this.setup.characters.soul);
             // this.setup.characters.soul.updateState('idle', 1000 / 6);
+            this.addToWorld(this.setup.egg);
             this.addToWorld(this.setup.characters.endboss);
         }
         this.addToWorld(this.setup.characters.tadeo);
@@ -158,6 +159,8 @@ class TownLevelController {
             enemy.updateAnimation(timestamp);
             // enemy.applyGravity3(timestamp);
         });
+        this.setup.egg.updateState(timestamp);
+        this.setup.egg.updateAnimation(timestamp);
     }
 
     updateEndboss(timestamp) {

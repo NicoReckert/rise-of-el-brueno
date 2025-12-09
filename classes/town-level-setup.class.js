@@ -98,5 +98,13 @@ class TownLevelSetup {
         this.isNearSollita = false;
 
         this.endbossFlyPhase = 0;
+        this.egg = new AnimatedEntity(
+            this.entityImages,
+            'egg',
+            200,
+            200,
+            23050,
+            120)
+        this.newEnemyPush = false
     }
 }

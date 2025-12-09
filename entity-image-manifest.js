@@ -421,8 +421,9 @@ const otherLevelEntityManifestLazy = {
     idle: Array.from({ length: 20 }, (_, i) => `./assets/img/npcs/sollita/idle/image_${i + 1}.png`)
   },
 
-    egg: {
-    idle: Array.from({ length: 1 }, _ => `./assets/img/npcs/egg/idle/image_1.png`)
+  egg: {
+    idle: Array.from({ length: 1 }, _ => `./assets/img/npcs/egg/idle/image_1.png`),
+    broken: Array.from({ length: 6 }, (_, i) => `./assets/img/npcs/egg/broken/image_${i + 1}.png`)
   }
 
 }

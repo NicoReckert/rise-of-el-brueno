@@ -58,6 +58,7 @@ class AnimatedEntity extends MovableObject {
         this.walkWithStoneImages = this.entityImages[currentEntity]?.walkWithStone || [];
         this.idleWithStoneImages = this.entityImages[currentEntity]?.idleWithStone || [];
         this.stoneActivatedImages = this.entityImages[currentEntity]?.stoneActivated || [];
+        this.brokenImages = this.entityImages[currentEntity]?.broken || [];
     }
 
     fade(direction = "in", timestamp, duration = 1000) {
@@ -207,6 +208,10 @@ class AnimatedEntity extends MovableObject {
                     this.frameInterval = frameInterval;
                 }
                 break;
+            case 'broken':
+                this.setAnimation('broken');
+                this.frameInterval = frameInterval;
+                break;
         }
     }
 
@@ -277,7 +282,7 @@ class AnimatedEntity extends MovableObject {
                 this.frameIndex++;
             }
             this.lastFrameTime = timestamp;
-            if (this.frameIndex >= images.length && (this.currentAnimation == 'doorOpens' || this.currentAnimation == 'doorCloses' || this.currentAnimation == 'fireGoesOn' || this.currentAnimation == 'fireGoesOut' || this.currentAnimation == 'findsPeace' || this.currentAnimation == 'stoneActivated')) {
+            if (this.frameIndex >= images.length && (this.currentAnimation == 'doorOpens' || this.currentAnimation == 'doorCloses' || this.currentAnimation == 'fireGoesOn' || this.currentAnimation == 'fireGoesOut' || this.currentAnimation == 'findsPeace' || this.currentAnimation == 'stoneActivated' || this.currentAnimation == 'broken')) {
                 this.animationFinished = true;
                 switch (this.currentAnimation) {
                     case 'doorOpens':
@@ -297,6 +302,9 @@ class AnimatedEntity extends MovableObject {
                         break;
                     case 'stoneActivated':
                         this.setAnimation('idleWithStone');
+                        break;
+                    case 'broken':
+                        this.setAnimation('idle');
                         break;
                 }
             }
@@ -333,6 +341,7 @@ class AnimatedEntity extends MovableObject {
             case 'walkWithStone': return this.walkWithStoneImages;
             case 'idleWithStone': return this.idleWithStoneImages;
             case 'stoneActivated': return this.stoneActivatedImages;
+            case 'broken': return this.brokenImages;
         }
     }
 

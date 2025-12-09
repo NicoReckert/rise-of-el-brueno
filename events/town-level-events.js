@@ -369,7 +369,10 @@ const townEvents =
             step: 12,
             once: false,
             action: (setup) => {
-                if (setup.characters.endboss.x <= 23000) setup.characters.endboss.x += 3;
+                if (setup.characters.endboss.x <= 23000) {
+                    setup.characters.endboss.x += 3;
+                } else setup.world.townLevelController.questManager.advance(13);
+
                 // if(setup.characters.endboss.y <= 220) setup.characters.endboss.y += 1; 
                 // const centerX = 23000;
                 // const centerY = 220;
@@ -387,6 +390,57 @@ const townEvents =
 
             }
         },
+        {
+            type: "quest",
+            step: 13,
+            once: false,
+            action: (setup) => {
+                if (setup.egg.y <= 520) {
+                    setup.egg.y += 8;
+                } else {
+                    setup.egg.updateAnimationState('broken', 1000 / 5.5);
+                    setup.world.townLevelController.questManager.advance(14);
+                }
+                
+               
+
+
+
+
+                // if(setup.characters.endboss.y <= 220) setup.characters.endboss.y += 1; 
+                // const centerX = 23000;
+                // const centerY = 220;
+                // const radiusX = 300;   // wie weit links/rechts
+                // const radiusY = 120;   // wie weit hoch/runter
+                // const speed = 0.02;    // Geschwindigkeit der Ellipse
+
+                // // Phase erhöhen
+                // setup.endbossFlyPhase += speed;
+
+                // // Position berechnen
+                // const boss = setup.characters.endboss;
+                // boss.x = centerX + Math.cos(setup.endbossFlyPhase) * radiusX;
+                // boss.y = centerY + Math.sin(setup.endbossFlyPhase) * radiusY;
+
+            }
+        },
+
+        {
+            type: "time",
+            delay: 500,
+            step: 14,
+            action: (setup) => {
+                if (!setup.newEnemyPush) {
+                    setup.townLevel.enemies.push(
+                        new Chicken('chickenMutatesBig', images, 120, 120, 545, setup.egg.x + 60, allAudios),
+                    )
+                    setup.newEnemyPush = true;
+                    setup.townLevel.enemies.forEach(enemy => {
+                        enemy.world = setup.world;
+                    })
+                }
+            }
+        }
 
 
     ];
