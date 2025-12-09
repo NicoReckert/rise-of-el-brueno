@@ -419,5 +419,10 @@ const otherLevelEntityManifestLazy = {
 
   sollita: {
     idle: Array.from({ length: 20 }, (_, i) => `./assets/img/npcs/sollita/idle/image_${i + 1}.png`)
+  },
+
+    egg: {
+    idle: Array.from({ length: 1 }, _ => `./assets/img/npcs/egg/idle/image_1.png`)
   }
+
 }
