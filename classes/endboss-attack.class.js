@@ -20,7 +20,20 @@ class EndbossAttack extends MovableObject {
         this.currentAnimation = 'idle';
         this.frameInterval = 1000 / 15;
         this.frameIndex = 0;
+
+        this.eggs = [];              // NEU
+        this.lastEggTime = 0;        // NEU
+        this.eggIntervalMin = 2000;  // 2s
+        this.eggIntervalRand = 1000; // +0–1s
+
         this.init();
+
+        this.EGG_SPAWN_ENEMY = {
+            small: { type: 'chickenMutatesSmall', w: 120, h: 120, groundY: 545 },
+            big: { type: 'chickenMutatesBig', w: 160, h: 160, groundY: 505 },
+        };
+
+        this.autoEggs = false;
     }
 
     /**
@@ -33,9 +46,14 @@ class EndbossAttack extends MovableObject {
     /**
      * Updates movement and animation each frame.
      */
-    updateState() {
+    updateState(timestamp, endboss, setup) {
         this.handleMovement();
         this.handleAnimationState();
+        this.updateEggs(timestamp);
+        if (this.autoEggs && endboss && endboss.isFly) {
+            const type = endboss.phase >= 3 ? "big" : "small";
+            this.trySpawnEgg(timestamp, endboss, setup, type);
+        }
     }
 
     /**
@@ -115,4 +133,52 @@ class EndbossAttack extends MovableObject {
             }
         }
     }
+
+    trySpawnEgg(timestamp, boss, setup, enemySize = 'small') {
+        const nextAllowed = this.lastEggTime + this.eggIntervalMin;
+        if (timestamp < nextAllowed) return;
+
+        const extra = Math.random() * this.eggIntervalRand;
+        const spawnTime = nextAllowed + extra;
+
+        if (timestamp >= spawnTime) {
+            this.spawnEgg(boss, setup, enemySize);
+            this.lastEggTime = timestamp;
+        }
+    }
+
+    spawnEgg(endboss, setup, enemySize = 'small', fallDelayMs = 0) {
+        const eggX = endboss.x + endboss.width / 2 - 150;
+        const eggY = endboss.y + endboss.height / 2.5;
+
+        const cfg = this.EGG_SPAWN_ENEMY[enemySize] ?? EGG_SPAWN_ENEMY.small;
+
+        const egg = new Egg(this.entityImages, eggX, eggY, {
+            groundY: 520,
+            delayMin: fallDelayMs,      // hier schon alt genug, also direkt fallStartTime
+            delayMax: fallDelayMs,
+            onBreak: (eggInstance) => {
+                const enemy = new Chicken(
+                    cfg.type,
+                    setup.entityImages,     // oder images, je nachdem wie du’s nutzt
+                    cfg.w,
+                    cfg.h,
+                    cfg.groundY,
+                    eggInstance.x + 60,
+                    setup.allAudios
+                );
+                enemy.world = setup.world;
+                setup.townLevel.enemies.push(enemy);
+            }
+        });
+
+        this.eggs.push(egg);
+        return egg;
+    }
+
+    updateEggs(timestamp) {
+        this.eggs.forEach(e => e.update(timestamp));
+        this.eggs = this.eggs.filter(e => !e.isDestroyed);
+    }
+
 }

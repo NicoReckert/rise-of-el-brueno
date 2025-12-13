@@ -91,6 +91,7 @@ class TownLevelController {
         this.addToWorld(this.character);
         this.addObject(this.setup.townLevel.coins);
         this.addObject(this.setup.townLevel.bottles);
+        this.addObject(this.setup.endbossAttack.eggs);
         this.addObject(this.setup.townLevel.enemies);
         this.addObject(this.setup.townLevel.projectiles);
         this.addToWorld(this.setup.endbossAttack);
@@ -98,7 +99,7 @@ class TownLevelController {
         if (!this.setup.characters.endboss.isUnderTheGround) {
             this.addToWorld(this.setup.characters.soul);
             // this.setup.characters.soul.updateState('idle', 1000 / 6);
-            this.addToWorld(this.setup.egg);
+            
             this.addToWorld(this.setup.characters.endboss);
         }
         this.addToWorld(this.setup.characters.tadeo);
@@ -159,14 +160,12 @@ class TownLevelController {
             enemy.updateAnimation(timestamp);
             // enemy.applyGravity3(timestamp);
         });
-        this.setup.egg.updateState(timestamp);
-        this.setup.egg.updateAnimation(timestamp);
     }
 
     updateEndboss(timestamp) {
         this.setup.characters.endboss.updateState(timestamp);
         this.setup.characters.endboss.updateAnimation(timestamp);
-        this.setup.endbossAttack.updateState();
+        this.setup.endbossAttack.updateState(timestamp, this.setup.characters.endboss, this.setup);
         this.setup.endbossAttack.updateAnimation(timestamp);
         if (this.setup.characters.endboss.isJumping) this.setup.characters.endboss.applyGravityBoss(timestamp);
     }
