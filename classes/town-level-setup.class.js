@@ -57,7 +57,8 @@ class TownLevelSetup {
             newTaskSound: this.allAudios.newTaskSound,
             tadeoHoldStoneMusic: this.allAudios.tadeoHoldStoneMusic,
             musicianTownMusic: this.allAudios.musicianTownMusic,
-            sollitasMusic: this.allAudios.sollitasMusic
+            sollitasMusic: this.allAudios.sollitasMusic,
+            endbossFlappingWingsSound: this.allAudios.endbossFlappingWingsSound
         };
         this.sounds.soulMusic.volume = 0;
         this.speechBubbles = {
@@ -75,7 +76,7 @@ class TownLevelSetup {
         this.endbossAlarmSound;
         this.endbossMusicIsPlayed = false;
         this.endbossAlarmSoundIsPlayed = false;
-        this.endbossAttack = new EndbossAttack(this.entityImages);
+        this.endbossAttack = new EndbossAttack(this.entityImages, this.allAudios);
         this.backgroundMusic = document.getElementById('background-music');
         this.backgroundMusic.volume = 0.6;
 

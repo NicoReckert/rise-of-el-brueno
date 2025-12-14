@@ -9,7 +9,7 @@ class EndbossAttack extends MovableObject {
      * Creates a new instance with default position, size, and animation settings.
      * @param {Object} entityImages - Image data containing animation frames.
      */
-    constructor(entityImages) {
+    constructor(entityImages, allAudios) {
         super();
         this.entityImages = entityImages;
         this.x = 800; // 6200
@@ -20,6 +20,7 @@ class EndbossAttack extends MovableObject {
         this.currentAnimation = 'idle';
         this.frameInterval = 1000 / 15;
         this.frameIndex = 0;
+        this.allAudios = allAudios;
 
         this.eggs = [];              // NEU
         this.lastEggTime = 0;        // NEU
@@ -151,9 +152,9 @@ class EndbossAttack extends MovableObject {
         const eggX = endboss.x + endboss.width / 2 - 150;
         const eggY = endboss.y + endboss.height / 2.5;
 
-        const cfg = this.EGG_SPAWN_ENEMY[enemySize] ?? EGG_SPAWN_ENEMY.small;
+        const cfg = this.EGG_SPAWN_ENEMY[enemySize] ?? this.EGG_SPAWN_ENEMY.small;
 
-        const egg = new Egg(this.entityImages, eggX, eggY, {
+        const egg = new Egg(this.entityImages, eggX, eggY, this.allAudios, {
             groundY: 520,
             delayMin: fallDelayMs,      // hier schon alt genug, also direkt fallStartTime
             delayMax: fallDelayMs,

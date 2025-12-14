@@ -360,9 +360,29 @@ const townEvents =
                 setup.characters.endboss.y = -100;
                 setup.characters.endboss.isFlipped = true;
                 setup.characters.endboss.isFly = true;
+                // setup.sounds.endbossFlappingWingsSound.play();
+                // setup.sounds.endbossFlappingWingsSound.loop = true;
+                // setup.sounds.endbossFlappingWingsSound.volume = 1.0;
                 setup.endbossMusic.currentTime = 0;
-                    fadeOutAudio(setup.backgroundMusic, 1000);
-                    fadeInAudio(setup.endbossMusic, 2000, 0.6);
+                fadeOutAudio(setup.backgroundMusic, 1000);
+                fadeInAudio(setup.endbossMusic, 2000, 0.6);
+
+
+                const audio = setup.sounds.endbossFlappingWingsSound;
+                const ctx = new AudioContext();
+
+                const source = ctx.createMediaElementSource(audio);
+                const gainNode = ctx.createGain();
+
+                gainNode.gain.value = 6.0; // 200% Lautstärke
+
+                source.connect(gainNode);
+                gainNode.connect(ctx.destination);
+
+                audio.play();
+                audio.loop = true;
+
+
                 setup.world.townLevelController.questManager.advance(12);
 
             }
@@ -407,6 +427,7 @@ const townEvents =
                 setup.endbossAttack.spawnEgg(setup.characters.endboss, setup, 'small', 0);
                 setup.endbossAttack.spawnEgg(setup.characters.endboss, setup, 'small', 2000);
                 setup.endbossAttack.spawnEgg(setup.characters.endboss, setup, 'big', 4000);
+                setup.endbossAttack.spawnEgg(setup.characters.endboss, setup, 'big', 6000);
                 setup.world.townLevelController.questManager.advance(14);
 
 
@@ -434,7 +455,7 @@ const townEvents =
 
         {
             type: "time",
-            delay: 4000,
+            delay: 6000,
             step: 14,
             once: false,
             action: (setup) => {
@@ -458,13 +479,14 @@ const townEvents =
                 setup.endbossAttack.spawnEgg(setup.characters.endboss, setup, 'small', 0);
                 setup.endbossAttack.spawnEgg(setup.characters.endboss, setup, 'small', 2000);
                 setup.endbossAttack.spawnEgg(setup.characters.endboss, setup, 'big', 4000);
+                setup.endbossAttack.spawnEgg(setup.characters.endboss, setup, 'big', 6000);
                 setup.world.townLevelController.questManager.advance(16);
             }
         },
-        
+
         {
             type: "time",
-            delay: 4000,
+            delay: 6000,
             step: 16,
             once: false,
             action: (setup) => {
@@ -488,6 +510,7 @@ const townEvents =
                 setup.endbossAttack.spawnEgg(setup.characters.endboss, setup, 'small', 0);
                 setup.endbossAttack.spawnEgg(setup.characters.endboss, setup, 'small', 2000);
                 setup.endbossAttack.spawnEgg(setup.characters.endboss, setup, 'big', 4000);
+                setup.endbossAttack.spawnEgg(setup.characters.endboss, setup, 'big', 6000);
                 setup.world.townLevelController.questManager.advance(18);
             }
         }

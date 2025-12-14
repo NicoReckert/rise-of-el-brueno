@@ -112,5 +112,9 @@ const otherLevelAudioManifestLazy = {
     fireballShotSound: './assets/audio/fireball-shot-sound.mp3',
     tadeoHoldStoneMusic: './assets/audio/tadeo-hold-stone-music3.mp3',
     musicianTownMusic: './assets/audio/musician-town-music.mp3',
-    sollitasMusic: './assets/audio/sollitas-music.opus'
+    sollitasMusic: './assets/audio/sollitas-music.opus',
+    endbossFlappingWingsSound: './assets/audio/endboss-flapping-wings-sound.mp3',
+    eggFallingSound: './assets/audio/egg-falling-sound.mp3',
+    eggImpactSound: './assets/audio/egg-impact-sound.mp3',
+    eggCrackSound: './assets/audio/egg-crack-sound.mp3'
 }
