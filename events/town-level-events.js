@@ -394,7 +394,12 @@ const townEvents =
             action: (setup) => {
                 if (setup.characters.endboss.x <= 23000) {
                     setup.characters.endboss.x += 3;
-                } else setup.world.townLevelController.questManager.advance(13);
+                } else {
+                    setup.characters.endboss.setPhase(
+    setup.characters.endboss.ENDBOSS_PHASE.AIR_EGGS
+);
+                    // setup.world.townLevelController.questManager.advance(13);
+                }
 
                 // if(setup.characters.endboss.y <= 220) setup.characters.endboss.y += 1; 
                 // const centerX = 23000;

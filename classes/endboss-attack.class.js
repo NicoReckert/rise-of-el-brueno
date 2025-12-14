@@ -35,6 +35,7 @@ class EndbossAttack extends MovableObject {
         };
 
         this.autoEggs = false;
+        this.forcedEnemyType = null;
     }
 
     /**
@@ -51,9 +52,8 @@ class EndbossAttack extends MovableObject {
         this.handleMovement();
         this.handleAnimationState();
         this.updateEggs(timestamp);
-        if (this.autoEggs && endboss && endboss.isFly) {
-            const type = endboss.phase >= 3 ? "big" : "small";
-            this.trySpawnEgg(timestamp, endboss, setup, type);
+        if (this.autoEggs && endboss?.isFly && this.forcedEnemyType) {
+            this.trySpawnEgg(timestamp, endboss, setup, this.forcedEnemyType);
         }
     }
 
@@ -149,7 +149,9 @@ class EndbossAttack extends MovableObject {
     }
 
     spawnEgg(endboss, setup, enemySize = 'small', fallDelayMs = 0) {
-        const eggX = endboss.x + endboss.width / 2 - 150;
+
+        const eggX = endboss.isFlipped ? endboss.x + endboss.width / 2 - 150 : endboss.x + endboss.width / 2 - 50 ;
+
         const eggY = endboss.y + endboss.height / 2.5;
 
         const cfg = this.EGG_SPAWN_ENEMY[enemySize] ?? this.EGG_SPAWN_ENEMY.small;

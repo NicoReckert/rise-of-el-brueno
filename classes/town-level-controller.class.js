@@ -152,18 +152,19 @@ class TownLevelController {
     }
 
     updateEntities(timestamp) {
-        Object.values(this.setup.characters).forEach(element => {
-            element.updateState(timestamp);
-        });
+        Object.values(this.setup.characters)
+            .filter(c => c !== this.setup.characters.endboss)
+        .forEach(c => c.updateState(timestamp));
+       
         this.setup.townLevel.enemies.forEach(enemy => {
-            enemy.updateState(timestamp);
+            enemy.updateState(timestamp, this.setup);
             enemy.updateAnimation(timestamp);
             // enemy.applyGravity3(timestamp);
         });
     }
 
     updateEndboss(timestamp) {
-        this.setup.characters.endboss.updateState(timestamp);
+        this.setup.characters.endboss.updateState(timestamp, this.setup);
         this.setup.characters.endboss.updateAnimation(timestamp);
         this.setup.endbossAttack.updateState(timestamp, this.setup.characters.endboss, this.setup);
         this.setup.endbossAttack.updateAnimation(timestamp);

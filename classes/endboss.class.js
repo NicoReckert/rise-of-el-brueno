@@ -24,6 +24,47 @@ class Endboss extends MovableObject {
         this.isMovingRight = false;
         this.movementSpeed = 5;
         this.init();
+
+        this.ENDBOSS_PHASE = {
+            INTRO: 0,
+            AIR_EGGS: 1,
+            STORM: 2,
+            GROUND: 3,
+            ENRAGE: 4,
+            DEAD: 99
+        };
+
+        this.phase = this.ENDBOSS_PHASE.INTRO;
+        this.phaseStartTime = performance.now();
+        this.isVulnerable = false;
+
+        this.AIR_STATE = {
+            MOVE: 0,
+            DROP: 1,
+            WAIT: 2,
+            DESCEND: 3
+        };
+
+        this.airState = this.AIR_STATE.MOVE;
+        this.airTargetX = null;
+        this.airDropIndex = 0;
+        this.airLastActionTime = 0;
+
+        this.airPoints = [
+            23000,
+            23400,
+            23800,
+            24200
+        ];
+        this.airPointIndex = 0;
+
+        this.airDropSequence = [
+            { type: 'small', delay: 0 },
+            { type: 'small', delay: 2000 },
+            { type: 'big', delay: 4000 },
+        ];
+
+
     }
 
     /**
@@ -81,6 +122,19 @@ class Endboss extends MovableObject {
         this.isUnderTheGround = false;
         this.isFindsPeace = false;
         this.isFly = false;
+
+        this.airMinX = 22650;      // links
+        this.airMaxX = 23350;      // rechts
+        this.airY = -100;           // feste Flughöhe
+        this.airSpeed = 220;       // px pro Sekunde
+        this.airDir = 1;           // 1 = rechts, -1 = links
+
+        // optional: kleines "schweben"
+        this.airBobAmp = 8;        // px
+        this.airBobSpeed = 0.006;  // rad/ms (klein halten)
+
+        // Zeitbasis
+        this.lastAirTime = null;
     }
 
     /**
@@ -112,8 +166,10 @@ class Endboss extends MovableObject {
      * @returns {boolean} True if gravity should be applied.
      */
     shouldApplyGravity() {
+        if (this.isFly) return false;
         return this.isJumping || this.y < -35 || this.speedY > 0;
     }
+
 
     /**
      * Applies basic jump physics.
@@ -162,9 +218,31 @@ class Endboss extends MovableObject {
     /**
      * Updates movement and animation state each frame.
      */
-    updateState(timestamp) {
+    updateState(timestamp, setup) {
         this.updateDeltaTime(timestamp);
-        this.handleMovement();
+        switch (this.phase) {
+            case this.ENDBOSS_PHASE.AIR_EGGS:
+                this.updateAirEggPhase(timestamp, setup);
+                break;
+
+            case this.ENDBOSS_PHASE.STORM:
+                this.updateStormPhase(timestamp, setup);
+                break;
+
+            case this.ENDBOSS_PHASE.GROUND:
+                this.updateGroundPhase(timestamp, setup);
+                break;
+
+            case this.ENDBOSS_PHASE.ENRAGE:
+                this.updateEnragePhase(timestamp, setup);
+                break;
+        }
+
+        if (this.phase === this.ENDBOSS_PHASE.GROUND ||
+            this.phase === this.ENDBOSS_PHASE.ENRAGE) {
+            this.handleMovement();
+        }
+
         this.handleStateAnimations();
     }
 
@@ -173,11 +251,19 @@ class Endboss extends MovableObject {
      * @param {number} timestamp - Current time in milliseconds.
      */
     updateDeltaTime(timestamp) {
-        if (!this.lastUpdateTime) this.lastUpdateTime = timestamp;
-        const deltaTime = (timestamp - this.lastUpdateTime) / 1000;
+        if (!this.lastUpdateTime) {
+            this.lastUpdateTime = timestamp;
+            this.deltaSeconds = 0;
+            return;
+        }
+
+        this.deltaSeconds = (timestamp - this.lastUpdateTime) / 1000;
         this.lastUpdateTime = timestamp;
-        this.movementSpeed = this.speedX * deltaTime * 60;
+
+        // optional für Ground-Movement
+        this.movementSpeed = this.speedX * this.deltaSeconds * 60;
     }
+
 
     /**
      * Handles horizontal movement based on direction flags.
@@ -323,4 +409,178 @@ class Endboss extends MovableObject {
         this.frameIndex = 0;
         this.img = this.deadImages[7];
     }
+
+    setPhase(newPhase) {
+        this.phase = newPhase;
+        this.phaseStartTime = performance.now();
+
+        switch (newPhase) {
+            case this.ENDBOSS_PHASE.AIR_EGGS:
+                this.isFly = true;
+                this.isVulnerable = false;
+                this.airMinX = 22000;
+                this.airMaxX = 23600;
+                this.airY = -100;
+                this.airDir = 1;
+                this.lastAirTime = null;
+                this.y = this.airY;
+                this.speedY = 0;
+                this.isJumping = false;
+
+                break;
+
+            case this.ENDBOSS_PHASE.STORM:
+                this.isFly = true;
+                this.isVulnerable = false;
+                break;
+
+            case this.ENDBOSS_PHASE.GROUND:
+                this.isFly = false;
+                this.land();
+                this.isVulnerable = true;
+                break;
+
+            case this.ENDBOSS_PHASE.ENRAGE:
+                this.isVulnerable = true;
+                this.speedX *= 1.3;
+                break;
+        }
+    }
+
+    updateAirEggPhase(timestamp, setup) {
+        const attack = setup.endbossAttack;
+
+        this.isFly = true;
+        this.isVulnerable = false;
+
+        switch (this.airState) {
+
+            // 1️⃣ Fliegen zur nächsten Position
+            case this.AIR_STATE.MOVE: {
+                const targetX = this.airPoints[this.airPointIndex];
+
+                if (this.x < targetX) this.airDir = 1;
+                else if (this.x > targetX) this.airDir = -1;
+
+                this.x += this.airDir * this.airSpeed * this.deltaSeconds;
+                this.isFlipped = this.airDir === 1;
+
+                if (
+                    (this.airDir === 1 && this.x >= targetX) ||
+                    (this.airDir === -1 && this.x <= targetX)
+                ) {
+                    this.x = targetX;
+                    this.airState = this.AIR_STATE.DROP;
+                    this.airDropIndex = 0;
+                    this.airLastActionTime = timestamp;
+                    this.airDropStartTime = timestamp;
+                }
+                break;
+            }
+
+            // 2️⃣ Eier droppen
+            case this.AIR_STATE.DROP: {
+                const seq = this.airDropSequence;
+                const step = seq[this.airDropIndex];
+                if (!step) {
+                    this.airState = this.AIR_STATE.WAIT;
+                    this.airLastActionTime = timestamp;
+                    return;
+                }
+
+                const elapsed = timestamp - this.airDropStartTime;
+
+                if (elapsed >= step.delay) {
+                    attack.spawnEgg(this, setup, step.type, 0);
+                    this.airDropIndex++;
+                }
+                break;
+            }
+
+
+            case this.AIR_STATE.WAIT: {
+                if (timestamp - this.airLastActionTime > 800) {
+
+                    // 🔚 letzter Air-Point erreicht?
+                    if (this.airPointIndex >= this.airPoints.length - 1) {
+                        this.airState = this.AIR_STATE.DESCEND;
+                    } else {
+                        this.airPointIndex++;
+                        this.airState = this.AIR_STATE.MOVE;
+                    }
+                }
+                break;
+            }
+
+            case this.AIR_STATE.DESCEND: {
+                const groundY = -35; // deine Bodenhöhe
+                const descendSpeed = 300; // px pro Sekunde
+
+                this.y += descendSpeed * this.deltaSeconds;
+                this.isFlipped = this.airFaceDir === 1;
+
+                if (this.y >= groundY) {
+                    this.y = groundY;
+
+                    this.isFly = false;
+                    this.speedY = 0;
+                    this.isJumping = false;
+
+                    this.setPhase(this.ENDBOSS_PHASE.GROUND);
+                }
+                break;
+            }
+
+
+        }
+
+        // Phase endet nach z.B. 4 Stops
+        // if (this.airPointIndex >= 4) {
+        //     this.setPhase(this.ENDBOSS_PHASE.STORM);
+        // }
+    }
+
+
+
+    updateGroundPhase(timestamp, setup) {
+        const hero = setup.world.character;
+        const dist = Math.abs(hero.x - this.x);
+
+        if (dist > 400) {
+            this.fireballAttack(timestamp);
+        } else if (dist > 150) {
+            this.jumpAttack(hero);
+        } else {
+            this.beakAttack();
+        }
+    }
+
+    flyPatrol(timestamp) {
+        if (!this.lastAirTime) this.lastAirTime = timestamp;
+        const dt = (timestamp - this.lastAirTime) / 1000;
+        this.lastAirTime = timestamp;
+
+        const bob = this.airBobAmp
+            ? Math.sin(timestamp * this.airBobSpeed) * this.airBobAmp
+            : 0;
+
+        this.y = this.airY + bob;
+
+        this.x += this.airDir * this.airSpeed * dt;
+
+        if (this.x >= this.airMaxX) {
+            this.x = this.airMaxX;
+            this.airDir = -1;
+        } else if (this.x <= this.airMinX) {
+            this.x = this.airMinX;
+            this.airDir = 1;
+        }
+
+        this.isFlipped = this.airDir === 1;
+    }
+
+
+
+
+
 }
