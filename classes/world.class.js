@@ -453,6 +453,13 @@ class World {
                 this.character.isAttack = true;
                 this.townLevelSetup.sounds.attackSound.play();
             }
+            if (this.keyboard.S && !this.character.isProtect) {
+                this.character.isProtect = true;
+            }
+
+            if (!this.keyboard.S && this.character.isProtect) {
+                this.character.isProtect = false;
+            }
         }
     }
 

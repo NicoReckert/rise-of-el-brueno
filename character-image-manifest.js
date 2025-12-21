@@ -65,5 +65,7 @@ const otherLevelCharacterManifestLazy = {
     walkInStormImages: Array.from({ length: 8 }, (_, i) => `./assets/img/2_character_pepe/22/image_${3 + i}.png`),
     collapseImages: Array.from({ length: 10 }, (_, i) => `./assets/img/2_character_pepe/23/image_${i + 1}.png`),
     collapseLoopImages: Array.from({ length: 1 }, _ => `./assets/img/2_character_pepe/23/image_10.png`),
-    standUpAfterCollapseImages: Array.from({ length: 10 }, (_, i) => `./assets/img/2_character_pepe/23/image_${10 - i}.png`)
+    standUpAfterCollapseImages: Array.from({ length: 10 }, (_, i) => `./assets/img/2_character_pepe/23/image_${10 - i}.png`),
+    protectImages: Array.from({ length: 8 }, (_, i) => `./assets/img/2_character_pepe/24/image_${i + 1}.png`),
+    protectLoopImages: Array.from({ length: 2 }, (_, i) => `./assets/img/2_character_pepe/24/image_${7 + i}.png`)
 }

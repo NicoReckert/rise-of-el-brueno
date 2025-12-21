@@ -450,7 +450,16 @@ class Endboss extends MovableObject {
     updateAirEggPhase(timestamp, setup) {
         const attack = setup.endbossAttack;
 
-        this.isFly = true;
+        if (this.airState !== this.AIR_STATE.DESCEND) {
+            this.y = this.airY;
+        }
+
+        if (this.airState === this.AIR_STATE.DESCEND) {
+            this.isFly = false;
+        } else {
+            this.isFly = true;
+        }
+
         this.isVulnerable = false;
 
         switch (this.airState) {
@@ -513,11 +522,14 @@ class Endboss extends MovableObject {
             }
 
             case this.AIR_STATE.DESCEND: {
-                const groundY = -35; // deine Bodenhöhe
+                const groundY = -35;
                 const descendSpeed = 300; // px pro Sekunde
 
+                // im Descend NICHT mehr y fixieren!
                 this.y += descendSpeed * this.deltaSeconds;
-                this.isFlipped = this.airFaceDir === 1;
+
+                // Flip behalten wie zuletzt
+                this.isFlipped = this.airDir === 1;
 
                 if (this.y >= groundY) {
                     this.y = groundY;
@@ -526,10 +538,14 @@ class Endboss extends MovableObject {
                     this.speedY = 0;
                     this.isJumping = false;
 
+                    // optional: resets für nächsten Air-Loop
+                    // this.airState = this.AIR_STATE.MOVE;
+
                     this.setPhase(this.ENDBOSS_PHASE.GROUND);
                 }
                 break;
             }
+
 
 
         }

@@ -9,6 +9,7 @@ class Keyboard {
     F = false;
     T = false;
     A = false;
+    S = false;
 
     constructor() {
         this.mobileButtonMakeTrueOrFalse();
@@ -25,6 +26,7 @@ class Keyboard {
         if (key === 'f') this.F = false;
         if (key === 't') this.T = false;
         if (key === 'a') this.A = false;
+        if (key === 's') this.S = false;
     }
 
     setKeyTrue(key) {
@@ -38,6 +40,7 @@ class Keyboard {
         if (key === 'f') this.F = true;
         if (key === 't') this.T = true;
         if (key === 'a') this.A = true;
+        if (key === 's') this.S = true;
     }
 
     mobileButtonMakeTrueOrFalse() {

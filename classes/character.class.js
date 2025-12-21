@@ -9,12 +9,12 @@ class Character extends MovableObject {
         'look-determined-and-stand-up', 'strong-determined', 'caress', 'caress-loop',
         'sit-down-and-play-guitar', 'play-guitar-and-sing', 'play-guitar',
         'light-a-campfire', 'meditation', 'meditation-loop', 'stand-up',
-        'walk-determined', 'stand-determined', 'stand-determined-loop', 'walk-in-storm', 'collapse', 'collapse-loop', 'stand-up-after-collapse'
+        'walk-determined', 'stand-determined', 'stand-determined-loop', 'walk-in-storm', 'collapse', 'collapse-loop', 'stand-up-after-collapse', 'protect', 'protect-loop'
     ]);
     TRANSITIONABLE_ANIMS = new Set([
         'kneel-and-cry', 'stand-up-and-look-determined', 'look-determined-and-stand-up',
         'caress', 'sit-down-and-play-guitar', 'light-a-campfire', 'attack',
-        'meditation', 'new-weapon', 'stand-up', 'stand-determined', 'collapse', 'stand-up-after-collapse'
+        'meditation', 'new-weapon', 'stand-up', 'stand-determined', 'collapse', 'stand-up-after-collapse', 'protect'
     ]);
 
     /**
@@ -124,6 +124,8 @@ class Character extends MovableObject {
         this.meditationLoopImages = this.characterImages.meditationLoopImages ?? (this.characterImages.meditationLoopImages = []);
         this.newWeaponImages = this.characterImages.newWeaponImages ?? (this.characterImages.newWeaponImages = []);
         this.newWeaponLoopImages = this.characterImages.newWeaponLoopImages ?? (this.characterImages.newWeaponLoopImages = []);
+        this.protectImages = this.characterImages.protectImages ?? (this.characterImages.protectImages = []);
+        this.protectLoopImages = this.characterImages.protectLoopImages ?? (this.characterImages.protectLoopImages = []);
     }
 
     /**
@@ -173,6 +175,7 @@ class Character extends MovableObject {
         this.isDead = false;
         this.isHurt = false;
         this.isThrowing = false;
+        this.isProtect = false;
     }
 
     /**
@@ -335,6 +338,7 @@ class Character extends MovableObject {
         if (this.isMeditation) return this.setAnim('meditation', 6, 'meditation-loop');
         if (this.isNewWeapon) return this.setAnim('new-weapon', 6, 'new-weapon-loop');
         if (this.isStandUp) return this.setAnim('stand-up', 4);
+        if (this.isProtect) return this.setAnim('protect', 10, 'protect-loop');
         return false;
     }
 
@@ -563,6 +567,8 @@ class Character extends MovableObject {
                 return this.setTransition('meditation-loop', 4);
             case 'new-weapon':
                 return this.setTransition('new-weapon-loop', 6);
+            case 'protect':
+                return this.setTransition('protect-loop', 6);
         }
         return false;
     }
@@ -676,6 +682,8 @@ class Character extends MovableObject {
             case 'meditation-loop': return this.meditationLoopImages;
             case 'new-weapon': return this.newWeaponImages;
             case 'new-weapon-loop': return this.newWeaponLoopImages;
+            case 'protect': return this.protectImages;
+            case 'protect-loop': return this.protectLoopImages;
         }
         return null;
     }
