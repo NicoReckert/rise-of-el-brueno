@@ -11,7 +11,7 @@ class TownLevelSetup {
         this.coinBar = new CoinBar(this.entityImages);
         this.bottleBar = new BottleBar(this.entityImages);
         this.throwableObjects = [];
-        const endboss = new Endboss(this.entityImages);
+        const endboss = new Endboss(this.entityImages, this.allAudios);
         const soul = new AnimatedEntity(
             this.entityImages,
             'soul',
@@ -58,7 +58,8 @@ class TownLevelSetup {
             tadeoHoldStoneMusic: this.allAudios.tadeoHoldStoneMusic,
             musicianTownMusic: this.allAudios.musicianTownMusic,
             sollitasMusic: this.allAudios.sollitasMusic,
-            endbossFlappingWingsSound: this.allAudios.endbossFlappingWingsSound
+            endbossFlappingWingsSound: this.allAudios.endbossFlappingWingsSound,
+            fireballChargeSound: this.allAudios.fireballChargeSound
         };
         this.sounds.soulMusic.volume = 0;
         this.speechBubbles = {

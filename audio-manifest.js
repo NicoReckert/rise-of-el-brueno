@@ -98,7 +98,7 @@ const otherLevelAudioManifestLazy = {
     newWeaponSpeakSound: './assets/audio/new-weapon-speak-sound.opus',
     levelCompleteMusic: './assets/audio/level-complete-music.opus',
     levelCompleteSound: './assets/audio/level-complete-sound.opus',
-    endbossMusic: './assets/audio/endboss-music.opus',
+    endbossMusic: './assets/audio/endboss-music2.mp3',
     coinSound: './assets/audio/coin2.opus',
     bottleClinkSound: './assets/audio/bottle-clink1.opus',
     chickenDeathSound: './assets/audio/chicken-death.opus',
@@ -116,5 +116,6 @@ const otherLevelAudioManifestLazy = {
     endbossFlappingWingsSound: './assets/audio/endboss-flapping-wings-sound.mp3',
     eggFallingSound: './assets/audio/egg-falling-sound.mp3',
     eggImpactSound: './assets/audio/egg-impact-sound.mp3',
-    eggCrackSound: './assets/audio/egg-crack-sound.mp3'
+    eggCrackSound: './assets/audio/egg-crack-sound.mp3',
+    fireballChargeSound: './assets/audio/endboss-fireball-charge-sound.mp3'
 }

@@ -10,8 +10,10 @@ class Endboss extends MovableObject {
      * Creates a new instance with default position, speed, and animation settings.
      * @param {Object} entityImages - Image data containing animation frames.
      */
-    constructor(entityImages) {
+    constructor(entityImages, allAudios) {
         super();
+        this.allAudios = allAudios;
+        this.isGamecharacter = true;
         this.entityImages = entityImages;
         this.speedX = 8;
         this.speedY = 0;
@@ -92,9 +94,9 @@ class Endboss extends MovableObject {
      */
     setOffset() {
         this.offset.top = 98;
-        this.offset.left = 15;
-        this.offset.right = 13;
-        this.offset.bottom = 14;
+        this.offset.left = 75;
+        this.offset.right = 80;
+        this.offset.bottom = 35;
     }
 
     /**
@@ -107,6 +109,7 @@ class Endboss extends MovableObject {
         this.hurtImages = this.entityImages.endboss.hurt || [];
         this.flyImages = this.entityImages.endboss.fly || [];
         this.findsPeaceImages = this.entityImages.endboss.findsPeace || [];
+        this.fireballAttackImages = this.entityImages.endboss.fireballAttack || [];
     }
 
     /**
@@ -122,6 +125,7 @@ class Endboss extends MovableObject {
         this.isUnderTheGround = false;
         this.isFindsPeace = false;
         this.isFly = false;
+        this.isFireballAttack = false;
 
         this.airMinX = 22650;      // links
         this.airMaxX = 23350;      // rechts
@@ -299,6 +303,7 @@ class Endboss extends MovableObject {
         if (this.isDead) return this.playDeathAnimation();
         if (this.isHurt) return this.playHurtAnimation();
         if (this.isFly) return this.playFlyAnimation();
+        if (this.isFireballAttack) return this.playFireballAttackAnimation()
         if (this.isJumping) return this.setAnimation('jump', 10);
         if (this.isMovingLeft || this.isMovingRight)
             return this.setAnimation('walk', 8);
@@ -331,7 +336,7 @@ class Endboss extends MovableObject {
      * Plays the hurt animation and resets the state when finished.
      */
     playHurtAnimation() {
-        this.setAnimation('hurt', 8);
+        this.setAnimation('hurt', 4);
         if (this.frameIndex >= this.hurtImages.length) {
             this.isHurt = false;
             this.frameIndex = 0;
@@ -347,6 +352,14 @@ class Endboss extends MovableObject {
         //     this.isFly = false;
         //     this.frameIndex = 0;
         // }
+    }
+
+    playFireballAttackAnimation() {
+        this.setAnimation('fireballAttack', 5);
+        if (this.frameIndex >= this.fireballAttackImages.length) {
+            this.isFireballAttack = false;
+            this.frameIndex = 0;
+        }
     }
 
     /**
@@ -372,6 +385,7 @@ class Endboss extends MovableObject {
             case 'jump': return this.jumpImages;
             case 'walk': return this.walkImages;
             case 'findsPeace': return this.findsPeaceImages;
+            case 'fireballAttack': return this.fireballAttackImages;
             case 'idle': return this.idleImages;
         }
     }
@@ -426,7 +440,6 @@ class Endboss extends MovableObject {
                 this.y = this.airY;
                 this.speedY = 0;
                 this.isJumping = false;
-
                 break;
 
             case this.ENDBOSS_PHASE.STORM:
@@ -436,7 +449,7 @@ class Endboss extends MovableObject {
 
             case this.ENDBOSS_PHASE.GROUND:
                 this.isFly = false;
-                this.land();
+                // this.land();
                 this.isVulnerable = true;
                 break;
 
@@ -454,11 +467,11 @@ class Endboss extends MovableObject {
             this.y = this.airY;
         }
 
-        if (this.airState === this.AIR_STATE.DESCEND) {
-            this.isFly = false;
-        } else {
-            this.isFly = true;
-        }
+        // if (this.airState === this.AIR_STATE.DESCEND) {
+        //     this.isFly = false;
+        // } else {
+        //     this.isFly = true;
+        // }
 
         this.isVulnerable = false;
 
@@ -522,29 +535,39 @@ class Endboss extends MovableObject {
             }
 
             case this.AIR_STATE.DESCEND: {
-                const groundY = -35;
+                const groundY = 205;
                 const descendSpeed = 300; // px pro Sekunde
 
-                // im Descend NICHT mehr y fixieren!
-                this.y += descendSpeed * this.deltaSeconds;
+                const dy = groundY - this.y;                 // Ziel-Differenz
+                const step = descendSpeed * this.deltaSeconds;
+
+                // Richtung: +1 wenn groundY > y, sonst -1
+                const dir = Math.sign(dy);
+
+                // Wenn wir schon da sind (oder extrem nah)
+                if (dir === 0) {
+                    this.y = groundY;
+                } else {
+                    // Move towards ohne zu überschießen
+                    const move = Math.min(Math.abs(dy), step);
+                    this.y += dir * move;
+                }
 
                 // Flip behalten wie zuletzt
-                this.isFlipped = this.airDir === 1;
+                this.isFlipped = this.airDir === -1;
 
-                if (this.y >= groundY) {
+                // Landen (mit Toleranz gegen Floating-Point)
+                if (Math.abs(groundY - this.y) <= 0.0001) {
                     this.y = groundY;
-
                     this.isFly = false;
                     this.speedY = 0;
                     this.isJumping = false;
-
-                    // optional: resets für nächsten Air-Loop
-                    // this.airState = this.AIR_STATE.MOVE;
-
                     this.setPhase(this.ENDBOSS_PHASE.GROUND);
                 }
+
                 break;
             }
+
 
 
 
@@ -563,12 +586,15 @@ class Endboss extends MovableObject {
         const dist = Math.abs(hero.x - this.x);
 
         if (dist > 400) {
-            this.fireballAttack(timestamp);
-        } else if (dist > 150) {
-            this.jumpAttack(hero);
-        } else {
-            this.beakAttack();
+            this.isFireballAttack = true;
+            this.allAudios.fireballChargeSound.play();
         }
+        // this.fireballAttack(timestamp);
+        // } else if (dist > 150) {
+        //     this.jumpAttack(hero);
+        // } else {
+        //     this.beakAttack();
+        // }
     }
 
     flyPatrol(timestamp) {

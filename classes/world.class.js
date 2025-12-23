@@ -621,35 +621,35 @@ class World {
             this.townLevelSetup.characters.soul.y -= 1.5;
         }
 
-        // if (this.townLevelSetup.characters.soul.y <= 250) {
-        //     if (this.volumeLevel > this.minVolumeLevel) {
-        //         this.volumeLevel = Math.max(this.volumeLevel - 0.010, this.minVolumeLevel);
-        //         this.townLevelSetup.endbossMusic.volume = this.volumeLevel;
-        //     } else {
-        //         if (!this.isPlay) {
-        //             this.townLevelSetup.sounds.soulSpeakSound.play();
-        //             this.isPlay = true;
-        //         }
-        //     }
-        //     if (this.volumeLevel2 < this.minVolumeLevel2) {
-        //         this.volumeLevel2 = Math.min(this.volumeLevel2 + 0.010, this.minVolumeLevel2);
-        //         this.townLevelSetup.sounds.soulMusic.volume = this.volumeLevel2;
-        //     }
-        //     this.townLevelSetup.sounds.soulMusic.play();
+        if (this.townLevelSetup.characters.soul.y <= 250 && !this.townLevelSetup.characters.endboss.isFly) {
+            if (this.volumeLevel > this.minVolumeLevel) {
+                this.volumeLevel = Math.max(this.volumeLevel - 0.010, this.minVolumeLevel);
+                this.townLevelSetup.endbossMusic.volume = this.volumeLevel;
+            } else {
+                if (!this.isPlay) {
+                    this.townLevelSetup.sounds.soulSpeakSound.play();
+                    this.isPlay = true;
+                }
+            }
+            if (this.volumeLevel2 < this.minVolumeLevel2) {
+                this.volumeLevel2 = Math.min(this.volumeLevel2 + 0.010, this.minVolumeLevel2);
+                this.townLevelSetup.sounds.soulMusic.volume = this.volumeLevel2;
+            }
+            this.townLevelSetup.sounds.soulMusic.play();
 
-        //     if (this.townLevelSetup.sounds.soulSpeakSound.currentTime >= 18) {
-        //         this.character.isMeditation = true
-        //         this.townLevelSetup.characters.soul.updateState('findsPeace', 1000 / 5);
-        //         this.townLevelSetup.characters.endboss.isFindsPeace = true;
-        //         if (this.townLevelSetup.characters.soul.y >= -500) {
-        //             this.townLevelSetup.characters.soul.y -= 1;
-        //         }
-        //         if (this.volumeLevel3 < this.minVolumeLevel3) {
-        //             this.volumeLevel3 = Math.min(this.volumeLevel3 + 0.005, this.minVolumeLevel3);
-        //             this.townLevelSetup.sounds.soulMusic.volume = this.volumeLevel3;
-        //         }
-        //     }
-        // }
+            if (this.townLevelSetup.sounds.soulSpeakSound.currentTime >= 18) {
+                this.character.isMeditation = true
+                this.townLevelSetup.characters.soul.updateState('findsPeace', 1000 / 5);
+                this.townLevelSetup.characters.endboss.isFindsPeace = true;
+                if (this.townLevelSetup.characters.soul.y >= -500) {
+                    this.townLevelSetup.characters.soul.y -= 1;
+                }
+                if (this.volumeLevel3 < this.minVolumeLevel3) {
+                    this.volumeLevel3 = Math.min(this.volumeLevel3 + 0.005, this.minVolumeLevel3);
+                    this.townLevelSetup.sounds.soulMusic.volume = this.volumeLevel3;
+                }
+            }
+        }
 
         for (let j = 0; j < this.townLevelSetup.townLevel.enemies.length; j++) {
             const enemy = this.townLevelSetup.townLevel.enemies[j];
@@ -726,6 +726,18 @@ class World {
                 setTimeout(() => {
                     enemy.attackOnCooldown = false;
                 }, attackCooldown);
+            }
+        }
+
+        if (this.character.isCollidingBeforeWithAttackHitbox(this.townLevelSetup.characters.endboss, 0, 0, this.character.attackHitbox) && this.character.isAttack && !this.character.hasHitEnemyThisAttack && !this.townLevelSetup.characters.endboss.isDead) {
+            this.townLevelSetup.characters.endboss.isHurt = true;
+            this.townLevelSetup.characters.endboss.frameIndex = 0;
+            this.townLevelSetup.characters.endboss.energy = this.townLevelSetup.characters.endboss.energy - 5;
+            this.townLevelSetup.statusBar2.setPercentage(this.townLevelSetup.characters.endboss.energy);
+            this.character.hasHitEnemyThisAttack = true;
+            if (this.townLevelSetup.characters.endboss.energy <= 0) {
+                this.townLevelSetup.characters.endboss.isDead = true;
+                this.townLevelSetup.characters.endboss.frameIndex = 0;
             }
         }
     }

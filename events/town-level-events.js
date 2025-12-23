@@ -398,7 +398,7 @@ const townEvents =
                     setup.characters.endboss.setPhase(
     setup.characters.endboss.ENDBOSS_PHASE.AIR_EGGS
 );
-                    // setup.world.townLevelController.questManager.advance(13);
+                    setup.world.townLevelController.questManager.advance(13);
                 }
 
                 // if(setup.characters.endboss.y <= 220) setup.characters.endboss.y += 1; 
@@ -429,11 +429,11 @@ const townEvents =
                 //     setup.egg.updateAnimationState('broken', 1000 / 5.5);
                 //     setup.world.townLevelController.questManager.advance(14);
                 // }
-                setup.endbossAttack.spawnEgg(setup.characters.endboss, setup, 'small', 0);
-                setup.endbossAttack.spawnEgg(setup.characters.endboss, setup, 'small', 2000);
-                setup.endbossAttack.spawnEgg(setup.characters.endboss, setup, 'big', 4000);
-                setup.endbossAttack.spawnEgg(setup.characters.endboss, setup, 'big', 6000);
-                setup.world.townLevelController.questManager.advance(14);
+                // setup.endbossAttack.spawnEgg(setup.characters.endboss, setup, 'small', 0);
+                // setup.endbossAttack.spawnEgg(setup.characters.endboss, setup, 'small', 2000);
+                // setup.endbossAttack.spawnEgg(setup.characters.endboss, setup, 'big', 4000);
+                // setup.endbossAttack.spawnEgg(setup.characters.endboss, setup, 'big', 6000);
+                // setup.world.townLevelController.questManager.advance(14);
 
 
 
