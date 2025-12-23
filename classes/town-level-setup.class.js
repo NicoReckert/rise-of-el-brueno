@@ -11,7 +11,7 @@ class TownLevelSetup {
         this.coinBar = new CoinBar(this.entityImages);
         this.bottleBar = new BottleBar(this.entityImages);
         this.throwableObjects = [];
-        const endboss = new Endboss(this.entityImages, this.allAudios);
+        const endboss = new Endboss(this.entityImages, this.allAudios, this.world);
         const soul = new AnimatedEntity(
             this.entityImages,
             'soul',

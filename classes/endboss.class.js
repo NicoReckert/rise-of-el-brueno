@@ -10,8 +10,9 @@ class Endboss extends MovableObject {
      * Creates a new instance with default position, speed, and animation settings.
      * @param {Object} entityImages - Image data containing animation frames.
      */
-    constructor(entityImages, allAudios) {
+    constructor(entityImages, allAudios, world) {
         super();
+        this.world = world;
         this.allAudios = allAudios;
         this.isGamecharacter = true;
         this.entityImages = entityImages;
@@ -139,6 +140,12 @@ class Endboss extends MovableObject {
 
         // Zeitbasis
         this.lastAirTime = null;
+
+        this.attackOnCooldown = false;
+        this.hasFiredThisAttack = false;
+        this.fireballCooldown = 2000; // ms
+        this.lastFireballAttackTime = 0;
+
     }
 
     /**
@@ -358,6 +365,7 @@ class Endboss extends MovableObject {
         this.setAnimation('fireballAttack', 5);
         if (this.frameIndex >= this.fireballAttackImages.length) {
             this.isFireballAttack = false;
+            this.hasFiredThisAttack = false;
             this.frameIndex = 0;
         }
     }
@@ -399,6 +407,18 @@ class Endboss extends MovableObject {
         const deltaTime = timestamp - this.lastFrameTime;
         if (deltaTime <= this.frameInterval) return;
         this.updateFrameImage();
+
+        if (this.isFireballAttack) {
+            const shootFrame = 13; // anpassen! (0..len-1)
+            if (this.frameIndex === shootFrame && !this.hasFiredThisAttack) {
+                const audio = this.allAudios.fireballShotSound.cloneNode();
+                audio.play();
+
+                this.shootProjectile("fireball", this.world.character);
+                this.hasFiredThisAttack = true;
+            }
+        }
+
         this.handleDeathAnimation();
         this.lastFrameTime = timestamp;
     }
@@ -585,17 +605,21 @@ class Endboss extends MovableObject {
         const hero = setup.world.character;
         const dist = Math.abs(hero.x - this.x);
 
-        if (dist > 400) {
+        if (
+            dist > 400 &&
+            !this.isFireballAttack &&
+            (timestamp - this.lastFireballAttackTime) > this.fireballCooldown
+        ) {
             this.isFireballAttack = true;
-            this.allAudios.fireballChargeSound.play();
+            this.hasFiredThisAttack = false;
+            this.frameIndex = 0;
+            this.lastFireballAttackTime = timestamp;
+
+            const audio = this.allAudios.fireballChargeSound.cloneNode();
+            audio.play();
         }
-        // this.fireballAttack(timestamp);
-        // } else if (dist > 150) {
-        //     this.jumpAttack(hero);
-        // } else {
-        //     this.beakAttack();
-        // }
     }
+
 
     flyPatrol(timestamp) {
         if (!this.lastAirTime) this.lastAirTime = timestamp;
@@ -620,6 +644,26 @@ class Endboss extends MovableObject {
 
         this.isFlipped = this.airDir === 1;
     }
+
+    shootProjectile(type, character) {
+        // Ziel beim Abschuss einfrieren (Mitte des Chars)
+        const targetX = character.x + character.width * 0.5;
+        const targetY = character.y + character.height * 0.35;
+
+        // Mundposition (abhängig von Blickrichtung / Flip)
+        const mouthX = this.isFlipped
+            ? this.x + this.width * 0.82   // nach rechts
+            : this.x + this.width * 0.18;  // nach links
+
+        const mouthY = this.y + this.height * 0.20; // höher = mehr “Mund”
+
+        const projectile = new EndbossFireball(type, mouthX, mouthY, targetX, targetY);
+
+        if (!this.world.projectiles) this.world.projectiles = [];
+        this.world.projectiles.push(projectile);
+    }
+
+
 
 
 
