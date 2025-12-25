@@ -17,18 +17,30 @@ class Projectile extends MovableObject {
 
         this.frameIndex = 0;
         this.lastFrameTime = 0;
-        this.frameInterval = 1000 / 12;
+        this.frameInterval = 1000 / 8;
 
         // 🔥 Bilder anhand des Typs laden
         this.imageSets = {
             fireball: [
-                './assets/img/npcs/projectile/fireball/image_1.png',
-                './assets/img/npcs/projectile/fireball/image_2.png',
-                './assets/img/npcs/projectile/fireball/image_3.png',
-                './assets/img/npcs/projectile/fireball/image_4.png',
-                './assets/img/npcs/projectile/fireball/image_5.png',
-                './assets/img/npcs/projectile/fireball/image_6.png'
+                './assets/img/npcs/projectile/fireball/idle/image_1.png',
+                './assets/img/npcs/projectile/fireball/idle/image_2.png',
+                './assets/img/npcs/projectile/fireball/idle/image_3.png',
+                './assets/img/npcs/projectile/fireball/idle/image_4.png',
+                './assets/img/npcs/projectile/fireball/idle/image_5.png',
+                './assets/img/npcs/projectile/fireball/idle/image_6.png'
             ],
+            fireball_explode: [
+                './assets/img/npcs/projectile/fireball/explode/image_1.png',
+                './assets/img/npcs/projectile/fireball/explode/image_2.png',
+                './assets/img/npcs/projectile/fireball/explode/image_3.png',
+                './assets/img/npcs/projectile/fireball/explode/image_4.png',
+                './assets/img/npcs/projectile/fireball/explode/image_5.png',
+                './assets/img/npcs/projectile/fireball/explode/image_6.png',
+                './assets/img/npcs/projectile/fireball/explode/image_7.png',
+                './assets/img/npcs/projectile/fireball/explode/image_8.png',
+                './assets/img/npcs/projectile/fireball/explode/image_9.png',
+                './assets/img/npcs/projectile/fireball/explode/image_10.png'
+            ]
             // später: iceball, poison, etc.
         };
 

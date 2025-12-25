@@ -406,15 +406,16 @@ class Endboss extends MovableObject {
         if (!this.lastFrameTime) this.lastFrameTime = timestamp;
         const deltaTime = timestamp - this.lastFrameTime;
         if (deltaTime <= this.frameInterval) return;
+        const currentFrame = this.frameIndex;
         this.updateFrameImage();
 
         if (this.isFireballAttack) {
             const shootFrame = 13; // anpassen! (0..len-1)
-            if (this.frameIndex === shootFrame && !this.hasFiredThisAttack) {
+            if (currentFrame === shootFrame && !this.hasFiredThisAttack) {
                 const audio = this.allAudios.fireballShotSound.cloneNode();
                 audio.play();
 
-                this.shootProjectile("fireball", this.world.character);
+                this.shootProjectile(this.world.character);
                 this.hasFiredThisAttack = true;
             }
         }
@@ -645,23 +646,26 @@ class Endboss extends MovableObject {
         this.isFlipped = this.airDir === 1;
     }
 
-    shootProjectile(type, character) {
-        // Ziel beim Abschuss einfrieren (Mitte des Chars)
-        const targetX = character.x + character.width * 0.5;
-        const targetY = character.y + character.height * 0.35;
+    shootProjectile(character) {
+  const targetX = character.x + character.width * 0.5;
+  const targetY = character.y + character.height * 0.35;
 
-        // Mundposition (abhängig von Blickrichtung / Flip)
-        const mouthX = this.isFlipped
-            ? this.x + this.width * 0.82   // nach rechts
-            : this.x + this.width * 0.18;  // nach links
+  const direction = targetX > (this.x + this.width * 0.5);
 
-        const mouthY = this.y + this.height * 0.20; // höher = mehr “Mund”
+  const beakX = direction
+    ? this.x + this.width * 0.88
+    : this.x + this.width * 0.12;
 
-        const projectile = new EndbossFireball(type, mouthX, mouthY, targetX, targetY);
+  const beakY = this.y + this.height * 0.20;
 
-        if (!this.world.projectiles) this.world.projectiles = [];
-        this.world.projectiles.push(projectile);
-    }
+  const fireball = new EndbossFireball(beakX, beakY, targetX, targetY, this.allAudios);
+  fireball.world = this.world; // 🔥 WICHTIG
+
+  this.world.projectiles.push(fireball);
+}
+
+
+
 
 
 

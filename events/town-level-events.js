@@ -381,6 +381,7 @@ const townEvents =
 
                 audio.play();
                 audio.loop = true;
+                setup.world.character.speedX = 8;
 
 
                 setup.world.townLevelController.questManager.advance(12);
@@ -396,8 +397,8 @@ const townEvents =
                     setup.characters.endboss.x += 3;
                 } else {
                     setup.characters.endboss.setPhase(
-    setup.characters.endboss.ENDBOSS_PHASE.AIR_EGGS
-);
+                        setup.characters.endboss.ENDBOSS_PHASE.AIR_EGGS
+                    );
                     setup.world.townLevelController.questManager.advance(13);
                 }
 

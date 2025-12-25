@@ -147,7 +147,7 @@ class TownLevelController {
             bottle.applyGravity2(timestamp);
         });
         this.setup.townLevel.projectiles.forEach(projectile => {
-            projectile.updateState(timestamp);
+            projectile.updateState(timestamp, this.world);
         });
     }
 
