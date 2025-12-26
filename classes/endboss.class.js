@@ -45,7 +45,8 @@ class Endboss extends MovableObject {
             MOVE: 0,
             DROP: 1,
             WAIT: 2,
-            DESCEND: 3
+            DESCEND: 3,
+            ASCEND: 4
         };
 
         this.airState = this.AIR_STATE.MOVE;
@@ -145,6 +146,14 @@ class Endboss extends MovableObject {
         this.hasFiredThisAttack = false;
         this.fireballCooldown = 2000; // ms
         this.lastFireballAttackTime = 0;
+
+        this.groundFireballShotsDone = 0;
+        this.groundFireballShotsMax = 5;
+        this.groundFireballSequenceActive = false;
+        this.groundSequenceShotDelay = 600; // ms zwischen den 5 Schüssen
+        this.lastSequenceShotTime = 0;
+        this.groundShotInProgress = false;
+
 
     }
 
@@ -458,7 +467,9 @@ class Endboss extends MovableObject {
                 this.airY = -100;
                 this.airDir = 1;
                 this.lastAirTime = null;
-                this.y = this.airY;
+                // if (this.airState !== this.AIR_STATE.ASCEND) {
+                //     this.y = this.airY;
+                // }
                 this.speedY = 0;
                 this.isJumping = false;
                 break;
@@ -484,9 +495,10 @@ class Endboss extends MovableObject {
     updateAirEggPhase(timestamp, setup) {
         const attack = setup.endbossAttack;
 
-        if (this.airState !== this.AIR_STATE.DESCEND) {
+        if (this.airState !== this.AIR_STATE.DESCEND && this.airState !== this.AIR_STATE.ASCEND) {
             this.y = this.airY;
         }
+
 
         // if (this.airState === this.AIR_STATE.DESCEND) {
         //     this.isFly = false;
@@ -589,6 +601,36 @@ class Endboss extends MovableObject {
                 break;
             }
 
+            case this.AIR_STATE.ASCEND: {
+                this.isFly = true;       // ✅ sofort fliegen
+                this.isJumping = false;  // ✅ kein Jump-State
+                this.speedY = 0;         // ✅ keine Rest-SpeedY
+
+                const targetY = this.airY;
+                const ascendSpeed = 300;
+                const dy = targetY - this.y;
+                const step = ascendSpeed * this.deltaSeconds;
+                const dir = Math.sign(dy);
+
+                if (dir !== 0) {
+                    const move = Math.min(Math.abs(dy), step);
+                    this.y += dir * move;
+                } else {
+                    this.y = targetY;
+                }
+
+                // Flip behalten wie zuletzt
+                this.isFlipped = this.airDir === 1;
+
+                if (Math.abs(targetY - this.y) <= 0.0001) {
+                    this.y = targetY;
+                    this.airState = this.AIR_STATE.MOVE; // ✅ weiter
+                }
+                break;
+            }
+
+
+
 
 
 
@@ -606,11 +648,51 @@ class Endboss extends MovableObject {
         const hero = setup.world.character;
         const dist = Math.abs(hero.x - this.x);
 
-        if (
-            dist > 400 &&
-            !this.isFireballAttack &&
-            (timestamp - this.lastFireballAttackTime) > this.fireballCooldown
-        ) {
+        // 1) Sequenz starten
+        if (!this.groundFireballSequenceActive) {
+            if (dist <= 400) return;
+
+            this.groundFireballSequenceActive = true;
+            this.groundFireballShotsDone = 0;
+            this.groundShotInProgress = false;
+            this.lastSequenceShotTime = 0;
+        }
+
+        // 2) Wenn ein Schuss gestartet wurde: warten bis Animation fertig ist
+        // (dein playFireballAttackAnimation setzt isFireballAttack am Ende wieder false)
+        if (this.groundShotInProgress) {
+            if (!this.isFireballAttack) {
+                // Schuss ist komplett abgeschlossen
+                this.groundFireballShotsDone++;
+                this.groundShotInProgress = false;
+                this.lastSequenceShotTime = timestamp;
+            } else {
+                return; // noch mitten in der Attack
+            }
+        }
+
+        // 3) Fertig?
+        if (this.groundFireballShotsDone >= this.groundFireballShotsMax) {
+            this.groundFireballSequenceActive = false;
+
+            // zurück in die Air-Phase
+            this.airPointIndex = 0;
+            this.airState = this.AIR_STATE.ASCEND;
+
+            // ✅ Takeoff: sofort "Fly" aktivieren und Gravity/Jump neutralisieren
+            this.isFly = true;
+            this.isJumping = false;
+            this.speedY = 0;
+
+            this.setPhase(this.ENDBOSS_PHASE.AIR_EGGS);
+            return;
+        }
+
+        // 4) Nächsten Schuss starten, wenn Delay + Cooldown ok
+        const delayOk = (timestamp - this.lastSequenceShotTime) >= this.groundSequenceShotDelay;
+        const cooldownOk = (timestamp - this.lastFireballAttackTime) >= this.fireballCooldown;
+
+        if (!this.isFireballAttack && delayOk && cooldownOk) {
             this.isFireballAttack = true;
             this.hasFiredThisAttack = false;
             this.frameIndex = 0;
@@ -618,8 +700,12 @@ class Endboss extends MovableObject {
 
             const audio = this.allAudios.fireballChargeSound.cloneNode();
             audio.play();
+
+            this.groundShotInProgress = true; // ✅ wichtig
         }
     }
+
+
 
 
     flyPatrol(timestamp) {
@@ -647,22 +733,22 @@ class Endboss extends MovableObject {
     }
 
     shootProjectile(character) {
-  const targetX = character.x + character.width * 0.5;
-  const targetY = character.y + character.height * 0.35;
+        const targetX = character.x + character.width * 0.5;
+        const targetY = character.y + character.height * 0.35;
 
-  const direction = targetX > (this.x + this.width * 0.5);
+        const direction = targetX > (this.x + this.width * 0.5);
 
-  const beakX = direction
-    ? this.x + this.width * 0.88
-    : this.x + this.width * 0.12;
+        const beakX = direction
+            ? this.x + this.width * 0.88
+            : this.x + this.width * 0.12;
 
-  const beakY = this.y + this.height * 0.20;
+        const beakY = this.y + this.height * 0.20;
 
-  const fireball = new EndbossFireball(beakX, beakY, targetX, targetY, this.allAudios);
-  fireball.world = this.world; // 🔥 WICHTIG
+        const fireball = new EndbossFireball(beakX, beakY, targetX, targetY, this.allAudios);
+        fireball.world = this.world; // 🔥 WICHTIG
 
-  this.world.projectiles.push(fireball);
-}
+        this.world.projectiles.push(fireball);
+    }
 
 
 
