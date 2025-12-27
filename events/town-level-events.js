@@ -356,6 +356,11 @@ const townEvents =
             type: "position",
             area: { x: 22500, width: 100 },
             action: (setup) => {
+                setup.world.character.isAirHitStun = true;
+                fadeOutAudio(setup.backgroundMusic, 1000);
+                fadeInAudio(setup.sounds.airHitStunMusic, 2000, 1.0);
+                setup.world.character.y = 80
+                return
                 setup.characters.endboss.x = 22000;
                 setup.characters.endboss.y = -100;
                 setup.characters.endboss.isFlipped = true;
@@ -386,6 +391,40 @@ const townEvents =
 
                 setup.world.townLevelController.questManager.advance(12);
 
+            }
+        },
+
+        {
+            type: "quest",
+            action: (setup) => {
+                setup.world.character.y = 165;
+                setup.world.character.yNormal = 165;
+                setup.world.character.yVoidless = 282;
+                setup.characters.endboss.x = 23850
+                setup.characters.endboss.isFireballAttack = true;
+                setup.world.townLevelController.questManager.advance(20);
+            }
+        },
+
+        {
+            type: "quest",
+            once: false,
+            action: (setup) => {
+                setup.characters.endboss.isFireballAttack = true;
+            }
+        },
+
+        {
+            type: "time",
+            delay: 5000,
+            step: 20,
+            action: (setup) => {
+                setup.world.character.isAirHitStun = true;
+                setup.environment.juanitoSpirit.updateAnimationState('spiritCuddle', 1000 / 4);
+                setup.environment.pollitoSpirit.updateAnimationState('spiritCuddle', 1000 / 4);
+                setup.environment.lolaSpirit.updateAnimationState('spiritCuddle', 1000 / 4);
+                fadeOutAudio(setup.backgroundMusic, 1000);
+                fadeInAudio(setup.sounds.airHitStunMusic, 2000, 1.0);
             }
         },
         {

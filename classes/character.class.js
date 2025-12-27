@@ -9,12 +9,14 @@ class Character extends MovableObject {
         'look-determined-and-stand-up', 'strong-determined', 'caress', 'caress-loop',
         'sit-down-and-play-guitar', 'play-guitar-and-sing', 'play-guitar',
         'light-a-campfire', 'meditation', 'meditation-loop', 'stand-up',
-        'walk-determined', 'stand-determined', 'stand-determined-loop', 'walk-in-storm', 'collapse', 'collapse-loop', 'stand-up-after-collapse', 'protect', 'protect-loop'
+        'walk-determined', 'stand-determined', 'stand-determined-loop',
+        'walk-in-storm', 'collapse', 'collapse-loop', 'stand-up-after-collapse',
+        'protect', 'protect-loop', 'air-hit-stun', 'air-pain-stun'
     ]);
     TRANSITIONABLE_ANIMS = new Set([
         'kneel-and-cry', 'stand-up-and-look-determined', 'look-determined-and-stand-up',
         'caress', 'sit-down-and-play-guitar', 'light-a-campfire', 'attack',
-        'meditation', 'new-weapon', 'stand-up', 'stand-determined', 'collapse', 'stand-up-after-collapse', 'protect'
+        'meditation', 'new-weapon', 'stand-up', 'stand-determined', 'collapse', 'stand-up-after-collapse', 'protect', 'air-hit-stun'
     ]);
 
     /**
@@ -112,7 +114,10 @@ class Character extends MovableObject {
         this.collapseImages = this.characterImages.collapseImages ?? (this.characterImages.collapseImages = []);
         this.collapseLoopImages = this.characterImages.collapseLoopImages ?? (this.characterImages.collapseLoopImages = []);
         this.standUpAfterCollapseImages = this.characterImages.standUpAfterCollapseImages ?? (this.characterImages.standUpAfterCollapseImages = []);
+        this.airHitStunImages = this.characterImages.airHitStunImages ?? (this.characterImages.airHitStunImages = []);
+        this.airPainStunImages = this.characterImages.airPainStunImages ?? (this.characterImages.airPainStunImages = []);
     }
+
 
     /**
     * Initializes character action-related image sets.
@@ -188,6 +193,8 @@ class Character extends MovableObject {
         this.isLookDeterminedAndStandUp = false;
         this.isCollapse = false;
         this.isStandUpAfterCollapse = false;
+        this.isAirHitStun = false;
+        this.isAirPainStun = false;
     }
 
     /**
@@ -312,6 +319,8 @@ class Character extends MovableObject {
             return this.setAnim('stand-determined', 5, 'stand-determined-loop');
         if (this.isCollapse) return this.setAnim('collapse', 6, 'collapse-loop');
         if (this.isStandUpAfterCollapse) return this.setAnim('stand-up-after-collapse', 4);
+        if (this.isAirHitStun) return this.setAnim('air-hit-stun', 5);
+        if (this.isAirPainStun) return this.setAnim('air-pain-stun', 5);
         return false;
     }
 
@@ -531,6 +540,9 @@ class Character extends MovableObject {
                 return this.setTransition('collapse-loop', 5);
             case 'stand-up-after-collapse':
                 this.isStandUpAfterCollapse = false;
+            case 'air-hit-stun':
+                this.isAirHitStun = false;
+                this.isAirPainStun = true;
         }
         return false;
     }
@@ -632,6 +644,8 @@ class Character extends MovableObject {
             case 'collapse': return this.collapseImages;
             case 'collapse-loop': return this.collapseLoopImages;
             case 'stand-up-after-collapse': return this.standUpAfterCollapseImages;
+            case 'air-hit-stun': return this.airHitStunImages;
+            case 'air-pain-stun': return this.airPainStunImages;
         }
         return null;
     }

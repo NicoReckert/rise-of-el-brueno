@@ -14,7 +14,7 @@ class Endboss extends MovableObject {
         super();
         this.world = world;
         this.allAudios = allAudios;
-        this.isGamecharacter = true;
+        this.isGamecharacter = false;
         this.entityImages = entityImages;
         this.speedX = 8;
         this.speedY = 0;

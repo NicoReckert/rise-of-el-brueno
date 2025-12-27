@@ -59,6 +59,9 @@ class AnimatedEntity extends MovableObject {
         this.idleWithStoneImages = this.entityImages[currentEntity]?.idleWithStone || [];
         this.stoneActivatedImages = this.entityImages[currentEntity]?.stoneActivated || [];
         this.brokenImages = this.entityImages[currentEntity]?.broken || [];
+        this.spiritCuddleImages = this.entityImages[currentEntity]?.spiritCuddle || [];
+        this.spiritCuddleLoopImages = this.entityImages[currentEntity]?.spiritCuddleLoop || [];
+
     }
 
     fade(direction = "in", timestamp, duration = 1000) {
@@ -212,6 +215,13 @@ class AnimatedEntity extends MovableObject {
                 this.setAnimation('broken');
                 this.frameInterval = frameInterval;
                 break;
+            case 'spiritCuddle':
+                if (this.currentAnimation !== 'spiritCuddleLoop') {
+                    this.setAnimation('spiritCuddle');
+                    this.frameInterval = frameInterval;
+                }
+                break;
+
         }
     }
 
@@ -282,7 +292,7 @@ class AnimatedEntity extends MovableObject {
                 this.frameIndex++;
             }
             this.lastFrameTime = timestamp;
-            if (this.frameIndex >= images.length && (this.currentAnimation == 'doorOpens' || this.currentAnimation == 'doorCloses' || this.currentAnimation == 'fireGoesOn' || this.currentAnimation == 'fireGoesOut' || this.currentAnimation == 'findsPeace' || this.currentAnimation == 'stoneActivated' || this.currentAnimation == 'broken')) {
+            if (this.frameIndex >= images.length && (this.currentAnimation == 'doorOpens' || this.currentAnimation == 'doorCloses' || this.currentAnimation == 'fireGoesOn' || this.currentAnimation == 'fireGoesOut' || this.currentAnimation == 'findsPeace' || this.currentAnimation == 'stoneActivated' || this.currentAnimation == 'broken' || this.currentAnimation == 'spiritCuddle')) {
                 this.animationFinished = true;
                 switch (this.currentAnimation) {
                     case 'doorOpens':
@@ -305,6 +315,9 @@ class AnimatedEntity extends MovableObject {
                         break;
                     case 'broken':
                         this.setAnimation('idle');
+                        break;
+                    case 'spiritCuddle':
+                        this.setAnimation('spiritCuddleLoop');
                         break;
                 }
             }
@@ -342,6 +355,8 @@ class AnimatedEntity extends MovableObject {
             case 'idleWithStone': return this.idleWithStoneImages;
             case 'stoneActivated': return this.stoneActivatedImages;
             case 'broken': return this.brokenImages;
+            case 'spiritCuddle': return this.spiritCuddleImages;
+            case 'spiritCuddleLoop': return this.spiritCuddleLoopImages;
         }
     }
 

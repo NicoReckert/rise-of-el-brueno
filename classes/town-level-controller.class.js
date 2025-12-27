@@ -24,7 +24,7 @@ class TownLevelController {
         // this.sandstorm.setSpeed(0.5);
         // this.sandstormNear.setAlpha(0.16);
         // this.sandstormNear.setSpeed(1.2);
-        this.sandstormIntensity = 0; 
+        this.sandstormIntensity = 0;
         this.setSandstorm(this.sandstormIntensity);
 
         this.eventManager = new EventManager(this.setup);
@@ -56,7 +56,7 @@ class TownLevelController {
         this.sandstormNear.update();
         this.sandstormFar.update();
         this.eventManager.update();
-        this.eventManager.debug = true;
+        // this.eventManager.debug = true;
         this.renderStatusBar();
         this.setup.panel.update(timestamp);
         this.setup.panel.draw(this.ctx);
@@ -88,7 +88,11 @@ class TownLevelController {
     renderNPCsAndCharacter() {
         this.ctx.save();
         this.ctx.translate(-this.renderCameraX, 0);
+        this.addToWorld(this.setup.environment.fire);
         this.addToWorld(this.character);
+        this.addToWorld(this.setup.environment.juanitoSpirit);
+        this.addToWorld(this.setup.environment.pollitoSpirit);
+        this.addToWorld(this.setup.environment.lolaSpirit);
         this.addObject(this.setup.townLevel.coins);
         this.addObject(this.setup.townLevel.bottles);
         this.addObject(this.setup.endbossAttack.eggs);
@@ -96,10 +100,12 @@ class TownLevelController {
         this.addObject(this.setup.townLevel.projectiles);
         this.addToWorld(this.setup.endbossAttack);
         this.addObject(this.setup.throwableObjects);
+        this.addToWorld(this.setup.environment.rockyDesertPedestal);
+
         if (!this.setup.characters.endboss.isUnderTheGround) {
             this.addToWorld(this.setup.characters.soul);
             // this.setup.characters.soul.updateState('idle', 1000 / 6);
-            
+
             this.addToWorld(this.setup.characters.endboss);
         }
         this.addToWorld(this.setup.characters.tadeo);
@@ -154,8 +160,11 @@ class TownLevelController {
     updateEntities(timestamp) {
         Object.values(this.setup.characters)
             .filter(c => c !== this.setup.characters.endboss)
-        .forEach(c => c.updateState(timestamp));
-       
+            .forEach(c => c.updateState(timestamp));
+
+        Object.values(this.setup.environment)
+            .forEach(c => c.updateState(timestamp));
+
         this.setup.townLevel.enemies.forEach(enemy => {
             enemy.updateState(timestamp, this.setup);
             enemy.updateAnimation(timestamp);

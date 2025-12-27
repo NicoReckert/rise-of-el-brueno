@@ -59,8 +59,20 @@ class TownLevelSetup {
             musicianTownMusic: this.allAudios.musicianTownMusic,
             sollitasMusic: this.allAudios.sollitasMusic,
             endbossFlappingWingsSound: this.allAudios.endbossFlappingWingsSound,
-            fireballChargeSound: this.allAudios.fireballChargeSound
+            fireballChargeSound: this.allAudios.fireballChargeSound,
+            airHitStunMusic: this.allAudios.airHitStunMusic
         };
+        this.environment = {
+            rockyDesertPedestal: new AnimatedEntity(this.entityImages, 'rockyDesertPedestal', 400, 400, 23300, 300),
+            fire: new AnimatedEntity(this.entityImages, 'fire', 500, 500, 23455, 110),
+            juanitoSpirit: new AnimatedEntity(this.entityImages, 'juanitoSpirit', 150, 150, 23455, 280),
+            pollitoSpirit: new AnimatedEntity(this.entityImages, 'pollitoSpirit', 120, 120, 23450, 350),
+            lolaSpirit: new AnimatedEntity(this.entityImages, 'lolaSpirit', 200, 200, 23295, 330),
+        }
+
+        this.environment.fire.isFlipped = false;
+        this.environment.pollitoSpirit.isFlipped = false;
+        this.environment.fire.updateAnimationState('idle', 1000 / 8);
         this.sounds.soulMusic.volume = 0;
         this.speechBubbles = {
             // bubbleFarm: new SpeechBubble("In den Hühnerstall gehen? {F} drücken!", this.world.character, 'info'),
