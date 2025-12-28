@@ -37,6 +37,17 @@ class Endboss extends MovableObject {
             DEAD: 99
         };
 
+        this.FINISHER = {
+            TAKEOFF: 0,
+            DROP_TORNADO_EGG: 1,
+            TORNADO_GRAB: 2,
+            SPAWN_PEDESTAL: 3,
+            BOSS_DESCEND: 4,
+            FIRE_BREATH: 5,
+            DONE: 99
+        };
+
+
         this.phase = this.ENDBOSS_PHASE.INTRO;
         this.phaseStartTime = performance.now();
         this.isVulnerable = false;
@@ -154,6 +165,10 @@ class Endboss extends MovableObject {
         this.lastSequenceShotTime = 0;
         this.groundShotInProgress = false;
 
+        this.lowEnergyThreshold = 90;           // z.B. 15%
+        this.finisherStarted = false;       // nur 1x
+        this.finisherState = 0;             // Unterstates siehe unten
+        this.finisherStartTime = 0;
 
     }
 
@@ -240,6 +255,25 @@ class Endboss extends MovableObject {
      */
     updateState(timestamp, setup) {
         this.updateDeltaTime(timestamp);
+        if (!this.finisherStarted && this.energy <= this.lowEnergyThreshold) {
+            this.finisherStarted = true;
+            this.isHurt = false;
+            this.isFireballAttack = false;
+            this.isJumping = false;
+            this.speedY = 0;
+
+            // ✅ Takeoff = Flugstate aktivieren
+            this.isFly = true;
+            this.airState = this.AIR_STATE.ASCEND;
+            this.setPhase(this.ENDBOSS_PHASE.AIR_EGGS);
+        }
+
+        if (this.finisherStarted) {
+            this.updateFinisher(timestamp, setup);
+            this.handleStateAnimations();
+            return;
+        }
+
         switch (this.phase) {
             case this.ENDBOSS_PHASE.AIR_EGGS:
                 this.updateAirEggPhase(timestamp, setup);
@@ -494,6 +528,9 @@ class Endboss extends MovableObject {
 
     updateAirEggPhase(timestamp, setup) {
         const attack = setup.endbossAttack;
+        if (this.finisherStarted && (this.airState === this.AIR_STATE.MOVE || this.airState === this.AIR_STATE.DROP || this.airState === this.AIR_STATE.WAIT)) {
+            return;
+        }
 
         if (this.airState !== this.AIR_STATE.DESCEND && this.airState !== this.AIR_STATE.ASCEND) {
             this.y = this.airY;
@@ -624,6 +661,7 @@ class Endboss extends MovableObject {
 
                 if (Math.abs(targetY - this.y) <= 0.0001) {
                     this.y = targetY;
+                    if (this.finisherStarted) return
                     this.airState = this.AIR_STATE.MOVE; // ✅ weiter
                 }
                 break;
@@ -750,13 +788,122 @@ class Endboss extends MovableObject {
         this.world.projectiles.push(fireball);
     }
 
+    startFinisher(timestamp, setup) {
+        this.finisherStarted = true;
+        this.finisherState = this.FINISHER.TAKEOFF;
+        this.finisherStartTime = timestamp;
+
+        // Boss sofort in Air-Phase + Ascend
+        this.airState = this.AIR_STATE.ASCEND;
+        this.isFly = true;
+        this.isJumping = false;
+        this.speedY = 0;
+
+        this.setPhase(this.ENDBOSS_PHASE.AIR_EGGS);
+
+        // Optional: Movement/Angriffe stoppen
+        this.isMovingLeft = false;
+        this.isMovingRight = false;
+        this.isFireballAttack = false;
+    }
+
+    updateFinisher(timestamp, setup) {
+        const hero = setup.world.character;
+
+        switch (this.finisherState) {
+            case this.FINISHER.TAKEOFF: {
+                // hochfliegen (nur ASCEND)
+                this.airState = this.AIR_STATE.ASCEND;
+                this.updateAirEggPhase(timestamp, setup);
+
+                // oben angekommen?
+                if (Math.abs(this.y - this.airY) <= 0.5) {
+                    this.y = this.airY;
+                    this.finisherState = this.FINISHER.DROP_TORNADO_EGG;
+                    this.finisherStartTime = timestamp;
+                }
+                break;
+            }
 
 
+            case this.FINISHER.DROP_TORNADO_EGG: {
+                if (!this.finisherEggDropped) {
+                    // ✅ optional: Boss soll beim Legen kurz "stehen"
+                    // this.isMovingLeft = this.isMovingRight = false;
+
+                    setup.endbossAttack.spawnEgg(
+                        this,
+                        setup,
+                        "tornado",
+                        0,
+                        { width: 300, height: 300, groundY: 460 }   // ✅ größer (anpassen)
+                    );
+
+                    this.finisherEggDropped = true;
+                    this.finisherStartTime = timestamp;
+                }
+
+                // erstmal nur warten (später tornado grab)
+                if (timestamp - this.finisherStartTime > 800) {
+                    this.finisherState = this.FINISHER.TORNADO_GRAB; // oder DONE fürs Debug
+                }
+                break;
+            }
 
 
+            case this.FINISHER.TORNADO_GRAB: {
+                // Tornado Logik läuft in eigener Klasse, aber Boss wartet bis "Bruno ist gefangen"
+                if (setup.world.tornado && setup.world.tornado.hasCaptured(hero)) {
+                    this.finisherState = this.FINISHER.SPAWN_PEDESTAL;
+                    this.finisherStartTime = timestamp;
+                }
+                break;
+            }
 
+            case this.FINISHER.SPAWN_PEDESTAL: {
+                // Podest spawnen genau unter Bruno Zielposition
+                if (!this.pedestalSpawned) {
+                    setup.world.spawnPedestalUnder(hero); // helper
+                    this.pedestalSpawned = true;
+                }
 
+                // warten bis Tornado Bruno absetzt
+                if (setup.world.tornado && setup.world.tornado.isFinished) {
+                    this.finisherState = this.FINISHER.BOSS_DESCEND;
+                    this.finisherStartTime = timestamp;
 
+                    // Boss runter
+                    this.airState = this.AIR_STATE.DESCEND;
+                }
+                break;
+            }
 
+            case this.FINISHER.BOSS_DESCEND: {
+                this.updateAirEggPhase(timestamp, setup);
 
+                // wenn gelandet -> Feuerattacke
+                if (this.phase === this.ENDBOSS_PHASE.GROUND) {
+                    this.finisherState = this.FINISHER.FIRE_BREATH;
+                    this.finisherStartTime = timestamp;
+
+                    // Feuerattacke starten
+                    this.isFireballAttack = true; // oder neuer flag isFireBreath
+                    this.frameIndex = 0;
+                    this.hasFiredThisAttack = false;
+                }
+                break;
+            }
+
+            case this.FINISHER.FIRE_BREATH: {
+                // hier kannst du entweder:
+                // A) deine bestehende fireballAttack Animation nutzen und im shootFrame statt projectile -> beam
+                // B) eigene FireBreath Attack (Strahl)
+                // Für jetzt: einfach warten bis Animation fertig ist:
+                if (!this.isFireballAttack) {
+                    this.finisherState = this.FINISHER.DONE;
+                }
+                break;
+            }
+        }
+    }
 }

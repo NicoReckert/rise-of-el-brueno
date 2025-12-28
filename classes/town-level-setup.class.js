@@ -69,7 +69,7 @@ class TownLevelSetup {
             pollitoSpirit: new AnimatedEntity(this.entityImages, 'pollitoSpirit', 120, 120, 23450, 350),
             lolaSpirit: new AnimatedEntity(this.entityImages, 'lolaSpirit', 200, 200, 23295, 330),
         }
-
+        this.environment.rockyDesertPedestal.opacity = 0;
         this.environment.fire.isFlipped = false;
         this.environment.pollitoSpirit.isFlipped = false;
         this.environment.fire.updateAnimationState('idle', 1000 / 8);
@@ -112,5 +112,6 @@ class TownLevelSetup {
         this.isNearSollita = false;
 
         this.endbossFlyPhase = 0;
+        this.effects = [];
     }
 }

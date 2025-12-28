@@ -365,11 +365,8 @@ const otherLevelEntityManifestLazy = {
     dead: Array.from({ length: 8 }, (_, i) => `./assets/img/4_enemie_boss_chicken/5_dead/image_${i + 1}.webp`),
     findsPeace: Array.from({ length: 20 }, (_, i) => `./assets/img/4_enemie_boss_chicken/6_finds_peace/image_${i + 1}.webp`),
     fly: Array.from({ length: 8 }, (_, i) => `./assets/img/4_enemie_boss_chicken/7_fly/image_${i + 1}.png`),
-    fireballAttack: Array.from({ length: 2 }, (_, i) => `./assets/img/4_enemie_boss_chicken/8_fireball_attack/image_${13 + i}.png`)
-  },
-
-  endbossAttack: {
-    idle: Array.from({ length: 10 }, (_, i) => `./assets/img/tornado/image_${i + 1}.webp`)
+    fireballAttack: Array.from({ length: 14 }, (_, i) => `./assets/img/4_enemie_boss_chicken/8_fireball_attack/image_${i + 1}.png`),
+    tornadoAttack: Array.from({ length: 10 }, (_, i) => `./assets/img/tornado/image_${i + 1}.webp`)
   },
 
   chickenMutatesSmall: {

@@ -46,7 +46,7 @@ class Character extends MovableObject {
             active: false
         };
         this.hasHitEnemyThisAttack = false;
-
+        this.isCapturedByTornado = false;
     }
 
     /**
@@ -220,6 +220,12 @@ class Character extends MovableObject {
     * @param {number} timestamp - Current time in milliseconds.
     */
     updateState(timestamp) {
+       if (this.isCapturedByTornado) {
+//   this.isMovingLeft = false;
+//   this.isMovingRight = false;
+  this.speedY = 0;
+  return; // keine Steuerung / keine Bewegung
+}
         this.updateDeltaTime(timestamp);
         this.handleMovement();
         this.clampCamera();

@@ -32,6 +32,7 @@ class EndbossAttack extends MovableObject {
         this.EGG_SPAWN_ENEMY = {
             small: { type: 'chickenMutatesSmall', w: 120, h: 120, groundY: 545 },
             big: { type: 'chickenMutatesBig', w: 160, h: 160, groundY: 505 },
+            tornado: { type: 'tornado', w: 0, h: 0, groundY: 545 }
         };
 
         this.autoEggs = false;
@@ -148,9 +149,9 @@ class EndbossAttack extends MovableObject {
         }
     }
 
-    spawnEgg(endboss, setup, enemySize = 'small', fallDelayMs = 0) {
+    spawnEgg(endboss, setup, enemySize = 'small', fallDelayMs = 0, opts = {}) {
 
-        const eggX = endboss.isFlipped ? endboss.x + endboss.width / 2 - 150 : endboss.x + endboss.width / 2 - 50 ;
+        const eggX = endboss.isFlipped ? endboss.x + endboss.width / 2 - 150 : endboss.x + endboss.width / 2 - 50;
 
         const eggY = endboss.y + endboss.height / 2.5;
 
@@ -161,6 +162,15 @@ class EndbossAttack extends MovableObject {
             delayMin: fallDelayMs,      // hier schon alt genug, also direkt fallStartTime
             delayMax: fallDelayMs,
             onBreak: (eggInstance) => {
+                if (cfg.type === 'tornado') {
+                    const t = new EndbossTornado(setup.entityImages, eggInstance.x, eggInstance.y - 200, setup.allAudios);
+                    t.world = setup.world;
+                    t.setTarget(setup.world.character);
+                    t.setBuildTargetX(23500);
+                    setup.effects.push(t);
+                    return;
+                }
+
                 const enemy = new Chicken(
                     cfg.type,
                     setup.entityImages,     // oder images, je nachdem wie du’s nutzt
@@ -175,6 +185,10 @@ class EndbossAttack extends MovableObject {
             }
         });
 
+        if (opts.width) egg.width = opts.width;
+        if (opts.height) egg.height = opts.height;
+        if (opts.groundY) egg.groundY = opts.groundY;
+
         this.eggs.push(egg);
         return egg;
     }
@@ -183,5 +197,12 @@ class EndbossAttack extends MovableObject {
         this.eggs.forEach(e => e.update(timestamp));
         this.eggs = this.eggs.filter(e => !e.isDestroyed);
     }
+
+    spawnPedestalUnder(character) {
+        const x = character.x - 40;     // feinjustieren
+        const y = 420;                  // podest top
+        this.platforms.push(new Pedestal(x, y));
+    }
+
 
 }

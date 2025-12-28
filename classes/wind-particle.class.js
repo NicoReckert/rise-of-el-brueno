@@ -62,7 +62,7 @@ class WindParticleEffect {
     }
 
     draw(ctx, renderCameraX) {
-        const canvasWidth = ctx.canvas.width * 9;
+        const canvasWidth = ctx.canvas.width * 38;
         const canvasHeight = ctx.canvas.height;
         this.particles.forEach(p => p.draw(ctx, renderCameraX, canvasWidth, canvasHeight));
     }

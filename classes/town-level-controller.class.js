@@ -36,6 +36,7 @@ class TownLevelController {
             this.sandstormNear.pressure = 0.6;
             this.sandstormFar.pressure = 0.2;
         };
+        this.windParticles = new WindParticleEffect(this.canvas.width * 38, this.canvas.height, 1200);
 
 
     }
@@ -56,10 +57,11 @@ class TownLevelController {
         this.sandstormNear.update();
         this.sandstormFar.update();
         this.eventManager.update();
-        // this.eventManager.debug = true;
+        this.eventManager.debug = true;
         this.renderStatusBar();
         this.setup.panel.update(timestamp);
         this.setup.panel.draw(this.ctx);
+        this.windParticles.update();
     }
 
     updateCamera() {
@@ -88,16 +90,17 @@ class TownLevelController {
     renderNPCsAndCharacter() {
         this.ctx.save();
         this.ctx.translate(-this.renderCameraX, 0);
-        this.addToWorld(this.setup.environment.fire);
+        // this.addToWorld(this.setup.environment.fire);
         this.addToWorld(this.character);
-        this.addToWorld(this.setup.environment.juanitoSpirit);
-        this.addToWorld(this.setup.environment.pollitoSpirit);
-        this.addToWorld(this.setup.environment.lolaSpirit);
+        // this.addToWorld(this.setup.environment.juanitoSpirit);
+        // this.addToWorld(this.setup.environment.pollitoSpirit);
+        // this.addToWorld(this.setup.environment.lolaSpirit);
         this.addObject(this.setup.townLevel.coins);
         this.addObject(this.setup.townLevel.bottles);
         this.addObject(this.setup.endbossAttack.eggs);
         this.addObject(this.setup.townLevel.enemies);
         this.addObject(this.setup.townLevel.projectiles);
+        this.addObject(this.setup.effects);
         this.addToWorld(this.setup.endbossAttack);
         this.addObject(this.setup.throwableObjects);
         this.addToWorld(this.setup.environment.rockyDesertPedestal);
@@ -111,6 +114,7 @@ class TownLevelController {
         this.addToWorld(this.setup.characters.tadeo);
         this.addToWorld(this.setup.characters.sollita);
         this.addToWorld(this.setup.characters.musician);
+        this.windParticles.draw(this.ctx, this.renderCameraX);
         this.ctx.restore();
         // this.sandstorm.draw(this.ctx, this.renderCameraX);
         // this.sandstormFar.draw(this.ctx, this.renderCameraX);
@@ -133,9 +137,9 @@ class TownLevelController {
             : null;
 
 
-        this.sandstormFar.draw(this.ctx, this.renderCameraX, shieldInfo);
-        this.sandstorm.draw(this.ctx, this.renderCameraX, shieldInfo);
-        this.sandstormNear.draw(this.ctx, this.renderCameraX, shieldInfo);
+        // this.sandstormFar.draw(this.ctx, this.renderCameraX, shieldInfo);
+        // this.sandstorm.draw(this.ctx, this.renderCameraX, shieldInfo);
+        // this.sandstormNear.draw(this.ctx, this.renderCameraX, shieldInfo);
     }
 
     updateCharacter(timestamp) {
@@ -154,6 +158,9 @@ class TownLevelController {
         });
         this.setup.townLevel.projectiles.forEach(projectile => {
             projectile.updateState(timestamp, this.world);
+        });
+        this.setup.effects.forEach(effect => {
+            effect.updateState(timestamp);
         });
     }
 
