@@ -68,6 +68,9 @@ class TownLevelSetup {
             juanitoSpirit: new AnimatedEntity(this.entityImages, 'juanitoSpirit', 150, 150, 23455, 280),
             pollitoSpirit: new AnimatedEntity(this.entityImages, 'pollitoSpirit', 120, 120, 23450, 350),
             lolaSpirit: new AnimatedEntity(this.entityImages, 'lolaSpirit', 200, 200, 23295, 330),
+            spiritEssence1: new AnimatedEntity(this.entityImages, "spiritEssence", 90, 90, 0, 0),
+            spiritEssence2: new AnimatedEntity(this.entityImages, "spiritEssence", 90, 90, 0, 0),
+            spiritEssence3: new AnimatedEntity(this.entityImages, "spiritEssence", 90, 90, 0, 0)
         }
         this.environment.rockyDesertPedestal.opacity = 0;
         this.environment.fire.isFlipped = false;
@@ -113,5 +116,13 @@ class TownLevelSetup {
 
         this.endbossFlyPhase = 0;
         this.effects = [];
+
+        // Spirits erstmal unsichtbar / geparkt (oder opacity 0)
+        this.environment.juanitoSpirit.opacity = 0;
+        this.environment.pollitoSpirit.opacity = 0;
+        this.environment.lolaSpirit.opacity = 0;
+        this.environment.spiritEssence1.opacity = 0;
+        this.environment.spiritEssence2.opacity = 0;
+        this.environment.spiritEssence3.opacity = 0;
     }
 }

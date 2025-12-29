@@ -166,7 +166,8 @@ class EndbossAttack extends MovableObject {
                     const t = new EndbossTornado(setup.entityImages, eggInstance.x, eggInstance.y - 200, setup.allAudios);
                     t.world = setup.world;
                     t.setTarget(setup.world.character);
-                    t.setBuildTargetX(23500);
+                    t.setBuildTargetX(23380);
+                    setup.world.tornado = t;
                     setup.effects.push(t);
                     return;
                 }

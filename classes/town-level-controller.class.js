@@ -62,6 +62,8 @@ class TownLevelController {
         this.setup.panel.update(timestamp);
         this.setup.panel.draw(this.ctx);
         this.windParticles.update();
+        this.updateSpiritEssenceSequence(timestamp);
+
     }
 
     updateCamera() {
@@ -92,9 +94,12 @@ class TownLevelController {
         this.ctx.translate(-this.renderCameraX, 0);
         // this.addToWorld(this.setup.environment.fire);
         this.addToWorld(this.character);
-        // this.addToWorld(this.setup.environment.juanitoSpirit);
-        // this.addToWorld(this.setup.environment.pollitoSpirit);
-        // this.addToWorld(this.setup.environment.lolaSpirit);
+        this.addToWorld(this.setup.environment.juanitoSpirit);
+        this.addToWorld(this.setup.environment.pollitoSpirit);
+        this.addToWorld(this.setup.environment.lolaSpirit);
+        this.addToWorld(this.setup.environment.spiritEssence1);
+        this.addToWorld(this.setup.environment.spiritEssence2);
+        this.addToWorld(this.setup.environment.spiritEssence3);
         this.addObject(this.setup.townLevel.coins);
         this.addObject(this.setup.townLevel.bottles);
         this.addObject(this.setup.endbossAttack.eggs);
@@ -222,5 +227,107 @@ class TownLevelController {
         this.sandstormNear.setAlpha(0.16 + (0.45 - 0.16) * t);
         this.sandstormNear.setSpeed(1.20 + (4.50 - 1.20) * t);
     }
+
+    startSpiritEssenceSequence(timestamp) {
+        const hero = this.character;
+
+        const spirits = [
+            this.setup.environment.juanitoSpirit,
+            this.setup.environment.pollitoSpirit,
+            this.setup.environment.lolaSpirit
+        ];
+
+        const essences = [
+            this.setup.environment.spiritEssence1,
+            this.setup.environment.spiritEssence2,
+            this.setup.environment.spiritEssence3
+        ];
+
+        // Startpositionen nah an Bruno (z.B. aus dem Herz/Brust Bereich)
+        const start = { x: hero.x + hero.width * 0.45, y: hero.y + hero.height * 0.35 };
+
+        // Zielpositionen um Bruno herum
+        const targets = [
+            { x: hero.x + 20, y: hero.y - 5 },
+            { x: hero.x + 15, y: hero.y + 80 },
+            { x: hero.x - 140, y: hero.y + 35 }
+        ];
+
+        this.setup.spiritEssenceSeq = {
+            active: true,
+            index: 0,
+            nextTime: timestamp,
+            essences,
+            spirits,
+            targets,
+            start
+        };
+
+        essences.forEach((e, i) => {
+            e.x = start.x;
+            e.y = start.y;
+            e.opacity = 0;
+            e.updateAnimationState("idle", 1000 / 10);
+        });
+    }
+
+
+    updateSpiritEssenceSequence(timestamp) {
+        const seq = this.setup.spiritEssenceSeq;
+        if (!seq?.active) return;
+
+        if (timestamp < seq.nextTime) return;
+
+        const i = seq.index;
+        const e = seq.essences[i];
+        const s = seq.spirits[i];
+        const t = seq.targets[i];
+
+        if (!e || !s || !t) { seq.active = false; return; }
+
+        // Essence einblenden
+        e.opacity = Math.min(1, (e.opacity ?? 0) + 0.06);
+
+        // Smooth move (keine “ranfliegen von weit weg”, eher wie “magie flutscht raus”)
+        const dx = t.x - e.x;
+        const dy = t.y - e.y;
+        const dist = Math.hypot(dx, dy) || 1;
+
+        const speed = 5;
+        const step = Math.min(dist, speed);
+        e.x += (dx / dist) * step;
+        e.y += (dy / dist) * step;
+
+        // angekommen
+        if (dist <= 10) {
+            // Essence weg
+            e.opacity = 0;
+
+            // Spirit auf Ziel setzen + einblenden
+            s.x = t.x;
+            s.y = t.y;
+            s.opacity = 0;
+            s.updateAnimationState("spiritCuddle", 1000 / 4);
+
+            // Spirit Fade-In “smooth”
+            seq.reveal = { spirit: s, start: timestamp, dur: 500 };
+
+            seq.index++;
+            seq.nextTime = timestamp + 700; // nächstes Essence nach Delay
+        }
+
+        // Spirit fade-in läuft parallel
+        if (seq.reveal) {
+            const { spirit, start, dur } = seq.reveal;
+            const tt = Math.min(1, (timestamp - start) / dur);
+            spirit.opacity = tt;
+            if (tt >= 1) seq.reveal = null;
+        }
+
+        if (seq.index >= seq.essences.length && !seq.reveal) {
+            seq.active = false;
+        }
+    }
+
 
 }

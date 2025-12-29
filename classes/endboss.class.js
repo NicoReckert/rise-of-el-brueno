@@ -40,12 +40,13 @@ class Endboss extends MovableObject {
         this.FINISHER = {
             TAKEOFF: 0,
             DROP_TORNADO_EGG: 1,
-            TORNADO_GRAB: 2,
-            SPAWN_PEDESTAL: 3,
+            WAIT_TORNADO_DONE: 2,
+            MOVE_TO_FIRE_POS: 3,
             BOSS_DESCEND: 4,
             FIRE_BREATH: 5,
             DONE: 99
         };
+
 
 
         this.phase = this.ENDBOSS_PHASE.INTRO;
@@ -123,6 +124,7 @@ class Endboss extends MovableObject {
         this.flyImages = this.entityImages.endboss.fly || [];
         this.findsPeaceImages = this.entityImages.endboss.findsPeace || [];
         this.fireballAttackImages = this.entityImages.endboss.fireballAttack || [];
+        this.fireBreathAttackImages = this.entityImages.endboss.fireBreathAttack || [];
     }
 
     /**
@@ -169,6 +171,19 @@ class Endboss extends MovableObject {
         this.finisherStarted = false;       // nur 1x
         this.finisherState = 0;             // Unterstates siehe unten
         this.finisherStartTime = 0;
+
+        this.finisherFireX = 23800;       // ✅ Ziel-X für Feuerattacke (anpassen)
+        this.finisherFireShotsMax = 5;    // ✅ z.B. 5 Feuerbälle
+        this.finisherFireShotsDone = 0;
+        this.finisherFireShotDelay = 450; // ms zwischen Shots
+        this.lastFinisherShotTime = 0;
+
+        this.isFireBreath = false;
+        this.fireBreathBeam = null;          // Referenz auf Beam-Objekt
+        this.fireBreathDamage = 1;           // Schaden pro Tick
+        this.fireBreathTickMs = 180;         // alle 180ms Schaden
+        this.lastBreathDamageTime = 0;
+
 
     }
 
@@ -352,6 +367,7 @@ class Endboss extends MovableObject {
         if (this.isFindsPeace) return this.playFindsPeace();
         if (this.isDead) return this.playDeathAnimation();
         if (this.isHurt) return this.playHurtAnimation();
+        if (this.isFireBreath) return this.setAnimation('fireBreathAttack', 5);
         if (this.isFly) return this.playFlyAnimation();
         if (this.isFireballAttack) return this.playFireballAttackAnimation()
         if (this.isJumping) return this.setAnimation('jump', 10);
@@ -437,6 +453,7 @@ class Endboss extends MovableObject {
             case 'walk': return this.walkImages;
             case 'findsPeace': return this.findsPeaceImages;
             case 'fireballAttack': return this.fireballAttackImages;
+            case 'fireBreathAttack': return this.fireBreathAttackImages;
             case 'idle': return this.idleImages;
         }
     }
@@ -809,101 +826,180 @@ class Endboss extends MovableObject {
 
     updateFinisher(timestamp, setup) {
         const hero = setup.world.character;
+        const tornado = setup.world.tornado;
 
         switch (this.finisherState) {
+
             case this.FINISHER.TAKEOFF: {
-                // hochfliegen (nur ASCEND)
+                // nutzt deine ASCEND-Logik
                 this.airState = this.AIR_STATE.ASCEND;
+                this.isFly = true;
                 this.updateAirEggPhase(timestamp, setup);
 
-                // oben angekommen?
-                if (Math.abs(this.y - this.airY) <= 0.5) {
-                    this.y = this.airY;
+                // sobald oben -> Ei droppen
+                if (Math.abs(this.y - this.airY) <= 0.0001) {
                     this.finisherState = this.FINISHER.DROP_TORNADO_EGG;
-                    this.finisherStartTime = timestamp;
+                    this.finisherEggDropped = false;
                 }
                 break;
             }
-
 
             case this.FINISHER.DROP_TORNADO_EGG: {
                 if (!this.finisherEggDropped) {
-                    // ✅ optional: Boss soll beim Legen kurz "stehen"
-                    // this.isMovingLeft = this.isMovingRight = false;
-
-                    setup.endbossAttack.spawnEgg(
-                        this,
-                        setup,
-                        "tornado",
-                        0,
-                        { width: 300, height: 300, groundY: 460 }   // ✅ größer (anpassen)
-                    );
-
+                    setup.endbossAttack.spawnEgg(this, setup, "tornado", 0, { width: 300, height: 300, groundY: 460 });
                     this.finisherEggDropped = true;
-                    this.finisherStartTime = timestamp;
                 }
+                // direkt warten bis Tornado fertig
+                this.finisherState = this.FINISHER.WAIT_TORNADO_DONE;
+                break;
+            }
 
-                // erstmal nur warten (später tornado grab)
-                if (timestamp - this.finisherStartTime > 800) {
-                    this.finisherState = this.FINISHER.TORNADO_GRAB; // oder DONE fürs Debug
+            case this.FINISHER.WAIT_TORNADO_DONE: {
+                // ✅ warten bis Tornado fertig ist und Bruno auf Podest steht
+                // (du setzt Bruno.y am Ende von BUILD -> 165)
+                if (tornado && tornado.isFinished && hero.y === 165) {
+                    this.finisherState = this.FINISHER.MOVE_TO_FIRE_POS;
+
+                    // Boss bleibt oben im Flugmodus
+                    this.isFly = true;
+                    this.isJumping = false;
+                    this.speedY = 0;
+
+                    // optional: Boss schaut Richtung Bruno
+                    this.isFlipped = hero.x > this.x;
+
                 }
                 break;
             }
 
+            case this.FINISHER.MOVE_TO_FIRE_POS: {
+                const hero = setup.world.character;
 
-            case this.FINISHER.TORNADO_GRAB: {
-                // Tornado Logik läuft in eigener Klasse, aber Boss wartet bis "Bruno ist gefangen"
-                if (setup.world.tornado && setup.world.tornado.hasCaptured(hero)) {
-                    this.finisherState = this.FINISHER.SPAWN_PEDESTAL;
-                    this.finisherStartTime = timestamp;
-                }
-                break;
-            }
+                this.isFly = true;
+                this.isJumping = false;
+                this.speedY = 0;
 
-            case this.FINISHER.SPAWN_PEDESTAL: {
-                // Podest spawnen genau unter Bruno Zielposition
-                if (!this.pedestalSpawned) {
-                    setup.world.spawnPedestalUnder(hero); // helper
-                    this.pedestalSpawned = true;
-                }
+                // ✅ oben bleiben
+                this.y = this.airY;
 
-                // warten bis Tornado Bruno absetzt
-                if (setup.world.tornado && setup.world.tornado.isFinished) {
-                    this.finisherState = this.FINISHER.BOSS_DESCEND;
-                    this.finisherStartTime = timestamp;
+                // ✅ Richtung korrekt (bei dir: isFlipped = true heißt nach rechts)
+                this.isFlipped = hero.x > this.x;
 
-                    // Boss runter
+                const reached = this.moveToX(this.finisherFireX, 520); // px/sec
+                if (reached) {
                     this.airState = this.AIR_STATE.DESCEND;
+                    this.setPhase(this.ENDBOSS_PHASE.AIR_EGGS);
+                    this.finisherState = this.FINISHER.BOSS_DESCEND;
                 }
                 break;
             }
+
 
             case this.FINISHER.BOSS_DESCEND: {
+                const hero = setup.world.character;
+
+                // Beim Descend weiter Richtung Bruno schauen:
+                this.isFlipped = hero.x > this.x;
+
                 this.updateAirEggPhase(timestamp, setup);
 
-                // wenn gelandet -> Feuerattacke
                 if (this.phase === this.ENDBOSS_PHASE.GROUND) {
                     this.finisherState = this.FINISHER.FIRE_BREATH;
-                    this.finisherStartTime = timestamp;
 
-                    // Feuerattacke starten
-                    this.isFireballAttack = true; // oder neuer flag isFireBreath
-                    this.frameIndex = 0;
-                    this.hasFiredThisAttack = false;
+                    // ✅ FireBreath starten (HOLD)
+                    this.startFireBreath(setup, timestamp);
                 }
                 break;
             }
 
+
             case this.FINISHER.FIRE_BREATH: {
-                // hier kannst du entweder:
-                // A) deine bestehende fireballAttack Animation nutzen und im shootFrame statt projectile -> beam
-                // B) eigene FireBreath Attack (Strahl)
-                // Für jetzt: einfach warten bis Animation fertig ist:
-                if (!this.isFireballAttack) {
-                    this.finisherState = this.FINISHER.DONE;
-                }
+                const hero = setup.world.character;
+
+                // ✅ Boss bleibt stehen und schaut dauerhaft zu Bruno
+                this.isMovingLeft = false;
+                this.isMovingRight = false;
+                this.isFlipped = hero.x > this.x;
+
+                // ✅ Beam updaten (Position + Damage Tick)
+                this.updateFireBreath(setup, timestamp);
+
+                // NICHT weiter wechseln -> bleibt so lange aktiv,
+                // bis du später stopFireBreath() aufrufst oder finisherState änderst.
+                break;
+            }
+
+
+            case this.FINISHER.DONE: {
+                // optional: hier kannst du in eine neue Phase wechseln (ENRAGE/Storm etc.)
                 break;
             }
         }
     }
+
+
+    moveToX(targetX, speedPxPerSec) {
+        const dx = targetX - this.x;
+        const step = speedPxPerSec * this.deltaSeconds;
+        if (Math.abs(dx) <= step) {
+            this.x = targetX;
+            return true;
+        }
+        this.x += Math.sign(dx) * step;
+        return false;
+    }
+
+    startFireBreath(setup, timestamp) {
+        setup.world.character.startAirHitStun(timestamp);
+        fadeOutAudio(setup.backgroundMusic, 1000);
+        fadeInAudio(setup.sounds.airHitStunMusic, 2000, 1.0);
+        if (!setup.spiritEssenceSeq?.active && setup.world.character.isAirHitStun) {
+            setup.world.townLevelController.startSpiritEssenceSequence(timestamp);
+        }
+
+
+        this.isFireBreath = true;
+        this.lastBreathDamageTime = 0;
+
+        // Beam nur 1x erstellen
+        if (!this.fireBreathBeam) {
+            this.fireBreathBeam = new EndbossFireBeam(setup.entityImages, this.allAudios);
+            this.fireBreathBeam.world = setup.world;
+            setup.effects.push(this.fireBreathBeam); // oder setup.effects
+        }
+
+        // sofort syncen
+        this.fireBreathBeam.setOwner(this);
+        this.fireBreathBeam.active = true;
+        this.fireBreathBeam.updateFromOwner();
+    }
+
+    updateFireBreath(setup, timestamp) {
+        if (!this.fireBreathBeam) return;
+
+        this.fireBreathBeam.setOwner(this);
+        this.fireBreathBeam.active = true;
+        this.fireBreathBeam.updateFromOwner();
+
+        // Schaden in Ticks (nicht jeden Frame)
+        const hero = setup.world.character;
+        if (!hero) return;
+
+        if (!this.lastBreathDamageTime) this.lastBreathDamageTime = timestamp;
+
+        if (timestamp - this.lastBreathDamageTime >= this.fireBreathTickMs) {
+            if (this.fireBreathBeam.isHitting(hero)) {
+                if (typeof hero.hit === "function") hero.hit(this.fireBreathDamage);
+                else if ("energy" in hero) hero.energy -= this.fireBreathDamage;
+            }
+            this.lastBreathDamageTime = timestamp;
+        }
+    }
+
+    stopFireBreath() {
+        this.isFireBreath = false;
+        if (this.fireBreathBeam) this.fireBreathBeam.active = false;
+    }
+
+
 }

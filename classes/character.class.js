@@ -220,12 +220,27 @@ class Character extends MovableObject {
     * @param {number} timestamp - Current time in milliseconds.
     */
     updateState(timestamp) {
-       if (this.isCapturedByTornado) {
-//   this.isMovingLeft = false;
-//   this.isMovingRight = false;
-  this.speedY = 0;
-  return; // keine Steuerung / keine Bewegung
-}
+        if (this.isAirHitStun) {
+            if (timestamp - this.airHitStunStart >= this.airHitStunDuration) {
+                this.isAirHitStun = false;
+                this.isCapturedByTornado = false;
+            }
+
+            // keine Bewegung/Steuerung
+            this.isMovingLeft = false;
+            this.isMovingRight = false;
+            this.speedY = 0;
+
+            // ✅ Animation trotzdem setzen
+            this.handleCharacterAnimation();
+            return;
+        }
+        if (this.isCapturedByTornado) {
+            //   this.isMovingLeft = false;
+            //   this.isMovingRight = false;
+            this.speedY = 0;
+            return; // keine Steuerung / keine Bewegung
+        }
         this.updateDeltaTime(timestamp);
         this.handleMovement();
         this.clampCamera();
@@ -325,8 +340,7 @@ class Character extends MovableObject {
             return this.setAnim('stand-determined', 5, 'stand-determined-loop');
         if (this.isCollapse) return this.setAnim('collapse', 6, 'collapse-loop');
         if (this.isStandUpAfterCollapse) return this.setAnim('stand-up-after-collapse', 4);
-        if (this.isAirHitStun) return this.setAnim('air-hit-stun', 5);
-        if (this.isAirPainStun) return this.setAnim('air-pain-stun', 5);
+        if (this.isAirHitStun) return this.setAnim('air-hit-stun', 5, 'air-pain-stun');
         return false;
     }
 
@@ -547,8 +561,7 @@ class Character extends MovableObject {
             case 'stand-up-after-collapse':
                 this.isStandUpAfterCollapse = false;
             case 'air-hit-stun':
-                this.isAirHitStun = false;
-                this.isAirPainStun = true;
+                return this.setTransition('air-pain-stun', 5);
         }
         return false;
     }
@@ -740,5 +753,16 @@ class Character extends MovableObject {
     resetTimers() {
         this.lastUpdateTime = null;
         this.lastFrameTime = null;
+    }
+
+    startAirHitStun(timestamp, duration = 100000) {
+        this.isAirHitStun = true;
+        this.airHitStunStart = timestamp;
+        this.airHitStunDuration = duration;
+
+        // Input/Movement lock:
+        this.isCapturedByTornado = true;
+        this.speedY = 0;
+        this.isJumping = false;
     }
 }

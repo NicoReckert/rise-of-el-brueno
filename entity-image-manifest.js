@@ -366,7 +366,8 @@ const otherLevelEntityManifestLazy = {
     findsPeace: Array.from({ length: 20 }, (_, i) => `./assets/img/4_enemie_boss_chicken/6_finds_peace/image_${i + 1}.webp`),
     fly: Array.from({ length: 8 }, (_, i) => `./assets/img/4_enemie_boss_chicken/7_fly/image_${i + 1}.png`),
     fireballAttack: Array.from({ length: 14 }, (_, i) => `./assets/img/4_enemie_boss_chicken/8_fireball_attack/image_${i + 1}.png`),
-    tornadoAttack: Array.from({ length: 10 }, (_, i) => `./assets/img/tornado/image_${i + 1}.webp`)
+    tornadoAttack: Array.from({ length: 10 }, (_, i) => `./assets/img/tornado/image_${i + 1}.webp`),
+    fireBreathAttack: Array.from({ length: 3 }, (_, i) => `./assets/img/4_enemie_boss_chicken/8_fireball_attack/image_${12 + i}.png`)
   },
 
   chickenMutatesSmall: {
@@ -448,5 +449,10 @@ const otherLevelEntityManifestLazy = {
     idle: Array.from({ length: 6 }, (_, i) => `./assets/img/npcs/lola-spirit/idle/image_${i + 1}.png`),
     spiritCuddle: Array.from({ length: 8 }, (_, i) => `./assets/img/npcs/lola-spirit/spirit-cuddle/image_${i + 1}.png`),
     spiritCuddleLoop: Array.from({ length: 8 }, (_, i) => `./assets/img/npcs/lola-spirit/spirit-cuddle-loop/image_${i + 1}.png`)
+  },
+
+  spiritEssence: {
+    idle: Array.from({ length: 8 }, (_, i) => `./assets/img/npcs/spirit-essence/idle/image_${i + 1}.png`)
   }
+
 }
