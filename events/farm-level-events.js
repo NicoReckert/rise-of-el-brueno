@@ -577,6 +577,17 @@ const farmEvents =
                 }
             }
         },
+
+        {
+            type: 'input',
+            step: 10,
+            key: 'F',
+            condition: (setup) => setup.moonCycle.finished,
+            action: (setup) => {
+                setup.sounds.happyTogetherMusic.currentTime = 97.0;
+            }
+        },
+
         {
             type: 'time',
             delay: 4000,
@@ -690,15 +701,11 @@ const farmEvents =
             step: 15,
             once: false,
             action: (setup) => {
-                const targetX = 1500;
-                const differenceX = targetX - setup.characters.drone.x;
-                if (Math.abs(differenceX) >= 3) {
-                    setup.characters.drone.x += Math.sign(differenceX) * 5;
-                    setup.world.camera_x += ((setup.characters.drone.x - 300) - setup.world.camera_x) * 0.1;
-                } else {
-                    setup.characters.drone.x = targetX;
-                    setup.world.farmLevelController.questManager.advance(16)
-                }
+                const drone = setup.characters.drone;
+                drone.moveToX(1500, {
+                    onArrive: () => setup.world.farmLevelController.questManager.advance(16)
+                });
+                setup.world.camera_x += ((drone.x - 300) - setup.world.camera_x) * 0.1;
             }
         },
 
@@ -736,17 +743,12 @@ const farmEvents =
             step: 16,
             once: false,
             action: (setup) => {
-                if (setup.cutsceneActors.chickenHypno.x < 2600) {
-                    setup.cutsceneActors.chickenHypno.x += 1.5;
-                }
-                if (setup.cutsceneActors.cowHypno.x < 2600) {
-                    setup.cutsceneActors.cowHypno.x += 1.5;
-                } else {
-                    setup.world.farmLevelController.questManager.advance(17);
-                }
-                if (setup.cutsceneActors.chickHypno.x < 2600) {
-                    setup.cutsceneActors.chickHypno.x += 1.5;
-                }
+                setup.cutsceneActors.chickenHypno.moveToX(2600, { speed: 1.5 });
+                setup.cutsceneActors.cowHypno.moveToX(2600, {
+                    speed: 1.5,
+                    onArrive: () => setup.world.farmLevelController.questManager.advance(17)
+                })
+                setup.cutsceneActors.chickHypno.moveToX(2600, { speed: 1.5 });
             }
         },
 
@@ -765,11 +767,9 @@ const farmEvents =
             step: 17,
             once: false,
             action: (setup) => {
-                if (setup.characters.drone.x <= 3500) {
-                    setup.characters.drone.x += 5;
-                } else {
-                    setup.world.farmLevelController.questManager.advance(18);
-                }
+                setup.characters.drone.moveToX(3500, {
+                    onArrive: () => setup.world.farmLevelController.questManager.advance(18)
+                });
             }
         },
 

@@ -370,4 +370,49 @@ class AnimatedEntity extends MovableObject {
         }
     }
 
+    moveToX(targetX, {
+        tolerance = 3,
+        snap = true,
+        speed = null,
+        onArrive = null,
+        moveAnimation = null,
+        idleAnimation = null
+    } = {}) {
+        if (speed !== null && this._moveSpeedBackup === undefined) {
+            this._moveSpeedBackup = this.speedX;
+            this.speedX = speed;
+        }
+        const d = targetX - this.x;
+
+        this.isMovingRight = d > tolerance;
+        this.isMovingLeft = d < -tolerance;
+
+        // optional Animation beim Laufen
+        if ((this.isMovingLeft || this.isMovingRight) && moveAnimation) {
+            this.updateAnimationState(moveAnimation);
+        }
+
+        // angekommen?
+        if (Math.abs(d) <= tolerance) {
+            this.isMovingRight = false;
+            this.isMovingLeft = false;
+
+            if (snap) this.x = targetX;
+
+            if (this._moveSpeedBackup !== undefined) {
+                this.speedX = this._moveSpeedBackup;
+                delete this._moveSpeedBackup;
+            }
+
+            // optional Idle-Animation nach Ankunft
+            if (idleAnimation) this.updateAnimationState(idleAnimation);
+
+            onArrive?.();
+            return true;
+        }
+
+        return false;
+    }
+
+
 }

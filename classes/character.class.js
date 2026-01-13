@@ -37,7 +37,7 @@ class Character extends MovableObject {
         this.init();
         this.movementSpeed;
 
-        this.isGamecharacter = false;
+        this.isGamecharacter = true;
         this.attackHitbox = {
             top: 220,     // Abstand von oben
             left: 200,    // Abstand von links
@@ -321,7 +321,7 @@ class Character extends MovableObject {
     */
     handleDeathOrJump() {
         if (this.isDead) return this.setAnim('dead', 6);
-        if (this.isJumping) return this.setSimpleAnim('jump', 10);
+        if (this.isJumping) return this.setAnim('jump', 10);
         return false;
     }
 
@@ -351,8 +351,8 @@ class Character extends MovableObject {
     handleMusicAnimations() {
         if (this.isSitDownAndPlayGuitar)
             return this.setAnim('sit-down-and-play-guitar', 6, 'play-guitar');
-        if (this.isPlayGuitar) return this.setSimpleAnim('play-guitar', 10);
-        if (this.isPlayGuitarAndSing) return this.setSimpleAnim('play-guitar-and-sing', 10);
+        if (this.isPlayGuitar) return this.setAnim('play-guitar', 10);
+        if (this.isPlayGuitarAndSing) return this.setAnim('play-guitar-and-sing', 10);
         if (this.isLightACampfire)
             return this.setAnim('light-a-campfire', 6, 'sit-down-and-play-guitar');
         return false;
@@ -377,7 +377,7 @@ class Character extends MovableObject {
     */
     handleMovementAnimations() {
         if (this.isMovingLeft || this.isMovingRight || this.isWalk)
-            return this.isWalkInStorm ? this.setAnim('walk-in-storm', 5) : this.setSimpleAnim('walk', 8);
+            return this.isWalkInStorm ? this.setAnim('walk-in-storm', 5) : this.setAnim('walk', 8);
         if (this.isWalkDetermined)
             return this.setAnim('walk-determined', 5);
         return false;
@@ -460,16 +460,44 @@ class Character extends MovableObject {
     */
     handleDeferredSizeUpdate() {
         if (!this.deferSizeUpdate) return;
+
+        const oldBottom = this.y + this.height; // ✅ Fußpunkt merken
         const anim = this.currentAnimation;
+
         if (this.isVoidlessAnimation(anim)) {
-            this.setCharacterSize(158, 183, this.yVoidless, { top: 13, left: 33, right: 55, bottom: 15 });
+            this.setCharacterSize(
+                158, 183, /* y ignored */ this.y,
+                { top: 13, left: 33, right: 55, bottom: 15 }
+            );
         } else if (this.isLargeAnimation(anim)) {
-            this.setCharacterSize(240 /*290*/, 280 /*355*/, 390 /*315*/, { top: 110 /*220*/, left: 30 /*200*/, right: 115 /*8*/, bottom: 10 /*52*/ });
+            this.setCharacterSize(
+                240, 280, /* y ignored */ this.y,
+                { top: 110, left: 30, right: 115, bottom: 10 }
+            );
         } else {
-            this.setCharacterSize(130, 300, this.yNormal, { top: 130, left: 20, right: 40, bottom: 15 });
+            this.setCharacterSize(
+                130, 300, /* y ignored */ this.y,
+                { top: 130, left: 20, right: 40, bottom: 15 }
+            );
         }
+
+        // ✅ nach dem Rescale: Bottom wieder herstellen (kein Down-Snap)
+        this.y = oldBottom - this.height;
+
+        // z.B. in handleDeferredSizeUpdate() oder wenn isAttack true wird:
+        if (this.currentAnimation === 'attack') {
+            this.drawOffset = { x: 0, y: 0, flipX: -100 }; // Wert anpassen (-20 / -60 etc.)
+
+        } else if (this.currentAnimation === 'protect' || this.currentAnimation === 'protect-loop') {
+            this.drawOffset = { x: -14, y: 0, flipX: 0 };
+        } else {
+            this.drawOffset = { x: 0, y: 0, flipX: 0 };
+        }
+
+
         this.deferSizeUpdate = false;
     }
+
 
     /**
     * Checks if the given animation is a voidless-type animation.
@@ -499,7 +527,7 @@ class Character extends MovableObject {
     setCharacterSize(width, height, y, offset) {
         this.width = width;
         this.height = height;
-        this.y = y;
+        if (y !== undefined && y !== null) this.y = y;
         this.offset = offset;
     }
 

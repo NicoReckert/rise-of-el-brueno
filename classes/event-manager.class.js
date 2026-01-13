@@ -162,14 +162,20 @@ class EventManager {
      * @returns {object} The raw box coordinates.
      */
     calculateRawBox(obj, off, t) {
-        const left = obj.isFlipped ? obj.x + off.right + t.x : obj.x + off.left + t.x;
-        const right = obj.isFlipped
-            ? obj.x + obj.width - off.left - t.width
-            : obj.x + obj.width - off.right - t.width;
+        const x = this.getObjX(obj);
+        const isFlipped = !!(obj.isFlipped || obj.isNpcFlipped);
+
+        const left = isFlipped ? x + off.right + t.x : x + off.left + t.x;
+        const right = isFlipped
+            ? x + obj.width - off.left - t.width
+            : x + obj.width - off.right - t.width;
+
         const top = obj.y + off.top + t.y;
         const bottom = obj.y + obj.height - off.bottom - t.height;
+
         return { left, right, top, bottom };
     }
+
 
     /**
      * Normalizes box coordinates.
@@ -605,7 +611,8 @@ class EventManager {
      * @param {object} objB - The target object.
      */
     drawHoldProgressCircle(ctx, e, objB) {
-        const x = objB.x - this.getCameraX() + objB.width / 2;
+        const bx = this.getObjX(objB);
+        const x = bx - this.getCameraX() + objB.width / 2;
         const y = objB.y - 40;
         const r = 20;
         ctx.beginPath();
@@ -629,4 +636,17 @@ class EventManager {
         ctx.textAlign = "center";
         ctx.fillText(`Halte ${e.requireKey}`, x, y - 30);
     }
+
+    getObjX(obj) {
+        if (!obj) return 0;
+        // bevorzugt: zentrale Methode am Objekt
+        if (typeof obj.getCollisionX === "function") return obj.getCollisionX();
+        if (typeof obj.getBaseX === "function") return obj.getBaseX();
+
+        // fallback: drawOffset berücksichtigen
+        const d = obj.drawOffset || { x: 0, flipX: 0 };
+        const isFlipped = !!(obj.isFlipped || obj.isNpcFlipped);
+        return obj.x + (d.x || 0) + (isFlipped ? (d.flipX || 0) : 0);
+    }
+
 }

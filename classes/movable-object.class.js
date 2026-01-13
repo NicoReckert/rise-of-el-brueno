@@ -69,27 +69,33 @@ class MovableObject extends DrawableObject {
         toleranceA = { x: 0, y: 0, width: 0, height: 0 },
         toleranceB = { x: 0, y: 0, width: 0, height: 0 }
     ) {
+        const ax = this.getRenderX ? this.getRenderX() : this.x;
+        const bx = object.getRenderX ? object.getRenderX() : object.x;
+
         // --- Hitbox von "this" (A) ---
         const aLeft = this.isFlipped
-            ? this.x + this.offset.right + toleranceA.x
-            : this.x + this.offset.left + toleranceA.x;
+            ? ax + this.offset.right + toleranceA.x
+            : ax + this.offset.left + toleranceA.x;
+
         const aRight = this.isFlipped
-            ? this.x + this.width - this.offset.left - toleranceA.width
-            : this.x + this.width - this.offset.right - toleranceA.width;
+            ? ax + this.width - this.offset.left - toleranceA.width
+            : ax + this.width - this.offset.right - toleranceA.width;
+
         const aTop = this.y + this.offset.top + toleranceA.y;
         const aBottom = this.y + this.height - this.offset.bottom - toleranceA.height;
 
         // --- Hitbox von "object" (B) ---
         const bLeft = object.isFlipped
-            ? object.x + object.offset.right + toleranceB.x
-            : object.x + object.offset.left + toleranceB.x;
+            ? bx + object.offset.right + toleranceB.x
+            : bx + object.offset.left + toleranceB.x;
+
         const bRight = object.isFlipped
-            ? object.x + object.width - object.offset.left - toleranceB.width
-            : object.x + object.width - object.offset.right - toleranceB.width;
+            ? bx + object.width - object.offset.left - toleranceB.width
+            : bx + object.width - object.offset.right - toleranceB.width;
+
         const bTop = object.y + object.offset.top + toleranceB.y;
         const bBottom = object.y + object.height - object.offset.bottom - toleranceB.height;
 
-        // --- Kollision prüfen ---
         return !(aRight < bLeft || aLeft > bRight || aBottom < bTop || aTop > bBottom);
     }
 
@@ -122,37 +128,43 @@ class MovableObject extends DrawableObject {
     }
 
     isCollidingBeforeWithAttackHitbox(object, collidingToleranceTop = 0, collidingToleranceLeft = 0, attackHitbox = null) {
-        // === Wähle aktive Hitbox (Attack-Hitbox oder Standard-Offset) ===
-        const hb = attackHitbox && attackHitbox.active ? attackHitbox : this.offset;
+    const hb = attackHitbox && attackHitbox.active ? attackHitbox : this.offset;
 
-        // === Berechne A-Seiten (dieses Objekt) ===
-        const a_left = this.isFlipped
-            ? this.x + hb.right
-            : this.x + hb.left;
-        const a_right = this.isFlipped
-            ? this.x + this.width - hb.left
-            : this.x + this.width - hb.right;
-        const a_top = this.y + hb.top;
-        const a_bottom = this.y + this.height - hb.bottom;
+    const ax = this.getRenderX ? this.getRenderX() : this.x;
+    const bx = object.getRenderX ? object.getRenderX() : object.x;
 
-        // === Berechne B-Seiten (Zielobjekt) ===
-        const b_left = object.isFlipped
-            ? object.x + object.offset.right
-            : object.x + object.offset.left;
-        const b_right = object.isFlipped
-            ? object.x + object.width - object.offset.left
-            : object.x + object.width - object.offset.right;
-        const b_top = object.y + object.offset.top;
-        const b_bottom = object.y + object.height - object.offset.bottom;
+    // === A-Seiten (dieses Objekt) ===
+    const a_left = this.isFlipped
+        ? ax + hb.right
+        : ax + hb.left;
 
-        // === AABB-Kollision prüfen ===
-        return (
-            a_right > b_left + collidingToleranceLeft &&
-            a_left < b_right &&
-            a_bottom > b_top + collidingToleranceTop &&
-            a_top < b_bottom
-        );
-    }
+    const a_right = this.isFlipped
+        ? ax + this.width - hb.left
+        : ax + this.width - hb.right;
+
+    const a_top = this.y + hb.top;
+    const a_bottom = this.y + this.height - hb.bottom;
+
+    // === B-Seiten (Zielobjekt) ===
+    const b_left = object.isFlipped
+        ? bx + object.offset.right
+        : bx + object.offset.left;
+
+    const b_right = object.isFlipped
+        ? bx + object.width - object.offset.left
+        : bx + object.width - object.offset.right;
+
+    const b_top = object.y + object.offset.top;
+    const b_bottom = object.y + object.height - object.offset.bottom;
+
+    return (
+        a_right > b_left + collidingToleranceLeft &&
+        a_left < b_right &&
+        a_bottom > b_top + collidingToleranceTop &&
+        a_top < b_bottom
+    );
+}
+
 
 
 
@@ -226,4 +238,12 @@ class MovableObject extends DrawableObject {
         timepassed = timepassed / 1000;
         return timepassed < 1;
     }
+
+    getRenderX() {
+        const d = this.drawOffset || { x: 0, flipX: 0 };
+        // flipX soll nur beim Spiegeln wirken
+        const flipShift = this.isFlipped ? (d.flipX || 0) : 0;
+        return this.x + (d.x || 0) + flipShift;
+    }
+
 }

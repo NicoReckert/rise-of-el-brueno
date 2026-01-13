@@ -70,10 +70,13 @@ class TownLevelSetup {
             lolaSpirit: new AnimatedEntity(this.entityImages, 'lolaSpirit', 200, 200, 23295, 330),
             spiritEssence1: new AnimatedEntity(this.entityImages, "spiritEssence", 90, 90, 0, 0),
             spiritEssence2: new AnimatedEntity(this.entityImages, "spiritEssence", 90, 90, 0, 0),
-            spiritEssence3: new AnimatedEntity(this.entityImages, "spiritEssence", 90, 90, 0, 0)
+            spiritEssence3: new AnimatedEntity(this.entityImages, "spiritEssence", 90, 90, 0, 0),
+            macuahuitl: new AnimatedEntity(this.entityImages, "macuahuitl", 120, 120, 23350, 180)
         }
+
         this.environment.rockyDesertPedestal.opacity = 0;
         this.environment.fire.isFlipped = false;
+        this.environment.macuahuitl.isFlipped = false;
         this.environment.pollitoSpirit.isFlipped = false;
         this.environment.fire.updateAnimationState('idle', 1000 / 8);
         this.sounds.soulMusic.volume = 0;

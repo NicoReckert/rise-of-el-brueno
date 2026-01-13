@@ -100,6 +100,7 @@ class TownLevelController {
         this.addToWorld(this.setup.environment.spiritEssence1);
         this.addToWorld(this.setup.environment.spiritEssence2);
         this.addToWorld(this.setup.environment.spiritEssence3);
+        this.addToWorld(this.setup.environment.macuahuitl);
         this.addObject(this.setup.townLevel.coins);
         this.addObject(this.setup.townLevel.bottles);
         this.addObject(this.setup.endbossAttack.eggs);
@@ -243,15 +244,11 @@ class TownLevelController {
             this.setup.environment.spiritEssence3
         ];
 
-        // Startpositionen nah an Bruno (z.B. aus dem Herz/Brust Bereich)
-        const start = { x: hero.x + hero.width * 0.45, y: hero.y + hero.height * 0.35 };
-
-        // Zielpositionen um Bruno herum
-        const targets = [
-            { x: hero.x + 20, y: hero.y - 5 },
-            { x: hero.x + 15, y: hero.y + 80 },
-            { x: hero.x - 140, y: hero.y + 35 }
-        ];
+        // Startposition (aus Bruno "Herz/Brust")
+        const start = {
+            x: hero.x + hero.width * 0.45,
+            y: hero.y + hero.height * 0.35
+        };
 
         this.setup.spiritEssenceSeq = {
             active: true,
@@ -259,15 +256,42 @@ class TownLevelController {
             nextTime: timestamp,
             essences,
             spirits,
-            targets,
-            start
+            fadeOutDur: 220, // ms
+            fadeOuts: [null, null, null],
+
+            // Offsets relativ zu Bruno (werden jedes Frame zu absoluten Targets umgerechnet)
+            targetOffsets: [
+                { x: 20, y: -5 },
+                { x: 15, y: 80 },
+                { x: -140, y: 35 }
+            ],
+
+            start,
+
+            // Bogen-Parameter (leicht, nicht kompliziert)
+            arcAmp: 26,          // Höhe des Bogens
+            arcWobble: 0.0,      // optional (0 lassen für clean)
+            speed: 2.2,
+
+            // Timing / Visuals
+            fadeInSpeed: 0.04,
+            arrivalDist: 10,
+            delayBetween: 900,
+
+            // pro Spirit separates reveal (damit nix "zu früh" erscheint)
+            reveals: [null, null, null]
         };
 
-        essences.forEach((e, i) => {
+        essences.forEach((e) => {
             e.x = start.x;
             e.y = start.y;
-            e.opacity = 0;
+            e.opacity = 0; // erst leicht einblenden
             e.updateAnimationState("idle", 1000 / 10);
+        });
+
+        // Spirits erstmal unsichtbar lassen (wichtig, sonst “zu früh” sichtbar)
+        spirits.forEach((s) => {
+            s.opacity = 0;
         });
     }
 
@@ -276,58 +300,111 @@ class TownLevelController {
         const seq = this.setup.spiritEssenceSeq;
         if (!seq?.active) return;
 
-        if (timestamp < seq.nextTime) return;
+        const hero = this.character;
 
-        const i = seq.index;
-        const e = seq.essences[i];
-        const s = seq.spirits[i];
-        const t = seq.targets[i];
+        if (timestamp < seq.nextTime) {
+            // reveals laufen trotzdem weiter
+        } else {
+            const i = seq.index;
+            const e = seq.essences[i];
+            const s = seq.spirits[i];
+            const off = seq.targetOffsets[i];
 
-        if (!e || !s || !t) { seq.active = false; return; }
+            if (!e || !s || !off) {
+                seq.active = false;
+                return;
+            }
 
-        // Essence einblenden
-        e.opacity = Math.min(1, (e.opacity ?? 0) + 0.06);
+            // Ziel JETZT berechnen (Offsets -> absolute)
+            const tx = hero.x + off.x;
+            const ty = hero.y + off.y;
 
-        // Smooth move (keine “ranfliegen von weit weg”, eher wie “magie flutscht raus”)
-        const dx = t.x - e.x;
-        const dy = t.y - e.y;
-        const dist = Math.hypot(dx, dy) || 1;
+            // 1) Essence einblenden (früher sichtbar)
+            e.opacity = Math.min(1, (e.opacity ?? 0) + seq.fadeInSpeed);
 
-        const speed = 5;
-        const step = Math.min(dist, speed);
-        e.x += (dx / dist) * step;
-        e.y += (dy / dist) * step;
+            // 2) Bogenflug (leicht):
+            // Wir bewegen intern in Richtung Ziel, aber addieren eine kleine Arc-Komponente,
+            // die gegen Ende verschwindet.
+            const dx = tx - e.x;
+            const dy = ty - e.y;
+            const dist = Math.hypot(dx, dy) || 1;
 
-        // angekommen
-        if (dist <= 10) {
-            // Essence weg
-            e.opacity = 0;
+            // normalisierter Richtungsvektor
+            const nx = dx / dist;
+            const ny = dy / dist;
 
-            // Spirit auf Ziel setzen + einblenden
-            s.x = t.x;
-            s.y = t.y;
-            s.opacity = 0;
-            s.updateAnimationState("spiritCuddle", 1000 / 4);
+            // Perpendikular (90°) für Arc
+            const px = -ny;
+            const py = nx;
 
-            // Spirit Fade-In “smooth”
-            seq.reveal = { spirit: s, start: timestamp, dur: 500 };
+            // Arc-Faktor: am Anfang stärker, am Ende 0
+            const tArc = Math.min(1, dist / 220);   // 0..1 (wenn weit weg => stärker)
+            const arc = seq.arcAmp * tArc;
 
-            seq.index++;
-            seq.nextTime = timestamp + 700; // nächstes Essence nach Delay
+            const step = Math.min(dist, seq.speed);
+
+            // Basis Bewegung + Arc
+            e.x += nx * step + px * (arc * 0.02);
+            e.y += ny * step + py * (arc * 0.02);
+
+            // 3) Trail Partikel (sitzt genau "auf" der Essence, leicht hinter Flugrichtung)
+            // -> Center der Essence + hinten entlang -nx/-ny
+            const back = 14;
+            const pX = (e.x + e.width * 0.5) - nx * back;
+            const pY = (e.y + e.height * 0.5) - ny * back;
+
+            // particle half size (wenn deine Partikel 18x18 sind)
+            const half = 9;
+            this.setup.effects.push(new EssenceTrailParticle(e.img, pX - half, pY - half));
+
+            // 4) angekommen?
+            // 4) angekommen?
+            if (dist <= seq.arrivalDist) {
+
+                // ✅ Essence Fade-Out starten (weich)
+                if (!seq.fadeOuts[i]) {
+                    seq.fadeOuts[i] = { start: timestamp, dur: seq.fadeOutDur, from: e.opacity ?? 1 };
+                }
+
+                // ✅ Spirit wird erst revealed, wenn Essence wirklich weg ist
+                const fo = seq.fadeOuts[i];
+                const ft = Math.min(1, (timestamp - fo.start) / fo.dur);
+                e.opacity = fo.from * (1 - ft);
+
+                if (ft >= 1) {
+                    e.opacity = 0;
+                    seq.fadeOuts[i] = null;
+
+                    // Spirit exakt ans Ziel setzen + reveal starten
+                    s.x = tx;
+                    s.y = ty;
+                    s.opacity = 0;
+                    s.updateAnimationState("spiritCuddle", 1000 / 4);
+                    seq.reveals[i] = { start: timestamp, dur: 700 };
+
+                    // nächstes Essence
+                    seq.index++;
+                    seq.nextTime = timestamp + seq.delayBetween;
+                }
+
+                // ganz wichtig: während Fade-Out hier stoppen, sonst läuft Move weiter
+                return;
+            }
+
         }
 
-        // Spirit fade-in läuft parallel
-        if (seq.reveal) {
-            const { spirit, start, dur } = seq.reveal;
-            const tt = Math.min(1, (timestamp - start) / dur);
+        // 5) reveals parallel updaten (alle Spirits)
+        seq.reveals.forEach((r, idx) => {
+            if (!r) return;
+            const spirit = seq.spirits[idx];
+            const tt = Math.min(1, (timestamp - r.start) / r.dur);
             spirit.opacity = tt;
-            if (tt >= 1) seq.reveal = null;
-        }
+            if (tt >= 1) seq.reveals[idx] = null;
+        });
 
-        if (seq.index >= seq.essences.length && !seq.reveal) {
+        if (seq.index >= seq.essences.length && seq.reveals.every(r => !r)) {
             seq.active = false;
         }
     }
-
 
 }

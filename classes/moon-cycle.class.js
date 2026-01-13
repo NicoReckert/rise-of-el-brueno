@@ -9,6 +9,7 @@ class MoonCycle {
         this.speed = 0.004;
         this.isActive = false;
         this.lastUpdateTime = 0;
+        this.finished = false;
     }
 
     start() {
@@ -33,7 +34,7 @@ class MoonCycle {
 
         if (this.angle < Math.PI * 0.85) {
             this.angle += this.speed * delta * 60;
-        }
+        } else this.finished = true;
 
         this.npc.x = this.centerX + this.radius * Math.cos(this.angle);
         this.npc.y = this.centerY - this.radius * Math.sin(this.angle);
