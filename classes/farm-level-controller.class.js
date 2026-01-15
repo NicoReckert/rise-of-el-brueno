@@ -62,10 +62,6 @@ class FarmLevelController {
         // this.drawSunGlow()
 
         // this.drawHeatHaze()
-        this.handleHint();
-        this.handlePopup();
-        this.setup.taskWindow.update();
-        this.setup.taskWindow.draw(this.ctx);
         this.updateCharacter(timestamp);
         this.updateEntities(timestamp, this.collections);
         this.updateSunAndMoonCycle(timestamp);
@@ -78,6 +74,11 @@ class FarmLevelController {
             cloud.update(timestamp);
         }
         this.handleCharacterHitbox();
+        this.handleHint();
+        this.setup.taskWindow.update(timestamp);
+        this.setup.taskWindow.draw(this.ctx);
+        this.handlePopup();
+
     }
 
     updateCamera() {
@@ -162,10 +163,10 @@ class FarmLevelController {
             this.ctx.save();
             this.ctx.translate(-this.renderCameraX, 0);
             if (this.questManager.step < 14) this.world.addToWorld(this.setup.characters.cow);
+            if (this.questManager.step < 13) this.world.addToWorld(this.setup.world.character);
+            this.world.addToWorld(this.setup.environment.campfire);
             if (this.questManager.step < 14) this.world.addToWorld(this.setup.characters.chick);
             if (this.questManager.step < 14) this.world.addToWorld(this.setup.characters.chicken);
-            this.world.addToWorld(this.setup.environment.campfire);
-            if (this.questManager.step < 13) this.world.addToWorld(this.setup.world.character);
             if (this.questManager.step < 14) this.world.addToWorld(this.setup.environment.moon);
             if (this.questManager.step >= 14 && this.questManager.step < 18) {
                 this.addToWorld(this.setup.characters.drone);
@@ -337,42 +338,42 @@ class FarmLevelController {
     }
 
     handleCharacterHitbox() {
-    const c = this.character;
-    const ctx = this.ctx;
+        const c = this.character;
+        const ctx = this.ctx;
 
-    if (!c || !c.attackHitbox || !c.attackHitbox.active) return;
+        if (!c || !c.attackHitbox || !c.attackHitbox.active) return;
 
-    const hb = c.attackHitbox;
-    ctx.save();
+        const hb = c.attackHitbox;
+        ctx.save();
 
-    if (c.isFlipped) {
-        // Gespiegelt zeichnen
-        ctx.translate(c.x + c.width, Math.round(c.y));
-        ctx.scale(-1, 1);
+        if (c.isFlipped) {
+            // Gespiegelt zeichnen
+            ctx.translate(c.x + c.width, Math.round(c.y));
+            ctx.scale(-1, 1);
 
-        // Spiegle X-Position symmetrisch am Mittelpunkt des Sprites
-        const hbX = c.width - (hb.left + (hb.width ?? (c.width - hb.left - hb.right)));
-        const hbY = hb.top;
-        const hbW = hb.width ?? (c.width - hb.left - hb.right);
-        const hbH = hb.height ?? (c.height - hb.top - hb.bottom);
+            // Spiegle X-Position symmetrisch am Mittelpunkt des Sprites
+            const hbX = c.width - (hb.left + (hb.width ?? (c.width - hb.left - hb.right)));
+            const hbY = hb.top;
+            const hbW = hb.width ?? (c.width - hb.left - hb.right);
+            const hbH = hb.height ?? (c.height - hb.top - hb.bottom);
 
-        ctx.strokeStyle = "rgba(0,255,255,0.8)";
-        ctx.lineWidth = 2;
-        ctx.strokeRect(hbX, hbY, hbW, hbH);
-    } else {
-        // Normale Richtung
-        const drawX = Math.round(c.x + hb.left);
-        const drawY = Math.round(c.y + hb.top);
-        const hbW = hb.width ?? (c.width - hb.left - hb.right);
-        const hbH = hb.height ?? (c.height - hb.top - hb.bottom);
+            ctx.strokeStyle = "rgba(0,255,255,0.8)";
+            ctx.lineWidth = 2;
+            ctx.strokeRect(hbX, hbY, hbW, hbH);
+        } else {
+            // Normale Richtung
+            const drawX = Math.round(c.x + hb.left);
+            const drawY = Math.round(c.y + hb.top);
+            const hbW = hb.width ?? (c.width - hb.left - hb.right);
+            const hbH = hb.height ?? (c.height - hb.top - hb.bottom);
 
-        ctx.strokeStyle = "rgba(0,255,255,0.8)";
-        ctx.lineWidth = 2;
-        ctx.strokeRect(drawX, drawY, hbW, hbH);
+            ctx.strokeStyle = "rgba(0,255,255,0.8)";
+            ctx.lineWidth = 2;
+            ctx.strokeRect(drawX, drawY, hbW, hbH);
+        }
+
+        ctx.restore();
     }
-
-    ctx.restore();
-}
 
 
 

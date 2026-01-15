@@ -197,7 +197,9 @@ const farmEntityManifestImmediate = {
     happy: Array.from({ length: 10 }, (_, i) => `./assets/img/npcs/cow/happy/image_${i + 1}.webp`),
     walk: Array.from({ length: 5 }, (_, i) => `./assets/img/npcs/cow/walk/image_${i + 1}.webp`),
     standUp: Array.from({ length: 6 }, (_, i) => `./assets/img/npcs/cow/stand_up/image_${i + 1}.webp`),
-    afraid: Array.from({ length: 16 }, (_, i) => `./assets/img/npcs/cow/afraid/image_${i + 1}.webp`)
+    afraid: Array.from({ length: 16 }, (_, i) => `./assets/img/npcs/cow/afraid/image_${i + 1}.webp`),
+    eat: Array.from({ length: 8 }, (_, i) => `./assets/img/npcs/cow/eat_grass/image_${i + 1}.webp`),
+    love: Array.from({ length: 8 }, (_, i) => `./assets/img/npcs/cow/love/image_${i + 1}.webp`)
   },
 
   bird: {
@@ -268,8 +270,6 @@ const farmEntityManifestImmediate = {
 
 const farmEntityManifestDeferred = {
   cow: {
-    eat: Array.from({ length: 8 }, (_, i) => `./assets/img/npcs/cow/eat_grass/image_${i + 1}.webp`),
-    love: Array.from({ length: 8 }, (_, i) => `./assets/img/npcs/cow/love/image_${i + 1}.webp`),
     swingToMusic: Array.from({ length: 20 }, (_, i) => `./assets/img/npcs/cow/swing_to_music/image_${11 + i}.webp`),
     sleep: Array.from({ length: 17 }, (_, i) => `./assets/img/npcs/cow/sleep/image_${i + 1}.webp`),
     portrait: Array.from({ length: 10 }, (_, i) => `./assets/img/npcs/cow/portrait/image_${i + 1}.webp`)

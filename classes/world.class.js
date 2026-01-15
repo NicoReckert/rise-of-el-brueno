@@ -2,7 +2,7 @@ class World {
 
     ctx;
     canvas;
-    currentScene = 'townLevel';
+    currentScene = 'farmLevel';
 
     constructor(canvas, keyboard, characterImages, entityImages, allAudios) {
         this.canvas = canvas;
@@ -383,100 +383,100 @@ class World {
     }
 
     addToWorld(object, ctx = this.ctx) {
-    if (!object || !object.img) return;
+        if (!object || !object.img) return;
 
-    const flipped = !!(object.isFlipped ?? false);
-    const flippedNPC = !!(object.isNpcFlipped ?? false);
-    const isFlipped = flipped || flippedNPC;
+        const flipped = !!(object.isFlipped ?? false);
+        const flippedNPC = !!(object.isNpcFlipped ?? false);
+        const isFlipped = flipped || flippedNPC;
 
-    const off = Object.assign({ left: 0, right: 0, top: 0, bottom: 0 }, object.offset || {});
-    const drawOff = Object.assign({ x: 0, y: 0, flipX: 0 }, object.drawOffset || {});
-    const dx = drawOff.x;
-    const dy = drawOff.y;
-    const fx = drawOff.flipX;
+        const off = Object.assign({ left: 0, right: 0, top: 0, bottom: 0 }, object.offset || {});
+        const drawOff = Object.assign({ x: 0, y: 0, flipX: 0 }, object.drawOffset || {});
+        const dx = drawOff.x;
+        const dy = drawOff.y;
+        const fx = drawOff.flipX;
 
-    ctx.save();
-    ctx.globalAlpha = object.opacity !== undefined ? object.opacity : 1;
+        ctx.save();
+        ctx.globalAlpha = object.opacity !== undefined ? object.opacity : 1;
 
-    if (isFlipped) {
-        const tx = Math.round(object.x + object.width + dx + fx);
-        const ty = Math.round(object.y + dy);
+        if (isFlipped) {
+            const tx = Math.round(object.x + object.width + dx + fx);
+            const ty = Math.round(object.y + dy);
 
-        ctx.translate(tx, ty);
-        ctx.scale(-1, 1);
+            ctx.translate(tx, ty);
+            ctx.scale(-1, 1);
 
-        // Draw sprite (local coords)
-        ctx.drawImage(object.img, 0, 0, object.width, object.height);
+            // Draw sprite (local coords)
+            ctx.drawImage(object.img, 0, 0, object.width, object.height);
 
-        if (object.isGamecharacter) {
-            ctx.lineWidth = 3;
+            if (object.isGamecharacter) {
+                ctx.lineWidth = 3;
 
-            // Outer bbox (red) - local
-            ctx.strokeStyle = 'red';
-            ctx.strokeRect(0, 0, object.width, object.height);
+                // Outer bbox (red) - local
+                ctx.strokeStyle = 'red';
+                ctx.strokeRect(0, 0, object.width, object.height);
 
-            // Normal hitbox (blue) - local
-            const w = object.width - off.left - off.right;
-            const h = object.height - off.top - off.bottom;
-            ctx.strokeStyle = 'blue';
-            ctx.strokeRect(off.left, off.top, w, h);
+                // Normal hitbox (blue) - local
+                const w = object.width - off.left - off.right;
+                const h = object.height - off.top - off.bottom;
+                ctx.strokeStyle = 'blue';
+                ctx.strokeRect(off.left, off.top, w, h);
 
-            // Attack hitbox (yellow) - local, but X must be mirrored in flip
-            if (object.attackHitbox) {
-                const hb = object.attackHitbox;
-                const wA = object.width - hb.left - hb.right;
-                const hA = object.height - hb.top - hb.bottom;
+                // Attack hitbox (yellow) - local, but X must be mirrored in flip
+                if (object.attackHitbox) {
+                    const hb = object.attackHitbox;
+                    const wA = object.width - hb.left - hb.right;
+                    const hA = object.height - hb.top - hb.bottom;
 
-                // show only when active (change to `if (object.attackHitbox)` to always show)
-                if (hb.active) {
-                    const attackX = object.width - hb.right - wA; // mirrored
-                    const attackY = hb.top;
+                    // show only when active (change to `if (object.attackHitbox)` to always show)
+                    if (hb.active) {
+                        const attackX = object.width - hb.right - wA; // mirrored
+                        const attackY = hb.top;
 
-                    ctx.strokeStyle = 'yellow';
-                    ctx.strokeRect(attackX, attackY, wA, hA);
+                        ctx.strokeStyle = 'yellow';
+                        ctx.strokeRect(attackX, attackY, wA, hA);
+                    }
+                }
+            }
+        } else {
+            const drawX = Math.round(object.x + dx);
+            const drawY = Math.round(object.y + dy);
+
+            // Draw sprite (world coords)
+            ctx.drawImage(object.img, drawX, drawY, object.width, object.height);
+
+            if (object.isGamecharacter) {
+                ctx.lineWidth = 3;
+
+                // Outer bbox (red)
+                ctx.strokeStyle = 'red';
+                ctx.strokeRect(drawX, drawY, object.width, object.height);
+
+                // Normal hitbox (blue)
+                ctx.strokeStyle = 'blue';
+                ctx.strokeRect(
+                    drawX + off.left,
+                    drawY + off.top,
+                    object.width - off.left - off.right,
+                    object.height - off.top - off.bottom
+                );
+
+                // Attack hitbox (yellow)
+                if (object.attackHitbox) {
+                    const hb = object.attackHitbox;
+                    const wA = object.width - hb.left - hb.right;
+                    const hA = object.height - hb.top - hb.bottom;
+
+                    // show only when active (change to `if (object.attackHitbox)` to always show)
+                    if (hb.active) {
+                        ctx.strokeStyle = 'yellow';
+                        ctx.strokeRect(drawX + hb.left, drawY + hb.top, wA, hA);
+                    }
                 }
             }
         }
-    } else {
-        const drawX = Math.round(object.x + dx);
-        const drawY = Math.round(object.y + dy);
 
-        // Draw sprite (world coords)
-        ctx.drawImage(object.img, drawX, drawY, object.width, object.height);
-
-        if (object.isGamecharacter) {
-            ctx.lineWidth = 3;
-
-            // Outer bbox (red)
-            ctx.strokeStyle = 'red';
-            ctx.strokeRect(drawX, drawY, object.width, object.height);
-
-            // Normal hitbox (blue)
-            ctx.strokeStyle = 'blue';
-            ctx.strokeRect(
-                drawX + off.left,
-                drawY + off.top,
-                object.width - off.left - off.right,
-                object.height - off.top - off.bottom
-            );
-
-            // Attack hitbox (yellow)
-            if (object.attackHitbox) {
-                const hb = object.attackHitbox;
-                const wA = object.width - hb.left - hb.right;
-                const hA = object.height - hb.top - hb.bottom;
-
-                // show only when active (change to `if (object.attackHitbox)` to always show)
-                if (hb.active) {
-                    ctx.strokeStyle = 'yellow';
-                    ctx.strokeRect(drawX + hb.left, drawY + hb.top, wA, hA);
-                }
-            }
-        }
+        ctx.restore();
     }
-
-    ctx.restore();
-}
 
 
 
@@ -1149,5 +1149,65 @@ class World {
             this.frameId = null;
         }
     }
+
+    moveCameraToX(targetX, {
+    tolerance = 1,
+    speed = 6,      // px pro Frame @60fps
+    snap = true,
+    clamp = true,
+    onArrive = null
+} = {}) {
+    // ✅ Eingaben hart normalisieren
+    targetX = Number(targetX);
+    speed = Number(speed);
+
+    // ✅ camera_x absichern (falls schon NaN wurde)
+    if (!Number.isFinite(this.camera_x)) this.camera_x = 0;
+
+    // ✅ targetX/speed müssen valide sein
+    if (!Number.isFinite(targetX) || !Number.isFinite(speed)) {
+        return false;
+    }
+
+    // ✅ dt absichern (nie NaN, nie Infinity, nie riesig)
+    let dt = Number(this.character?.deltaTime);
+    if (!Number.isFinite(dt) || dt <= 0) dt = 1 / 60;
+    dt = Math.min(dt, 0.05); // max 50ms (Tabwechsel / Lagschutz)
+
+    const d = targetX - this.camera_x;
+
+    // angekommen?
+    if (Math.abs(d) <= tolerance) {
+        if (snap) this.camera_x = targetX;
+        if (clamp) this.clampCamera();
+        onArrive?.();
+        return true;
+    }
+
+    // zeitbasierter Schritt (speed = px pro Frame @60fps)
+    const step = speed * dt * 60;
+
+    // ✅ nicht overshooten
+    const move = Math.sign(d) * Math.min(Math.abs(d), step);
+    this.camera_x += move;
+
+    if (clamp) this.clampCamera();
+    return false;
+}
+
+
+    clampCamera() {
+    const levelEnd = Number(this.farmLevelSetup?.farmLevel?.level_end_x);
+    if (!Number.isFinite(levelEnd)) return;
+
+    const maxCameraX = levelEnd - 720;
+
+    if (!Number.isFinite(this.camera_x)) this.camera_x = 0;
+    this.camera_x = Math.max(0, Math.min(this.camera_x, maxCameraX));
+}
+
+
+
+
 
 }

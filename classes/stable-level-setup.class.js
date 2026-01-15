@@ -16,13 +16,9 @@ class StableLevelSetup {
         };
 
         this.environment = {
-            memoryLight: new AnimatedEntity(this.entityImages, 'memoryLight', 200, 200, 590, 473)
+            memoryLight: new AnimatedEntity(this.entityImages, 'memoryLight', 200, 200, 590, 473, 0, 50, 50, 0)
         };
         this.characters.chick.isFlipped = false;
-        this.speechBubbles = {
-            bubbleStable1: new SpeechBubble("Den Hühnerstall verlassen? {F} drücken!", this.world.character, 'info', this.allAudios),
-            bubbleStable2: new SpeechBubble("Yordi streicheln {F} drücken", 'canvas', 'speech', this.allAudios)
-        };
         this.sounds = {
             chickSound: this.allAudios.chickSound,
             chickenSound: this.allAudios.chickenSound,
@@ -39,6 +35,8 @@ class StableLevelSetup {
             new HollowHint("Streicheln", this.characters.chicken, 100, 'rose'),
             new HollowHint("Streicheln", this.characters.chick, 100, 'rose'),
             new HollowHint("Verlassen", this.world.character, 100, 'desert'),
+            new HollowHint("Erinnerung", this.environment.memoryLight, 100, 'default'),
         ];
+
     }
 }

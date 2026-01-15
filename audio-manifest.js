@@ -119,5 +119,6 @@ const otherLevelAudioManifestLazy = {
     eggCrackSound: './assets/audio/egg-crack-sound.mp3',
     fireballChargeSound: './assets/audio/endboss-fireball-charge-sound.mp3',
     explodeSound: './assets/audio/explode-sound.mp3',
-    airHitStunMusic: './assets/audio/air-hit-stun-music.mp3'
+    airHitStunMusic: './assets/audio/air-hit-stun-music.mp3',
+    sadSoulMusic: './assets/audio/sad-soul-music.mp3'
 }

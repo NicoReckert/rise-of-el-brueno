@@ -391,7 +391,8 @@ const farmEvents =
         },
 
         {
-            type: 'quest',
+            type: 'time',
+            delay: 0,
             step: 8,
             action: (setup) => {
                 setup.world.character.isMovingLeft = false;
@@ -399,6 +400,49 @@ const farmEvents =
                 setup.world.isKeysStopp = true;
                 setup.world.character.isFlipped = false;
                 setup.characters.cow.isFlipped = true;
+            }
+        },
+
+        {
+            type: 'time',
+            delay: 2000,
+            step: 8,
+            action: (setup) => {
+                setup.speechBubbles.bubbleFarm1.start(4500)
+            }
+        },
+
+        {
+            type: 'time',
+            from: 2000,
+            to: 7000,
+            once: false,
+            step: 8,
+            action: (setup) => setup.speechBubbles.bubbleFarm1.render(setup.world.ctx, setup.world.farmLevelController.renderCameraX)
+        },
+
+        {
+            type: 'time',
+            delay: 7000,
+            step: 8,
+            action: (setup) => setup.speechBubbles.bubbleFarm2.start(4500)
+
+        },
+
+        {
+            type: 'time',
+            from: 7000,
+            to: 12000,
+            once: false,
+            step: 8,
+            action: (setup) => setup.speechBubbles.bubbleFarm2.render(setup.world.ctx, setup.world.farmLevelController.renderCameraX)
+        },
+
+        {
+            type: 'time',
+            delay: 12000,
+            step: 8,
+            action: (setup) => {
                 setup.characters.chicken.updateAnimationState('walk', 1000 / 8);
                 setup.characters.chick.updateAnimationState('walk', 1000 / 8);
                 setup.characters.chicken.speedX = 3;
@@ -411,7 +455,8 @@ const farmEvents =
         },
 
         {
-            type: 'quest',
+            type: 'time',
+            delay: 6000,
             step: 8,
             once: false,
             action: (setup) => {
@@ -462,29 +507,39 @@ const farmEvents =
             step: 9,
             once: false,
             action: (setup) => {
-                if (setup.world.camera_x <= 108) setup.world.camera_x += 6;
-                if (setup.world.camera_x >= 108) setup.world.camera_x -= 6;
-                if (setup.world.character.x < 788) setup.world.character.x += 5;
-                if (setup.world.character.x > 788) setup.world.character.x -= 5;
-                if (setup.world.character.y <= 393) setup.world.character.y += 1.5;
-            }
-        },
-
-        {
-            type: 'quest',
-            step: 9,
-            once: false,
-            action: (setup) => {
-                if (setup.world.character.x <= 788 && setup.world.character.x >= 738 && setup.world.character.y <= 394 && setup.world.character.y >= 343 && setup.world.camera_x <= 108) {
-                    setup.world.character.isFlipped = true;
-                    setup.world.character.isWalk = false;
-                    setup.world.character.yNormal = 393;
-                    setup.world.character.yVoidless = 510;
-                    setup.world.character.isLightACampfire = true;
-                    setup.world.farmLevelController.questManager.advance(10)
+                const world = setup.world;
+                const char = setup.world.character;
+                const camArrived = world.moveCameraToX(108, { speed: 6 });
+                const arrivedX = char.moveToX(788, { speed: 5, faceTarget: true });
+                if (arrivedX) {
+                    const arrivedY = char.moveToY(393, { speed: 1.5 });
+                    if (arrivedY && camArrived) {
+                        char.isFlipped = true;
+                        char.isWalk = false;
+                        char.yNormal = 393;
+                        char.yVoidless = 510;
+                        char.isLightACampfire = true;
+                        setup.world.farmLevelController.questManager.advance(10)
+                    }
                 }
             }
         },
+
+        // {
+        //     type: 'quest',
+        //     step: 9,
+        //     once: false,
+        //     action: (setup) => {
+        //         if (setup.world.character.x <= 788 && setup.world.character.x >= 738 && setup.world.character.y <= 394 && setup.world.character.y >= 343 && setup.world.camera_x <= 108) {
+        //             setup.world.character.isFlipped = true;
+        //             setup.world.character.isWalk = false;
+        //             setup.world.character.yNormal = 393;
+        //             setup.world.character.yVoidless = 510;
+        //             setup.world.character.isLightACampfire = true;
+        //             setup.world.farmLevelController.questManager.advance(10)
+        //         }
+        //     }
+        // },
 
         {
             type: 'quest',
@@ -573,6 +628,8 @@ const farmEvents =
                     setup.environment.moon.updateAnimationState('idle');
                     setup.world.character.isPlayGuitar = false;
                     setup.world.character.isStandUp = true;
+                    setup.environment.house.updateAnimationState('doorOpens');
+                    setup.sounds.doorOpeningSound.play();
                     setup.world.farmLevelController.questManager.advance(11);
                 }
             }
@@ -589,6 +646,16 @@ const farmEvents =
         },
 
         {
+            type: 'quest',
+            step: 11,
+            action: (setup) => {
+                setup.taskWindow.addTask('7. Gehe ins Haus', { active: true })
+                setup.sounds.newTaskSound.play()
+                setup.popupTexts.push(new PopupText("Neue Aufgabe im Log!", setup.world.canvas.width / 2, 400))
+            }
+        },
+
+        {
             type: 'time',
             delay: 4000,
             step: 11,
@@ -600,20 +667,36 @@ const farmEvents =
         },
         {
             type: 'time',
-            delay: 4000,
+            delay: 4300,
             step: 11,
             once: false,
             action: (setup) => {
-                if (setup.world.character.x < 820) setup.world.character.x += 5;
-                if (setup.world.character.y >= 370) {
-                    setup.world.character.y -= 1.5;
-                } else {
-                    setup.world.character.yNormal = 370;
-                    setup.world.character.yVoidless = 487;
-                    setup.world.isKeysStopp = false;
-                    setup.world.character.isWalk = false;
-                    setup.world.farmLevelController.questManager.advance(12);
+                const char = setup.world.character;
+                const arrivedX = char.moveToX(820, { speed: 5, faceTarget: true });
+                if (arrivedX) {
+                    const arrivedY = char.moveToY(370, { speed: 1.5 });
+                    if (arrivedY) {
+                        char.yNormal = 370;
+                        char.yVoidless = 487;
+                        setup.world.isKeysStopp = false;
+                        char.isWalk = false;
+                        setup.world.farmLevelController.questManager.advance(12);
+                    }
                 }
+            }
+        },
+
+        {
+            type: 'position',
+            area: { x: 1170, width: 100 },
+            objectA: 'character',
+            step: 12,
+            once: false,
+            action: (setup) => {
+                setup.hints[4].show();
+            },
+            onLeave: (setup) => {
+                setup.hints[4].hide();
             }
         },
 
@@ -628,6 +711,13 @@ const farmEvents =
                 setup.world.character.isMovingRight = false;
                 setup.world.isKeysStopp = true;
                 setup.world.character.isFlipped = false;
+                setup.hints[4].hide();
+                setup.environment.house.updateAnimationState('doorCloses');
+                setup.sounds.doorClosingSound.play();
+                setup.world.farmLevelSetup.taskWindow.markDone(6)
+                setup.world.farmLevelSetup.sounds.taskCompletedSound2.currentTime = 0;
+                setup.world.farmLevelSetup.sounds.taskCompletedSound2.play();
+                setup.popupTexts.push(new PopupText("Aufgabe erledigt!", setup.world.canvas.width / 2, 440));
                 setup.world.farmLevelController.questManager.advance(13);
             }
         },
@@ -637,14 +727,8 @@ const farmEvents =
             step: 13,
             once: false,
             action: (setup) => {
-                const targetX = 900;
-                const differenceX = targetX - setup.world.camera_x;
-                if (Math.abs(differenceX) >= 3) {
-                    setup.world.camera_x += Math.sign(differenceX) * 5;
-                } else {
-                    setup.world.camera_x = targetX
-                    setup.world.farmLevelController.questManager.advance(14)
-                }
+                const camArrived = setup.world.moveCameraToX(900, { speed: 5 });
+                if (camArrived) setup.world.farmLevelController.questManager.advance(14)
             }
         },
 
@@ -681,18 +765,13 @@ const farmEvents =
             step: 14,
             once: false,
             action: (setup) => {
+                const drone = setup.characters.drone;
                 setup.world.ctx.save();
                 setup.world.ctx.translate(-setup.world.farmLevelController.renderCameraX, 0);
-                setup.world.addToWorld(setup.characters.drone);
+                setup.world.addToWorld(drone);
                 setup.world.ctx.restore();
-                const targetX = setup.characters.drone.x - 300;
-                const differenceX = targetX - setup.world.camera_x;
-                if (Math.abs(differenceX) >= 3) {
-                    setup.world.camera_x += Math.sign(differenceX) * 10;
-                } else {
-                    setup.world.camera_x = targetX;
-                    setup.world.farmLevelController.questManager.advance(15)
-                }
+                const camArrived = setup.world.moveCameraToX(drone.x - 300, { speed: 10 });
+                if (camArrived) setup.world.farmLevelController.questManager.advance(15);
             }
         },
 
@@ -812,10 +891,25 @@ const farmEvents =
             step: 18,
             once: false,
             action: (setup) => {
-                if (setup.world.camera_x > 800) {
-                    setup.world.camera_x -= 3;
-                } else setup.world.farmLevelController.questManager.advance(19);
+                const camArrived = setup.world.moveCameraToX(800, { speed: 3 });
+                if (world.camera_x <= 1000) {
+                    setup.environment.house.updateAnimationState('doorOpens');
+                    setup.sounds.doorOpeningSound.play();
+                }
+                if (camArrived) setup.world.farmLevelController.questManager.advance(19);
+
             }
+        },
+
+        {
+            type: 'time',
+            delay: 2000,
+            step: 19,
+            action: (setup) => {
+                setup.environment.house.updateAnimationState('doorCloses');
+                setup.sounds.doorClosingSound.play();
+            }
+
         },
 
         {
@@ -955,13 +1049,48 @@ const farmEvents =
                 setup.world.character.isLookDeterminedAndStandUp = true;
             }
         },
+
         {
             type: 'time',
-            delay: 54000,
+            delay: 52000,
             step: 19,
             action: (setup) => {
+                setup.video.play();
                 setup.world.character.isLookDeterminedAndStandUp = false;
+            }
+        },
+
+        {
+            type: 'time',
+            from: 52000,
+            to: 82000,
+            step: 19,
+            once: false,
+            action: (setup) => {
+                if (setup.video.readyState >= 2 && !setup.video.paused && !setup.video.ended) {
+                    setup.world.ctx.save();
+                    setup.world.ctx.drawImage(setup.video, 0, 0, setup.world.canvas.width, setup.world.canvas.height);
+                    setup.world.ctx.restore();
+                }
+            },
+        },
+
+        {
+            type: 'time',
+            delay: 82000,
+            step: 19,
+            action: (setup) => fadeOutAudio(setup.sounds.sadMusic, 4000)
+        },
+
+        {
+            type: 'time',
+            delay: 84000,
+            step: 19,
+            action: (setup) => {
                 setup.world.isKeysStopp = false;
+                setup.taskWindow.addTask('8. Besuche nochmal den Stall', { active: true })
+                setup.sounds.newTaskSound.play()
+                setup.popupTexts.push(new PopupText("Neue Aufgabe im Log!", setup.world.canvas.width / 2, 400))
                 setup.world.farmLevelController.questManager.advance(20);
             }
         },
@@ -971,10 +1100,34 @@ const farmEvents =
             area: { x: 3000, width: 200 },
             objectA: 'character',
             step: 20,
+            condition: (setup) => !setup.world.farmLevelSetup.taskWindow.tasks[7].done,
+            once: false,
             action: (setup) => {
-                setup.world.character.isWalkDetermined = true;
-                setup.sounds.determinedMusic.play();
-                setup.world.farmLevelController.questManager.advance(21);
+                setup.hints[5].show();
+            },
+            onLeave: (setup) => {
+                setup.hints[5].hide();
+            }
+        },
+
+        {
+            type: 'position',
+            area: { x: 3000, width: 200 },
+            objectA: 'character',
+            step: 20,
+            once: false,
+            action: (setup) => {
+                if (!setup.world.farmLevelSetup.taskWindow.tasks[7].done) {
+                    const char = setup.world.character;
+                    char.clampX(char, 2800, 3000);
+                } else {
+                    setup.world.character.isWalkDetermined = true;
+                    setup.sounds.determinedMusic.play();
+                    setup.world.character.isMovingLeft = false
+                    setup.world.character.isMovingRight = false
+                    setup.world.isKeysStopp = true;
+                    setup.world.farmLevelController.questManager.advance(21);
+                }
             }
         },
 
@@ -983,16 +1136,11 @@ const farmEvents =
             step: 21,
             once: false,
             action: (setup) => {
-                if (setup.world.character.x < 5100) {
-                    setup.world.character.x += 1.0;
-                } else {
-                    setup.world.farmLevelController.questManager.advance(22);
-                }
-                const targetX = setup.world.character.x - 300;
-                const differenceX = targetX - setup.world.camera_x;
-                if (Math.abs(differenceX) >= 3) {
-                    setup.world.camera_x += Math.sign(differenceX) * 1.0;
-                }
+                const char = setup.world.character;
+                const arrivedX = char.moveToX(5100, { speed: 1, faceTarget: true });
+                const targetCamX = char.x - 300;
+                setup.world.moveCameraToX(targetCamX, { speed: 1, tolerance: 3, snap: false });
+                if (arrivedX) setup.world.farmLevelController.questManager.advance(22);
             }
         },
 
@@ -1264,9 +1412,10 @@ const farmEvents =
             once: false,
             step: 22,
             action: (setup) => {
-                if (setup.world.character.x < 6500) {
-                    setup.world.character.x += 1.0;
-                } else {
+                const char = setup.world.character;
+                const arrivedX = char.moveToX(6500, { speed: 1, faceTarget: true });
+                if (arrivedX) {
+                    setup.world.isKeysStopp = false;
                     setup.world.currentScene = 'levelComplete';
                 }
             }

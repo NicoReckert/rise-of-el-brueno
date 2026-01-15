@@ -26,7 +26,7 @@ class Character extends MovableObject {
     constructor(characterImages) {
         super();
         this.characterImages = characterImages;
-        this.speedX = 10;
+        this.speedX = 8;
         this.lastFrameTime = 0;
         this.currentAnimation = 'idle';
         this.frameInterval = 1000 / 2.5;
@@ -37,7 +37,7 @@ class Character extends MovableObject {
         this.init();
         this.movementSpeed;
 
-        this.isGamecharacter = true;
+        this.isGamecharacter = false;
         this.attackHitbox = {
             top: 220,     // Abstand von oben
             left: 200,    // Abstand von links
@@ -253,9 +253,9 @@ class Character extends MovableObject {
     */
     updateDeltaTime(timestamp) {
         if (!this.lastUpdateTime) this.lastUpdateTime = timestamp;
-        const deltaTime = (timestamp - this.lastUpdateTime) / 1000;
+        this.deltaTime = (timestamp - this.lastUpdateTime) / 1000;
         this.lastUpdateTime = timestamp;
-        this.movementSpeed = this.speedX * deltaTime * 60;
+        this.movementSpeed = this.speedX * this.deltaTime * 60;
     }
 
     /**
@@ -275,10 +275,11 @@ class Character extends MovableObject {
     moveLeft() {
         const isMobile = window.innerWidth <= 900;
         const cameraOffset = isMobile ? 920 : 1060;
+        const t = 0.05 * (this.deltaTime * 60);
         this.isFlipped = true;
         if (this.x > this.level_start_x) {
             this.x -= this.movementSpeed;
-            this.world.camera_x += ((this.x - cameraOffset) - this.world.camera_x) * 0.05;
+            this.world.camera_x += ((this.x - cameraOffset) - this.world.camera_x) * t;
         }
     }
 
@@ -288,10 +289,11 @@ class Character extends MovableObject {
     moveRight() {
         const isMobile = window.innerWidth <= 900;
         const cameraOffset = isMobile ? 150 : 100;
+        const t = 0.05 * (this.deltaTime * 60);
         this.isFlipped = false;
         if (this.x < this.world.farmLevelSetup.farmLevel.level_end_x) {
             this.x += this.movementSpeed;
-            this.world.camera_x += ((this.x - cameraOffset) - this.world.camera_x) * 0.05;
+            this.world.camera_x += ((this.x - cameraOffset) - this.world.camera_x) * t;
         }
     }
 
@@ -793,4 +795,57 @@ class Character extends MovableObject {
         this.speedY = 0;
         this.isJumping = false;
     }
+
+    moveToX(targetX, {
+        tolerance = 3,
+        snap = true,
+        speed = 5,          // px pro Frame @60fps
+        faceTarget = true,
+        setWalkFlag = false,
+        onArrive = null
+    } = {}) {
+        const d = targetX - this.x;
+
+        if (faceTarget) this.isFlipped = d < 0;
+        if (setWalkFlag) this.isWalk = Math.abs(d) > tolerance;
+
+        if (Math.abs(d) <= tolerance) {
+            this.isWalk = false;
+            if (snap) this.x = targetX;
+            onArrive?.();
+            return true;
+        }
+
+        const step = speed * (this.deltaTime ?? 1 / 60) * 60;
+        this.x += Math.sign(d) * step;
+        return false;
+    }
+
+    moveToY(targetY, {
+        tolerance = 2,
+        snap = true,
+        speed = 1.5,        // px pro Frame @60fps
+        onArrive = null
+    } = {}) {
+        const d = targetY - this.y;
+
+        if (Math.abs(d) <= tolerance) {
+            if (snap) this.y = targetY;
+            onArrive?.();
+            return true;
+        }
+
+        const step = speed * (this.deltaTime ?? 1 / 60) * 60;
+        this.y += Math.sign(d) * step;
+        return false;
+    }
+
+    clampX(object, minX, maxX) {
+        if (object.x < minX) object.x = minX;
+        if (object.x > maxX) object.x = maxX;
+    }
+
+
+
+
 }

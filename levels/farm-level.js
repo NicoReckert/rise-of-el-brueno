@@ -134,7 +134,10 @@ const farmLevel = new Level(
     });
 
 let calculationXFarm = 1280;
-for (let index = 0; index < 66; index++) {
-    farmLevel.grounds.foreGrounds.push(new Ground(groundSrcFarm[9], `${calculationXFarm}`, 575, 150, 150)); //572
-    calculationXFarm = calculationXFarm + 50;
+for (let i = 0; i < 66; i++) {
+    farmLevel.grounds.foreGrounds.push(
+        new Ground(groundSrcFarm[9], calculationXFarm, 575, 150, 150)
+    );
+    calculationXFarm += 50;
 }
+

@@ -68,6 +68,7 @@ const stableEvents =
             objectB: 'chicken',
             once: false,
             step: 1,
+            condition: (setup) => setup.world.farmLevelController.questManager.step < 8,
             action: (setup) => {
                 setup.hints[0].show();
             },
@@ -99,7 +100,7 @@ const stableEvents =
             condition: (setup) => !setup.world.farmLevelSetup.taskWindow.tasks[0].done,
             action: (setup) => {
                 setup.world.farmLevelSetup.taskWindow.markDone(0)
-                setup.world.farmLevelSetup.sounds.taskCompletedSound.currenttime = 0;
+                setup.world.farmLevelSetup.sounds.taskCompletedSound.currentTime = 0;
                 setup.world.farmLevelSetup.sounds.taskCompletedSound.play();
                 setup.popupTexts.push(new PopupText("Aufgabe erledigt!", setup.world.canvas.width / 2, 440));
             }
@@ -133,6 +134,7 @@ const stableEvents =
             objectB: 'chick',
             once: false,
             step: 1,
+            condition: (setup) => setup.world.farmLevelController.questManager.step < 8,
             action: (setup) => {
                 setup.hints[1].show();
             },
@@ -164,9 +166,23 @@ const stableEvents =
             condition: (setup) => !setup.world.farmLevelSetup.taskWindow.tasks[1].done,
             action: (setup) => {
                 setup.world.farmLevelSetup.taskWindow.markDone(1)
-                setup.world.farmLevelSetup.sounds.taskCompletedSound2.currenttime = 0;
+                setup.world.farmLevelSetup.sounds.taskCompletedSound2.currentTime = 0;
                 setup.world.farmLevelSetup.sounds.taskCompletedSound2.play();
                 setup.popupTexts.push(new PopupText("Aufgabe erledigt!", setup.world.canvas.width / 2, 440));
+            }
+        },
+
+        {
+            type: 'collision',
+            objectA: 'character',
+            objectB: 'memoryLight',
+            once: false,
+            condition: (setup) => setup.world.farmLevelController.questManager.step >= 20,
+            action: (setup) => {
+                setup.hints[3].show();
+            },
+            onLeave: (setup) => {
+                setup.hints[3].hide();
             }
         },
 
@@ -177,7 +193,14 @@ const stableEvents =
             requireKey: 'F',
             condition: (setup) => setup.world.farmLevelController.questManager.step >= 20,
             action: (setup) => {
+                setup.world.farmLevelSetup.taskWindow.markDone(7)
+                setup.world.farmLevelSetup.sounds.taskCompletedSound2.currentTime = 0;
+                setup.world.farmLevelSetup.sounds.taskCompletedSound2.play();
+                setup.popupTexts.push(new PopupText("Aufgabe erledigt!", setup.world.canvas.width / 2, 440));
                 setup.video.play();
+                setup.world.character.isMovingLeft = false;
+                setup.world.character.isMovingRight = false;
+                setup.world.isKeysStopp = true;
             }
         },
 
@@ -185,7 +208,6 @@ const stableEvents =
             type: 'collision',
             objectA: 'character',
             objectB: 'memoryLight',
-            // requireKey: 'F',
             once: false,
             condition: (setup) => setup.world.farmLevelController.questManager.step >= 20,
             action: (setup) => {
@@ -193,7 +215,18 @@ const stableEvents =
                     setup.world.ctx.save();
                     setup.world.ctx.drawImage(setup.video, 0, 0, setup.world.canvas.width, setup.world.canvas.height);
                     setup.world.ctx.restore();
+                } else {
+                    setup.world.isKeysStopp = false;
                 }
+            }
+        },
+
+        {
+            type: 'input',
+            key: 'S',
+            condition: (setup) => setup.video.readyState >= 2 && !setup.video.paused && !setup.video.ended,
+            action: (setup) => {
+                setup.video.pause();
             }
         }
 

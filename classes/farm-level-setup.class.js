@@ -76,14 +76,15 @@ class FarmLevelSetup {
             happyTogetherMusic: this.allAudios.happyTogetherMusic,
             determinedMusic: this.allAudios.determinedMusic,
             windSound: this.allAudios.windSound,
-            hintSound: this.allAudios.hintSound9
+            hintSound: this.allAudios.hintSound9,
+            sadSoulMusic: this.allAudios.sadSoulMusic
         };
         this.speechBubbles = {
-            bubbleFarm: new SpeechBubble("In den Hühnerstall gehen? {F} drücken!", this.world.character, 'info', this.allAudios),
-            bubbleFarm2: new SpeechBubble("Ins Haus gehen? {F} drücken!", this.world.character, 'speech', this.allAudios),
+            bubbleFarm1: new SpeechBubble("Juanito, Pollito", this.world.character, 'speech', this.allAudios),
+            bubbleFarm2: new SpeechBubble("Kommt wir machen unser Lagerfeuer", this.world.character, 'speech', this.allAudios),
             bubbleFarm3: new SpeechBubble("Was ist hier passiert ???", this.world.character, 'speech', this.allAudios),
             bubbleFarm4: new SpeechBubble("Freunde wo seit ihr ???", this.world.character, 'speech', this.allAudios),
-            bubbleFarm5: new SpeechBubble("Neeeeiiiinnnnn. *Weinen*", this.world.character, 'speech', this.allAudios),
+            bubbleFarm5: new SpeechBubble("Neeeeiiiinnnnn.", this.world.character, 'speech', this.allAudios),
             bubbleFarm6: new SpeechBubble("Ich werde euch finden !!!", this.world.character, 'speech', this.allAudios),
             bubbleFarm7: new SpeechBubble("Und wenn ich die ganze Welt nach euch absuchen muss !!!", this.world.character, 'speech', this.allAudios),
             bubbleFarm8: new SpeechBubble("Haltet durch !!!", this.world.character, 'speech', this.allAudios),
@@ -136,9 +137,13 @@ class FarmLevelSetup {
             new HollowHint("Betreten", this.world.character, 80, 'desert'),
             new HollowHint("Begleiten", this.characters.cow, 80, 'desert'),
             new HollowHint("Warten", this.characters.cow, 120, 'desert'),
-            new HollowHint("Belohnen", this.characters.cow, 80, 'rose')
+            new HollowHint("Belohnen", this.characters.cow, 80, 'rose'),
+            new HollowHint("Haus Betreten", this.world.character, 80, 'desert'),
+            new HollowHint("Noch nicht", this.world.character, 100, 'desert')
         ];
 
-
+        this.video = document.createElement('video');
+        this.video.src = './assets/videos/prolog.mp4';
+        this.video.preload = 'auto';
     }
 }

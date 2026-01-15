@@ -2,6 +2,7 @@ class AnimatedEntity extends MovableObject {
 
     constructor(entityImages, currentEntity, height = 150, width = 150, x = 355, y = 220, offsetTop = 0, offsetLeft = 0, offsetRight = 0, offsetBottom = 0) {
         super();
+        this.isGamecharacter = false;
         this.entityImages = entityImages;
         this.currentEntity = currentEntity;
         this.loadImgFromCurrentEntity(this.currentEntity);

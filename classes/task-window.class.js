@@ -8,6 +8,9 @@ class TaskWindow {
         this.width = width;
         this.padding = 40;
         this.canvas = canvas;
+        this.lastUpdateTime = null;
+        this.deltaTime = 1 / 60;
+        this.speed = 15;
 
         // Typografie / Layout
         this.fontSize = 20;   // etwas größer
@@ -45,15 +48,28 @@ class TaskWindow {
     markDone(index) { if (this.tasks[index]) this.tasks[index].done = true; }
     setActive(index) { this.tasks.forEach((t, i) => (t.active = i === index)); }
 
-    update() {
+    update(timestamp) {
+        this.updateDeltaTime(timestamp);
+
+        const step = this.speed * this.deltaTime * 60;
+
         if (this.isOpen && this.x < this.targetX) {
-            this.x += this.speed;
+            this.x += step;
             if (this.x > this.targetX) this.x = this.targetX;
-        } else if (!this.isOpen && this.x > -this.width) {
-            this.x -= this.speed;
+        }
+        else if (!this.isOpen && this.x > -this.width) {
+            this.x -= step;
             if (this.x < -this.width) this.x = -this.width;
         }
     }
+
+
+    updateDeltaTime(timestamp) {
+        if (!this.lastUpdateTime) this.lastUpdateTime = timestamp;
+        this.deltaTime = (timestamp - this.lastUpdateTime) / 1000;
+        this.lastUpdateTime = timestamp;
+    }
+
 
     addTask(text, { active = false, done = false } = {}) {
         const willBeActive = !!active;
