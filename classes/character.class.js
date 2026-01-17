@@ -10,13 +10,12 @@ class Character extends MovableObject {
         'sit-down-and-play-guitar', 'play-guitar-and-sing', 'play-guitar',
         'light-a-campfire', 'meditation', 'meditation-loop', 'stand-up',
         'walk-determined', 'stand-determined', 'stand-determined-loop',
-        'walk-in-storm', 'collapse', 'collapse-loop', 'stand-up-after-collapse',
-        'protect', 'protect-loop', 'air-hit-stun', 'air-pain-stun'
+        'walk-in-storm', 'collapse', 'collapse-loop', 'stand-up-after-collapse', 'air-hit-stun', 'air-pain-stun'
     ]);
     TRANSITIONABLE_ANIMS = new Set([
         'kneel-and-cry', 'stand-up-and-look-determined', 'look-determined-and-stand-up',
-        'caress', 'sit-down-and-play-guitar', 'light-a-campfire', 'attack',
-        'meditation', 'new-weapon', 'stand-up', 'stand-determined', 'collapse', 'stand-up-after-collapse', 'protect', 'air-hit-stun'
+        'caress', 'sit-down-and-play-guitar', 'light-a-campfire', 'attack', 'attack-sword',
+        'meditation', 'new-weapon', 'stand-up', 'stand-determined', 'collapse', 'stand-up-after-collapse', 'protect', 'air-hit-stun', 'hurt'
     ]);
 
     /**
@@ -37,16 +36,32 @@ class Character extends MovableObject {
         this.init();
         this.movementSpeed;
 
-        this.isGamecharacter = false;
-        this.attackHitbox = {
-            top: 220,     // Abstand von oben
-            left: 200,    // Abstand von links
-            right: 8,     // Abstand von rechts
-            bottom: 52,   // Abstand von unten
-            active: false
-        };
+        this.isGamecharacter = true;
+        this.isHaveSword = false;
+        this.attackHitbox =
+            !this.isHaveSword ?
+                {
+                    top: 220,     // Abstand von oben
+                    left: 200,    // Abstand von links
+                    right: 8,     // Abstand von rechts
+                    bottom: 52,   // Abstand von unten
+                    active: false
+                }
+                :
+                {
+                    top: 200,     // Abstand von oben
+                    left: 200,    // Abstand von links
+                    right: 8,     // Abstand von rechts
+                    bottom: 65,   // Abstand von unten
+                    active: false
+                };
+
         this.hasHitEnemyThisAttack = false;
         this.isCapturedByTornado = false;
+
+        this.hurtUntil = 0;
+        this.invulnerableUntil = 0;
+        this.touchingEnemies = new Set();
     }
 
     /**
@@ -124,6 +139,7 @@ class Character extends MovableObject {
     */
     initActionImages() {
         this.attackImages = this.characterImages.attackImages ?? (this.characterImages.attackImages = []);
+        this.attackSwordImages = this.characterImages.attackSwordImages ?? (this.characterImages.attackSwordImages = []);
         this.jetPackImages = this.characterImages.jetPackImages ?? (this.characterImages.jetPackImages = []);
         this.meditationImages = this.characterImages.meditationImages ?? (this.characterImages.meditationImages = []);
         this.meditationLoopImages = this.characterImages.meditationLoopImages ?? (this.characterImages.meditationLoopImages = []);
@@ -220,6 +236,10 @@ class Character extends MovableObject {
     * @param {number} timestamp - Current time in milliseconds.
     */
     updateState(timestamp) {
+        if (this.movementLockUntil && timestamp < this.movementLockUntil) {
+            this.isMovingLeft = false;
+            this.isMovingRight = false;
+        }
         if (this.isAirHitStun) {
             if (timestamp - this.airHitStunStart >= this.airHitStunDuration) {
                 this.isAirHitStun = false;
@@ -242,6 +262,14 @@ class Character extends MovableObject {
             return; // keine Steuerung / keine Bewegung
         }
         this.updateDeltaTime(timestamp);
+        if (this.knockbackVelocityX) {
+            this.x += this.knockbackVelocityX;
+            this.knockbackVelocityX *= 0.85; // Reibung
+            if (Math.abs(this.knockbackVelocityX) < 0.5) {
+                this.knockbackVelocityX = 0;
+            }
+        }
+
         this.handleMovement();
         this.clampCamera();
         this.handleCharacterAnimation();
@@ -323,6 +351,7 @@ class Character extends MovableObject {
     */
     handleDeathOrJump() {
         if (this.isDead) return this.setAnim('dead', 6);
+        if (this.isHurt) return this.setAnim('hurt', 6);
         if (this.isJumping) return this.setAnim('jump', 10);
         return false;
     }
@@ -365,7 +394,11 @@ class Character extends MovableObject {
     * @returns {boolean} Whether a combat or meditation animation was handled.
     */
     handleCombatAndMeditation() {
-        if (this.isAttack) return this.setAnim('attack', 7);
+        if (this.isAttack) {
+            if (!this.isHaveSword) {
+                return this.setAnim('attack', 7);
+            } else return this.setAnim('attack-sword', 6);
+        }
         if (this.isMeditation) return this.setAnim('meditation', 6, 'meditation-loop');
         if (this.isNewWeapon) return this.setAnim('new-weapon', 6, 'new-weapon-loop');
         if (this.isStandUp) return this.setAnim('stand-up', 4);
@@ -429,15 +462,23 @@ class Character extends MovableObject {
 
 
                 if (this.currentAnimation === 'attack') {
-                    // Immer dann aktiv, wenn ein Vielfaches von 6 erreicht ist
+                    // Aktiv bei jedem 6. Frame (Frame 6 → Index 6)
                     const everySixthFrame = this.frameIndex % 6 === 0 && this.frameIndex !== 0;
-
                     this.attackHitbox.active = everySixthFrame;
 
-                    // Optional: Reset nach jedem „Trefferfenster“
                     if (this.frameIndex >= 6) {
                         this.frameIndex = 0;
                     }
+
+                } else if (this.currentAnimation === 'attack-sword') {
+                    // Aktiv bei jedem 4. Frame (Frame 4 → Index 4)
+                    const everyFourthFrame = this.frameIndex % 4 === 0 && this.frameIndex !== 0;
+                    this.attackHitbox.active = everyFourthFrame;
+
+                    if (this.frameIndex >= 4) {
+                        this.frameIndex = 0;
+                    }
+
                 } else {
                     this.attackHitbox.active = false;
                 }
@@ -471,15 +512,27 @@ class Character extends MovableObject {
                 158, 183, /* y ignored */ this.y,
                 { top: 13, left: 33, right: 55, bottom: 15 }
             );
-        } else if (this.isLargeAnimation(anim)) {
+        } else if (this.isLargeAnimationA(anim)) {
             this.setCharacterSize(
-                240, 280, /* y ignored */ this.y,
+                240, 280, /* y ignored */ this.y,  //240, 280
                 { top: 110, left: 30, right: 115, bottom: 10 }
             );
+        } else if (this.isLargeAnimationB(anim)) {
+            this.setCharacterSize(
+                270, 300, /* y ignored */ this.y,  //240, 280
+                { top: 110, left: 30, right: 115, bottom: 10 }
+            );
+
+        } else if (anim === 'protect' || anim === 'protect-loop') {
+            this.setCharacterSize(
+                158, 183, /* y ignored */ this.y,  //240, 280
+                { top: 20, left: 45, right: 40, bottom: 15 }
+            );
+
         } else {
             this.setCharacterSize(
                 130, 300, /* y ignored */ this.y,
-                { top: 130, left: 20, right: 40, bottom: 15 }
+                { top: 130, left: 28, right: 40, bottom: 15 }
             );
         }
 
@@ -489,7 +542,8 @@ class Character extends MovableObject {
         // z.B. in handleDeferredSizeUpdate() oder wenn isAttack true wird:
         if (this.currentAnimation === 'attack') {
             this.drawOffset = { x: 0, y: 0, flipX: -100 }; // Wert anpassen (-20 / -60 etc.)
-
+        } else if (this.currentAnimation === 'attack-sword') {
+            this.drawOffset = { x: 0, y: 0, flipX: -120 };
         } else if (this.currentAnimation === 'protect' || this.currentAnimation === 'protect-loop') {
             this.drawOffset = { x: -14, y: 0, flipX: 0 };
         } else {
@@ -515,8 +569,12 @@ class Character extends MovableObject {
     * @param {string} anim - Animation name.
     * @returns {boolean} True if the animation is large.
     */
-    isLargeAnimation(anim) {
+    isLargeAnimationA(anim) {
         return ['attack', 'new-weapon', 'new-weapon-loop'].includes(anim);
+    }
+
+    isLargeAnimationB(anim) {
+        return ['attack-sword'].includes(anim);
     }
 
     /**
@@ -582,6 +640,9 @@ class Character extends MovableObject {
     */
     handleEmotionalTransitions(anim) {
         switch (anim) {
+            case 'hurt':
+                this.isHurt = false;
+                return true;
             case 'kneel-and-cry':
                 return this.setTransition('cry');
             case 'caress':
@@ -621,6 +682,10 @@ class Character extends MovableObject {
     handleCombatTransitions(anim) {
         switch (anim) {
             case 'attack':
+                this.isAttack = false;
+                this.hasHitEnemyThisAttack = false;
+                return true;
+            case 'attack-sword':
                 this.isAttack = false;
                 this.hasHitEnemyThisAttack = false;
                 return true;
@@ -741,6 +806,7 @@ class Character extends MovableObject {
     getCombatImages(state) {
         switch (state) {
             case 'attack': return this.attackImages;
+            case 'attack-sword': return this.attackSwordImages;
             case 'meditation': return this.meditationImages;
             case 'meditation-loop': return this.meditationLoopImages;
             case 'new-weapon': return this.newWeaponImages;
@@ -845,7 +911,108 @@ class Character extends MovableObject {
         if (object.x > maxX) object.x = maxX;
     }
 
+    hit2(timestamp, dmg = 10) {
+        if (this.isDead || this.isHurt) return;
+        if (timestamp < this.invulnerableUntil) return;
 
+        // Schaden
+        this.energy = Math.max(0, this.energy - dmg);
 
+        // i-frames
+        this.invulnerableUntil = timestamp + 650;
 
+        // ❗ WENN PROTECT → KEIN HURT
+        if (this.isProtect) {
+            // Optional: kleines Block-Feedback
+            this.setAnimation('protect-loop');
+            return;
+        }
+
+        // Hurt nur wenn NICHT protect
+        if (!this.isHurt) {
+            this.isHurt = true;
+            this.hurtUntil = timestamp + 450;
+            this.setAnimation('hurt');
+        }
+    }
+
+    handleEnemyTouch(enemy, colliding, timestamp, {
+        dmg = 10,
+        knockX = 70,
+        knockY = 18,
+        lockMs = 260
+    } = {}) {
+
+        // --- Kontakt beendet → Reset
+        if (!colliding) {
+            this.touchingEnemies.delete(enemy);
+            return false;
+        }
+
+        // --- Noch im Kontakt → kein Dauerschaden
+        if (this.touchingEnemies.has(enemy)) return false;
+        this.touchingEnemies.add(enemy);
+
+        // i-frames / dead
+        if (this.isDead) return false;
+        if (timestamp < this.invulnerableUntil) return false;
+
+        // 🛡️ PROTECT → blockt alles
+        if (this.isProtect) {
+            this.invulnerableUntil = timestamp + 250;
+            return true;
+        }
+
+        // 💥 Schaden + Hurt
+        this.hit2(timestamp, dmg);
+
+        // 🔥 KNOCKBACK-RICHTUNG
+        const dir = enemy.x < this.x ? 1 : -1;
+
+        // 👉 SOFORTIGE Distanz
+        this.x += dir * knockX;
+
+        // ⬆️ Hit-Jump
+        this.isJumping = true;
+        this.isLanding = false;
+        this.speedY = Math.max(this.speedY, knockY);
+
+        // 🧊 Bewegung kurz sperren
+        this.movementLockUntil = timestamp + lockMs;
+        this.isMovingLeft = false;
+        this.isMovingRight = false;
+        this.isAttack = false;
+        this.isProtect = false;
+
+        // Gravity sauber starten
+        this.lastGravityUpdate = timestamp;
+
+        return true;
+    }
+
+    updateAttackHitbox(weapon) {
+        switch (weapon) {
+            case 'staff':
+                this.attackHitbox =
+                {
+                    top: 220,     // Abstand von oben
+                    left: 200,    // Abstand von links
+                    right: 8,     // Abstand von rechts
+                    bottom: 52,   // Abstand von unten
+                    active: false
+                }
+                break;
+
+            case 'sword':
+                this.attackHitbox =
+                {
+                    top: 200,     // Abstand von oben
+                    left: 200,    // Abstand von links
+                    right: 8,     // Abstand von rechts
+                    bottom: 65,   // Abstand von unten
+                    active: false
+                }
+                break;
+        }
+    }
 }

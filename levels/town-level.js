@@ -34,12 +34,12 @@ function createTownLevel(allAudios) {
         {
             enemies:
                 [
-                    new Chicken('chickenMutatesSmall', images, 120, 120, 545, null, allAudios),
-                    new Chicken('chickenMutatesSmall', images, 120, 120, 545, null,  allAudios),
-                    new Chicken('chickenMutatesSmall', images, 120, 120, 545, null,  allAudios),
-                    new Chicken('chickenMutatesBig', images, 160, 160, 505, null,  allAudios),
-                    new Chicken('chickenMutatesBig', images, 160, 160, 505, null, allAudios),
-                    new Chicken('chickenMutatesBig', images, 160, 160, 505, null, allAudios)
+                    // new Chicken('chickenMutatesSmall', images, 120, 120, 545, null, allAudios),
+                    // new Chicken('chickenMutatesSmall', images, 120, 120, 545, null,  allAudios),
+                    // new Chicken('chickenMutatesSmall', images, 120, 120, 545, null,  allAudios),
+                    // new Chicken('chickenMutatesBig', images, 160, 160, 505, null,  allAudios),
+                    // new Chicken('chickenMutatesBig', images, 160, 160, 505, null, allAudios),
+                    // new Chicken('chickenMutatesBig', images, 160, 160, 505, null, allAudios)
                 ],
             clouds:
                 [

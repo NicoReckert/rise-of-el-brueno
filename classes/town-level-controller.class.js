@@ -37,7 +37,7 @@ class TownLevelController {
             this.sandstormFar.pressure = 0.2;
         };
         this.windParticles = new WindParticleEffect(this.canvas.width * 38, this.canvas.height, 1200);
-
+        this.setup.damageTexts ||= [];
 
     }
 
@@ -46,7 +46,7 @@ class TownLevelController {
         this.updateCamera();
         this.renderBackgrounds();
         this.renderNPCsAndCharacter();
-        this.setup.taskWindow.update();
+        this.setup.taskWindow.update(timestamp);
         this.setup.taskWindow.draw(this.ctx);
         this.updateCharacter(timestamp);
         this.updateEntities(timestamp);
@@ -63,6 +63,9 @@ class TownLevelController {
         this.setup.panel.draw(this.ctx);
         this.windParticles.update();
         this.updateSpiritEssenceSequence(timestamp);
+        if (Array.isArray(this.setup.damageTexts)) {
+            this.setup.damageTexts = this.setup.damageTexts.filter(dt => dt?.update?.(timestamp) !== false);
+        }
 
     }
 
@@ -94,6 +97,7 @@ class TownLevelController {
         this.ctx.translate(-this.renderCameraX, 0);
         // this.addToWorld(this.setup.environment.fire);
         this.addToWorld(this.character);
+        this.setup.damageTexts.forEach(dt => dt.draw(this.ctx));
         this.addToWorld(this.setup.environment.juanitoSpirit);
         this.addToWorld(this.setup.environment.pollitoSpirit);
         this.addToWorld(this.setup.environment.lolaSpirit);
@@ -143,9 +147,9 @@ class TownLevelController {
             : null;
 
 
-        // this.sandstormFar.draw(this.ctx, this.renderCameraX, shieldInfo);
-        // this.sandstorm.draw(this.ctx, this.renderCameraX, shieldInfo);
-        // this.sandstormNear.draw(this.ctx, this.renderCameraX, shieldInfo);
+        this.sandstormFar.draw(this.ctx, this.renderCameraX, shieldInfo);
+        this.sandstorm.draw(this.ctx, this.renderCameraX, shieldInfo);
+        this.sandstormNear.draw(this.ctx, this.renderCameraX, shieldInfo);
     }
 
     updateCharacter(timestamp) {

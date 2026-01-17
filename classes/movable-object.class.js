@@ -18,6 +18,8 @@ class MovableObject extends DrawableObject {
         super();
         this.lastGravityUpdate = 0;
         this.gravityInterval = 1000 / 25;
+        this.groundBottom = 370 + 300; // 670
+
     }
 
     preloadImages(paths) {
@@ -30,16 +32,17 @@ class MovableObject extends DrawableObject {
 
     applyGravity(timestamp) {
         if (!this.lastGravityUpdate) this.lastGravityUpdate = timestamp;
-
         const deltaTime = timestamp - this.lastGravityUpdate;
 
         if (deltaTime > this.gravityInterval) {
+            const groundTopY = this.getGroundTopY();
 
-            if (!this.isFlying && this.isAboveGround() || this.speedY > 0) {
+            if (((!this.isFlying && this.isAboveGround()) || this.speedY > 0)) {
                 this.y -= this.speedY;
                 this.speedY -= this.acceleration;
-                if (this.y >= 370) {
-                    this.y = 370;
+
+                if (this.y >= groundTopY) {
+                    this.y = groundTopY;
                     this.speedY = 0;
                     this.isJumping = false;
                     this.isLanding = true;
@@ -48,18 +51,21 @@ class MovableObject extends DrawableObject {
                 this.speedY = 0;
                 this.isJumping = false;
             }
+
             this.lastGravityUpdate = timestamp;
         }
     }
 
     isAboveGround() {
-        if (this instanceof ThrowableObject) {
-            return true
-        } else if (this instanceof Endboss) {
-            return this.y < -35;
-        } else {
-            return this.y < 370.0;
-        }
+        if (this instanceof ThrowableObject) return true;
+        if (this instanceof Endboss) return this.y < -35;
+        return this.y < this.getGroundTopY();
+    }
+
+    getGroundTopY() {
+        // Standard: alter Boden
+        if (!this.groundBottom) return 370;
+        return this.groundBottom - this.height;
     }
 
 
@@ -128,42 +134,42 @@ class MovableObject extends DrawableObject {
     }
 
     isCollidingBeforeWithAttackHitbox(object, collidingToleranceTop = 0, collidingToleranceLeft = 0, attackHitbox = null) {
-    const hb = attackHitbox && attackHitbox.active ? attackHitbox : this.offset;
+        const hb = attackHitbox && attackHitbox.active ? attackHitbox : this.offset;
 
-    const ax = this.getRenderX ? this.getRenderX() : this.x;
-    const bx = object.getRenderX ? object.getRenderX() : object.x;
+        const ax = this.getRenderX ? this.getRenderX() : this.x;
+        const bx = object.getRenderX ? object.getRenderX() : object.x;
 
-    // === A-Seiten (dieses Objekt) ===
-    const a_left = this.isFlipped
-        ? ax + hb.right
-        : ax + hb.left;
+        // === A-Seiten (dieses Objekt) ===
+        const a_left = this.isFlipped
+            ? ax + hb.right
+            : ax + hb.left;
 
-    const a_right = this.isFlipped
-        ? ax + this.width - hb.left
-        : ax + this.width - hb.right;
+        const a_right = this.isFlipped
+            ? ax + this.width - hb.left
+            : ax + this.width - hb.right;
 
-    const a_top = this.y + hb.top;
-    const a_bottom = this.y + this.height - hb.bottom;
+        const a_top = this.y + hb.top;
+        const a_bottom = this.y + this.height - hb.bottom;
 
-    // === B-Seiten (Zielobjekt) ===
-    const b_left = object.isFlipped
-        ? bx + object.offset.right
-        : bx + object.offset.left;
+        // === B-Seiten (Zielobjekt) ===
+        const b_left = object.isFlipped
+            ? bx + object.offset.right
+            : bx + object.offset.left;
 
-    const b_right = object.isFlipped
-        ? bx + object.width - object.offset.left
-        : bx + object.width - object.offset.right;
+        const b_right = object.isFlipped
+            ? bx + object.width - object.offset.left
+            : bx + object.width - object.offset.right;
 
-    const b_top = object.y + object.offset.top;
-    const b_bottom = object.y + object.height - object.offset.bottom;
+        const b_top = object.y + object.offset.top;
+        const b_bottom = object.y + object.height - object.offset.bottom;
 
-    return (
-        a_right > b_left + collidingToleranceLeft &&
-        a_left < b_right &&
-        a_bottom > b_top + collidingToleranceTop &&
-        a_top < b_bottom
-    );
-}
+        return (
+            a_right > b_left + collidingToleranceLeft &&
+            a_left < b_right &&
+            a_bottom > b_top + collidingToleranceTop &&
+            a_top < b_bottom
+        );
+    }
 
 
 

@@ -4,18 +4,17 @@ const townEvents =
             type: 'quest',
             action: (setup) => {
                 setup.backgroundMusic.loop = true;
-                fadeInAudio(setup.backgroundMusic, 2000, 0.6);
-                setup.world.character.x = 23000; // 100 //18500
+                fadeInAudio(setup.sounds.backgroundMusic, 2000, 0.6);
+                setup.world.character.x = 23000; // 100 //18500//23000
                 setup.world.character.level_start_x = 0;
                 setup.world.farmLevelSetup.farmLevel.level_end_x = 25000;
-                setup.world.camera_x = 22900; //0 // 18400
+                setup.world.camera_x = 22900; //0 // 18400 //22900
                 setup.world.character.speedX = 10;
                 setup.world.character.isWalkDetermined = false;
                 setup.characters.tadeo.updateAnimationState('idle', 1000 / 5);
 
                 // setup.world.character.isWalkInStorm = true;
                 setup.world.character.speedX = 5; //2
-
             }
         },
 
@@ -26,7 +25,7 @@ const townEvents =
             requireKey: "F",
             action: (setup) => {
                 setup.world.currentScene = 'nayelisHouseLevel';
-                setup.backgroundMusic.pause();
+                setup.sounds.backgroundMusic.pause();
             }
         },
 
@@ -43,7 +42,7 @@ const townEvents =
 
         {
             type: "position",
-            area: { x: 1000, width: 100 },
+            area: { x: 3000, width: 100 },
             step: 1,
             action: (setup) => {
                 setup.world.townLevelController.questManager.advance(2)
@@ -53,7 +52,7 @@ const townEvents =
         {
             type: "time",
             from: 0,
-            to: 5000,
+            to: 4000,
             step: 2,
             once: false,
             action: (setup, elapsed, progress) => {
@@ -71,7 +70,7 @@ const townEvents =
 
         {
             type: "position",
-            area: { x: 1300, width: 100 },
+            area: { x: 6000, width: 100 },
             step: 3,
             action: (setup) => {
                 setup.world.townLevelController.questManager.advance(4)
@@ -81,7 +80,7 @@ const townEvents =
         {
             type: "time",
             from: 0,
-            to: 5000,
+            to: 4000,
             step: 4,
             once: false,
             action: (setup, elapsed, progress) => {
@@ -92,6 +91,8 @@ const townEvents =
             onEnd: (setup) => {
                 const ctrl = setup.world.townLevelController;
                 ctrl.setSandstorm(1.0);
+                setup.world.character.isWalkInStorm = true;
+                setup.world.character.speedX = 2; //2
                 ctrl.questManager.advance(5);
             }
         },
@@ -99,7 +100,7 @@ const townEvents =
 
         {
             type: "position",
-            area: { x: 1700, width: 100 },
+            area: { x: 8000, width: 100 },
             step: 5,
             action: (setup) => {
                 setup.characters.tadeo.updateAnimationState('walk');
@@ -141,7 +142,7 @@ const townEvents =
             step: 6,
             once: false,
             action: (setup) => {
-                if (setup.characters.tadeo.x >= 2000) {
+                if (setup.characters.tadeo.x >= 7800) {
                     setup.characters.tadeo.isMovingLeft = true;
                 } else {
                     setup.characters.tadeo.isMovingLeft = false;
@@ -157,8 +158,9 @@ const townEvents =
             delay: 2000,
             step: 6,
             action: (setup) => {
-                fadeOutAudio(setup.backgroundMusic, 1000);
+                fadeOutAudio(setup.sounds.backgroundMusic, 1000);
                 fadeInAudio(setup.sounds.tadeosMusic, 2000, 0.6);
+                setup.sounds.tadeosMusic.loop = true;
 
             }
         },
@@ -313,16 +315,16 @@ const townEvents =
                 if (!setup.isNearMusician) {
                     setup.isNearMusician = true;
                     setup.sounds.musicianTownMusic.currentTime = 0;
-                    fadeOutAudio(setup.backgroundMusic, 1000);
+                    fadeOutAudio(setup.sounds.backgroundMusic, 1000);
                     fadeInAudio(setup.sounds.musicianTownMusic, 2000, 0.6);
                 }
             },
             onLeave: (setup) => {
                 if (setup.isNearMusician) {
                     setup.isNearMusician = false;
-                    setup.backgroundMusic.currentTime = 0;
+                    setup.sounds.backgroundMusic.currentTime = 0;
                     fadeOutAudio(setup.sounds.musicianTownMusic, 1000);
-                    fadeInAudio(setup.backgroundMusic, 2000, 0.6);
+                    fadeInAudio(setup.sounds.backgroundMusic, 2000, 0.6);
                 }
             }
         },
@@ -338,16 +340,16 @@ const townEvents =
                 if (!setup.isNearSollita) {
                     setup.isNearSollita = true;
                     setup.sounds.sollitasMusic.currentTime = 0;
-                    fadeOutAudio(setup.backgroundMusic, 1000);
+                    fadeOutAudio(setup.sounds.backgroundMusic, 1000);
                     fadeInAudio(setup.sounds.sollitasMusic, 2000, 0.6);
                 }
             },
             onLeave: (setup) => {
                 if (setup.isNearSollita) {
                     setup.isNearSollita = false;
-                    setup.backgroundMusic.currentTime = 0;
+                    setup.sounds.backgroundMusic.currentTime = 0;
                     fadeOutAudio(setup.sounds.sollitasMusic, 1000);
-                    fadeInAudio(setup.backgroundMusic, 2000, 0.6);
+                    fadeInAudio(setup.sounds.backgroundMusic, 2000, 0.6);
                 }
             }
         },
@@ -438,4 +440,83 @@ const townEvents =
 
             }
         },
+
+
+        //COLLIDINGS
+
+        {
+            type: 'quest',
+            once: false,
+            action: (setup) => {
+                const char = setup.world.character
+                if (char.isHurt) return;
+                setup.world.projectiles.forEach(element => {
+                    if (!element.isActive) return;
+                    if (element.state === "explode") return;
+                    const colliding = element.isColliding(char, { x: 0, width: 0 }, { x: 50, width: 50 });
+                    if (colliding) {
+                        const dmg = char.isProtect ? 2 : 10;
+                        element.isActive = false;
+                        element.explode();
+                        char.hit2(setup.world.timestamp, dmg);
+                        setup.statusBar.setPercentage(char.energy);
+                        setup.damageTexts.push(new DamageText(char.x + char.width / 2, char.y - 10, dmg));
+
+                    }
+                });
+            }
+        },
+
+        {
+            type: 'quest',
+            once: false,
+            action: (setup) => {
+                const char = setup.world.character
+                if (char.isHurt) return;
+                setup.townLevel.enemies.forEach(enemy => {
+                    if (enemy.isDead) return;
+                    const colliding = enemy.isColliding(char);
+                    if (colliding && !char.isJumping) {
+                        const dmg = char.isProtect ? 2 : 10;
+                        const did = char.handleEnemyTouch(enemy, colliding, setup.world.timestamp, {
+                            dmg,
+                            knockX: 26,
+                            knockY: 16
+                        });
+
+                        if (did) {
+                            setup.statusBar.setPercentage(char.energy);
+                            setup.damageTexts.push(new DamageText(char.x + char.width / 2, char.y - 10, dmg));
+                        }
+                    }
+                });
+            }
+        },
+
+
+        {
+            type: 'quest',
+            once: false,
+            action: (setup) => {
+                const char = setup.world.character
+                if (char.isHurt) return;
+                setup.townLevel.enemies.forEach(enemy => {
+                    if (enemy.isDead) return;
+                    if (
+                        enemy.currentEnemy === 'chickenMutatesSmall' &&
+                        enemy.attackHitbox?.active &&
+                        char
+                    ) {
+                        if (!enemy.hasHitPlayerThisAttack && enemy.isCollidingBeforeWithAttackHitbox(char, 0, 0, enemy.attackHitbox)) {
+                            console.log('Chicken hit player!');
+                            const dmg = char.isProtect ? 2 : 10;
+                            char.hit2(setup.world.timestamp, dmg);
+                            setup.statusBar.setPercentage(char.energy);
+                            setup.damageTexts.push(new DamageText(char.x + char.width / 2, char.y - 10, dmg));
+                            enemy.hasHitPlayerThisAttack = true;
+                        }
+                    }
+                });
+            }
+        }
     ];

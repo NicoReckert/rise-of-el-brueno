@@ -4,12 +4,11 @@ class EndbossFireball extends Projectile {
         super("fireball", startX, startY, direction);
         this.allAudios = allAudios;
 
-        // Größe + Schaden
         this.width = 180;
         this.height = 180;
         this.damage = 4;
 
-        // 🔒 Richtung EINMAL beim Start
+        // ✅ Bewegungsbasis: "px pro Frame @60fps"
         const speed = 14;
         const dx = targetX - startX;
         const dy = targetY - startY;
@@ -18,58 +17,41 @@ class EndbossFireball extends Projectile {
         this.vx = (dx / len) * speed;
         this.vy = (dy / len) * speed;
 
-        // Explosion
-        this.isExploding = false;
-        this.explosionFrames = this.imageSets.fireball_explode || [];
-
-        // Projectile braucht Zugriff auf World
         this.world = null;
     }
 
     updateState(timestamp) {
         if (this.markedForRemoval) return;
 
-        if (this.isExploding) {
-            // ✅ Explosion: einmalig Frames durchlaufen
-            if (!this.lastFrameTime) this.lastFrameTime = timestamp;
-            const delta = timestamp - this.lastFrameTime;
+        // ✅ Projectile hat jetzt deltaTime
+        this.updateDeltaTime(timestamp);
 
-            if (delta > this.frameInterval) {
-                if (this.images.length > 0) {
-                    // next frame
-                    this.explosionIndex++;
-
-                    if (this.explosionIndex >= this.images.length) {
-                        this.markedForRemoval = true; // ✅ nach letztem Frame weg
-                        return;
-                    }
-
-                    this.loadImage(this.images[this.explosionIndex]);
-                    this.lastFrameTime = timestamp;
-                }
-            }
-
+        // 💥 Wenn explodiert: nur noch Animation laufen lassen (Projectile macht "einmal abspielen")
+        if (this.state === "explode") {
+            this.updateAnimation(timestamp);
             return;
         }
 
-
-        /* 🔥 FLUG (X + Y, KEIN Homing) */
-        this.x += this.vx;
-        this.y += this.vy;
+        // ✅ deltaTime Bewegung (vx/vy sind @60fps)
+        const step = (this.deltaTime ?? 1 / 60) * 60;
+        this.x += this.vx * step;
+        this.y += this.vy * step;
 
         this.direction = this.vx >= 0;
 
-        /* 🎯 TREFFER */
+        // 🎯 TREFFER (am besten deine neue isColliding nutzen, dann passt offset + flipped)
         const character = this.world?.character;
-        if (character && this.collidesWith(character)) {
-            if (typeof character.hit === "function") character.hit(this.damage);
+        if (character && this.isColliding(character, { x: 0, width: 0 }, { x: 50, width: 50 })) {
+            // hier lieber deine hit2 nutzen, falls du i-frames etc willst:
+            if (typeof character.hit2 === "function") character.hit2(timestamp, this.damage);
+            else if (typeof character.hit === "function") character.hit(this.damage);
             else if ("health" in character) character.health -= this.damage;
 
             this.explode();
             return;
         }
 
-        /* 🪨 BODEN */
+        // 🪨 BODEN
         const groundY = this.world?.groundY ?? 700;
         if (this.y + this.height >= groundY) {
             this.y = groundY - this.height;
@@ -81,9 +63,7 @@ class EndbossFireball extends Projectile {
     }
 
     explode() {
-        this.isExploding = true;
-        this.vx = 0;
-        this.vy = 0;
+        if (this.state === "explode") return;
 
         if (this.allAudios?.explodeSound) {
             const audio = this.allAudios.explodeSound.cloneNode();
@@ -91,21 +71,17 @@ class EndbossFireball extends Projectile {
             audio.play();
         }
 
-        this.images = this.explosionFrames;
-        this.explosionIndex = 0;     // ✅ neu
-        this.lastFrameTime = 0;
+        // ✅ Nutzt Projectile.explode() => state="explode", images wechseln, speed=0
+        super.explode();
 
-        if (this.images.length > 0) {
-            this.loadImage(this.images[0]);
-        } else {
-            this.markedForRemoval = true;
-        }
+        // ✅ Zusätzlich X/Y Bewegung stoppen
+        this.vx = 0;
+        this.vy = 0;
     }
-
 
     draw(ctx) {
         ctx.save();
-        if (!this.isExploding && !this.direction) {
+        if (this.state !== "explode" && !this.direction) {
             ctx.scale(-1, 1);
             ctx.drawImage(this.img, -this.x - this.width, this.y, this.width, this.height);
         } else {
@@ -114,3 +90,4 @@ class EndbossFireball extends Projectile {
         ctx.restore();
     }
 }
+

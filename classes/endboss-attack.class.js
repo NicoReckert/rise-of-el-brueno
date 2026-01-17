@@ -9,8 +9,9 @@ class EndbossAttack extends MovableObject {
      * Creates a new instance with default position, size, and animation settings.
      * @param {Object} entityImages - Image data containing animation frames.
      */
-    constructor(entityImages, allAudios) {
+    constructor(entityImages, allAudios, world) {
         super();
+        this.world = world;
         this.entityImages = entityImages;
         this.x = 800; // 6200
         this.y = 35;
@@ -179,9 +180,10 @@ class EndbossAttack extends MovableObject {
                     cfg.h,
                     cfg.groundY,
                     eggInstance.x + 60,
-                    setup.allAudios
+                    setup.allAudios,
+                    this.world
                 );
-                enemy.world = setup.world;
+                // enemy.world = setup.world;
                 setup.townLevel.enemies.push(enemy);
             }
         });

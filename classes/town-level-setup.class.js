@@ -25,7 +25,7 @@ class TownLevelSetup {
             'tadeo',
             150,
             150,
-            5000, //1500
+            10000, //1500
             515
         );
         const sollita = new AnimatedEntity(
@@ -60,7 +60,8 @@ class TownLevelSetup {
             sollitasMusic: this.allAudios.sollitasMusic,
             endbossFlappingWingsSound: this.allAudios.endbossFlappingWingsSound,
             fireballChargeSound: this.allAudios.fireballChargeSound,
-            airHitStunMusic: this.allAudios.airHitStunMusic
+            airHitStunMusic: this.allAudios.airHitStunMusic,
+            backgroundMusic: this.allAudios.backgroundMusic
         };
         this.environment = {
             rockyDesertPedestal: new AnimatedEntity(this.entityImages, 'rockyDesertPedestal', 400, 400, 23300, 300),
@@ -95,7 +96,7 @@ class TownLevelSetup {
         this.endbossAlarmSound;
         this.endbossMusicIsPlayed = false;
         this.endbossAlarmSoundIsPlayed = false;
-        this.endbossAttack = new EndbossAttack(this.entityImages, this.allAudios);
+        this.endbossAttack = new EndbossAttack(this.entityImages, this.allAudios, this.world);
         this.backgroundMusic = document.getElementById('background-music');
         this.backgroundMusic.volume = 0.6;
 
@@ -111,6 +112,7 @@ class TownLevelSetup {
         }
         this.townLevel.projectiles = [];
         this.world.projectiles = this.townLevel.projectiles;
+        // this.world.projectiles = this.world.projectiles.filter(p => !p.markedForRemoval);
         this.popupTexts = [];
         this.panel = new ComicPanel(this.world.canvas, this.entityImages.tadeo.stoneActivated);
         this.characters.sollita.isFlipped = false;
@@ -127,5 +129,6 @@ class TownLevelSetup {
         this.environment.spiritEssence1.opacity = 0;
         this.environment.spiritEssence2.opacity = 0;
         this.environment.spiritEssence3.opacity = 0;
+        this.damageTexts = [];
     }
 }

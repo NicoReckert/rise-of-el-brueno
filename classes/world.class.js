@@ -2,7 +2,7 @@ class World {
 
     ctx;
     canvas;
-    currentScene = 'farmLevel';
+    currentScene = 'townLevel';
 
     constructor(canvas, keyboard, characterImages, entityImages, allAudios) {
         this.canvas = canvas;
@@ -486,14 +486,26 @@ class World {
             this.character.isMovingLeft = false;
             this.character.isMovingRight = false;
             if (this.keyboard.LEFT) {
+                if (this.character.isAttack || this.character.isProtect) {
+                    this.character.isAttack = false;
+                    this.character.isProtect = false;
+                }
                 this.character.isMovingLeft = true;
             }
             if (this.keyboard.RIGHT) {
+                if (this.character.isAttack || this.character.isProtect) {
+                    this.character.isAttack = false;
+                    this.character.isProtect = false;
+                }
                 this.character.isMovingRight = true;
             }
             if (this.keyboard.UP && !this.character.isAboveGround() && !this.character.isFlying && !this.character.isJumping) {
+                if (this.character.isAttack || this.character.isProtect) {
+                    this.character.isAttack = false;
+                    this.character.isProtect = false;
+                }
                 this.character.isJumping = true;
-                this.character.speedY = 23;
+                this.character.speedY = 25;
                 this.jumpSound.play();
             }
             if (this.keyboard.UP && this.character.isAboveGround() && this.character.isFlying) {
@@ -548,11 +560,11 @@ class World {
                 currentSetup.tKeyPressed = false;
             }
 
-            if (this.keyboard.A && !this.character.isAttack) {
+            if (this.keyboard.A && !this.character.isAttack && !this.character.isMovingLeft && !this.character.isMovingRight) {
                 this.character.isAttack = true;
                 this.townLevelSetup.sounds.attackSound.play();
             }
-            if (this.keyboard.S && !this.character.isProtect) {
+            if (this.keyboard.S && !this.character.isProtect && !this.character.isMovingLeft && !this.character.isMovingRight) {
                 this.character.isProtect = true;
             }
 
@@ -567,21 +579,21 @@ class World {
     }
 
     checkCollisions() {
-        this.townLevelSetup.townLevel.enemies.forEach(element => {
-            if (this.character.isCollidingBefore(element, 0, 0) && !element.isDead) {
-                this.character.hit();
-                this.townLevelSetup.statusBar.setPercentage(this.character.energy);
-            }
-            // if (this.character.isCollidingBefore(element, 0, 0) && !this.character.isJumpOn(element) && !element.isDead) {
-            //     if (this.character.speedX > 0 && this.character.x < element.x) {
-            //         this.character.speedX = 0;
-            //     } else if (this.character.speedX < 0 && this.character.x > element.x) {
-            //         this.character.speedX = 0;
-            //     } else {
-            //         this.character.speedX = 10;
-            //     }
-            // }
-        })
+        // this.townLevelSetup.townLevel.enemies.forEach(element => {
+        //     if (this.character.isCollidingBefore(element, 0, 0) && !element.isDead) {
+        //         this.character.hit();
+        //         this.townLevelSetup.statusBar.setPercentage(this.character.energy);
+        //     }
+        // if (this.character.isCollidingBefore(element, 0, 0) && !this.character.isJumpOn(element) && !element.isDead) {
+        //     if (this.character.speedX > 0 && this.character.x < element.x) {
+        //         this.character.speedX = 0;
+        //     } else if (this.character.speedX < 0 && this.character.x > element.x) {
+        //         this.character.speedX = 0;
+        //     } else {
+        //         this.character.speedX = 10;
+        //     }
+        // }
+        // })
 
         for (let i = this.townLevelSetup.townLevel.enemies.length - 1; i >= 0; i--) {
             const enemy = this.townLevelSetup.townLevel.enemies[i];
@@ -750,83 +762,34 @@ class World {
             }
         }
 
-        for (let j = 0; j < this.townLevelSetup.townLevel.enemies.length; j++) {
-            const enemy = this.townLevelSetup.townLevel.enemies[j];
-            if (this.character.isCollidingBeforeWithAttackHitbox(enemy, 25, 0, this.character.attackHitbox) && !this.character.hasHitEnemyThisAttack && !enemy.isDead) {
-                enemy.health--;
-                this.character.hasHitEnemyThisAttack = true;
+for (let j = 0; j < this.townLevelSetup.townLevel.enemies.length; j++) {
+  const enemy = this.townLevelSetup.townLevel.enemies[j];
 
-                if (enemy.isAttack) {
-                    enemy.isAttack = false;        // Angriff sofort stoppen
-                    enemy.hasFiredThisAttack = false; // sicherheitshalber verhindern, dass der Schuss noch kommt
-                }
+  if (this.character.isCollidingBeforeWithAttackHitbox(enemy, 25, 0, this.character.attackHitbox)
+      && !this.character.hasHitEnemyThisAttack
+      && !enemy.isDead) {
 
+    const hit = enemy.receiveHit(this.timestamp, {
+      dmg: 1,
+      attackerFlipped: this.character.isFlipped,
+      knockX: 12,
+      knockY: 12,
+      hurtMs: 350,
+      deathRemoveMs: 2000,
+      onHurtSound: () => this.townLevelSetup.sounds.enemyHurtSound.play(),
+      onDeathSound: () => this.playChickenDeathSound()
+    });
 
-                const knockbackPowerX = 12;  // seitlicher Impuls
-                const knockbackPowerY = 12; // vertikaler Impuls
+    if (hit) {
+      this.character.hasHitEnemyThisAttack = true;
+      break;
+    }
+  }
+}
 
-                enemy.speedX = this.character.isFlipped ? -knockbackPowerX : knockbackPowerX;
-                enemy.speedY = knockbackPowerY;
-                enemy.isGravity = true;
-                enemy.knockbackActive = true;
-                if (enemy.health <= 0) {
-                    enemy.isDead = true;
-                    enemy.isMovingLeft = false;
-                    enemy.isMovingRight = false;
-                    this.playChickenDeathSound();
-                    const removeEnemyIndex = j;
-                    setTimeout(() => {
-                        this.townLevelSetup.townLevel.enemies.splice(removeEnemyIndex, 1);
-                    }, 2000);
-                } else {
-                    this.townLevelSetup.sounds.enemyHurtSound.play();
-                    enemy.isMovingLeft = false;
-                    enemy.isHurt = true;
-                    setTimeout(() => {
-                        if (enemy.isDead) return;
-                        enemy.isHurt = false;
-                        enemy.isGravity = false;
-                        enemy.knockbackActive = false;
-                        enemy.isMovingLeft = true;
-                    }, 1000);
-                }
-                break;
-            }
-
-            // Nur für große Mutations-Hühner
-            if (enemy.currentEnemy !== "chickenMutatesBig" || enemy.isDead || enemy.isHurt) continue;
-
-            const attackRange = 250;   // Entfernung in px, ab der er angreift
-            const attackCooldown = 3000; // ms zwischen zwei Angriffen
-
-            // Abstand zum Charakter
-            const dx = (this.character.x + this.character.width / 2) - (enemy.x + enemy.width / 2);
-            const distance = Math.abs(dx);
-
-            // Prüfen, ob in Reichweite und kein aktiver Cooldown
-            if (distance < attackRange && !enemy.attackOnCooldown) {
-                const baseSound = this.allAudios.fireballLoadUpSound;
-                const audio = new Audio(baseSound.src);
-                audio.play();
-                enemy.isAttack = true;
-                enemy.frameIndex = 0;
-                enemy.attackOnCooldown = true;
-                enemy.isMovingLeft = false;
-
-                // Richtung setzen
-                enemy.isFlipped = dx > 0; // Charakter ist rechts → Huhn schaut nach rechts
-                setTimeout(() => {
-                    if (enemy.isDead) return;
-                    enemy.isAttack = false;
-                    enemy.isMovingLeft = true;
-                }, 2000); // Dauer des Angriffs
-
-                // Cooldown
-                setTimeout(() => {
-                    enemy.attackOnCooldown = false;
-                }, attackCooldown);
-            }
-        }
+// remove dead enemies (ohne timeouts)
+this.townLevelSetup.townLevel.enemies =
+  this.townLevelSetup.townLevel.enemies.filter(e => !e.isRemoved);
 
         if (this.character.isCollidingBeforeWithAttackHitbox(this.townLevelSetup.characters.endboss, 0, 0, this.character.attackHitbox) && this.character.isAttack && !this.character.hasHitEnemyThisAttack && !this.townLevelSetup.characters.endboss.isDead) {
             this.townLevelSetup.characters.endboss.isHurt = true;
@@ -845,7 +808,7 @@ class World {
         if (timestamp - this.lastThrowCheck < this.throwCheckDelay) return;
 
         this.lastThrowCheck = timestamp;
-        if (this.keyboard.D && this.character.throwableBottels != 0 && !this.character.isThrowing) {
+        if (this.keyboard.D && this.character.throwableBottels != 0 && !this.character.isThrowing && !this.character.isAttack && !this.character.isProtect) {
             let bottle;
             if (!this.character.isFlipped) {
                 bottle = new ThrowableObject(this.character.x + 35, this.character.y + 150);
@@ -1151,60 +1114,60 @@ class World {
     }
 
     moveCameraToX(targetX, {
-    tolerance = 1,
-    speed = 6,      // px pro Frame @60fps
-    snap = true,
-    clamp = true,
-    onArrive = null
-} = {}) {
-    // ✅ Eingaben hart normalisieren
-    targetX = Number(targetX);
-    speed = Number(speed);
+        tolerance = 1,
+        speed = 6,      // px pro Frame @60fps
+        snap = true,
+        clamp = true,
+        onArrive = null
+    } = {}) {
+        // ✅ Eingaben hart normalisieren
+        targetX = Number(targetX);
+        speed = Number(speed);
 
-    // ✅ camera_x absichern (falls schon NaN wurde)
-    if (!Number.isFinite(this.camera_x)) this.camera_x = 0;
+        // ✅ camera_x absichern (falls schon NaN wurde)
+        if (!Number.isFinite(this.camera_x)) this.camera_x = 0;
 
-    // ✅ targetX/speed müssen valide sein
-    if (!Number.isFinite(targetX) || !Number.isFinite(speed)) {
+        // ✅ targetX/speed müssen valide sein
+        if (!Number.isFinite(targetX) || !Number.isFinite(speed)) {
+            return false;
+        }
+
+        // ✅ dt absichern (nie NaN, nie Infinity, nie riesig)
+        let dt = Number(this.character?.deltaTime);
+        if (!Number.isFinite(dt) || dt <= 0) dt = 1 / 60;
+        dt = Math.min(dt, 0.05); // max 50ms (Tabwechsel / Lagschutz)
+
+        const d = targetX - this.camera_x;
+
+        // angekommen?
+        if (Math.abs(d) <= tolerance) {
+            if (snap) this.camera_x = targetX;
+            if (clamp) this.clampCamera();
+            onArrive?.();
+            return true;
+        }
+
+        // zeitbasierter Schritt (speed = px pro Frame @60fps)
+        const step = speed * dt * 60;
+
+        // ✅ nicht overshooten
+        const move = Math.sign(d) * Math.min(Math.abs(d), step);
+        this.camera_x += move;
+
+        if (clamp) this.clampCamera();
         return false;
     }
 
-    // ✅ dt absichern (nie NaN, nie Infinity, nie riesig)
-    let dt = Number(this.character?.deltaTime);
-    if (!Number.isFinite(dt) || dt <= 0) dt = 1 / 60;
-    dt = Math.min(dt, 0.05); // max 50ms (Tabwechsel / Lagschutz)
-
-    const d = targetX - this.camera_x;
-
-    // angekommen?
-    if (Math.abs(d) <= tolerance) {
-        if (snap) this.camera_x = targetX;
-        if (clamp) this.clampCamera();
-        onArrive?.();
-        return true;
-    }
-
-    // zeitbasierter Schritt (speed = px pro Frame @60fps)
-    const step = speed * dt * 60;
-
-    // ✅ nicht overshooten
-    const move = Math.sign(d) * Math.min(Math.abs(d), step);
-    this.camera_x += move;
-
-    if (clamp) this.clampCamera();
-    return false;
-}
-
 
     clampCamera() {
-    const levelEnd = Number(this.farmLevelSetup?.farmLevel?.level_end_x);
-    if (!Number.isFinite(levelEnd)) return;
+        const levelEnd = Number(this.farmLevelSetup?.farmLevel?.level_end_x);
+        if (!Number.isFinite(levelEnd)) return;
 
-    const maxCameraX = levelEnd - 720;
+        const maxCameraX = levelEnd - 720;
 
-    if (!Number.isFinite(this.camera_x)) this.camera_x = 0;
-    this.camera_x = Math.max(0, Math.min(this.camera_x, maxCameraX));
-}
+        if (!Number.isFinite(this.camera_x)) this.camera_x = 0;
+        this.camera_x = Math.max(0, Math.min(this.camera_x, maxCameraX));
+    }
 
 
 
