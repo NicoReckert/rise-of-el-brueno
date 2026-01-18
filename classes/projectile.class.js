@@ -1,5 +1,5 @@
 class Projectile extends MovableObject {
-  constructor(type, x, y, direction = true) {
+  constructor(type, x, y, direction = true, maxDistance = 800) {
     super();
     this.type = type;
     this.direction = direction;
@@ -14,6 +14,9 @@ class Projectile extends MovableObject {
     this.lifetime = 4000;
     this.isActive = true;
     this.markedForRemoval = false;
+
+    this.startX = x;
+    this.maxDistance = maxDistance;
 
     this.frameIndex = 0;
     this.lastFrameTime = 0;
@@ -65,6 +68,15 @@ class Projectile extends MovableObject {
       // ✅ deltaTime-bewegung (speed bleibt "pro 60fps-frame")
       const step = this.speed * (this.deltaTime ?? 1 / 60) * 60;
       this.x += this.direction ? step : -step;
+
+      const traveled = Math.abs(this.x - this.startX);
+      if (traveled >= this.maxDistance) {
+        // entweder direkt entfernen:
+        // this.markedForRemoval = true;
+
+        // oder schön mit Explosionsanimation:
+        this.explode();
+      }
     }
 
     this.updateAnimation(timestamp);

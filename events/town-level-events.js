@@ -429,16 +429,14 @@ const townEvents =
             step: 12,
             once: false,
             action: (setup) => {
-                if (setup.characters.endboss.x <= 23000) {
-                    setup.characters.endboss.x += 3;
-                } else {
-                    setup.characters.endboss.setPhase(
-                        setup.characters.endboss.ENDBOSS_PHASE.AIR_EGGS
-                    );
-                    setup.world.townLevelController.questManager.advance(13);
-                }
-
+                const endboss = setup.characters.endboss;
+                const arrivedX = endboss.moveToX(23000, 220);
+                if(arrivedX){
+                        endboss.setPhase(endboss.ENDBOSS_PHASE.AIR_EGGS)
+                        setup.world.townLevelController.questManager.advance(13)
+                    }
             }
+
         },
 
 
@@ -472,22 +470,22 @@ const townEvents =
             once: false,
             action: (setup) => {
                 const char = setup.world.character
+                const now = setup.world.timestamp;
                 if (char.isHurt) return;
                 setup.townLevel.enemies.forEach(enemy => {
                     if (enemy.isDead) return;
                     const colliding = enemy.isColliding(char);
-                    if (colliding && !char.isJumping) {
-                        const dmg = char.isProtect ? 2 : 10;
-                        const did = char.handleEnemyTouch(enemy, colliding, setup.world.timestamp, {
-                            dmg,
-                            knockX: 26,
-                            knockY: 16
-                        });
-
-                        if (did) {
-                            setup.statusBar.setPercentage(char.energy);
-                            setup.damageTexts.push(new DamageText(char.x + char.width / 2, char.y - 10, dmg));
-                        }
+                    const effectiveColliding = colliding && !char.isJumping;
+                    const did = char.handleEnemyTouch(enemy, effectiveColliding, now, {
+                        dmg: char.isProtect ? 2 : 10,
+                        knockX: 26,
+                        knockY: 16
+                    });
+                    if (did) {
+                        setup.statusBar.setPercentage(char.energy);
+                        setup.damageTexts.push(
+                            new DamageText(char.x + char.width / 2, char.y - 10, char.isProtect ? 2 : 10)
+                        );
                     }
                 });
             }
@@ -518,5 +516,74 @@ const townEvents =
                     }
                 });
             }
-        }
+        },
+
+        {
+            type: 'quest',
+            once: false,
+            action: (setup) => {
+                const char = setup.world.character;
+                if (!char.isAttack || char.hasHitEnemyThisAttack) return;
+
+                setup.townLevel.enemies.forEach(enemy => {
+                    if (enemy.isDead || enemy.isRemoved) return;
+
+                    if (char.isCollidingBeforeWithAttackHitbox(enemy, 25, 0, char.attackHitbox)) {
+                        const hit = enemy.receiveHit(setup.world.timestamp, {
+                            dmg: 1,
+                            attackerFlipped: char.isFlipped,
+                            knockX: 12,
+                            knockY: 12,
+                            deathRemoveMs: 2000,
+                            onHurtSound: () => {
+                                const sound = setup.sounds.enemyHurtSound.cloneNode();
+                                sound.currentTime = 0;
+                                sound.play();
+                            },
+                            onDeathSound: () => setup.world.playChickenDeathSound()
+                        });
+
+                        if (hit) {
+                            char.hasHitEnemyThisAttack = true;
+                        }
+                    }
+                });
+            }
+        },
+
+        {
+            type: 'quest',
+            once: false,
+            action: (setup) => {
+                const char = setup.world.character;
+
+                setup.townLevel.enemies.forEach(enemy => {
+                    if (enemy.isDead || enemy.isRemoved) return;
+
+                    if (char.isJumpOn(enemy)) {
+                        enemy.isDead = true;
+                        enemy.isMovingLeft = false;
+                        enemy.isMovingRight = false;
+                        enemy.removeAt = setup.world.timestamp + 2000;
+                        console.log(enemy.removeAt)
+                        enemy.isHurt = false; // optional: kein HURT-Anim bei Tod durch Sprung
+                        setup.world.playChickenDeathSound();
+                        char.bounce();
+                    }
+                });
+            }
+        },
+
+        {
+            type: 'quest',
+            once: false,
+            action: (setup) => {
+                // Entferne alle Gegner, die sich selbst als "entfernt" markiert haben
+                setup.townLevel.enemies = setup.townLevel.enemies.filter(e => !e.isRemoved);
+
+            }
+        },
+
+
+
     ];

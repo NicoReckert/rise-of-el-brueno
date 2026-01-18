@@ -16,7 +16,6 @@ class Chicken extends MovableObject {
         this.currentEnemy = currentEnemy;
         this.entityImages = entityImages;
         this.allAudios = allAudios;
-        this.speed = 0.5 + Math.random() * 0.5;
         this.lastFrameTime = 0;
         this.currentAnimation = 'walk';
         this.frameInterval = 1000 / 8;
@@ -26,7 +25,7 @@ class Chicken extends MovableObject {
         this.isHurt = false;
         this.isAttack = false;
         this.health = 3;
-        this.speedX = 0;
+        this.speedX = 0.6;
         this.knockbackActive = false;
         this.acceleration = 1.5;
 
@@ -37,15 +36,13 @@ class Chicken extends MovableObject {
         this.width = width;
         this.attackOnCooldown = false;
         this.init(this.currentEnemy);
-
-        this.speedX = 1.0;
         this.movementSpeed = 0;
         this.lastUpdateTime = 0;
 
         this.attackCooldownMs = 900;
         this.lastAttackTime = 0;
 
-        this.meleeRange = 65;      // small
+        this.meleeRange = 64   // small
         this.rangedRange = 320;    // big
 
         this.hurtUntil = 0;
@@ -113,45 +110,30 @@ class Chicken extends MovableObject {
      * Updates movement and animation each frame.
      */
     updateState(timestamp) {
-
+        // 🔹 DeltaTime aktualisieren
         this.updateDeltaTime(timestamp);
-        // Hurt automatisch beenden (ohne setTimeout)
-        if (this.isHurt && timestamp >= this.hurtUntil) {
-            this.isHurt = false;
+
+        // 🔹 Tod: nur Death-Animation + Remove-Timer
+        if (this.isDead) {
+            this.handleAnimation();
+            if (this.removeAt && timestamp >= this.removeAt) {
+                this.isRemoved = true;
+            }
+            return;
         }
 
+        // 🔹 Gravity / Knockback-Y
         this.applyGravity3(timestamp);
 
-        if (!this.knockbackActive && !this.isDead && !this.isHurt) {
-            if (this.inAttackRange()) {
-                if (timestamp - this.lastAttackTime > this.attackCooldownMs) {
-                    this.isMovingLeft = false;
-                    this.isMovingRight = false;
-                    this.tryStartAttack(timestamp);
-                } else {
-                    // Nicht angreifen → trotzdem leicht zurückgehen
-                    this.keepDistanceToTarget(this.world.character, {
-                        desiredDist: this.meleeRange,
-                        speed: 1.5,
-                        faceTarget: true
-                    });
-                }
-            } else {
-                this.moveToTargetX(this.world.character, {
-                    desiredDist: this.meleeRange,
-                    tolerance: 10,
-                    speed: 2
-                });
-            }
-        }
+        const char = this.world.character;
 
-        // Knockback
+        // 🔹 AI-Logik (laufen, Abstand, angreifen) in eigener Funktion
+        this.updateAI(timestamp, char);
+
+        // 🔹 Knockback-Bewegung in X
         if (this.knockbackActive) {
             const dt60 = (this.deltaTime ?? 1 / 60) * 60;
-
             this.x += (this.speedXKnock || 0) * dt60;
-
-            // Friction pro 60fps Frame
             this.speedXKnock *= Math.pow(this.knockFriction, dt60);
 
             if (Math.abs(this.speedXKnock) < this.knockStopThreshold) {
@@ -159,23 +141,18 @@ class Chicken extends MovableObject {
                 this.knockbackActive = false;
             }
         } else {
+            // 🔹 Normale Bewegung durch isMovingLeft / isMovingRight
             this.handleMovement();
         }
 
-
-
-        this.handleAnimation();
-
-        if (!this.isDead && !this.isGravity && !this.knockbackActive) {
+        // 🔹 Nach Knockback/Gravity sauber auf Spawn-Y zurückschnappen
+        if (!this.isGravity && !this.knockbackActive) {
             const diff = this.y - this.spawnY;
             if (Math.abs(diff) > 0.5) this.y = this.spawnY;
         }
-
-        if (this.isDead && this.removeAt && timestamp >= this.removeAt) {
-            this.isRemoved = true;  // World removed dann per filter/splice
-        }
-
     }
+
+
 
 
     updateDeltaTime(timestamp) {
@@ -221,7 +198,7 @@ class Chicken extends MovableObject {
             this.frameInterval = 1000 / 5;
         } else if (this.isHurt) {
             this.currentAnimation = 'hurt';
-            this.frameInterval = 1000 / 5;
+            this.frameInterval = 1000 / 6;
         } else if (this.isMovingLeft || this.isMovingRight) {
             this.currentAnimation = 'walk';
             this.frameInterval = 1000 / 5;
@@ -255,6 +232,7 @@ class Chicken extends MovableObject {
      * @param {number} timestamp - Current time in milliseconds.
      */
     updateAnimation(timestamp) {
+        this.handleAnimation()
         if (!this.lastFrameTime) this.lastFrameTime = timestamp;
         const deltaTime = timestamp - this.lastFrameTime;
 
@@ -262,6 +240,15 @@ class Chicken extends MovableObject {
             let images = this.getAnimationImages(this.currentAnimation);
             if (images && images.length > 0) {
                 this.img = images[this.frameIndex % images.length];
+
+                if (this.currentAnimation === 'hurt') {
+                    if (this.frameIndex >= images.length - 1) {
+                        this.isHurt = false;
+                        this.currentAnimation = 'walk';  // oder null
+                        this.frameIndex = 0;
+                    }
+                }
+
 
                 if (this.isAttack && this.currentEnemy === "chickenMutatesBig") {
                     if (this.isHurt || this.isDead) return;
@@ -318,120 +305,166 @@ class Chicken extends MovableObject {
         }
     }
 
-    shootProjectile(type, character) {
-        const direction = character.x > this.x;
-        const offsetX = direction ? this.width - 25 : -45;
-        const offsetY = this.y + this.height * 0.22; // aus dem Schnabel
+shootProjectile(type, character) {
+    // 👉 NICHT mehr character.x > this.x,
+    // sondern immer in Blickrichtung des Huhns
+    const direction = this.isFlipped; // true = nach rechts, false = nach links
 
-        const projectile = new Projectile(type, this.x + offsetX, offsetY, direction);
-        if (!this.world.projectiles) this.world.projectiles = [];
-        this.world.projectiles.push(projectile);
-    }
+    const offsetX = direction ? this.width - 25 : -45;
+    const offsetY = this.y + this.height * 0.22; // aus dem Schnabel
+
+    const projectile = new Projectile(type, this.x + offsetX, offsetY, direction);
+    if (!this.world.projectiles) this.world.projectiles = [];
+    this.world.projectiles.push(projectile);
+}
 
     moveToTargetX(target = null, {
-    desiredDist = 0,
-    tolerance = 10,
-    speed = 60,             // px pro Sekunde
-    faceTarget = true
-} = {}) {
-    const t = target ?? this.world?.character;
-    if (!t) return false;
-
-    // Zielpunkt: gewünschte Distanz links/rechts vom Target
-    const tCenter = t.x + t.width * 0.5;
-    const eCenter = this.x + this.width * 0.5;
-    const dx = tCenter - eCenter;
-
-    const targetX = this.x + Math.sign(dx) * Math.max(0, Math.abs(dx) - desiredDist);
-    return this.moveToX(targetX, { tolerance, speed, faceTarget, target: t });
-}
-
-
-
-   moveToX(targetX, {
-    tolerance = 3,
-    snap = true,
-    speed = 60,            // px pro Sekunde (nicht Frame!)
-    faceTarget = true,
-    onArrive = null,
-    target = null
-} = {}) {
-    const d = targetX - this.x;
-
-    // Blickrichtung setzen, wenn gewünscht
-    if (faceTarget && target) {
-        this.isFlipped = target.x > this.x;
-    }
-
-    // Ziel erreicht?
-    if (Math.abs(d) <= tolerance) {
-        this.isMovingLeft = false;
-        this.isMovingRight = false;
-        if (snap) this.x = targetX;
-        onArrive?.();
-        return true;
-    }
-
-    // Schrittweite framerate-unabhängig berechnen
-    const dt = this.deltaTime ?? 1 / 60;
-    const maxStep = speed * dt;
-    const step = Math.sign(d) * Math.min(Math.abs(d), maxStep);
-    this.x += step;
-
-    this.isMovingRight = d > 0;
-    this.isMovingLeft = d < 0;
-    return false;
-}
-
-
-    keepDistanceToTarget(target = null, {
-        desiredDist = 120,
-        tolerance = 12,
-        speed = 1,            // px pro Frame @60fps
+        desiredDist = 0,
+        tolerance = 10,
+        speed = 60,             // px pro Sekunde
         faceTarget = true
     } = {}) {
         const t = target ?? this.world?.character;
         if (!t) return false;
 
-        const ex = this.x + this.width * 0.5;
-        const tx = t.x + t.width * 0.5;
+        // Zielpunkt: gewünschte Distanz links/rechts vom Target
+        const tCenter = t.x + t.width * 0.5;
+        const eCenter = this.x + this.width * 0.5;
+        const dx = tCenter - eCenter;
 
-        const dx = tx - ex;           // + => target rechts
-        const dist = Math.abs(dx);
+        const targetX = this.x + Math.sign(dx) * Math.max(0, Math.abs(dx) - desiredDist);
+        return this.moveToX(targetX, { tolerance, speed, faceTarget, target: t });
+    }
 
-        if (faceTarget) this.isFlipped = dx > 0;
 
-        // im Band -> stehen
-        if (dist >= desiredDist - tolerance && dist <= desiredDist + tolerance) {
+
+    moveToX(targetX, {
+        tolerance = 3,
+        snap = true,
+        speed = 60,            // px pro Sekunde (nicht Frame!)
+        faceTarget = true,
+        onArrive = null,
+        target = null
+    } = {}) {
+        const d = targetX - this.x;
+
+        // Blickrichtung setzen, wenn gewünscht
+        if (faceTarget && target) {
+            this.isFlipped = target.x > this.x;
+        }
+
+        // Ziel erreicht?
+        if (Math.abs(d) <= tolerance) {
             this.isMovingLeft = false;
             this.isMovingRight = false;
+            if (snap) this.x = targetX;
+            onArrive?.();
             return true;
         }
 
-        // Richtung: zu weit -> hin, zu nah -> weg
-        const wantGoToTarget = dist > desiredDist + tolerance;
-        const dir = wantGoToTarget ? Math.sign(dx) : -Math.sign(dx); // - => weg
+        // Schrittweite framerate-unabhängig berechnen
+        const dt = this.deltaTime ?? 1 / 60;
+        const maxStep = speed * dt;
+        const step = Math.sign(d) * Math.min(Math.abs(d), maxStep);
+        this.x += step;
 
-        const step = speed * (this.deltaTime ?? 1 / 60) * 60;
-        this.x += dir * step;
-
-        this.isMovingRight = dir > 0;
-        this.isMovingLeft = dir < 0;
-
+        this.isMovingRight = d > 0;
+        this.isMovingLeft = d < 0;
         return false;
     }
 
-    inAttackRange() {
-        const t = this.world?.character;
-        if (!t) return false;
 
-        const ex = this.x + this.width * 0.5;
-        const tx = t.x + t.width * 0.5;
-        const dist = Math.abs(tx - ex);
+    keepDistanceToTarget(target = null, {
+    desiredDist = this.meleeRange,
+    tolerance = 6,
+    speed = 1.0,        // ruhig etwas langsamer
+    faceTarget = true
+} = {}) {
+    const t = target ?? this.world?.character;
+    if (!t) return false;
 
-        const range = (this.currentEnemy === "chickenMutatesBig") ? this.rangedRange : this.meleeRange;
-        return dist <= range;
+    const isAboveGround = typeof t.isAboveGround === 'function' && t.isAboveGround();
+
+    // 🛑 Wenn der Character springt → Chicken bleibt stehen
+    if (isAboveGround && t.isJumping) {
+        this.isMovingLeft = false;
+        this.isMovingRight = false;
+        return true;
     }
+
+    const ex = this.x + this.width * 0.5;
+    const tx = t.x + t.width * 0.5;
+    const dx = tx - ex;
+    const dist = Math.abs(dx);
+
+    if (faceTarget) this.isFlipped = dx > 0;
+
+    // ✅ Abstand ist ok → keine Bewegung
+    if (dist >= desiredDist - tolerance && dist <= desiredDist + tolerance) {
+        this.isMovingLeft = false;
+        this.isMovingRight = false;
+        return true;
+    }
+
+    const wantGoToTarget = dist > desiredDist + tolerance;
+    let dir = wantGoToTarget ? Math.sign(dx) : -Math.sign(dx);
+
+    if (dir === 0) {
+        dir = this.isFlipped ? 1 : -1;
+    }
+
+    // Wenn Charakter springt → kein Rückzug
+    if (!wantGoToTarget && t.isJumping) {
+        this.isMovingLeft = false;
+        this.isMovingRight = false;
+        return true;
+    }
+
+    let finalSpeed = speed;
+    if (!wantGoToTarget && dist < 20) {
+        finalSpeed *= 1.3;
+        finalSpeed = Math.min(finalSpeed, 1.8);
+    }
+
+    const step = finalSpeed * (this.deltaTime ?? 1 / 60) * 60;
+    this.x += dir * step;
+
+    this.isMovingRight = false;
+    this.isMovingLeft = false;
+
+    return false;
+}
+
+
+
+
+    inAttackRange(char = this.world?.character) {
+    const t = char;
+    if (!t) return false;
+
+    // Wenn der Character springt → nicht angreifen
+    if (t.isAboveGround && typeof t.isAboveGround === 'function' && t.isAboveGround()) {
+        return false;
+    }
+
+    const ex = this.x + this.width * 0.5;
+    const tx = t.x + t.width * 0.5;
+    const dist = Math.abs(tx - ex);
+
+    let range;
+    if (this.currentEnemy === "chickenMutatesBig") {
+        range = this.rangedRange;
+    } else {
+        // 🔴 HIER: dynamische Nahkampfreichweite inkl. Rücken-Bonus
+        range = this.getDesiredMeleeDistance(t);
+    }
+
+    return dist <= range;
+}
+
+
+
+
 
     tryStartAttack(timestamp) {
         if (this.isDead || this.isHurt) return false;
@@ -453,7 +486,6 @@ class Chicken extends MovableObject {
         attackerFlipped = false,     // kommt vom Character.isFlipped
         knockX = 12,                 // "px per frame @60fps"
         knockY = 12,
-        hurtMs = 350,
         deathRemoveMs = 2000,
         onHurtSound = null,
         onDeathSound = null
@@ -489,11 +521,163 @@ class Chicken extends MovableObject {
             onDeathSound?.();
         } else {
             this.isHurt = true;
-            this.hurtUntil = timestamp + hurtMs;
+            this.currentAnimation = 'hurt';
+            this.frameIndex = 0;
+            this.lastFrameTime = 0;
             onHurtSound?.();
         }
 
         return true;
     }
+
+    /**
+ * Entscheidet, ob und wie das Huhn auf den Charakter reagiert
+ * (laufen, Abstand halten, angreifen).
+ */
+  updateAI(timestamp, char) {
+    if (!char) return;
+
+    // während Knockback / Hurt / Tot / Attack keine AI-Steuerung
+    if (this.knockbackActive || this.isHurt || this.isDead || this.isAttack) {
+        this.isMovingLeft = false;
+        this.isMovingRight = false;
+        return;
+    }
+
+    const charIsHigh = this.isCharacterFarAbove(char);
+    if (charIsHigh) {
+        // Charakter deutlich über mir → nicht nachziehen
+        this.isMovingLeft = false;
+        this.isMovingRight = false;
+        return;
+    }
+
+    // 🔹 SPEZIAL-LOGIK FÜR BIG-CHICKEN (RANGED)
+    if (this.currentEnemy === 'chickenMutatesBig') {
+        // Immer zum Charakter schauen
+        this.isFlipped = char.x > this.x;
+
+        // Abstand in X
+        const ex = this.x + this.width * 0.5;
+        const tx = char.x + char.width * 0.5;
+        const dist = Math.abs(tx - ex);
+
+        // In Schuss-Reichweite?
+        if (dist <= this.rangedRange) {
+            if (timestamp - this.lastAttackTime > this.attackCooldownMs) {
+                // Angriff möglich → stehen + schießen
+                this.isMovingLeft = false;
+                this.isMovingRight = false;
+                this.tryStartAttack(timestamp);
+            } else {
+                // Cooldown → ggf. etwas zurückgehen, wenn der Spieler VIEL zu nah ist
+                if (dist < this.meleeRange * 0.7) {
+                    this.keepDistanceToTarget(char, {
+                        desiredDist: this.meleeRange,
+                        faceTarget: true,
+                        speed: 1.0
+                    });
+                } else {
+                    this.isMovingLeft = false;
+                    this.isMovingRight = false;
+                }
+            }
+        } else {
+            // Noch ausserhalb der Range → hinlaufen, bis ein guter Distanzbereich erreicht ist
+            this.moveToTargetX(char, {
+                desiredDist: this.rangedRange * 0.7,
+                tolerance: 10,
+                snap: false,
+                faceTarget: true,
+                speed: 40
+            });
+        }
+
+        // WICHTIG: Big-Chicken fertig, kleine Hühner unten
+        return;
+    }
+
+    // 🔹 AB HIER: LOGIK FÜR KLEINE HÜHNER (dein bisheriger Code)
+    const desiredDistNear = this.getDesiredMeleeDistance(char); // mit Rücken-Bonus
+    const desiredDistApproach = this.meleeRange;                // Basis zum Hinlaufen
+    const behind = this.isBehindCharacter(char);
+
+    if (this.inAttackRange(char)) {
+        // im Nahkampfradius
+        if (timestamp - this.lastAttackTime > this.attackCooldownMs) {
+            // Angriff möglich
+            this.isMovingLeft = false;
+            this.isMovingRight = false;
+            this.tryStartAttack(timestamp);
+        } else {
+            // Angriff im Cooldown
+            if (!behind) {
+                // VOR dem Charakter → leicht Abstand regeln
+                this.keepDistanceToTarget(char, {
+                    desiredDist: desiredDistNear,
+                    faceTarget: true
+                });
+            } else {
+                // HINTER dem Rücken → einfach stehen bleiben, kein Gezappel
+                this.isMovingLeft = false;
+                this.isMovingRight = false;
+            }
+        }
+    } else {
+        // Noch nicht in AttackRange → hinlaufen bis Basis-Melee erreicht ist
+        this.moveToTargetX(char, {
+            desiredDist: desiredDistApproach,
+            tolerance: 10,
+            snap: false,
+            faceTarget: true,
+            speed: 40
+        });
+    }
+}
+
+
+
+
+    /**
+     * True, wenn der Character deutlich über den Füßen des Huhns ist.
+     */
+    isCharacterFarAbove(char, threshold = 40) {
+        const myBottom = this.y + this.height;
+        const charBottom = char.y + char.height;
+        return (myBottom - charBottom) > threshold;
+    }
+
+    /**
+     * Basis-Melee-Range + Rücken-Bonus bei kleinen Hühnern.
+     */
+   getDesiredMeleeDistance(char) {
+    if (!char) return this.meleeRange;
+
+    let desired = this.meleeRange;
+
+    if (this.currentEnemy === 'chickenMutatesSmall' && this.isBehindCharacter(char)) {
+        !char.isProtect? desired += 12 : desired += 22;   // kleiner Bonus, nicht zu groß (sonst zappelt er leichter)
+    }
+
+    return desired;
+}
+
+
+    isBehindCharacter(char) {
+        const ex = this.x + this.width * 0.5;
+        const tx = char.x + char.width * 0.5;
+
+        const charFacingRight = !char.isFlipped;   // bei dir: isFlipped = nach links
+        const chickenRightOfChar = ex > tx;
+
+        // Char schaut rechts → Huhn links davon = hinten
+        // Char schaut links  → Huhn rechts davon = hinten
+        return (
+            (charFacingRight && !chickenRightOfChar) ||
+            (!charFacingRight && chickenRightOfChar)
+        );
+    }
+
+
 
 }

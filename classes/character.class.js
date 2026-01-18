@@ -37,7 +37,7 @@ class Character extends MovableObject {
         this.movementSpeed;
 
         this.isGamecharacter = true;
-        this.isHaveSword = false;
+        this.isHaveSword = true;
         this.attackHitbox =
             !this.isHaveSword ?
                 {
@@ -236,6 +236,7 @@ class Character extends MovableObject {
     * @param {number} timestamp - Current time in milliseconds.
     */
     updateState(timestamp) {
+        this.prevBottom = this.y + this.height - (this.offset?.bottom || 0);
         if (this.movementLockUntil && timestamp < this.movementLockUntil) {
             this.isMovingLeft = false;
             this.isMovingRight = false;

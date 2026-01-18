@@ -53,6 +53,7 @@ class World {
     }
 
     draw(timestamp) {
+        this.timestamp = timestamp;
 
         if (!this.isRunning) {
             this._drawing = false;
@@ -595,21 +596,21 @@ class World {
         // }
         // })
 
-        for (let i = this.townLevelSetup.townLevel.enemies.length - 1; i >= 0; i--) {
-            const enemy = this.townLevelSetup.townLevel.enemies[i];
-            if (this.character.isJumpOn(enemy)) {
-                if (enemy.isDead) continue;
-                enemy.isDead = true;
-                enemy.isMovingLeft = false;
-                enemy.isMovingRight = false;
-                this.playChickenDeathSound();
-                this.character.bounce();
-                const removeIndex = i;
-                setTimeout(() => {
-                    this.townLevelSetup.townLevel.enemies.splice(removeIndex, 1);
-                }, 2000);
-            }
-        }
+        // for (let i = this.townLevelSetup.townLevel.enemies.length - 1; i >= 0; i--) {
+        //     const enemy = this.townLevelSetup.townLevel.enemies[i];
+        //     if (this.character.isJumpOn(enemy)) {
+        //         if (enemy.isDead) continue;
+        //         enemy.isDead = true;
+        //         enemy.isMovingLeft = false;
+        //         enemy.isMovingRight = false;
+        //         this.playChickenDeathSound();
+        //         this.character.bounce();
+        //         const removeIndex = i;
+        //         setTimeout(() => {
+        //             this.townLevelSetup.townLevel.enemies.splice(removeIndex, 1);
+        //         }, 2000);
+        //     }
+        // }
 
         for (let i = this.townLevelSetup.townLevel.coins.length - 1; i >= 0; i--) {
             const coin = this.townLevelSetup.townLevel.coins[i];
@@ -762,34 +763,34 @@ class World {
             }
         }
 
-for (let j = 0; j < this.townLevelSetup.townLevel.enemies.length; j++) {
-  const enemy = this.townLevelSetup.townLevel.enemies[j];
+        for (let j = 0; j < this.townLevelSetup.townLevel.enemies.length; j++) {
+            const enemy = this.townLevelSetup.townLevel.enemies[j];
 
-  if (this.character.isCollidingBeforeWithAttackHitbox(enemy, 25, 0, this.character.attackHitbox)
-      && !this.character.hasHitEnemyThisAttack
-      && !enemy.isDead) {
+            if (this.character.isCollidingBeforeWithAttackHitbox(enemy, 25, 0, this.character.attackHitbox)
+                && !this.character.hasHitEnemyThisAttack
+                && !enemy.isDead) {
 
-    const hit = enemy.receiveHit(this.timestamp, {
-      dmg: 1,
-      attackerFlipped: this.character.isFlipped,
-      knockX: 12,
-      knockY: 12,
-      hurtMs: 350,
-      deathRemoveMs: 2000,
-      onHurtSound: () => this.townLevelSetup.sounds.enemyHurtSound.play(),
-      onDeathSound: () => this.playChickenDeathSound()
-    });
+                const hit = enemy.receiveHit(this.timestamp, {
+                    dmg: 1,
+                    attackerFlipped: this.character.isFlipped,
+                    knockX: 12,
+                    knockY: 12,
+                    hurtMs: 350,
+                    deathRemoveMs: 2000,
+                    onHurtSound: () => this.townLevelSetup.sounds.enemyHurtSound.play(),
+                    onDeathSound: () => this.playChickenDeathSound()
+                });
 
-    if (hit) {
-      this.character.hasHitEnemyThisAttack = true;
-      break;
-    }
-  }
-}
+                if (hit) {
+                    this.character.hasHitEnemyThisAttack = true;
+                    break;
+                }
+            }
+        }
 
-// remove dead enemies (ohne timeouts)
-this.townLevelSetup.townLevel.enemies =
-  this.townLevelSetup.townLevel.enemies.filter(e => !e.isRemoved);
+        // remove dead enemies (ohne timeouts)
+        this.townLevelSetup.townLevel.enemies =
+            this.townLevelSetup.townLevel.enemies.filter(e => !e.isRemoved);
 
         if (this.character.isCollidingBeforeWithAttackHitbox(this.townLevelSetup.characters.endboss, 0, 0, this.character.attackHitbox) && this.character.isAttack && !this.character.hasHitEnemyThisAttack && !this.townLevelSetup.characters.endboss.isDead) {
             this.townLevelSetup.characters.endboss.isHurt = true;

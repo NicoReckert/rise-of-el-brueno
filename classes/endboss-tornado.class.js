@@ -3,7 +3,8 @@ class EndbossTornado extends MovableObject {
         super();
         this.entityImages = entityImages;
         this.allAudios = allAudios;
-
+        this.lastUpdateTime = 0;
+        this.deltaTime = 0;
         this.x = x;
         this.y = y;
 
@@ -56,6 +57,7 @@ class EndbossTornado extends MovableObject {
 
     updateState(timestamp) {
         if (this.isFinished) return;
+        this.updateDeltaTime(timestamp);
 
         // Tornado soll NICHT nach oben wandern:
         this.y = this.groundY;
@@ -71,6 +73,12 @@ class EndbossTornado extends MovableObject {
         this.updateAnimation(timestamp);
     }
 
+    updateDeltaTime(timestamp) {
+        if (!this.lastUpdateTime) this.lastUpdateTime = timestamp;
+        this.deltaTime = (timestamp - this.lastUpdateTime) / 1000;  // Sekunden
+        this.lastUpdateTime = timestamp;
+    }
+
     seekTarget() {
         if (!this.target) return;
 
@@ -78,29 +86,37 @@ class EndbossTornado extends MovableObject {
         const cx = this.x + this.width * 0.5;
 
         const dx = tx - cx;
-        const len = Math.abs(dx) || 1;
+        const absDx = Math.abs(dx);
 
-        const step = Math.min(Math.abs(dx), this.speed);
+        // ✅ 60 FPS-Basis: speed = px pro 60FPS-Frame
+        const dt60 = (this.deltaTime ?? 1 / 60) * 60;
+        const maxStep = this.speed * dt60;
+        const step = Math.min(absDx, maxStep);
+
         this.x += Math.sign(dx) * step;
 
-
-        // ✅ capture: nutze deine Kollisionsfunktion
+        // capture über isCollidingBefore wie gehabt
         if (this.isCollidingBefore(this.target, 0, 0)) {
             this.captured = true;
             this.state = "LIFT";
 
-            // Brünö einfrieren
             this.target.isCapturedByTornado = true;
             this.target.speedY = 0;
         }
     }
 
+
     liftTarget() {
         if (!this.target) return;
 
-        // Brünö langsam hochziehen, Tornado bleibt am Boden
         const targetHeroY = this.buildYHero;
-        this.target.y = Math.max(targetHeroY, this.target.y - this.liftSpeed);
+
+        // ✅ 60 FPS-Basis
+        const dt60 = (this.deltaTime ?? 1 / 60) * 60;
+        const dy = this.liftSpeed * dt60;
+
+        // langsam nach oben ziehen, aber nicht unter targetHeroY
+        this.target.y = Math.max(targetHeroY, this.target.y - dy);
 
         // Brünö im Tornado zentrieren
         this.target.x = this.x + this.width * 0.35;
@@ -110,6 +126,7 @@ class EndbossTornado extends MovableObject {
             this.state = "MOVE_TO_BUILD";
         }
     }
+
 
     moveToBuildSpot(timestamp) {
         if (!this.target) return;
@@ -205,9 +222,6 @@ class EndbossTornado extends MovableObject {
         }
     }
 
-
-
-
     updateAnimation(timestamp) {
         if (!this.images || this.images.length === 0) return;
         if (!this.lastFrameTime) this.lastFrameTime = timestamp;
@@ -222,9 +236,17 @@ class EndbossTornado extends MovableObject {
     moveToCenterX(targetCenterX) {
         const centerX = this.x + this.width * 0.5;
         const dx = targetCenterX - centerX;
-        const step = Math.min(Math.abs(dx), this.speed);
+        const absDx = Math.abs(dx);
+
+        const dt60 = (this.deltaTime ?? 1 / 60) * 60;
+        const maxStep = this.speed * dt60;
+        const step = Math.min(absDx, maxStep);
+
         this.x += Math.sign(dx) * step;
-        return Math.abs(dx) <= this.speed;
+
+        // "angekommen", wenn der Rest kleiner als ein Schritt ist
+        return absDx <= maxStep;
     }
+
 }
 

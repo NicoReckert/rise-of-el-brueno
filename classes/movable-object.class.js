@@ -192,25 +192,70 @@ class MovableObject extends DrawableObject {
             a_top < b_bottom;
     }
 
-    isJumpOn(object) {
-        const a_left = this.x + this.offset.left;
-        const a_right = this.x + this.width - this.offset.right;
-        const a_bottom = this.y + this.height - this.offset.bottom;
+   isJumpOn(object) {
+    const ax = this.getRenderX ? this.getRenderX() : this.x;
+    const bx = object.getRenderX ? object.getRenderX() : object.x;
 
-        const b_left = object.x + object.offset.left;
-        const b_right = object.x + object.width - object.offset.right;
-        const b_top = object.y + object.offset.top;
+    // --- Hitbox A (Character) wie in isColliding, aber ohne Toleranzen ---
+    const aLeft = this.isFlipped
+        ? ax + this.offset.right
+        : ax + this.offset.left;
 
-        const horizontallyAligned =
-            a_right > b_left &&
-            a_left < b_right;
+    const aRight = this.isFlipped
+        ? ax + this.width - this.offset.left
+        : ax + this.width - this.offset.right;
 
-        const verticalHit =
-            a_bottom >= b_top - 10 &&  // 10 = Toleranz
-            a_bottom <= b_top + 10;    // nur von oben
+    const aTop = this.y + this.offset.top;
+    const aBottom = this.y + this.height - this.offset.bottom;
 
-        return horizontallyAligned && verticalHit;
-    }
+    // Bottom aus vorherigem Frame (falls noch nicht gesetzt → aktueller)
+    const prevBottom = this.prevBottom ?? aBottom;
+
+    // --- Hitbox B (Enemy) wie in isColliding ---
+    const bLeft = object.isFlipped
+        ? bx + object.offset.right
+        : bx + object.offset.left;
+
+    const bRight = object.isFlipped
+        ? bx + object.width - object.offset.left
+        : bx + object.width - object.offset.right;
+
+    const bTop = object.y + object.offset.top;
+    const bBottom = object.y + object.height - object.offset.bottom;
+
+    // 1) Horizontal muss sich überhaupt was überschneiden
+    const horizontallyAligned =
+        aRight > bLeft &&
+        aLeft  < bRight;
+
+    if (!horizontallyAligned) return false;
+
+    // 2) Character muss FALLEN (bei dir: speedY < 0 = nach unten)
+    const fallingDown = this.speedY < 0;
+    if (!fallingDown) return false;
+
+    // 3) Im letzten Frame waren die Füße noch ÜBER dem Kopf des Gegners
+    const wasAboveHead = prevBottom <= bTop;
+
+    // 4) Jetzt sind die Füße auf / knapp unter Kopfhöhe → von oben eingeschlagen
+    const V_TOL = 10; // vertikale Toleranz in px
+    const nowCrossFromTop =
+        aBottom >= bTop - V_TOL &&
+        aTop    <  bBottom; // nicht komplett vorbei schießen
+
+    if (!(wasAboveHead && nowCrossFromTop)) return false;
+
+    // 5) Seitlichen Versatz begrenzen → keine „seitlichen“ stomp-Hits
+    const aCenterX = (aLeft + aRight) / 2;
+    const bCenterX = (bLeft + bRight) / 2;
+    const maxSideOffset = object.width * 0.6; // 0.5–0.7 je nach Gefühl
+
+    const horizontalOk = Math.abs(aCenterX - bCenterX) <= maxSideOffset;
+    if (!horizontalOk) return false;
+
+    return true;
+}
+
 
     isColliding2(object) {
         return this.x + this.offset.left + this.width - this.offset.left - this.offset.right > object.x &&

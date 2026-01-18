@@ -373,7 +373,7 @@ const otherLevelEntityManifestLazy = {
   chickenMutatesSmall: {
     walk: Array.from({ length: 5 }, (_, i) => `./assets/img/3_enemies_chicken/chicken_mutates/walk/image_${2 + i}.webp`),
     dead: Array.from({ length: 1 }, _ => `assets/img/3_enemies_chicken/chicken_mutates/dead/image_1.webp`),
-    hurt: Array.from({ length: 5 }, (_, i) => `./assets/img/3_enemies_chicken/chicken_mutates/hurt/image_${2 + i}.webp`),
+    hurt: Array.from({ length: 6 }, (_, i) => `./assets/img/3_enemies_chicken/chicken_mutates/hurt/image_${i + 1}.webp`),
     attack: Array.from({ length: 8 }, (_, i) => `./assets/img/3_enemies_chicken/chicken_mutates/attack/image_${i + 1}.png`)
 
   },
