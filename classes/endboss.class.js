@@ -77,7 +77,7 @@ class Endboss extends MovableObject {
         this.airDropSequence = [
             { type: 'small', delay: 0 }, //small
                                              // { type: 'small', delay: 2000 },
-            // { type: 'big', delay: 4000 },
+             { type: 'big', delay: 2000 },// { type: 'big', delay: 4000 },
         ];
 
 

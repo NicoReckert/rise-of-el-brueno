@@ -4,7 +4,7 @@
  * @extends MovableObject
  */
 class Chicken extends MovableObject {
-    isGamecharacter = true;
+    isGamecharacter = false;
 
     /**
      * Creates a new instance with randomized speed and default animation settings.

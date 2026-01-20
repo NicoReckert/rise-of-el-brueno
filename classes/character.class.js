@@ -36,7 +36,7 @@ class Character extends MovableObject {
         this.init();
         this.movementSpeed;
 
-        this.isGamecharacter = true;
+        this.isGamecharacter = false;
         this.isHaveSword = true;
         this.attackHitbox =
             !this.isHaveSword ?
@@ -529,6 +529,13 @@ class Character extends MovableObject {
                 158, 183, /* y ignored */ this.y,  //240, 280
                 { top: 20, left: 45, right: 40, bottom: 15 }
             );
+        } else if (anim === 'new-weapon' || anim === 'new-weapon-loop') {
+            this.setCharacterSize(
+                300, 340, /* y ignored */ this.y,  //240, 280
+                { top: 20, left: 45, right: 40, bottom: 15 }
+            );
+
+
 
         } else {
             this.setCharacterSize(
@@ -571,7 +578,7 @@ class Character extends MovableObject {
     * @returns {boolean} True if the animation is large.
     */
     isLargeAnimationA(anim) {
-        return ['attack', 'new-weapon', 'new-weapon-loop'].includes(anim);
+        return ['attack'].includes(anim);
     }
 
     isLargeAnimationB(anim) {

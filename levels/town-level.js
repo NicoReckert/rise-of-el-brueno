@@ -24,6 +24,11 @@ const townSrcTown =
 
 let townLevel = null;
 let images = {};
+const cloudArrayTown = [];
+const cloudCountTown = 10;
+for (let i = 0; i < cloudCountTown; i++) {
+    cloudArrayTown.push(new Cloud(cloudArrayTown, 100)); // 100px Mindestabstand
+}
 
 function setImages(entityImages) {
     images = { ...entityImages };
@@ -41,52 +46,21 @@ function createTownLevel(allAudios) {
                     // new Chicken('chickenMutatesBig', images, 160, 160, 505, null, allAudios),
                     // new Chicken('chickenMutatesBig', images, 160, 160, 505, null, allAudios)
                 ],
-            clouds:
-                [
-                    new Cloud
+            clouds: cloudArrayTown,
+
+            grounds: {
+
+                backGrounds: [
                 ],
-            grounds:
-                [
-                    // new Ground(groundSrcTown[3], -719),
-                    // new Ground(groundSrcTown[4], -719),
-                    // new Ground(groundSrcTown[5], -719),
-                    // new Ground(groundSrcTown[0], 0),
-                    // new Ground(groundSrcTown[1], 0),
-                    // new Ground(groundSrcTown[2], 0),
-                    // new Ground(groundSrcTown[3], 719),
-                    // new Ground(groundSrcTown[4], 719),
-                    // new Ground(groundSrcTown[5], 719),
-                    // new Ground(groundSrcTown[0], 1438),
-                    // new Ground(groundSrcTown[1], 1438),
-                    // new Ground(groundSrcTown[2], 1438),
-                    // new Ground(groundSrcTown[3], 2157),
-                    // new Ground(groundSrcTown[4], 2157),
-                    // new Ground(groundSrcTown[5], 2157),
-                    // new Ground(groundSrcTown[0], 2876),
-                    // new Ground(groundSrcTown[1], 2876),
-                    // new Ground(groundSrcTown[2], 2876),
-                    // new Ground(groundSrcTown[3], 3595),
-                    // new Ground(groundSrcTown[4], 3595),
-                    // new Ground(groundSrcTown[5], 3595),
-                    // new Ground(groundSrcTown[0], 4314),
-                    // new Ground(groundSrcTown[1], 4314),
-                    // new Ground(groundSrcTown[2], 4314),
-                    // new Ground(groundSrcTown[3], 5033),
-                    // new Ground(groundSrcTown[4], 5033),
-                    // new Ground(groundSrcTown[5], 5033),
-                    // new Ground(groundSrcTown[0], 5752),
-                    // new Ground(groundSrcTown[1], 5752),
-                    // new Ground(groundSrcTown[2], 5752),
-                    // new Ground(groundSrcTown[3], 6471),
-                    // new Ground(groundSrcTown[4], 6471),
-                    // new Ground(groundSrcTown[5], 6471),
-                    // new Ground(groundSrcTown[0], 7190),
-                    // new Ground(groundSrcTown[1], 7190),
-                    // new Ground(groundSrcTown[2], 7190),
-                    // new Ground(groundSrcTown[3], 7909),
-                    // new Ground(groundSrcTown[4], 7909),
-                    // new Ground(groundSrcTown[5], 7909)
+
+                // MITTELGRUND (mittlere Bewegung)
+                midGrounds: [
                 ],
+
+                // VORDERGRUND (schnellste Bewegung)
+                foreGrounds: [
+                ]
+            },
             towns:
                 [
                     new Town(townSrcTown[6], 10000, 275, 550, 450),
@@ -137,31 +111,43 @@ function createTownLevel(allAudios) {
 
 
     );
-    let groundX = [];
-    let start = -719;
-    let step = 719;
-    let count = 35;
+
+    const step = 720;
+    const count = 38;
+    const startX = -720;
+
 
     for (let i = 0; i < count; i++) {
-        groundX.push(start + i * step);
-    }
-    // let groundX = [-719, 0, 719, 1438, 2157, 2876, 3595, 4314, 5033, 5752, 6471, 7190, 7909];
-    let groundFrames = [
-        [3, 4, 5],
-        [0, 1, 2]
-    ];
+        const xPos = startX + i * step;
 
-    for (let index = 0; index < groundX.length; index++) {
-        let frameGroup = groundFrames[index % 2];
-        townLevel.sky.push(new Sky(groundX[index]));
-        for (let frame of frameGroup) {
-            townLevel.grounds.push(new Ground(groundSrcTown[frame], groundX[index]));
-        }
+        // BACKGROUND: 3 ↔ 0
+        const backFrame = i % 2 === 0 ? 3 : 0;
+        townLevel.grounds.backGrounds.push(
+            new Ground(groundSrcTown[backFrame], xPos)
+        );
+
+        // MIDGROUND: 4 ↔ 1
+        const midFrame = i % 2 === 0 ? 4 : 1;
+        townLevel.grounds.midGrounds.push(
+            new Ground(groundSrcTown[midFrame], xPos)
+        );
+
+        // FOREGROUND: 5 ↔ 2
+        const foreFrame = i % 2 === 0 ? 5 : 2;
+        townLevel.grounds.foreGrounds.push(
+            new Ground(groundSrcTown[foreFrame], xPos)
+        );
     }
+
+    for (let i = 0; i < count; i++) {
+    const xPos = startX + i * step;
+    townLevel.sky.push(new Sky(xPos));
+}
+
 
     let calculationX = 18676
     for (let index = 0; index < 41; index++) {
-        townLevel.grounds.push(new Ground(groundSrcTown[7], `${calculationX}`, 572, 150, 300));
+        townLevel.grounds.foreGrounds.push(new Ground(groundSrcTown[7], calculationX, 572, 150, 300));
         calculationX = calculationX + 100;
     }
     return townLevel;

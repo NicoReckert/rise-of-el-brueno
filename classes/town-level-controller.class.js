@@ -53,11 +53,14 @@ class TownLevelController {
         this.updateEndboss(timestamp);
         this.updateCoins(timestamp);
         this.handlePopup();
+        for (const cloud of this.setup.townLevel.clouds) {
+            cloud.update(timestamp);
+        }
         this.sandstorm.update();
         this.sandstormNear.update();
         this.sandstormFar.update();
         this.eventManager.update();
-        this.eventManager.debug = true;
+        // this.eventManager.debug = true;
         this.renderStatusBar();
         this.setup.panel.update(timestamp);
         this.setup.panel.draw(this.ctx);
@@ -77,10 +80,27 @@ class TownLevelController {
 
     renderBackgrounds() {
         this.ctx.save();
-        this.ctx.translate(-this.renderCameraX, 0);
+        this.ctx.translate(-this.renderCameraX * 0.2, 0);
         this.addObject(this.setup.townLevel.sky);
+        this.ctx.restore();
+        this.ctx.save();
+        this.ctx.translate(-this.renderCameraX * 0.4, 0);
         this.addObject(this.setup.townLevel.clouds);
-        this.addObject(this.setup.townLevel.grounds);
+        this.ctx.restore();
+        this.ctx.save();
+        this.ctx.translate(-this.renderCameraX * 0.5, 0);
+        this.addObject(this.setup.townLevel.grounds.backGrounds);
+        this.ctx.restore();
+        this.ctx.save();
+        this.ctx.translate(-this.renderCameraX * 0.75, 0);
+        this.addObject(this.setup.townLevel.grounds.midGrounds);
+        this.ctx.restore();
+        this.ctx.save();
+        this.ctx.translate(-this.renderCameraX * 1.0, 0);
+        this.addObject(this.setup.townLevel.grounds.foreGrounds);
+        this.ctx.restore();
+        this.ctx.save();
+        this.ctx.translate(-this.renderCameraX * 1.0, 0);
         this.addObject(this.setup.townLevel.towns);
         this.ctx.restore();
     }
@@ -104,7 +124,7 @@ class TownLevelController {
         this.addToWorld(this.setup.environment.spiritEssence1);
         this.addToWorld(this.setup.environment.spiritEssence2);
         this.addToWorld(this.setup.environment.spiritEssence3);
-        this.addToWorld(this.setup.environment.macuahuitl);
+        // this.addToWorld(this.setup.environment.macuahuitl);
         this.addObject(this.setup.townLevel.coins);
         this.addObject(this.setup.townLevel.bottles);
         this.addObject(this.setup.endbossAttack.eggs);

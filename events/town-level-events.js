@@ -105,44 +105,47 @@ const townEvents =
             action: (setup) => {
                 setup.characters.tadeo.updateAnimationState('walk');
                 setup.world.character.isCollapse = true;
+                setup.world.character.isMovingLeft = false
+                setup.world.character.isMovingRight = false
+                setup.world.isKeysStopp = true;
                 setup.world.townLevelController.questManager.advance(6)
 
             }
         },
 
-        // {
-        //     type: "position",
-        //     area: { x: 1000, width: 100 },
-        //     action: (setup) => {
-        //         setup.townLevel.enemies.push(
-        //             new Chicken('chickenMutatesSmall', images, 120, 120, 545, 2000, allAudios), 
-        //             new Chicken('chickenMutatesSmall', images, 120, 120, 545, 2050, allAudios),
-        //             new Chicken('chickenMutatesBig', images, 160, 160, 505, 2100, allAudios),
-        //             new Chicken('chickenMutatesBig', images, 160, 160, 505, 2100, allAudios),
-        //             new Chicken('chickenMutatesBig', images, 160, 160, 505, 2100, allAudios),
-        //             new Chicken('chickenMutatesBig', images, 160, 160, 505, 2100, allAudios),
-        //             new Chicken('chickenMutatesBig', images, 160, 160, 505, 2100, allAudios),
-        //             new Chicken('chickenMutatesBig', images, 160, 160, 505, 2100, allAudios),
-        //             new Chicken('chickenMutatesBig', images, 160, 160, 505, 2100, allAudios),
-        //             new Chicken('chickenMutatesBig', images, 160, 160, 505, 2100, allAudios),
-        //             new Chicken('chickenMutatesBig', images, 160, 160, 505, 2100, allAudios),
-        //             new Chicken('chickenMutatesBig', images, 160, 160, 505, 2100, allAudios),
+        {
+            type: "position",
+            area: { x: 8500, width: 100 },
+            action: (setup) => {
+                setup.townLevel.enemies.push(
+                    new Chicken('chickenMutatesSmall', images, 120, 120, 545, 9200, allAudios), 
+                    new Chicken('chickenMutatesSmall', images, 120, 120, 545, 9250, allAudios),
+                    new Chicken('chickenMutatesBig', images, 160, 160, 505, 9300, allAudios),
+        // new Chicken('chickenMutatesBig', images, 160, 160, 505, 2100, allAudios),
+        // new Chicken('chickenMutatesBig', images, 160, 160, 505, 2100, allAudios),
+        // new Chicken('chickenMutatesBig', images, 160, 160, 505, 2100, allAudios),
+        // new Chicken('chickenMutatesBig', images, 160, 160, 505, 2100, allAudios),
+        // new Chicken('chickenMutatesBig', images, 160, 160, 505, 2100, allAudios),
+        // new Chicken('chickenMutatesBig', images, 160, 160, 505, 2100, allAudios),
+        // new Chicken('chickenMutatesBig', images, 160, 160, 505, 2100, allAudios),
+        // new Chicken('chickenMutatesBig', images, 160, 160, 505, 2100, allAudios),
+        // new Chicken('chickenMutatesBig', images, 160, 160, 505, 2100, allAudios),
 
 
 
-        //         )
-        //         setup.townLevel.enemies.forEach(enemy => {
-        //         enemy.world = setup.world;
-        //     });
-        //     }
-        // },
+                )
+                setup.townLevel.enemies.forEach(enemy => {
+                enemy.world = setup.world;
+            });
+            }
+        },
 
         {
             type: "quest",
             step: 6,
             once: false,
             action: (setup) => {
-                if (setup.characters.tadeo.x >= 7800) {
+                if (setup.characters.tadeo.x >= 8020) {
                     setup.characters.tadeo.isMovingLeft = true;
                 } else {
                     setup.characters.tadeo.isMovingLeft = false;
@@ -221,21 +224,22 @@ const townEvents =
             }
         },
 
-        {
-            type: "time",
-            delay: 6000,
-            step: 7,
-            action: (setup) => {
-                setup.world.character.isCollapse = true;
-            }
-        },
+        // {
+        //     type: "time",
+        //     delay: 6000,
+        //     step: 7,
+        //     action: (setup) => {
+        //         setup.world.character.isCollapse = true;
+        //     }
+        // },
 
         {
             type: "time",
-            delay: 8000,
+            delay: 13000,
             step: 7,
             action: (setup) => {
                 setup.world.character.isCollapse = false;
+                setup.world.isKeysStopp = false;
                 setup.world.character.isStandUpAfterCollapse = true;
                 setup.world.character.isWalkInStorm = false;
                 setup.world.character.speedX = 5;
@@ -431,10 +435,10 @@ const townEvents =
             action: (setup) => {
                 const endboss = setup.characters.endboss;
                 const arrivedX = endboss.moveToX(23000, 220);
-                if(arrivedX){
-                        endboss.setPhase(endboss.ENDBOSS_PHASE.AIR_EGGS)
-                        setup.world.townLevelController.questManager.advance(13)
-                    }
+                if (arrivedX) {
+                    endboss.setPhase(endboss.ENDBOSS_PHASE.AIR_EGGS)
+                    setup.world.townLevelController.questManager.advance(13)
+                }
             }
 
         },
