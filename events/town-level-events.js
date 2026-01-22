@@ -5,16 +5,17 @@ const townEvents =
             action: (setup) => {
                 setup.backgroundMusic.loop = true;
                 fadeInAudio(setup.sounds.backgroundMusic, 2000, 0.6);
-                setup.world.character.x = 23000; // 100 //18500//23000
+
+                setup.world.character.x = 100; // 100 //18500//23000
                 setup.world.character.level_start_x = 0;
                 setup.world.farmLevelSetup.farmLevel.level_end_x = 25000;
-                setup.world.camera_x = 22900; //0 // 18400 //22900
+                setup.world.camera_x = 0; //0 // 18400 //22900
                 setup.world.character.speedX = 10;
                 setup.world.character.isWalkDetermined = false;
                 setup.characters.tadeo.updateAnimationState('idle', 1000 / 5);
 
                 // setup.world.character.isWalkInStorm = true;
-                setup.world.character.speedX = 5; //2
+                setup.world.character.speedX = 3; //2
             }
         },
 
@@ -42,7 +43,7 @@ const townEvents =
 
         {
             type: "position",
-            area: { x: 3000, width: 100 },
+            area: { x: 2000, width: 100 },
             step: 1,
             action: (setup) => {
                 setup.world.townLevelController.questManager.advance(2)
@@ -70,7 +71,7 @@ const townEvents =
 
         {
             type: "position",
-            area: { x: 6000, width: 100 },
+            area: { x: 3000, width: 100 },
             step: 3,
             action: (setup) => {
                 setup.world.townLevelController.questManager.advance(4)
@@ -100,7 +101,7 @@ const townEvents =
 
         {
             type: "position",
-            area: { x: 8000, width: 100 },
+            area: { x: 4000, width: 100 },
             step: 5,
             action: (setup) => {
                 setup.characters.tadeo.updateAnimationState('walk');
@@ -115,28 +116,109 @@ const townEvents =
 
         {
             type: "position",
-            area: { x: 8500, width: 100 },
+            area: { x: 5000, width: 100 },
             action: (setup) => {
                 setup.townLevel.enemies.push(
-                    new Chicken('chickenMutatesSmall', images, 120, 120, 545, 9200, allAudios), 
-                    new Chicken('chickenMutatesSmall', images, 120, 120, 545, 9250, allAudios),
-                    new Chicken('chickenMutatesBig', images, 160, 160, 505, 9300, allAudios),
-        // new Chicken('chickenMutatesBig', images, 160, 160, 505, 2100, allAudios),
-        // new Chicken('chickenMutatesBig', images, 160, 160, 505, 2100, allAudios),
-        // new Chicken('chickenMutatesBig', images, 160, 160, 505, 2100, allAudios),
-        // new Chicken('chickenMutatesBig', images, 160, 160, 505, 2100, allAudios),
-        // new Chicken('chickenMutatesBig', images, 160, 160, 505, 2100, allAudios),
-        // new Chicken('chickenMutatesBig', images, 160, 160, 505, 2100, allAudios),
-        // new Chicken('chickenMutatesBig', images, 160, 160, 505, 2100, allAudios),
-        // new Chicken('chickenMutatesBig', images, 160, 160, 505, 2100, allAudios),
-        // new Chicken('chickenMutatesBig', images, 160, 160, 505, 2100, allAudios),
+                    new Chicken('chickenMutatesSmall', images, 120, 120, 545, 6000, allAudios),
+                    new Chicken('chickenMutatesSmall', images, 120, 120, 545, 6100, allAudios),
+                    new Chicken('chickenMutatesBig', images, 160, 160, 505, 6200, allAudios),
+                    // new Chicken('chickenMutatesBig', images, 160, 160, 505, 2100, allAudios),
+                    // new Chicken('chickenMutatesBig', images, 160, 160, 505, 2100, allAudios),
+                    // new Chicken('chickenMutatesBig', images, 160, 160, 505, 2100, allAudios),
+                    // new Chicken('chickenMutatesBig', images, 160, 160, 505, 2100, allAudios),
+                    // new Chicken('chickenMutatesBig', images, 160, 160, 505, 2100, allAudios),
+                    // new Chicken('chickenMutatesBig', images, 160, 160, 505, 2100, allAudios),
+                    // new Chicken('chickenMutatesBig', images, 160, 160, 505, 2100, allAudios),
+                    // new Chicken('chickenMutatesBig', images, 160, 160, 505, 2100, allAudios),
+                    // new Chicken('chickenMutatesBig', images, 160, 160, 505, 2100, allAudios),
 
 
 
                 )
                 setup.townLevel.enemies.forEach(enemy => {
-                enemy.world = setup.world;
-            });
+                    enemy.world = setup.world;
+                });
+            }
+        },
+
+        {
+            type: "position",
+            area: { x: 6000, width: 100 },
+            action: (setup) => {
+                setup.townLevel.enemies.push(
+                    new Chicken('chickenMutatesSmall', images, 120, 120, 545, 7000, allAudios),
+                    new Chicken('chickenMutatesSmall', images, 120, 120, 545, 7100, allAudios),
+                    new Chicken('chickenMutatesBig', images, 160, 160, 505, 7200, allAudios),
+                    // new Chicken('chickenMutatesBig', images, 160, 160, 505, 2100, allAudios),
+                    // new Chicken('chickenMutatesBig', images, 160, 160, 505, 2100, allAudios),
+                    // new Chicken('chickenMutatesBig', images, 160, 160, 505, 2100, allAudios),
+                    // new Chicken('chickenMutatesBig', images, 160, 160, 505, 2100, allAudios),
+                    // new Chicken('chickenMutatesBig', images, 160, 160, 505, 2100, allAudios),
+                    // new Chicken('chickenMutatesBig', images, 160, 160, 505, 2100, allAudios),
+                    // new Chicken('chickenMutatesBig', images, 160, 160, 505, 2100, allAudios),
+                    // new Chicken('chickenMutatesBig', images, 160, 160, 505, 2100, allAudios),
+                    // new Chicken('chickenMutatesBig', images, 160, 160, 505, 2100, allAudios),
+
+
+
+                )
+                setup.townLevel.enemies.forEach(enemy => {
+                    enemy.world = setup.world;
+                });
+            }
+        },
+
+        {
+            type: "position",
+            area: { x: 7000, width: 100 },
+            action: (setup) => {
+                setup.townLevel.enemies.push(
+                    new Chicken('chickenMutatesSmall', images, 120, 120, 545, 8000, allAudios),
+                    new Chicken('chickenMutatesSmall', images, 120, 120, 545, 8100, allAudios),
+                    new Chicken('chickenMutatesBig', images, 160, 160, 505, 8200, allAudios),
+                    // new Chicken('chickenMutatesBig', images, 160, 160, 505, 2100, allAudios),
+                    // new Chicken('chickenMutatesBig', images, 160, 160, 505, 2100, allAudios),
+                    // new Chicken('chickenMutatesBig', images, 160, 160, 505, 2100, allAudios),
+                    // new Chicken('chickenMutatesBig', images, 160, 160, 505, 2100, allAudios),
+                    // new Chicken('chickenMutatesBig', images, 160, 160, 505, 2100, allAudios),
+                    // new Chicken('chickenMutatesBig', images, 160, 160, 505, 2100, allAudios),
+                    // new Chicken('chickenMutatesBig', images, 160, 160, 505, 2100, allAudios),
+                    // new Chicken('chickenMutatesBig', images, 160, 160, 505, 2100, allAudios),
+                    // new Chicken('chickenMutatesBig', images, 160, 160, 505, 2100, allAudios),
+
+
+
+                )
+                setup.townLevel.enemies.forEach(enemy => {
+                    enemy.world = setup.world;
+                });
+            }
+        },
+
+        {
+            type: "position",
+            area: { x: 8000, width: 100 },
+            action: (setup) => {
+                setup.townLevel.enemies.push(
+                    new Chicken('chickenMutatesSmall', images, 120, 120, 545, 9000, allAudios),
+                    new Chicken('chickenMutatesSmall', images, 120, 120, 545, 9100, allAudios),
+                    new Chicken('chickenMutatesBig', images, 160, 160, 505, 9200, allAudios),
+                    // new Chicken('chickenMutatesBig', images, 160, 160, 505, 2100, allAudios),
+                    // new Chicken('chickenMutatesBig', images, 160, 160, 505, 2100, allAudios),
+                    // new Chicken('chickenMutatesBig', images, 160, 160, 505, 2100, allAudios),
+                    // new Chicken('chickenMutatesBig', images, 160, 160, 505, 2100, allAudios),
+                    // new Chicken('chickenMutatesBig', images, 160, 160, 505, 2100, allAudios),
+                    // new Chicken('chickenMutatesBig', images, 160, 160, 505, 2100, allAudios),
+                    // new Chicken('chickenMutatesBig', images, 160, 160, 505, 2100, allAudios),
+                    // new Chicken('chickenMutatesBig', images, 160, 160, 505, 2100, allAudios),
+                    // new Chicken('chickenMutatesBig', images, 160, 160, 505, 2100, allAudios),
+
+
+
+                )
+                setup.townLevel.enemies.forEach(enemy => {
+                    enemy.world = setup.world;
+                });
             }
         },
 
@@ -145,12 +227,11 @@ const townEvents =
             step: 6,
             once: false,
             action: (setup) => {
-                if (setup.characters.tadeo.x >= 8020) {
-                    setup.characters.tadeo.isMovingLeft = true;
-                } else {
-                    setup.characters.tadeo.isMovingLeft = false;
+                const tadeo = setup.characters.tadeo;
+                const arriveX = tadeo.moveToX(4020, { speed: 5 });
+                if (arriveX) {
                     setup.characters.tadeo.updateAnimationState('idle');
-                    setup.speechBubbles[0].start(4500);
+                    // setup.speechBubbles[0].start(4500);
                     setup.world.townLevelController.questManager.advance(7);
                 }
             }
@@ -163,8 +244,6 @@ const townEvents =
             action: (setup) => {
                 fadeOutAudio(setup.sounds.backgroundMusic, 1000);
                 fadeInAudio(setup.sounds.tadeosMusic, 2000, 0.6);
-                setup.sounds.tadeosMusic.loop = true;
-
             }
         },
 
@@ -215,6 +294,7 @@ const townEvents =
             step: 7,
             action: (setup) => {
                 // setup.sounds.tadeoHoldStoneMusic.currentTime = 35;
+                setup.sounds.tadeoHoldStoneMusic.loop = true;
                 fadeInAudio(setup.sounds.tadeoHoldStoneMusic, 2000, 0.6);
                 fadeOutAudio(setup.sounds.tadeosMusic, 1000);
                 setup.characters.tadeo.updateAnimationState('stoneActivated', 1000 / 5.5);
@@ -244,7 +324,7 @@ const townEvents =
                 setup.world.character.isWalkInStorm = false;
                 setup.world.character.speedX = 5;
                 setup.characters.tadeo.updateAnimationState('walkWithStone');
-                setup.characters.tadeo.speedX = 0.5;
+                // setup.characters.tadeo.speedX = 0.5;
                 setup.characters.tadeo.isFlipped = false;
                 setup.world.townLevelController.questManager.advance(8);
             }
@@ -279,10 +359,11 @@ const townEvents =
             step: 8,
             once: false,
             action: (setup) => {
-                if (setup.characters.tadeo.x <= 10275 /*&& setup.world.character.x >= setup.characters.tadeo.x - 170 && setup.world.character.x <= setup.characters.tadeo.x + 170*/) {
-                    setup.characters.tadeo.isMovingRight = true;
-                    setup.characters.tadeo.updateAnimationState('walkWithStone');
-                }
+                const tadeo = setup.characters.tadeo;
+                // tadeo.speedX = 2;
+                const arriveX = tadeo.moveToX(10275, { speed: 0.8 });
+                if (!arriveX) setup.characters.tadeo.updateAnimationState('walkWithStone');
+                if (arriveX) setup.characters.tadeo.updateAnimationState('idleWithStone');
             },
             onLeave: (setup) => {
                 setup.characters.tadeo.isMovingRight = false;
@@ -479,7 +560,7 @@ const townEvents =
                 setup.townLevel.enemies.forEach(enemy => {
                     if (enemy.isDead) return;
                     const colliding = enemy.isColliding(char);
-                    const effectiveColliding = colliding && !char.isJumping;
+                    const effectiveColliding = colliding && !char.isJumping && !char.isAttack && !char.isProtect;
                     const did = char.handleEnemyTouch(enemy, effectiveColliding, now, {
                         dmg: char.isProtect ? 2 : 10,
                         knockX: 26,

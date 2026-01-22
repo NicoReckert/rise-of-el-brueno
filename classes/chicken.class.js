@@ -39,7 +39,7 @@ class Chicken extends MovableObject {
         this.movementSpeed = 0;
         this.lastUpdateTime = 0;
 
-        this.attackCooldownMs = 900;
+        this.attackCooldownMs = 3000; //900
         this.lastAttackTime = 0;
 
         this.meleeRange = 64   // small

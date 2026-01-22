@@ -25,7 +25,7 @@ class TownLevelSetup {
             'tadeo',
             150,
             150,
-            10000, //1500
+            8000, //1500
             515
         );
         const sollita = new AnimatedEntity(
