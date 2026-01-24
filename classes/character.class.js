@@ -36,7 +36,7 @@ class Character extends MovableObject {
         this.init();
         this.movementSpeed;
 
-        this.isGamecharacter = false;
+        this.isGamecharacter = true;
         this.isHaveSword = true;
         this.attackHitbox =
             !this.isHaveSword ?
@@ -62,6 +62,7 @@ class Character extends MovableObject {
         this.hurtUntil = 0;
         this.invulnerableUntil = 0;
         this.touchingEnemies = new Set();
+        this.lastAttackTime = null;
     }
 
     /**
@@ -398,7 +399,7 @@ class Character extends MovableObject {
         if (this.isAttack) {
             if (!this.isHaveSword) {
                 return this.setAnim('attack', 7);
-            } else return this.setAnim('attack-sword', 6);
+            } else return this.setAnim('attack-sword', 6.5);
         }
         if (this.isMeditation) return this.setAnim('meditation', 6, 'meditation-loop');
         if (this.isNewWeapon) return this.setAnim('new-weapon', 6, 'new-weapon-loop');
@@ -521,7 +522,7 @@ class Character extends MovableObject {
         } else if (this.isLargeAnimationB(anim)) {
             this.setCharacterSize(
                 270, 300, /* y ignored */ this.y,  //240, 280
-                { top: 110, left: 30, right: 115, bottom: 10 }
+                { top: 135, left: 35, right: 175, bottom: 15 }
             );
 
         } else if (anim === 'protect' || anim === 'protect-loop') {
@@ -951,6 +952,7 @@ class Character extends MovableObject {
         lockMs = 260
     } = {}) {
 
+
         // --- Kontakt beendet → Reset
         if (!colliding) {
             this.touchingEnemies.delete(enemy);
@@ -966,9 +968,9 @@ class Character extends MovableObject {
         if (timestamp < this.invulnerableUntil) return false;
 
         // 🛡️ PROTECT → blockt alles
-        if (this.isProtect) {
+        if (this.isProtect || this.isAttack) {
             this.invulnerableUntil = timestamp + 250;
-            return true;
+            return false;
         }
 
         // 💥 Schaden + Hurt

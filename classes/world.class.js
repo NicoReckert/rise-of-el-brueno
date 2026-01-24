@@ -41,6 +41,9 @@ class World {
         this.paused = false;
         this.isRunning = true;
         this.frameId = null;
+
+        this.attackStartTime = null;
+        this.attackCommitUntil = null;
     }
 
     startGame() {
@@ -487,16 +490,34 @@ class World {
             this.character.isMovingLeft = false;
             this.character.isMovingRight = false;
             if (this.keyboard.LEFT) {
-                if (this.character.isAttack || this.character.isProtect) {
-                    this.character.isAttack = false;
-                    this.character.isProtect = false;
+                if (this.character.isProtect) this.character.isProtect = false;
+                const now = this.timestamp;
+                const isTryingToMove = this.character.isMovingLeft;
+                if (this.character.isAttack) {
+                    if (now < this.attackCommitUntil) {
+                        this.character.isMovingLeft = false;
+                        return;
+                    }
+
+                    if (isTryingToMove) {
+                        this.character.isAttack = false;
+                    }
                 }
                 this.character.isMovingLeft = true;
             }
             if (this.keyboard.RIGHT) {
-                if (this.character.isAttack || this.character.isProtect) {
-                    this.character.isAttack = false;
-                    this.character.isProtect = false;
+                if (this.character.isProtect) this.character.isProtect = false;
+                const now = this.timestamp;
+                const isTryingToMove = this.character.isMovingRight;
+                if (this.character.isAttack) {
+                    if (now < this.attackCommitUntil) {
+                        this.character.isMovingRight = false;
+                        return;
+                    }
+
+                    if (isTryingToMove) {
+                        this.character.isAttack = false;
+                    }
                 }
                 this.character.isMovingRight = true;
             }
@@ -563,6 +584,9 @@ class World {
 
             if (this.keyboard.A && !this.character.isAttack && !this.character.isMovingLeft && !this.character.isMovingRight) {
                 this.character.isAttack = true;
+                this.character.lastAttackTime = this.timestamp;
+                this.attackStartTime = this.timestamp;
+                this.attackCommitUntil = this.timestamp + 180;
                 this.townLevelSetup.sounds.attackSound.play();
             }
             if (this.keyboard.S && !this.character.isProtect && !this.character.isMovingLeft && !this.character.isMovingRight) {
