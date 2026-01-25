@@ -394,6 +394,10 @@ const otherLevelEntityManifestLazy = {
     diveUpShallow: Array.from({ length: 4 }, (_, i) => `./assets/img/3_enemies_chicken/dragon_small/dive_up_shallow/image_${i + 1}.png`),
     diveUpMedium: Array.from({ length: 4 }, (_, i) => `./assets/img/3_enemies_chicken/dragon_small/dive_up_medium/image_${i + 1}.png`),
     diveUpSteep: Array.from({ length: 4 }, (_, i) => `./assets/img/3_enemies_chicken/dragon_small/dive_up_steep/image_${i + 1}.png`),
+    hurt: Array.from({ length: 5 }, (_, i) => `./assets/img/3_enemies_chicken/dragon_small/hurt/image_${i + 1}.png`),
+    fallDown: Array.from({ length: 8 }, (_, i) => `./assets/img/3_enemies_chicken/dragon_small/fall_down/image_${i + 1}.png`),
+    impact: Array.from({ length: 3 }, (_, i) => `./assets/img/3_enemies_chicken/dragon_small/impact/image_${i + 1}.png`),
+    dead: Array.from({ length: 1 }, _ => `./assets/img/3_enemies_chicken/dragon_small/dead/image_1.png`)
   },
 
   lifeEnergyBoss: {

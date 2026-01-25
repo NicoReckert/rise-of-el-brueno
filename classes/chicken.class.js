@@ -4,7 +4,7 @@
  * @extends MovableObject
  */
 class Chicken extends MovableObject {
-    isGamecharacter = true;
+    isGamecharacter = false;
 
     /**
      * Creates a new instance with randomized speed and default animation settings.
@@ -90,6 +90,9 @@ class Chicken extends MovableObject {
         this.postDiveX = null;
         this.hasAttackedThisDive = false;
         this.lowApproachSpeed = this.flySpeed * 2.5;
+        this.deathPhase = null;        // 'fall' | 'impact' | 'done'
+        this.deathFallSpeed = 350;     // px/s, kannst du tunen
+        this.deathGroundY = 525;
     }
 
     /**
@@ -107,6 +110,8 @@ class Chicken extends MovableObject {
         this.diveUpShallowImages = this.entityImages[currentEnemy]?.diveUpShallow || [];
         this.diveUpMediumImages = this.entityImages[currentEnemy]?.diveUpMedium || [];
         this.diveUpSteepImages = this.entityImages[currentEnemy]?.diveUpSteep || [];
+        this.fallDownImages = this.entityImages[currentEnemy]?.fallDown || [];
+        this.impactImages = this.entityImages[currentEnemy]?.impact || [];
         if (this.x == null) this.setSizeAndPosition();
         this.setOffset();
     }
@@ -152,7 +157,24 @@ class Chicken extends MovableObject {
 
         // 🔹 Tod: nur Death-Animation + Remove-Timer
         if (this.isDead) {
+            const dt = this.deltaTime ?? 1 / 60;
+
+            if (this.currentEnemy === 'dragonSmall') {
+                if (this.deathPhase === 'fall') {
+                    // runterfallen
+                    this.y += this.deathFallSpeed * dt;
+
+                    if (this.y >= this.deathGroundY) {
+                        this.y = this.deathGroundY;
+                        this.deathPhase = 'impact';
+                        this.frameIndex = 0;
+                        this.lastFrameTime = 0;
+                    }
+                }
+            }
+
             this.handleAnimation();
+
             if (this.removeAt && timestamp >= this.removeAt) {
                 this.isRemoved = true;
             }
@@ -237,11 +259,32 @@ class Chicken extends MovableObject {
      * Updates the animation state based on movement or death.
      */
     handleAnimation() {
+        if (this.currentEnemy === 'dragonSmall' && this.isDead) {
+            if (this.deathPhase === 'fall') {
+                this.currentAnimation = 'fallDown';
+                this.frameInterval = 1000 / 12;   // 12 fps, gern tunen
+            } else if (this.deathPhase === 'impact') {
+                this.currentAnimation = 'impact';
+                this.frameInterval = 1000 / 15;   // etwas schneller
+            } else {
+                // 'done' → benutze die dead-Animation (1 Frame)
+                this.currentAnimation = 'dead';
+                this.frameInterval = 1000 / 4; // egal, nur Formalität
+            }
+            return;
+        }
+
         if (this.isDead) {
             this.playDeathAnimation();
             return;
         }
         if (this.currentEnemy === 'dragonSmall') {
+            if (this.isHurt) {
+                this.currentAnimation = 'hurt';
+                this.frameInterval = 1000 / 10;
+                return;
+            }
+
             if (this.isAttack) {
                 this.currentAnimation = 'attack';
                 this.frameInterval = 1000 / 6.5;
@@ -293,6 +336,16 @@ class Chicken extends MovableObject {
                     this.currentAnimation = 'diveUpSteep';
                     this.frameInterval = 1000 / 9;
                     break;
+
+                case 'fall_down':
+                    this.currentAnimation = 'fallDown';
+                    this.frameInterval = 1000 / 6.5;
+                    break;
+
+                case 'impact':
+                    this.currentAnimation = 'impact';
+                    this.frameInterval = 1000 / 6.5;
+                    break;
             }
             return;
         }
@@ -316,10 +369,17 @@ class Chicken extends MovableObject {
      * Plays the death animation and adjusts vertical position.
      */
     playDeathAnimation() {
+        if (this.currentEnemy === 'dragonSmall') {
+            // für den Drachen übernimmt die deathPhase-Logik alles
+            return;
+        }
+
+        // alte Boden-Logik für Hühner
         this.currentAnimation = null;
         this.img = this.deadImages?.[0];
         this.y = 565;
     }
+
 
     /**
      * Returns the image set for a given animation state.
@@ -338,6 +398,9 @@ class Chicken extends MovableObject {
             case 'diveUpShallow': return this.diveUpShallowImages;
             case 'diveUpMedium': return this.diveUpMediumImages;
             case 'diveUpSteep': return this.diveUpSteepImages;
+            case 'fallDown': return this.fallDownImages;
+            case 'impact': return this.impactImages;
+            case 'dead': return this.deadImages;
         }
     }
 
@@ -358,8 +421,18 @@ class Chicken extends MovableObject {
                 if (this.currentAnimation === 'hurt') {
                     if (this.frameIndex >= images.length - 1) {
                         this.isHurt = false;
-                        this.currentAnimation = 'walk';  // oder null
                         this.frameIndex = 0;
+                    }
+                }
+
+                if (this.currentEnemy === 'dragonSmall' &&
+                    this.isDead &&
+                    this.currentAnimation === 'impact') {
+
+                    if (this.frameIndex >= images.length - 1) {
+                        this.deathPhase = 'done';
+                        this.frameIndex = 0;
+                        this.lastFrameTime = timestamp;
                     }
                 }
 
@@ -647,6 +720,11 @@ class Chicken extends MovableObject {
             this.isHurt = false;
             this.removeAt = timestamp + deathRemoveMs;
             onDeathSound?.();
+            if (this.currentEnemy === 'dragonSmall') {
+                this.deathPhase = 'fall';
+                this.isGravity = false;
+                this.knockbackActive = false;
+            }
         } else {
             this.isHurt = true;
             this.currentAnimation = 'hurt';
