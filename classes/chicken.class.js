@@ -130,11 +130,16 @@ class Chicken extends MovableObject {
             this.offset.left = 25;
             this.offset.right = 35;
             this.offset.bottom = 10;
-        } else {
+        } else if (this.currentEnemy === 'chickenMutatesBig') {
             this.offset.top = 35;
             this.offset.left = 20;
             this.offset.right = 60;
             this.offset.bottom = 10;
+        } else {
+            this.offset.top = 60;
+            this.offset.left = 10;
+            this.offset.right = 10;
+            this.offset.bottom = 45;
         }
     }
 
@@ -865,15 +870,8 @@ class Chicken extends MovableObject {
                     this.diveTargetY = this.planeY;
 
                     // 👉 HIER: horizontale Dive-Geschwindigkeit merken
-                    const dxDive = this.diveTargetX - eBox.cx;
-                    const dyDive = this.diveTargetY - eBox.cy;
-                    const lenDive = Math.hypot(dxDive, dyDive) || 1;
 
-                    let horiz = Math.abs(dxDive) / lenDive * this.diveSpeed; // = |cos| * diveSpeed
 
-                    // optional etwas clampen, damit es nicht zu krass schwankt
-                    const MIN = 80;
-                    const MAX = 220;
                     this.lowApproachSpeed = this.flySpeed * 2.5;
                     this.lockDirection = true;
                     this.hasAttackedThisDive = false;
