@@ -6,16 +6,30 @@ const townEvents =
                 setup.backgroundMusic.loop = true;
                 fadeInAudio(setup.sounds.backgroundMusic, 2000, 0.6);
 
-                setup.world.character.x = 23000; // 100 //18500//23000
+                setup.world.character.x = 100; // 100 //18500//23000
                 setup.world.character.level_start_x = 0;
                 setup.world.farmLevelSetup.farmLevel.level_end_x = 25000;
-                setup.world.camera_x = 22900; //0 // 18400 //22900
+                setup.world.camera_x = 0; //0 // 18400 //22900
                 setup.world.character.speedX = 10;
                 setup.world.character.isWalkDetermined = false;
                 setup.characters.tadeo.updateAnimationState('idle', 1000 / 5);
 
                 // setup.world.character.isWalkInStorm = true;
                 setup.world.character.speedX = 3; //2
+            }
+        },
+
+        {
+            type: "position",
+            area: { x: 200, width: 100 },
+            action: (setup) => {
+                setup.townLevel.enemies.push(
+                    new Chicken('dragonSmall', images, 170, 170, 300, 1000, allAudios),
+                )
+                setup.townLevel.enemies.forEach(enemy => {
+                    enemy.curentAnimation = 'idle';
+                    enemy.world = setup.world;
+                });
             }
         },
 
@@ -550,33 +564,33 @@ const townEvents =
             }
         },
 
-        {
-            type: 'quest',
-            once: false,
-            action: (setup) => {
-                const char = setup.world.character
-                const now = setup.world.timestamp;
-                if (char.isHurt) return;
-                setup.townLevel.enemies.forEach(enemy => {
-                    if (enemy.isDead) return;
-                    const IMMUNITY_DURATION = 500; // ms
-                    const attackImmunity = (now - char.lastAttackTime) < IMMUNITY_DURATION;
-                    const colliding = enemy.isColliding(char);
-                    const effectiveColliding = colliding && !char.isJumping && !attackImmunity && !char.isAttack && !char.isProtect && !enemy.isHurt && !enemy.isDead;
-                    const did = char.handleEnemyTouch(enemy, effectiveColliding, now, {
-                        dmg: char.isProtect ? 2 : 10,
-                        knockX: 26,
-                        knockY: 16
-                    });
-                    if (did) {
-                        setup.statusBar.setPercentage(char.energy);
-                        setup.damageTexts.push(
-                            new DamageText(char.x + char.width / 2, char.y - 10, char.isProtect ? 2 : 10)
-                        );
-                    }
-                });
-            }
-        },
+        // {
+        //     type: 'quest',
+        //     once: false,
+        //     action: (setup) => {
+        //         const char = setup.world.character
+        //         const now = setup.world.timestamp;
+        //         if (char.isHurt) return;
+        //         setup.townLevel.enemies.forEach(enemy => {
+        //             if (enemy.isDead) return;
+        //             const IMMUNITY_DURATION = 500; // ms
+        //             const attackImmunity = (now - setup.world.attackCommitUntil) < IMMUNITY_DURATION;
+        //             const colliding = enemy.isColliding(char);
+        //             const effectiveColliding = colliding && enemy.currentEnemy !== 'dragonSmall' && !char.isJumping && !attackImmunity && !char.isAttack && !char.isProtect && !enemy.isHurt && !enemy.isDead;
+        //             const did = char.handleEnemyTouch(enemy, effectiveColliding, now, {
+        //                 dmg: char.isProtect ? 2 : 10,
+        //                 knockX: 26,
+        //                 knockY: 16
+        //             });
+        //             if (did) {
+        //                 setup.statusBar.setPercentage(char.energy);
+        //                 setup.damageTexts.push(
+        //                     new DamageText(char.x + char.width / 2, char.y - 10, char.isProtect ? 2 : 10)
+        //                 );
+        //             }
+        //         });
+        //     }
+        // },
 
 
         {
@@ -593,7 +607,6 @@ const townEvents =
                         char
                     ) {
                         if (!enemy.hasHitPlayerThisAttack && enemy.isCollidingBeforeWithAttackHitbox(char, 0, 0, enemy.attackHitbox)) {
-                            console.log('Chicken hit player!');
                             const dmg = char.isProtect ? 2 : 10;
                             char.hit2(setup.world.timestamp, dmg);
                             setup.statusBar.setPercentage(char.energy);
@@ -668,6 +681,31 @@ const townEvents =
                 // Entferne alle Gegner, die sich selbst als "entfernt" markiert haben
                 setup.townLevel.enemies = setup.townLevel.enemies.filter(e => !e.isRemoved);
 
+            }
+        },
+
+        {
+            type: 'quest',
+            once: false,
+            action: (setup) => {
+                const char = setup.world.character
+                if (char.isHurt) return;
+                setup.townLevel.enemies.forEach(enemy => {
+                    if (enemy.isDead) return;
+                    if (
+                        enemy.currentEnemy === 'dragonSmall' &&
+                        enemy.attackHitbox?.active &&
+                        char
+                    ) {
+                        if (!enemy.hasHitPlayerThisAttack && enemy.isCollidingBeforeWithAttackHitbox(char, 0, 0, enemy.attackHitbox)) {
+                            const dmg = char.isProtect ? 2 : 10;
+                            char.hit2(setup.world.timestamp, dmg);
+                            setup.statusBar.setPercentage(char.energy);
+                            setup.damageTexts.push(new DamageText(char.x + char.width / 2, char.y - 10, dmg));
+                            enemy.hasHitPlayerThisAttack = true;
+                        }
+                    }
+                });
             }
         },
 

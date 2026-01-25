@@ -385,6 +385,16 @@ const otherLevelEntityManifestLazy = {
     attack: Array.from({ length: 9 }, (_, i) => `./assets/img/3_enemies_chicken/chicken_mutates/attack2/image_${i + 1}.png`)
   },
 
+  dragonSmall: {
+    idle: Array.from({ length: 6 }, (_, i) => `./assets/img/3_enemies_chicken/dragon_small/idle/image_${i + 1}.png`),
+    airApproach: Array.from({ length: 4 }, (_, i) => `./assets/img/3_enemies_chicken/dragon_small/air_approach/image_${i + 1}.png`),
+    diveStart: Array.from({ length: 4 }, (_, i) => `./assets/img/3_enemies_chicken/dragon_small/dive_start/image_${i + 1}.png`),
+    diveFast: Array.from({ length: 4 }, (_, i) => `./assets/img/3_enemies_chicken/dragon_small/dive_fast/image_${i + 1}.png`),
+    attack: Array.from({ length: 3 }, (_, i) => `./assets/img/3_enemies_chicken/dragon_small/attack/image_${i + 1}.png`),
+    diveUpShallow: Array.from({ length: 4 }, (_, i) => `./assets/img/3_enemies_chicken/dragon_small/dive_up_shallow/image_${i + 1}.png`),
+    diveUpMedium: Array.from({ length: 4 }, (_, i) => `./assets/img/3_enemies_chicken/dragon_small/dive_up_medium/image_${i + 1}.png`),
+    diveUpSteep: Array.from({ length: 4 }, (_, i) => `./assets/img/3_enemies_chicken/dragon_small/dive_up_steep/image_${i + 1}.png`),
+  },
 
   lifeEnergyBoss: {
     status: Array.from({ length: 6 }, (_, i) => `./assets/img/7_statusbars/2_statusbar_endboss/green/green${i * 20}.webp`)

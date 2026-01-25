@@ -60,7 +60,7 @@ class TownLevelController {
         this.sandstormNear.update();
         this.sandstormFar.update();
         this.eventManager.update();
-        // this.eventManager.debug = true;
+        this.eventManager.debug = true;
         this.renderStatusBar();
         this.setup.panel.update(timestamp);
         this.setup.panel.draw(this.ctx);

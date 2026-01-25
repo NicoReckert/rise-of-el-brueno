@@ -584,7 +584,6 @@ class World {
 
             if (this.keyboard.A && !this.character.isAttack && !this.character.isMovingLeft && !this.character.isMovingRight) {
                 this.character.isAttack = true;
-                this.character.lastAttackTime = this.timestamp;
                 this.attackStartTime = this.timestamp;
                 this.attackCommitUntil = this.timestamp + 180;
                 this.townLevelSetup.sounds.attackSound.play();
@@ -694,6 +693,7 @@ class World {
             if (!bottle.isBrokenAnimation) {
                 for (let j = 0; j < this.townLevelSetup.townLevel.enemies.length; j++) {
                     const enemy = this.townLevelSetup.townLevel.enemies[j];
+                    if (enemy.currentEnemy === 'dragonSmall') return;
 
                     if (bottle.isCollidingBefore(enemy, 50, 0) && !enemy.isDead) {
                         if (!bottle.isBrokenSound) {
@@ -789,7 +789,7 @@ class World {
 
         for (let j = 0; j < this.townLevelSetup.townLevel.enemies.length; j++) {
             const enemy = this.townLevelSetup.townLevel.enemies[j];
-
+            if (enemy.currentEnemy === 'dragonSmall') return;
             if (this.character.isCollidingBeforeWithAttackHitbox(enemy, 25, 0, this.character.attackHitbox)
                 && !this.character.hasHitEnemyThisAttack
                 && !enemy.isDead) {

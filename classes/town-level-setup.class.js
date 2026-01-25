@@ -45,6 +45,7 @@ class TownLevelSetup {
             435
         );
 
+
         this.characters = { endboss, soul, tadeo, sollita, musician };
         this.sounds = {
             notificationSound: this.allAudios.notificationSound,

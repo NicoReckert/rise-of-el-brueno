@@ -62,7 +62,6 @@ class Character extends MovableObject {
         this.hurtUntil = 0;
         this.invulnerableUntil = 0;
         this.touchingEnemies = new Set();
-        this.lastAttackTime = null;
     }
 
     /**
