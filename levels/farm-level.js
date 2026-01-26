@@ -141,3 +141,101 @@ for (let i = 0; i < 66; i++) {
     calculationXFarm += 50;
 }
 
+function createFarmLevel() {
+    // Wolken
+    const clouds = [];
+    const cloudCount = 10;
+    for (let i = 0; i < cloudCount; i++) {
+        clouds.push(new Cloud(clouds, 100)); // minDistance 100
+    }
+
+    // BACKGROUND
+    const backGrounds = [
+        new Ground(groundSrcFarm[3], -720),
+        new Ground(groundSrcFarm[0], 0),
+        new Ground(groundSrcFarm[3], 720),
+        new Ground(groundSrcFarm[0], 1440),
+        new Ground(groundSrcFarm[3], 2160),
+        new Ground(groundSrcFarm[0], 2880),
+        new Ground(groundSrcFarm[3], 3600),
+        new Ground(groundSrcFarm[0], 4320),
+        new Ground(groundSrcFarm[3], 5040),
+        new Ground(groundSrcFarm[0], 5760),
+        new Ground(groundSrcFarm[3], 6480)
+    ];
+
+    // MIDGROUND
+    const midGrounds = [
+        new Ground(groundSrcFarm[4], -720),
+        new Ground(groundSrcFarm[1], 0),
+        new Ground(groundSrcFarm[4], 720),
+        new Ground(groundSrcFarm[1], 1440),
+        new Ground(groundSrcFarm[4], 2160),
+        new Ground(groundSrcFarm[1], 2880),
+        new Ground(groundSrcFarm[4], 3600),
+        new Ground(groundSrcFarm[1], 4320),
+        new Ground(groundSrcFarm[4], 5040),
+        new Ground(groundSrcFarm[1], 5760),
+        new Ground(groundSrcFarm[4], 6480)
+    ];
+
+    // FOREGROUND
+    const foreGrounds = [
+        new Ground(groundSrcFarm[5], -720),
+        new Ground(groundSrcFarm[2], 0),
+        new Ground(groundSrcFarm[5], 720),
+        new Ground(groundSrcFarm[2], 1440),
+        new Ground(groundSrcFarm[5], 2160),
+        new Ground(groundSrcFarm[2], 2880),
+        new Ground(groundSrcFarm[5], 3600),
+        new Ground(groundSrcFarm[2], 4320),
+        new Ground(groundSrcFarm[5], 5040),
+        new Ground(groundSrcFarm[2], 5760),
+        new Ground(groundSrcFarm[5], 6480),
+        new Ground(groundSrcFarm[6], 5033, 575, 100), // Grasfläche
+    ];
+
+    // Extra-Boden-Kacheln
+    let calculationXFarm = 1280;
+    for (let i = 0; i < 66; i++) {
+        foreGrounds.push(
+            new Ground(groundSrcFarm[9], calculationXFarm, 575, 150, 150)
+        );
+        calculationXFarm += 50;
+    }
+
+    // Towns
+    const towns = [
+        new Town(townSrcFarm[1], 1310, 408, 300, 300),
+    ];
+
+    // Himmel
+    const sky = [
+        new Sky(-720),
+        new Sky(0),
+        new Sky(720),
+        new Sky(1440),
+        new Sky(2160),
+        new Sky(2880),
+        new Sky(3600),
+        new Sky(4320),
+        new Sky(5040),
+        new Sky(5760),
+        new Sky(6480)
+    ];
+
+    // Level erstellen
+    return new Level({
+        clouds,
+        grounds: {
+            backGrounds,
+            midGrounds,
+            foreGrounds
+        },
+        towns,
+        sky
+    });
+}
+
+
+

@@ -2,7 +2,7 @@ class World {
 
     ctx;
     canvas;
-    currentScene = 'townLevel';
+    currentScene = 'farmLevel';
 
     constructor(canvas, keyboard, characterImages, entityImages, allAudios) {
         this.canvas = canvas;
@@ -997,49 +997,51 @@ class World {
     }
 
     restartLevel(levelName) {
+        // Loop stoppen
         this.stop();
-        fadeOutAudio(this.levelCompleteSetup.sounds.levelCompleteMusic);
-        if (this.character) {
-            // 🧹 Eventuelle laufende Sounds stoppen
-            if (this.character.footStepSound) {
-                this.character.footStepSound.pause();
-                this.character.footStepSound.currentTime = 0;
-            }
 
-            // 🧹 Animationen, Timer oder eigene Loops stoppen
+        // LevelComplete-Musik ausblenden
+        if (this.levelCompleteSetup?.sounds?.levelCompleteMusic) {
+            fadeOutAudio(this.levelCompleteSetup.sounds.levelCompleteMusic);
+        }
+
+        // alten Character aufräumen
+        if (this.character) {
             if (this.character.intervalJump) {
                 clearInterval(this.character.intervalJump);
                 this.character.intervalJump = null;
             }
-
-            // 🔥 Referenz löschen
             this.character = null;
         }
-        setTimeout(() => {
-            this.character = new Character(this.characterImages);
-            // this.character.resetTimers();
-            this.setWorld();
-            this.camera_x = this.character.x - 100;   // Starte synchron zur Figur
-            this.lastTime = performance.now();
-            switch (levelName) {
-                case 'farmLevel':
-                    this.farmLevelSetup = new FarmLevelSetup(this);
-                    this.farmLevelController = new FarmLevelController(this.farmLevelSetup);
-                    this.stableLevelSetup = new StableLevelSetup(this);
-                    this.stableLevelController = new StableLevelController(this.stableLevelSetup);
-                    break;
-                // andere Levels, falls du das auch brauchst
-            }
 
-            this.currentScene = levelName;
-            document.getElementById('level-complete-button-box').classList.add('d-none');
-            this.isRunning = true;
-            this.draw();
-        }, 50);
+        // globale State-Flags zurücksetzen
+        this.paused = false;
+        this.isRunning = true;
+        this.isKeysStopp = false;
+        this.camera_x = 0;
 
+        // neuen Character + Level-Setups
+        this.character = new Character(this.characterImages);
+        this.setWorld();
+        this.lastTime = performance.now();
 
+        switch (levelName) {
+            case 'farmLevel':
+                this.farmLevelSetup = new FarmLevelSetup(this);
+                this.farmLevelController = new FarmLevelController(this.farmLevelSetup);
+                this.stableLevelSetup = new StableLevelSetup(this);
+                this.stableLevelController = new StableLevelController(this.stableLevelSetup);
+                break;
+            // später: weitere Levels
+        }
 
+        this.currentScene = levelName;
+        document.getElementById('level-complete-button-box').classList.add('d-none');
+
+        // neuen Loop starten
+        this.frameId = requestAnimationFrame(ts => this.draw(ts));
     }
+
 
     destroy() {
         // 🧩 Spiel pausieren und Rendering stoppen

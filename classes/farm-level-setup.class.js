@@ -1,7 +1,7 @@
 class FarmLevelSetup {
     constructor(world) {
         this.world = world;
-        this.farmLevel = farmLevel;
+        this.farmLevel = createFarmLevel();
         this.entityImages = this.world.entityImages;
         this.allAudios = this.world.allAudios;
         this.farmEvents = farmEvents;

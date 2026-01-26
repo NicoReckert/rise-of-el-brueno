@@ -188,7 +188,16 @@ document.getElementById('next-level-button').addEventListener('click', () => {
 });
 
 document.getElementById('repeat-level-button').addEventListener('click', () => {
-    world.restartLevel('farmLevel');
+    // resetAllAudios(allAudios, { log: true });
+    // world.restartLevel('farmLevel');
+    document.getElementById('level-complete-button-box').classList.add('d-none');
+    if (world) world.destroy();
+    resetAllAudios(allAudios, { log: true });
+    world = new World(canvas, keyboard, characterImages, entityImages, allAudios);
+    if (typeof world.initRemainingSetups === "function") {
+        world.initRemainingSetups();
+    }
+    world.startGame();
 });
 
 document.getElementById('menu-level-button').addEventListener('click', () => {
@@ -208,10 +217,16 @@ document.getElementById('menu-level-button').addEventListener('click', () => {
             console.warn('Fehler beim Beenden des Fullscreens:', err);
         }
     }
-    world.stop();
-    // world.destroy();
-    world = new World(canvas, keyboard, characterImages, entityImages);
+    if (world) world.destroy();
+
+    resetAllAudios(allAudios, { log: true });
+    console.log("happyTogetherMusic nach reset:", allAudios.happyTogetherMusic?.currentTime);
+
+    world = new World(canvas, keyboard, characterImages, entityImages, allAudios);
     // init();
+    if (typeof world.initRemainingSetups === "function") {
+        world.initRemainingSetups();
+    }
 });
 
 function listenStartButton() {
@@ -228,6 +243,75 @@ function listenStartButton() {
         titleMusic2.pause();
     });
 }
+
+function resetAllAudios(
+    root,
+    {
+        pause = true,
+        resetTime = true,
+        resetVolume = true,
+        defaultVolume = 1,
+        resetLoop = true,
+        resetRate = true,
+        log = false
+    } = {}
+) {
+    if (!root) return;
+
+    let counter = 0;
+
+    const visit = (value, path = "root") => {
+        if (!value) return;
+
+        const looksLikeAudio =
+            typeof value === "object" &&
+            typeof value.play === "function" &&
+            typeof value.pause === "function" &&
+            "currentTime" in value;
+
+        if (looksLikeAudio) {
+            try {
+                if (log) console.log("[resetAllAudios] audio @", path, "before:", {
+                    time: value.currentTime,
+                    volume: value.volume,
+                    loop: value.loop
+                });
+
+                if (pause) value.pause();
+                if (resetTime) value.currentTime = 0;
+                if (resetVolume) value.volume = defaultVolume;
+                if (resetLoop) value.loop = false;
+                if (resetRate) value.playbackRate = 1;
+
+                if (log) console.log("[resetAllAudios] audio @", path, "after:", {
+                    time: value.currentTime,
+                    volume: value.volume,
+                    loop: value.loop
+                });
+
+                counter++;
+            } catch (e) {
+                console.warn("Konnte Audio nicht resetten:", e);
+            }
+            return;
+        }
+
+        if (Array.isArray(value)) {
+            value.forEach((v, i) => visit(v, `${path}[${i}]`));
+            return;
+        }
+
+        if (typeof value === "object") {
+            Object.entries(value).forEach(([k, v]) => visit(v, `${path}.${k}`));
+        }
+    };
+
+    visit(root, "allAudios");
+    if (log) console.log(`[resetAllAudios] total audios reset: ${counter}`);
+}
+
+
+
 
 init();
 
