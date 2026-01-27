@@ -58,6 +58,14 @@ async function init() {
     smartMerge(entityImages, entities);
     Object.assign(allAudios, audios);
 
+    // 🔊🔇 hier: gespeicherten Mute-State wiederherstellen
+    const savedMuted = localStorage.getItem("elBruenoMuted");
+    if (savedMuted === "1") {
+        setMutedState(true);
+    } else {
+        setMutedState(false);
+    }
+
     overlay.style.opacity = 0;
     setTimeout(() => overlay.remove(), 600);
 
@@ -94,6 +102,10 @@ async function loadDeferredAssets() {
         smartMerge(entityImages, entityDeferred);
         Object.assign(allAudios, audioDeferred);
 
+        if (isMuted) {
+            applyMuteToAllAudios(allAudios);
+        }
+
         if (world) {
             Object.assign(world.characterImages, charDeferred);
             smartMerge(world.entityImages, entityDeferred);
@@ -123,6 +135,11 @@ async function loadLazyAssets() {
         Object.assign(characterImages, charLazy, world.characterImages);
         smartMerge(entityImages, entityLazy, world.entityImages);
         Object.assign(allAudios, audioLazy, world.allAudios);
+
+        if (isMuted) {
+            applyMuteToAllAudios(allAudios);
+        }
+
 
         world.character?.initMovementImages();
         world.character?.initEmotionImages();
@@ -506,7 +523,7 @@ function restartGameFromCurrentLevel() {
     }
     world.startGame();
     document.getElementById('pause-toggle-button').classList.remove('d-none');
-    ocument.getElementById('mute-toggle-button').classList.remove('d-none');
+    document.getElementById('mute-toggle-button').classList.remove('d-none');
 }
 
 // alter Button vom Level-Complete-Screen
@@ -561,7 +578,11 @@ document.getElementById('menu-level-button')
 document.getElementById('pause-menu-main-button')
     .addEventListener('click', returnToMainMenu);
 
-function setMutedAllAudios(root, muted) {
+document.getElementById('pause-resume-button').addEventListener('click', () => {
+    closePauseMenu();
+});
+
+function applyMuteToAllAudios(root) {
     if (!root) return;
 
     const visit = (value) => {
@@ -574,7 +595,7 @@ function setMutedAllAudios(root, muted) {
             "currentTime" in value;
 
         if (looksLikeAudio) {
-            value.muted = muted;
+            value.muted = isMuted;   // 💡 ganz wichtig: nur muted toggeln
             return;
         }
 
@@ -591,20 +612,23 @@ function setMutedAllAudios(root, muted) {
     visit(root);
 }
 
+// Button-Optik anpassen
+function updateMuteButtonUI() {
+    if (!muteToggleButton) return;
+    muteToggleButton.textContent = isMuted ? "🔇" : "🔊";
+}
+
+// Zentraler Setter: State + localStorage + auf alle Audios anwenden
+function setMutedState(muted) {
+    isMuted = muted;
+    localStorage.setItem("elBruenoMuted", muted ? "1" : "0");
+    updateMuteButtonUI();
+    applyMuteToAllAudios(allAudios);
+}
+
 muteToggleButton.addEventListener('click', () => {
-    isMuted = !isMuted;
-    setMutedAllAudios(allAudios, isMuted);
-
-    // Optional: Button-Icon/Text anpassen
-    muteToggleButton.textContent = isMuted ? '🔈' : '🔇';
+    setMutedState(!isMuted);
 });
-
-document.getElementById('pause-resume-button').addEventListener('click', () => {
-    closePauseMenu();
-});
-
-
-
 
 init();
 
