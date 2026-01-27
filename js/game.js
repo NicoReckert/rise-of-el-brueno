@@ -194,8 +194,7 @@ window.addEventListener('keyup', (event) => {
 });
 
 function setFullscreen() {
-    const content = document.getElementById('canvas-button-box');
-    content.requestFullscreen({ navigationUI: "hide" });
+    enterFullscreen();
 }
 
 document.getElementById('next-level-button').addEventListener('click', () => {
@@ -255,6 +254,7 @@ function listenStartButton() {
         document.getElementById('move-button-box').classList.remove('d-none');
         document.getElementById('pause-toggle-button').classList.remove('d-none');
         document.getElementById('mute-toggle-button').classList.remove('d-none');
+        document.getElementById('fullscreen-toggle-button').classList.remove('d-none');
         // document.getElementById('background-music').play();
         // this.character.playSpeakSound();
         setFullscreen();
@@ -462,6 +462,7 @@ function resumeAllAudios(root) {
 
 const pauseToggleButton = document.getElementById('pause-toggle-button');
 const muteToggleButton = document.getElementById('mute-toggle-button');
+const fullscreenToggleButton = document.getElementById('fullscreen-toggle-button');
 const pauseOverlay = document.getElementById('pause-overlay');
 let isMuted = false;
 
@@ -524,6 +525,7 @@ function restartGameFromCurrentLevel() {
     world.startGame();
     document.getElementById('pause-toggle-button').classList.remove('d-none');
     document.getElementById('mute-toggle-button').classList.remove('d-none');
+    document.getElementById('fullscreen-toggle-button').classList.remove('d-none');
 }
 
 // alter Button vom Level-Complete-Screen
@@ -543,6 +545,7 @@ function returnToMainMenu() {
     pauseOverlay.classList.add('d-none');
     document.getElementById('pause-toggle-button').classList.add('d-none');
     document.getElementById('mute-toggle-button').classList.add('d-none');
+    document.getElementById('fullscreen-toggle-button').classList.add('d-none');
 
     try {
         fadeOutAudio(world.levelCompleteSetup.sounds.levelCompleteMusic, 1000);
@@ -629,6 +632,43 @@ function setMutedState(muted) {
 muteToggleButton.addEventListener('click', () => {
     setMutedState(!isMuted);
 });
+
+function isFullscreenActive() {
+    return !!document.fullscreenElement;
+}
+
+function enterFullscreen() {
+    const content = document.getElementById('canvas-button-box');
+    if (content.requestFullscreen) {
+        content.requestFullscreen({ navigationUI: "hide" }).catch(() => { });
+    }
+}
+
+function exitFullscreen() {
+    if (document.fullscreenElement && document.exitFullscreen) {
+        document.exitFullscreen().catch(() => { });
+    }
+}
+
+function updateFullscreenButtonUI() {
+    if (!fullscreenToggleButton) return;
+    fullscreenToggleButton.textContent = isFullscreenActive() ? "🡼" : "⛶";
+}
+
+fullscreenToggleButton.addEventListener('click', () => {
+    if (isFullscreenActive()) {
+        exitFullscreen();
+    } else {
+        enterFullscreen();
+    }
+});
+
+document.addEventListener('fullscreenchange', () => {
+    updateFullscreenButtonUI();
+});
+
+
+
 
 init();
 
