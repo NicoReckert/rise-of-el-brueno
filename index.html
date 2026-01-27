@@ -51,6 +51,20 @@
                 </div>
                 <button class="start-button next-level-button" id="next-level-button">Weiter</button>
             </div>
+            <!-- Pause-Toggle-Button im Spiel -->
+            <button class="pause-toggle-button d-none" id="pause-toggle-button">II</button>
+
+            <button class="mute-toggle-button d-none" id="mute-toggle-button">🔇</button>
+
+            <!-- Pause-Overlay -->
+            <div class="pause-overlay d-none" id="pause-overlay">
+                <div class="pause-menu">
+                    <button class="start-button" id="pause-resume-button">Weiter</button>
+                    <button class="start-button" id="pause-restart-button">Level neu starten</button>
+                    <button class="start-button" id="pause-menu-main-button">Zurück zum Menü</button>
+                </div>
+            </div>
+
             <canvas id="canvas" width="1280" height="720"></canvas>
         </div>
         <audio id="background-music" loop>

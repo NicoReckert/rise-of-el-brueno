@@ -187,11 +187,11 @@ canvas {
 }
 
 /* .move-button:active { */
-  /* background: rgba(255, 255, 255, 0.3); */
-  /* beim Drücken heller */
-  /* transform: scale(0.95); */
-  /* kleineres "Klick"-Feedback */
-  /* transition: transform 0.1s, background 0.1s; */
+/* background: rgba(255, 255, 255, 0.3); */
+/* beim Drücken heller */
+/* transform: scale(0.95); */
+/* kleineres "Klick"-Feedback */
+/* transition: transform 0.1s, background 0.1s; */
 /* } */
 
 .move-button {
@@ -220,7 +220,8 @@ canvas {
 .move-button::after {
   content: "";
   position: absolute;
-  inset: -3px; /* etwas größer als der Button */
+  inset: -3px;
+  /* etwas größer als der Button */
   border-radius: 50%;
   border: 2px solid transparent;
   pointer-events: none;
@@ -232,6 +233,7 @@ canvas {
 .move-button.pulse::after {
   animation: ringPulse 0.7s ease-out forwards;
 }
+
 .move-button.hold {
   transform: scale(0.9);
   background: rgba(255, 255, 255, 0.25);
@@ -239,9 +241,26 @@ canvas {
 }
 
 @keyframes ringPulse {
-  0% { opacity: .9; transform: scale(1); border-color: #ffd070; box-shadow: 0 0 12px #ffd070; }
-  50% { opacity: .5; transform: scale(1.5); border-color: #ff9933; box-shadow: 0 0 18px #ff9933; }
-  100% { opacity: 0; transform: scale(2.0); border-color: transparent; box-shadow: none; }
+  0% {
+    opacity: .9;
+    transform: scale(1);
+    border-color: #ffd070;
+    box-shadow: 0 0 12px #ffd070;
+  }
+
+  50% {
+    opacity: .5;
+    transform: scale(1.5);
+    border-color: #ff9933;
+    box-shadow: 0 0 18px #ff9933;
+  }
+
+  100% {
+    opacity: 0;
+    transform: scale(2.0);
+    border-color: transparent;
+    box-shadow: none;
+  }
 }
 
 
@@ -1402,10 +1421,6 @@ canvas {
   height: 100%;
 }
 
-.d-none {
-  display: none;
-}
-
 .controls-box {
   display: flex;
   justify-content: center;
@@ -1658,12 +1673,6 @@ canvas {
   transition: all 0.2s ease;
 }
 
-.d-none {
-  display: none;
-}
-
-
-
 #loading-overlay {
   position: fixed;
   inset: 0;
@@ -1690,8 +1699,52 @@ canvas {
   font-size: 1.2rem;
 }
 
+.pause-toggle-button {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  z-index: 30;
+  padding: 6px 10px;
+  font-size: 20px;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.pause-overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.55);
+  z-index: 25;
+}
+
+.pause-menu {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 20px 40px;
+  border-radius: 16px;
+  background: rgba(10, 10, 20, 0.9);
+}
+
+.pause-toggle-button,
+.mute-toggle-button {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    z-index: 20;
+}
+
+.mute-toggle-button {
+    right: 60px; /* etwas links neben dem Pause-Button */
+}
 
 
+.d-none {
+  display: none;
+}
 
 
 @media only screen and (max-width: 850px) {
@@ -1853,7 +1906,7 @@ canvas {
     z-index: 3;
   }
 
-  
+
 }
 
 /* @media only screen and (max-height: 650px) {

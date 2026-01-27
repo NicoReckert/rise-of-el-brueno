@@ -236,6 +236,8 @@ function listenStartButton() {
         document.getElementById('overlay-start-initialisation').style.display = 'none';
         document.getElementById('canvas').style.display = 'block';
         document.getElementById('move-button-box').classList.remove('d-none');
+        document.getElementById('pause-toggle-button').classList.remove('d-none');
+        document.getElementById('mute-toggle-button').classList.remove('d-none');
         // document.getElementById('background-music').play();
         // this.character.playSpeakSound();
         setFullscreen();
@@ -309,6 +311,297 @@ function resetAllAudios(
     visit(root, "allAudios");
     if (log) console.log(`[resetAllAudios] total audios reset: ${counter}`);
 }
+
+function pauseAllAudios(root) {
+    if (!root) return;
+
+    const visit = (value) => {
+        if (!value) return;
+
+        const looksLikeAudio =
+            typeof value === "object" &&
+            typeof value.play === "function" &&
+            typeof value.pause === "function" &&
+            "currentTime" in value;
+
+        if (looksLikeAudio) {
+            // Merken, ob es vorher gespielt hat
+            value._wasPlayingBeforePause = !value.paused;
+            if (!value.paused) value.pause();
+            return;
+        }
+
+        if (Array.isArray(value)) {
+            value.forEach(visit);
+            return;
+        }
+
+        if (typeof value === "object") {
+            Object.values(value).forEach(visit);
+        }
+    };
+
+    visit(root);
+}
+
+function resumeAllAudios(root) {
+    if (!root) return;
+
+    const visit = (value) => {
+        if (!value) return;
+
+        const looksLikeAudio =
+            typeof value === "object" &&
+            typeof value.play === "function" &&
+            typeof value.pause === "function" &&
+            "currentTime" in value;
+
+        if (looksLikeAudio) {
+            if (value._wasPlayingBeforePause) {
+                value.play().catch(() => { /* Autoplay-Blocker ignorieren */ });
+            }
+            value._wasPlayingBeforePause = false;
+            return;
+        }
+
+        if (Array.isArray(value)) {
+            value.forEach(visit);
+            return;
+        }
+
+        if (typeof value === "object") {
+            Object.values(value).forEach(visit);
+        }
+    };
+
+    visit(root);
+}
+
+
+function pauseAllAudios(root) {
+    if (!root) return;
+
+    const visit = (value) => {
+        if (!value) return;
+
+        const looksLikeAudio =
+            typeof value === "object" &&
+            typeof value.play === "function" &&
+            typeof value.pause === "function" &&
+            "currentTime" in value;
+
+        if (looksLikeAudio) {
+            // Merken, ob es vorher gespielt hat
+            value._wasPlayingBeforePause = !value.paused;
+            if (!value.paused) value.pause();
+            return;
+        }
+
+        if (Array.isArray(value)) {
+            value.forEach(visit);
+            return;
+        }
+
+        if (typeof value === "object") {
+            Object.values(value).forEach(visit);
+        }
+    };
+
+    visit(root);
+}
+
+function resumeAllAudios(root) {
+    if (!root) return;
+
+    const visit = (value) => {
+        if (!value) return;
+
+        const looksLikeAudio =
+            typeof value === "object" &&
+            typeof value.play === "function" &&
+            typeof value.pause === "function" &&
+            "currentTime" in value;
+
+        if (looksLikeAudio) {
+            if (value._wasPlayingBeforePause) {
+                value.play().catch(() => { /* Autoplay-Blocker ignorieren */ });
+            }
+            value._wasPlayingBeforePause = false;
+            return;
+        }
+
+        if (Array.isArray(value)) {
+            value.forEach(visit);
+            return;
+        }
+
+        if (typeof value === "object") {
+            Object.values(value).forEach(visit);
+        }
+    };
+
+    visit(root);
+}
+
+const pauseToggleButton = document.getElementById('pause-toggle-button');
+const muteToggleButton = document.getElementById('mute-toggle-button');
+const pauseOverlay = document.getElementById('pause-overlay');
+let isMuted = false;
+
+function openPauseMenu() {
+    if (!world) return;
+    pauseOverlay.classList.remove('d-none');
+    world.pauseGame?.();
+    pauseAllAudios(allAudios);
+}
+
+function closePauseMenu() {
+    if (!world) return;
+    pauseOverlay.classList.add('d-none');
+    world.resumeGame?.();
+    resumeAllAudios(allAudios);
+}
+
+pauseToggleButton.addEventListener('click', () => {
+    if (!world) return;
+
+    const isOpen = !pauseOverlay.classList.contains('d-none');
+
+    if (isOpen) {
+        closePauseMenu();
+    } else {
+        openPauseMenu();
+    }
+});
+
+window.addEventListener('keydown', (event) => {
+    keyboard.setKeyTrue(event.key);
+
+    const pauseToggleButton = document.getElementById('pause-toggle-button');
+    const pauseButtonVisible = !pauseToggleButton.classList.contains('d-none');
+
+    if (event.key === 'Escape' && world && pauseButtonVisible) {
+        const isOpen = !pauseOverlay.classList.contains('d-none');
+        if (isOpen) {
+            closePauseMenu();
+        } else {
+            openPauseMenu();
+        }
+    }
+});
+
+
+
+function restartGameFromCurrentLevel() {
+    // Level-Complete-Overlay und Pause-Overlay schließen
+    document.getElementById('level-complete-button-box').classList.add('d-none');
+    pauseOverlay.classList.add('d-none');
+
+    if (world) world.destroy();
+    resetAllAudios(allAudios, { log: true });
+
+    world = new World(canvas, keyboard, characterImages, entityImages, allAudios);
+    if (typeof world.initRemainingSetups === "function") {
+        world.initRemainingSetups();
+    }
+    world.startGame();
+    document.getElementById('pause-toggle-button').classList.remove('d-none');
+    ocument.getElementById('mute-toggle-button').classList.remove('d-none');
+}
+
+// alter Button vom Level-Complete-Screen
+document.getElementById('repeat-level-button').addEventListener('click', () => {
+    restartGameFromCurrentLevel();
+});
+
+// neuer Button im Pause-Menü
+document.getElementById('pause-restart-button').addEventListener('click', () => {
+    restartGameFromCurrentLevel();
+});
+
+
+function returnToMainMenu() {
+    // Level-Complete-Box & Pause-Overlay schließen
+    document.getElementById('level-complete-button-box').classList.add('d-none');
+    pauseOverlay.classList.add('d-none');
+    document.getElementById('pause-toggle-button').classList.add('d-none');
+    document.getElementById('mute-toggle-button').classList.add('d-none');
+
+    try {
+        fadeOutAudio(world.levelCompleteSetup.sounds.levelCompleteMusic, 1000);
+    } catch (e) {
+        // falls levelCompleteSetup hier noch nicht existiert → ignorieren
+    }
+
+    titleMusic2.currentTime = 0;
+    fadeInAudio(titleMusic2, 2000);
+    document.getElementById('overlay-startscreen').style.display = 'flex';
+    document.getElementById('move-button-box').classList.add('d-none');
+
+    if (document.fullscreenElement) {
+        try {
+            document.exitFullscreen();
+        } catch (err) {
+            console.warn('Fehler beim Beenden des Fullscreens:', err);
+        }
+    }
+
+    if (world) world.destroy();
+    resetAllAudios(allAudios, { log: true });
+
+    world = new World(canvas, keyboard, characterImages, entityImages, allAudios);
+    if (typeof world.initRemainingSetups === "function") {
+        world.initRemainingSetups();
+    }
+}
+
+document.getElementById('menu-level-button')
+    .addEventListener('click', returnToMainMenu);
+
+document.getElementById('pause-menu-main-button')
+    .addEventListener('click', returnToMainMenu);
+
+function setMutedAllAudios(root, muted) {
+    if (!root) return;
+
+    const visit = (value) => {
+        if (!value) return;
+
+        const looksLikeAudio =
+            typeof value === "object" &&
+            typeof value.play === "function" &&
+            typeof value.pause === "function" &&
+            "currentTime" in value;
+
+        if (looksLikeAudio) {
+            value.muted = muted;
+            return;
+        }
+
+        if (Array.isArray(value)) {
+            value.forEach(visit);
+            return;
+        }
+
+        if (typeof value === "object") {
+            Object.values(value).forEach(visit);
+        }
+    };
+
+    visit(root);
+}
+
+muteToggleButton.addEventListener('click', () => {
+    isMuted = !isMuted;
+    setMutedAllAudios(allAudios, isMuted);
+
+    // Optional: Button-Icon/Text anpassen
+    muteToggleButton.textContent = isMuted ? '🔈' : '🔇';
+});
+
+document.getElementById('pause-resume-button').addEventListener('click', () => {
+    closePauseMenu();
+});
 
 
 

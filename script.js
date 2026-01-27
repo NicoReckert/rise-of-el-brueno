@@ -577,45 +577,42 @@ function fadeAudioTo(audio, duration = 2000, targetVolume = 1) {
 window.addEventListener('contextmenu', e => e.preventDefault());
 
 function openFullscreen(element) {
-  if (element.requestFullscreen) {
-    element.requestFullscreen();
-  } else if (element.webkitRequestFullscreen) { // Safari
-    element.webkitRequestFullscreen();
-  } else if (element.msRequestFullscreen) { // ältere IE/Edge
-    element.msRequestFullscreen();
-  }
+    if (element.requestFullscreen) {
+        element.requestFullscreen();
+    } else if (element.webkitRequestFullscreen) { // Safari
+        element.webkitRequestFullscreen();
+    } else if (element.msRequestFullscreen) { // ältere IE/Edge
+        element.msRequestFullscreen();
+    }
 }
 
 document.addEventListener("fullscreenchange", () => {
-  if (document.fullscreenElement) {
-    document.body.classList.add("fullscreen-active");
-  } else {
-    document.body.classList.remove("fullscreen-active");
-  }
+    if (document.fullscreenElement) {
+        document.body.classList.add("fullscreen-active");
+    } else {
+        document.body.classList.remove("fullscreen-active");
+    }
 });
 
 document.querySelectorAll(".move-button").forEach(btn => {
-  // beim Drücken
-  btn.addEventListener("touchstart", () => {
-    btn.classList.add("hold");
-    triggerPulse(btn);
-  });
-  btn.addEventListener("mousedown", () => {
-    btn.classList.add("hold");
-    triggerPulse(btn);
-  });
+    // beim Drücken
+    btn.addEventListener("touchstart", () => {
+        btn.classList.add("hold");
+        triggerPulse(btn);
+    });
+    btn.addEventListener("mousedown", () => {
+        btn.classList.add("hold");
+        triggerPulse(btn);
+    });
 
-  // beim Loslassen
-  btn.addEventListener("touchend", () => btn.classList.remove("hold"));
-  btn.addEventListener("mouseup", () => btn.classList.remove("hold"));
-  btn.addEventListener("mouseleave", () => btn.classList.remove("hold"));
+    // beim Loslassen
+    btn.addEventListener("touchend", () => btn.classList.remove("hold"));
+    btn.addEventListener("mouseup", () => btn.classList.remove("hold"));
+    btn.addEventListener("mouseleave", () => btn.classList.remove("hold"));
 });
 
 function triggerPulse(button) {
-  button.classList.remove("pulse");   // Reset
-  void button.offsetWidth;            // Reflow erzwingt Neustart
-  button.classList.add("pulse");      // Startet Animation
+    button.classList.remove("pulse");   // Reset
+    void button.offsetWidth;            // Reflow erzwingt Neustart
+    button.classList.add("pulse");      // Startet Animation
 }
-
-
-

@@ -55,6 +55,17 @@ class World {
         this.draw();
     }
 
+    pauseGame() {
+        this.paused = true;
+        this.isKeysStopp = true;   // Eingaben blocken
+    }
+
+    resumeGame() {
+        this.paused = false;
+        this.isKeysStopp = false;
+        // kein neues requestAnimationFrame starten, der Loop läuft ja weiter
+    }
+
     draw(timestamp) {
         this.timestamp = timestamp;
 
