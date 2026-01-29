@@ -255,6 +255,7 @@ function listenStartButton() {
         document.getElementById('pause-toggle-button').classList.remove('d-none');
         document.getElementById('mute-toggle-button').classList.remove('d-none');
         document.getElementById('fullscreen-toggle-button').classList.remove('d-none');
+        document.getElementById('move-button-box').classList.add('move-button-box-active');
         // document.getElementById('background-music').play();
         // this.character.playSpeakSound();
         setFullscreen();
@@ -394,72 +395,6 @@ function resumeAllAudios(root) {
     visit(root);
 }
 
-
-function pauseAllAudios(root) {
-    if (!root) return;
-
-    const visit = (value) => {
-        if (!value) return;
-
-        const looksLikeAudio =
-            typeof value === "object" &&
-            typeof value.play === "function" &&
-            typeof value.pause === "function" &&
-            "currentTime" in value;
-
-        if (looksLikeAudio) {
-            // Merken, ob es vorher gespielt hat
-            value._wasPlayingBeforePause = !value.paused;
-            if (!value.paused) value.pause();
-            return;
-        }
-
-        if (Array.isArray(value)) {
-            value.forEach(visit);
-            return;
-        }
-
-        if (typeof value === "object") {
-            Object.values(value).forEach(visit);
-        }
-    };
-
-    visit(root);
-}
-
-function resumeAllAudios(root) {
-    if (!root) return;
-
-    const visit = (value) => {
-        if (!value) return;
-
-        const looksLikeAudio =
-            typeof value === "object" &&
-            typeof value.play === "function" &&
-            typeof value.pause === "function" &&
-            "currentTime" in value;
-
-        if (looksLikeAudio) {
-            if (value._wasPlayingBeforePause) {
-                value.play().catch(() => { /* Autoplay-Blocker ignorieren */ });
-            }
-            value._wasPlayingBeforePause = false;
-            return;
-        }
-
-        if (Array.isArray(value)) {
-            value.forEach(visit);
-            return;
-        }
-
-        if (typeof value === "object") {
-            Object.values(value).forEach(visit);
-        }
-    };
-
-    visit(root);
-}
-
 const pauseToggleButton = document.getElementById('pause-toggle-button');
 const muteToggleButton = document.getElementById('mute-toggle-button');
 const fullscreenToggleButton = document.getElementById('fullscreen-toggle-button');
@@ -471,6 +406,8 @@ function openPauseMenu() {
     pauseOverlay.classList.remove('d-none');
     world.pauseGame?.();
     pauseAllAudios(allAudios);
+    document.getElementById('move-button-box').classList.remove('move-button-box-active');
+
 }
 
 function closePauseMenu() {
@@ -478,6 +415,8 @@ function closePauseMenu() {
     pauseOverlay.classList.add('d-none');
     world.resumeGame?.();
     resumeAllAudios(allAudios);
+    document.getElementById('move-button-box').classList.add('move-button-box-active');
+
 }
 
 pauseToggleButton.addEventListener('click', () => {
@@ -526,6 +465,7 @@ function restartGameFromCurrentLevel() {
     document.getElementById('pause-toggle-button').classList.remove('d-none');
     document.getElementById('mute-toggle-button').classList.remove('d-none');
     document.getElementById('fullscreen-toggle-button').classList.remove('d-none');
+    document.getElementById('move-button-box').classList.add('move-button-box-active');
 }
 
 // alter Button vom Level-Complete-Screen
@@ -546,6 +486,8 @@ function returnToMainMenu() {
     document.getElementById('pause-toggle-button').classList.add('d-none');
     document.getElementById('mute-toggle-button').classList.add('d-none');
     document.getElementById('fullscreen-toggle-button').classList.add('d-none');
+    document.getElementById('move-button-box').classList.remove('move-button-box-active');
+
 
     try {
         fadeOutAudio(world.levelCompleteSetup.sounds.levelCompleteMusic, 1000);
