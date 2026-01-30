@@ -1,4 +1,6 @@
-class Town extends Ground {
+import { Ground } from './ground.class.js';
+
+export class Town extends Ground {
 
     isFlipped = false;
     isGameCharacter = true;

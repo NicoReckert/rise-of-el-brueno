@@ -1,4 +1,6 @@
-class Sky extends MovableObject {
+import { MovableObject } from './movable-object.class.js';
+
+export class Sky extends MovableObject {
 
     constructor(x) {
         super();

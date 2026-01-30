@@ -1,3 +1,9 @@
+import { PopupText } from "../classes/popup-text.class.js";
+import { farmEvents_part1 } from "./farm-events-part1.js";
+import { farmEvents_part2 } from "./farm-events-part2.js";
+import { farmEvents_part3 } from "./farm-events-part3.js";
+import { farmEvents_part4 } from "./farm-events-part4.js";
+
 const farmEvents2 = [
     ...farmEvents_part1,
     ...farmEvents_part2,
@@ -5,7 +11,7 @@ const farmEvents2 = [
     ...farmEvents_part4
 ];
 
-const farmEvents =
+export const farmEvents =
     [
         {
             type: 'quest',
@@ -134,7 +140,7 @@ const farmEvents =
             type: 'quest',
             step: 1,
             once: false,
-            condition: (setup) => setup.taskWindow.tasks[0].done && setup.taskWindow.tasks[1].done,
+            condition: (setup) => setup.world.taskWindow.tasks[0].done && setup.world.taskWindow.tasks[1].done,
             action: (setup) => setup.world.farmLevelController.questManager.advance(2)
         },
 
@@ -142,7 +148,7 @@ const farmEvents =
             type: 'quest',
             step: 2,
             action: (setup) => {
-                setup.taskWindow.addTask('3. Bringe Lola zur Wiese', { active: true })
+                setup.world.taskWindow.addTask('3. Bringe Lola zur Wiese', { active: true })
                 setup.sounds.newTaskSound.play()
                 setup.popupTexts.push(new PopupText("Neue Aufgabe im Log!", setup.world.canvas.width / 2, 400))
             }
@@ -217,7 +223,7 @@ const farmEvents =
             step: 4,
             action: (setup) => {
                 setup.hints[1].hide();
-                setup.taskWindow.markDone(2);
+                setup.world.taskWindow.markDone(2);
                 setup.popupTexts.push(new PopupText("Aufgabe Erledigt!", setup.world.canvas.width / 2, 400));
                 setup.sounds.taskCompletedSound.play();
                 setup.characters.cow.isMovingRight = false;
@@ -231,7 +237,7 @@ const farmEvents =
             step: 4,
             action: (setup) => {
                 setup.hints[2].show();
-                setup.taskWindow.addTask('4. Warte bis Lola fertig ist', { active: true });
+                setup.world.taskWindow.addTask('4. Warte bis Lola fertig ist', { active: true });
                 setup.sounds.newTaskSound.play();
                 setup.popupTexts.push(new PopupText("Neue Aufgabe im Log!", setup.world.canvas.width / 2, 400));
             }
@@ -257,7 +263,7 @@ const farmEvents =
             step: 4,
             action: (setup) => {
                 setup.hints[2].hide();
-                setup.taskWindow.markDone(3)
+                setup.world.taskWindow.markDone(3)
                 setup.sounds.taskCompletedSound.play()
                 setup.popupTexts.push(new PopupText("Aufgabe erledigt!", setup.world.canvas.width / 2, 400))
             }
@@ -269,7 +275,7 @@ const farmEvents =
             step: 4,
             action: (setup) => {
                 setup.hints[3].show();
-                setup.taskWindow.addTask('5. Belohne Lola', { active: true })
+                setup.world.taskWindow.addTask('5. Belohne Lola', { active: true })
                 setup.sounds.newTaskSound.play()
                 setup.popupTexts.push(new PopupText("Neue Aufgabe im Log!", setup.world.canvas.width / 2, 400))
                 setup.world.farmLevelController.questManager.advance(5)
@@ -324,7 +330,7 @@ const farmEvents =
             step: 6,
             action: (setup) => {
                 setup.hints[3].hide();
-                setup.taskWindow.markDone(4);
+                setup.world.taskWindow.markDone(4);
                 setup.sounds.taskCompletedSound.play();
                 setup.popupTexts.push(new PopupText("Aufgabe erledigt!", setup.world.canvas.width / 2, 400));
             },
@@ -343,7 +349,7 @@ const farmEvents =
             type: "quest",
             step: 7,
             action: (setup) => {
-                setup.taskWindow.addTask('6. Bringe Lola wieder zurück', { active: true });
+                setup.world.taskWindow.addTask('6. Bringe Lola wieder zurück', { active: true });
                 setup.sounds.newTaskSound.play();
                 setup.popupTexts.push(new PopupText("Neue Aufgabe im Log!", setup.world.canvas.width / 2, 400));
                 setup.characters.cow.updateAnimationState('walk');
@@ -365,7 +371,7 @@ const farmEvents =
                     setup.characters.cow.updateAnimationState('walk');
                 } else {
                     setup.characters.cow.isMovingLeft = false;
-                    setup.taskWindow.markDone(5);
+                    setup.world.taskWindow.markDone(5);
                     setup.sounds.taskCompletedSound.play();
                     setup.popupTexts.push(new PopupText("Aufgabe erledigt!", setup.world.canvas.width / 2, 400));
                     setup.characters.cow.updateAnimationState('idle');
@@ -649,7 +655,7 @@ const farmEvents =
             type: 'quest',
             step: 11,
             action: (setup) => {
-                setup.taskWindow.addTask('7. Gehe ins Haus', { active: true })
+                setup.world.taskWindow.addTask('7. Gehe ins Haus', { active: true })
                 setup.sounds.newTaskSound.play()
                 setup.popupTexts.push(new PopupText("Neue Aufgabe im Log!", setup.world.canvas.width / 2, 400))
             }
@@ -714,7 +720,7 @@ const farmEvents =
                 setup.hints[4].hide();
                 setup.environment.house.updateAnimationState('doorCloses');
                 setup.sounds.doorClosingSound.play();
-                setup.world.farmLevelSetup.taskWindow.markDone(6)
+                setup.world.taskWindow.markDone(6)
                 setup.world.farmLevelSetup.sounds.taskCompletedSound2.currentTime = 0;
                 setup.world.farmLevelSetup.sounds.taskCompletedSound2.play();
                 setup.popupTexts.push(new PopupText("Aufgabe erledigt!", setup.world.canvas.width / 2, 440));
@@ -1088,7 +1094,7 @@ const farmEvents =
             step: 19,
             action: (setup) => {
                 setup.world.isKeysStopp = false;
-                setup.taskWindow.addTask('8. Besuche nochmal den Stall', { active: true })
+                setup.world.taskWindow.addTask('8. Besuche nochmal den Stall', { active: true })
                 setup.sounds.newTaskSound.play()
                 setup.popupTexts.push(new PopupText("Neue Aufgabe im Log!", setup.world.canvas.width / 2, 400))
                 setup.world.farmLevelController.questManager.advance(20);
@@ -1100,7 +1106,7 @@ const farmEvents =
             area: { x: 3000, width: 200 },
             objectA: 'character',
             step: 20,
-            condition: (setup) => !setup.world.farmLevelSetup.taskWindow.tasks[7].done,
+            condition: (setup) => !setup.world.taskWindow.tasks[7].done,
             once: false,
             action: (setup) => {
                 setup.hints[5].show();
@@ -1117,7 +1123,7 @@ const farmEvents =
             step: 20,
             once: false,
             action: (setup) => {
-                if (!setup.world.farmLevelSetup.taskWindow.tasks[7].done) {
+                if (!setup.world.taskWindow.tasks[7].done) {
                     const char = setup.world.character;
                     char.clampX(char, 2800, 3000);
                 } else {

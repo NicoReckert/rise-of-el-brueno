@@ -1,4 +1,6 @@
-class EndbossFireBeam extends MovableObject {
+import { MovableObject } from './movable-object.class.js'
+
+export class EndbossFireBeam extends MovableObject {
     constructor(entityImages, allAudios) {
         super();
         this.entityImages = entityImages;

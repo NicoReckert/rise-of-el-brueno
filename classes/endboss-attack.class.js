@@ -1,9 +1,14 @@
+import { MovableObject } from './movable-object.class.js';
+import { Chicken } from './chicken.class.js';
+import { EndbossTornado } from './endboss-tornado.class.js';
+import { Egg } from './egg.class.js';
+
 /**
  * Represents a large animated movable object with basic movement and animation handling.
  * Used for enemies or boss-like entities.
  * @extends MovableObject
  */
-class EndbossAttack extends MovableObject {
+export class EndbossAttack extends MovableObject {
 
     /**
      * Creates a new instance with default position, size, and animation settings.

@@ -1,4 +1,4 @@
-class ImageFader {
+export class ImageFader {
     constructor(image, x, y, width, height) {
         this.image = image;
         this.x = x;

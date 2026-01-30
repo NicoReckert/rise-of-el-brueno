@@ -1,4 +1,6 @@
-class Cloud extends MovableObject {
+import { MovableObject } from './movable-object.class.js';
+
+export class Cloud extends MovableObject {
   constructor(existingClouds = [], minDistance = 200, levelWidth = 6500) {
     super();
 

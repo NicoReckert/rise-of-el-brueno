@@ -1,4 +1,4 @@
-class SpeechBubble {
+export class SpeechBubble {
     /**
      * @param {string} text - Textinhalt der Sprechblase
      * @param {Object|string} target - Zielobjekt oder "canvas"

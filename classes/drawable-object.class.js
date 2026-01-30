@@ -2,7 +2,7 @@
  * Represents a basic drawable object with position, size, and image properties.
  * Provides image loading functionality for rendering.
  */
-class DrawableObject {
+export class DrawableObject {
 
     /**
      * Initializes default position, size, and image properties.

@@ -1,4 +1,4 @@
-class QuestManager {
+export class QuestManager {
     constructor(setup, eventManager, events) {
         this.setup = setup;
         this.world = setup.world;

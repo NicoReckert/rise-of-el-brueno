@@ -2,7 +2,7 @@
 // Farm-Events: Steps 15–22
 // dronenangriff 🚁 → Hypnose 🌀 → Trauer 😢 → Entschlossenheit 💪 → Level Complete 🏁
 
-const farmEvents_part4 = [
+export const farmEvents_part4 = [
     // 🚁 STEP 15 – drone FLIEGT EIN ================================
     {
         type: "quest",

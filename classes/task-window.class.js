@@ -1,4 +1,4 @@
-class TaskWindow {
+export class TaskWindow {
     constructor(canvas, tasks = [], width = 360, y = 70) {
         this.tasks = tasks.map((text, i) => ({
             text,

@@ -1,4 +1,6 @@
-class Projectile extends MovableObject {
+import { MovableObject } from './movable-object.class.js';
+
+export class Projectile extends MovableObject {
   constructor(type, x, y, direction = true, maxDistance = 800) {
     super();
     this.type = type;

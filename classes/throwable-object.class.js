@@ -1,4 +1,6 @@
-class ThrowableObject extends MovableObject {
+import { MovableObject } from './movable-object.class.js';
+
+export class ThrowableObject extends MovableObject {
 
     intervalThrowBottle = null;
     intervalBrokenBottle = null;
@@ -59,6 +61,7 @@ class ThrowableObject extends MovableObject {
 
         this.isGravity = false;
         this.lastAnimation = null;
+        this.ignoreGroundCollision = true;
     }
 
     animationThrowBottle() {
@@ -159,13 +162,13 @@ class ThrowableObject extends MovableObject {
         if (!this.isGravity) return;
         if (!this.lastGravityUpdate) this.lastGravityUpdate = timestamp;
         const deltaTime = (timestamp - this.lastGravityUpdate) / 1000;
-            if (this.isAboveGround() || this.speedY > 0) {
-                this.y -= this.speedY * deltaTime * 30;
-                this.speedY -= this.acceleration * deltaTime * 30;
-            } else {
-                this.speedY = 0;
-            }
-            this.lastGravityUpdate = timestamp;
+        if (this.isAboveGround() || this.speedY > 0) {
+            this.y -= this.speedY * deltaTime * 30;
+            this.speedY -= this.acceleration * deltaTime * 30;
+        } else {
+            this.speedY = 0;
+        }
+        this.lastGravityUpdate = timestamp;
     }
 
 

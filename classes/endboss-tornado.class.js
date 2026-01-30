@@ -1,4 +1,6 @@
-class EndbossTornado extends MovableObject {
+import { MovableObject } from './movable-object.class.js';
+
+export class EndbossTornado extends MovableObject {
     constructor(entityImages, x, y, allAudios) {
         super();
         this.entityImages = entityImages;

@@ -1,3 +1,9 @@
+import { Level } from '../classes/level.class.js';
+import { Ground } from '../classes/ground.class.js';
+import { Cloud } from '../classes/cloud.class.js';
+import { Town } from '../classes/town.class.js';
+import { Sky } from '../classes/sky.class.js';
+
 const groundSrcTown =
     [
         './assets/img/5_background/layers/3_third_layer/1.webp',
@@ -140,9 +146,9 @@ function createTownLevel(allAudios) {
     }
 
     for (let i = 0; i < count; i++) {
-    const xPos = startX + i * step;
-    townLevel.sky.push(new Sky(xPos));
-}
+        const xPos = startX + i * step;
+        townLevel.sky.push(new Sky(xPos));
+    }
 
 
     let calculationX = 18676

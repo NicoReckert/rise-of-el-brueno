@@ -1,7 +1,7 @@
 /**
  * Renders synchronized song lyrics and manages character animations.
  */
-class LyricsRenderer {
+export class LyricsRenderer {
     /**
      * Creates a LyricsRenderer instance.
      * @param {object} world - The game world object.

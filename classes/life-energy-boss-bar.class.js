@@ -1,4 +1,6 @@
-class LifeEnergyBossBar extends StatusBar {
+import { StatusBar } from './status-bar.class.js';
+
+export class LifeEnergyBossBar extends StatusBar {
     constructor(entityImages) {
         super();
         this.entityImages = entityImages;

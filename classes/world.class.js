@@ -1,13 +1,31 @@
-class World {
+import { IntroScreen } from './intro-screen.class.js'
+import { Character } from './character.class.js';
+import { ThrowableObject } from './throwable-object.class.js';
+import { FarmLevelSetup } from './farm-level-setup.class.js';
+import { FarmLevelController } from './farm-level-controller.class.js';
+import { StableLevelSetup } from './stable-level-setup.class.js';
+import { StableLevelController } from './stable-level-controller.class.js';
+import { TownLevelSetup } from './town-level-setup.class.js';
+import { TownLevelController } from './town-level-controller.class.js';
+import { NayelisHouseLevelSetup } from './nayelis-house-level-setup.class.js';
+import { NayelisHouseLevelController } from './nayelis-house-level-controller.class.js';
+import { NewWeaponLevelSetup } from './new-weapon-level-setup.class.js';
+import { NewWeaponLevelController } from './new-weapon-level-controller.class.js';
+import { LevelCompleteSetup } from './level-complete-setup.class.js';
+import { LevelCompleteController } from './level-complete-controller.class.js';
+import { Keyboard } from './keyboard.class.js';
+import { TaskWindow } from './task-window.class.js';
+
+export class World {
 
     ctx;
     canvas;
     currentScene = 'farmLevel';
 
-    constructor(canvas, keyboard, characterImages, entityImages, allAudios) {
+    constructor(canvas, characterImages, entityImages, allAudios) {
         this.canvas = canvas;
         this.ctx = canvas.getContext('2d');
-        this.keyboard = keyboard;
+        this.keyboard = new Keyboard();
         this.characterImages = characterImages;
         this.entityImages = entityImages;
         this.allAudios = allAudios;
@@ -44,6 +62,13 @@ class World {
 
         this.attackStartTime = null;
         this.attackCommitUntil = null;
+
+        this.tasks = [
+            "1. Kümmere dich um Juanito",
+            "2. Kümmere dich um Pollito"
+        ];
+        this.taskWindow = new TaskWindow(this.canvas, this.tasks);
+        this.tKeyPressed = false;
     }
 
     startGame() {
@@ -117,6 +142,10 @@ class World {
                 break;
             // }
         }
+
+        this.taskWindow.update(timestamp);
+        this.taskWindow.draw(this.ctx);
+
         this.frameId = requestAnimationFrame((timestamp) => {
             this.draw(timestamp);
         });
@@ -584,20 +613,22 @@ class World {
             //     this.character.jumpCount = 0;
             //     if (this.character.isMoving) this.character.moveStop();
             // }
-            const currentSetup = this.currentScene === 'farmLevel' ? this.farmLevelSetup : this.townLevelSetup;
-            if (this.keyboard.T && !currentSetup.tKeyPressed) {
-                currentSetup.taskWindow.toggle();
-                currentSetup.tKeyPressed = true;
+            const currentSetup = this.getCurrentSetup();
+            if (!currentSetup) return;
+            if (this.keyboard.T && !this.tKeyPressed) {
+                this.taskWindow.toggle();
+                this.tKeyPressed = true;
             }
             if (!this.keyboard.T) {
-                currentSetup.tKeyPressed = false;
+                this.tKeyPressed = false;
             }
 
             if (this.keyboard.A && !this.character.isAttack && !this.character.isMovingLeft && !this.character.isMovingRight) {
                 this.character.isAttack = true;
                 this.attackStartTime = this.timestamp;
                 this.attackCommitUntil = this.timestamp + 180;
-                this.townLevelSetup.sounds.attackSound.play();
+                const setup = this.getCurrentSetup();
+                setup?.sounds?.attackSound?.play();
             }
             if (this.keyboard.S && !this.character.isProtect && !this.character.isMovingLeft && !this.character.isMovingRight) {
                 this.character.isProtect = true;
@@ -612,6 +643,26 @@ class World {
     setWorld() {
         this.character.world = this;
     }
+
+    getCurrentSetup() {
+        switch (this.currentScene) {
+            case 'farmLevel':
+                return this.farmLevelSetup;
+            case 'stableLevel':
+                return this.stableLevelSetup;
+            case 'townLevel':
+                return this.townLevelSetup;
+            case 'nayelisHouseLevel':
+                return this.nayelisHouseLevelSetup;
+            case 'newWeaponLevel':
+                return this.newWeaponLevelSetup;
+            case 'levelComplete':
+                return this.levelCompleteSetup;
+            default:
+                return null;
+        }
+    }
+
 
     checkCollisions() {
         // this.townLevelSetup.townLevel.enemies.forEach(element => {
@@ -1206,9 +1257,4 @@ class World {
         if (!Number.isFinite(this.camera_x)) this.camera_x = 0;
         this.camera_x = Math.max(0, Math.min(this.camera_x, maxCameraX));
     }
-
-
-
-
-
 }

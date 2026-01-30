@@ -1,6 +1,7 @@
+import { World } from '../classes/world.class.js';
+
 let canvas;
 let world;
-let keyboard = new Keyboard();
 let characterImages = {};
 let entityImages = {};
 let allAudios = {};
@@ -10,27 +11,27 @@ let allAudios = {};
 //     characterImages = await preloadManifestImages(characterImageManifest);
 //     entityImages = await preloadManifestImages(entityImageManifest);
 //     allAudios = await preloadManifestAudio(audioManifest);
-//     world = new World(canvas, keyboard, characterImages, entityImages, allAudios);
+//     world = new World(canvas, characterImages, entityImages, allAudios);
 //     createTownLevel(entityImages);
 //     listenStartButton();
 // }
 
-function countManifestFiles(manifests) {
-    let count = 0;
-    for (const manifest of manifests) {
-        for (const value of Object.values(manifest)) {
-            if (Array.isArray(value)) {
-                count += value.length; // mehrere Einträge (z. B. Animationframes)
-            } else if (typeof value === "object" && value !== null) {
-                // verschachteltes Manifest (z. B. npc: { walk: [...], idle: [...] })
-                count += countManifestFiles([value]);
-            } else {
-                count++; // einzelner Pfad
-            }
-        }
-    }
-    return count;
-}
+// function countManifestFiles(manifests) {
+//     let count = 0;
+//     for (const manifest of manifests) {
+//         for (const value of Object.values(manifest)) {
+//             if (Array.isArray(value)) {
+//                 count += value.length; // mehrere Einträge (z. B. Animationframes)
+//             } else if (typeof value === "object" && value !== null) {
+//                 // verschachteltes Manifest (z. B. npc: { walk: [...], idle: [...] })
+//                 count += countManifestFiles([value]);
+//             } else {
+//                 count++; // einzelner Pfad
+//             }
+//         }
+//     }
+//     return count;
+// }
 
 
 async function init() {
@@ -70,7 +71,7 @@ async function init() {
     setTimeout(() => overlay.remove(), 600);
 
     canvas = document.getElementById('canvas');
-    world = new World(canvas, keyboard, characterImages, entityImages, allAudios);
+    world = new World(canvas, characterImages, entityImages, allAudios);
     // setImages(entityImages);
     // createTownLevel();
     listenStartButton();
@@ -186,11 +187,11 @@ function smartMerge(target, source) {
 
 
 window.addEventListener('keydown', (event) => {
-    keyboard.setKeyTrue(event.key);
+    world.keyboard.setKeyTrue(event.key);
 });
 
 window.addEventListener('keyup', (event) => {
-    keyboard.setKeyFalse(event.key);
+    world.keyboard.setKeyFalse(event.key);
 });
 
 function setFullscreen() {
@@ -209,7 +210,7 @@ document.getElementById('repeat-level-button').addEventListener('click', () => {
     document.getElementById('level-complete-button-box').classList.add('d-none');
     if (world) world.destroy();
     resetAllAudios(allAudios, { log: true });
-    world = new World(canvas, keyboard, characterImages, entityImages, allAudios);
+    world = new World(canvas, characterImages, entityImages, allAudios);
     if (typeof world.initRemainingSetups === "function") {
         world.initRemainingSetups();
     }
@@ -238,7 +239,7 @@ document.getElementById('menu-level-button').addEventListener('click', () => {
     resetAllAudios(allAudios, { log: true });
     console.log("happyTogetherMusic nach reset:", allAudios.happyTogetherMusic?.currentTime);
 
-    world = new World(canvas, keyboard, characterImages, entityImages, allAudios);
+    world = new World(canvas, characterImages, entityImages, allAudios);
     // init();
     if (typeof world.initRemainingSetups === "function") {
         world.initRemainingSetups();
@@ -432,7 +433,7 @@ pauseToggleButton.addEventListener('click', () => {
 });
 
 window.addEventListener('keydown', (event) => {
-    keyboard.setKeyTrue(event.key);
+    world.keyboard.setKeyTrue(event.key);
 
     const pauseToggleButton = document.getElementById('pause-toggle-button');
     const pauseButtonVisible = !pauseToggleButton.classList.contains('d-none');
@@ -457,7 +458,7 @@ function restartGameFromCurrentLevel() {
     if (world) world.destroy();
     resetAllAudios(allAudios, { log: true });
 
-    world = new World(canvas, keyboard, characterImages, entityImages, allAudios);
+    world = new World(canvas, characterImages, entityImages, allAudios);
     if (typeof world.initRemainingSetups === "function") {
         world.initRemainingSetups();
     }
@@ -511,7 +512,7 @@ function returnToMainMenu() {
     if (world) world.destroy();
     resetAllAudios(allAudios, { log: true });
 
-    world = new World(canvas, keyboard, characterImages, entityImages, allAudios);
+    world = new World(canvas, characterImages, entityImages, allAudios);
     if (typeof world.initRemainingSetups === "function") {
         world.initRemainingSetups();
     }

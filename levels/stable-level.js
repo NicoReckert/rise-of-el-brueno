@@ -1,3 +1,7 @@
+import { Level } from '../classes/level.class.js';
+import { Ground } from '../classes/ground.class.js';
+import { Town } from '../classes/town.class.js';
+
 const groundSrcStable =
     [
         './assets/img/holz_hintergrund.webp'
@@ -8,7 +12,7 @@ const townSrcStable =
         './assets/img/Hühnerstall innen2.webp'
     ]
 
-const stableLevel = new Level(
+export const stableLevel = new Level(
     {
         grounds:
             [

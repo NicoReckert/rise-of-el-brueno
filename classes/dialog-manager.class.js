@@ -1,7 +1,7 @@
 /**
  * Manages dialog sequences and interactions within the game world.
  */
-class DialogManager {
+export class DialogManager {
     /**
      * Creates a new DialogManager instance.
      * @param {object} world - The game world object.

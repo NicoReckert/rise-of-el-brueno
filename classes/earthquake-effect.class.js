@@ -1,4 +1,4 @@
-class EarthquakeEffect {
+export class EarthquakeEffect {
     constructor(setup, ctx) {
         this.setup = setup;
         this.ctx = ctx;

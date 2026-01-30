@@ -1,4 +1,7 @@
-class LevelCompleteController {
+import { EventManager } from './event-manager.class.js';
+import { QuestManager } from './quest-manager.class.js';
+
+export class LevelCompleteController {
     constructor(setup) {
         this.setup = setup;
         this.world = setup.world;

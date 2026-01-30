@@ -1,4 +1,4 @@
-class MoonCycle {
+export class MoonCycle {
     constructor(setup) {
         this.setup = setup;
         this.npc = this.setup.environment.moon;

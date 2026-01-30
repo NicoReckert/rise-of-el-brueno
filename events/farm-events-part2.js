@@ -2,7 +2,7 @@
 // Enthält alle Farm-Events für Steps 5–9
 // Verwendet FarmHelper + EventManager (global)
 
-const farmEvents_part2 = [
+export const farmEvents_part2 = [
     // 🐮 STEP 5 – LOLA BELOHNEN =====================================
     {
         type: "collision",

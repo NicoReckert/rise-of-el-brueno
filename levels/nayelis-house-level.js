@@ -1,3 +1,6 @@
+import { Level } from '../classes/level.class.js';
+import { Town } from '../classes/town.class.js';
+
 const groundSrcNayelisHouse =
     [
         './assets/img/holz_hintergrund4.png'

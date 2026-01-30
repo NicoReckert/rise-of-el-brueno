@@ -1,4 +1,6 @@
-class Egg extends MovableObject {
+import { MovableObject } from './movable-object.class.js';
+
+export class Egg extends MovableObject {
     constructor(entityImages, x, y, allAudios, options = {}) {
         super();
         this.entityImages = entityImages;
@@ -77,9 +79,9 @@ class Egg extends MovableObject {
 
         // 🟢 Gravity
         if (this.isFalling && !this.isBroken) {
-        this.speedY += this.acceleration * dt;
-        this.y += this.speedY * dt;
-    }
+            this.speedY += this.acceleration * dt;
+            this.y += this.speedY * dt;
+        }
 
         // 🟢 Boden-Kollision (WICHTIG!)
         if (!this.isBroken && this.y >= this.groundY) {

@@ -1,4 +1,4 @@
-class MagicShieldEffect {
+export class MagicShieldEffect {
     constructor(canvas) {
         this.canvas = canvas;
         this.active = false;
@@ -75,7 +75,7 @@ class MagicShieldEffect {
         this.clipJitterX = Math.sin(timestamp * 0.004) * 4;
         this.clipJitterY = Math.cos(timestamp * 0.003) * 4;
 
-        
+
 
     }
 

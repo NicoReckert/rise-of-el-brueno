@@ -1,4 +1,6 @@
-class MovableObject extends DrawableObject {
+import { DrawableObject } from './drawable-object.class.js';
+
+export class MovableObject extends DrawableObject {
     speedY = 0;
     speedX;
     acceleration = 2.5;
@@ -57,8 +59,8 @@ class MovableObject extends DrawableObject {
     }
 
     isAboveGround() {
-        if (this instanceof ThrowableObject) return true;
-        if (this instanceof Endboss) return this.y < -35;
+        if (this.ignoreGroundCollision) return true;
+        if (this.customGroundCheck) return this.customGroundCheck();
         return this.y < this.getGroundTopY();
     }
 

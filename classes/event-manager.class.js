@@ -1,7 +1,7 @@
 /**
  * Manages world events and their state.
  */
-class EventManager {
+export class EventManager {
     /**
      * Creates a new EventManager instance.
      * @param {object} setup - The game setup containing world and objects.

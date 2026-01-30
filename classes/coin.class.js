@@ -1,9 +1,11 @@
+import { MovableObject } from './movable-object.class.js';
+
 /**
  * Represents a collectible or animated movable object.
  * Handles random positioning, simple animation, and collision offsets.
  * @extends MovableObject
  */
-class Coin extends MovableObject {
+export class Coin extends MovableObject {
     isGameCharacter = true;
 
     /**

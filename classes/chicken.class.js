@@ -1,9 +1,12 @@
+import { MovableObject } from './movable-object.class.js'
+import { Projectile } from './projectile.class.js';
+
 /**
  * Represents a movable non-player character with simple movement and animation behavior.
  * Handles walking, idle, and death states.
  * @extends MovableObject
  */
-class Chicken extends MovableObject {
+export class Chicken extends MovableObject {
     isGamecharacter = false;
 
     /**

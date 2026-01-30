@@ -1,8 +1,10 @@
+import { StatusBar } from './status-bar.class.js';
+
 /**
  * Represents a status bar that displays progress or collected items.
  * @extends StatusBar
  */
-class CoinBar extends StatusBar {
+export class CoinBar extends StatusBar {
     /**
      * Creates a new status bar instance.
      * @param {Object} entityImages - Image data containing status bar graphics.

@@ -1,4 +1,6 @@
-class NewWeaponLevelSetup {
+import { AnimatedEntity } from './animated-entity.class.js';
+
+export class NewWeaponLevelSetup {
     constructor(world) {
         this.world = world;
         this.entityImages = this.world.entityImages;

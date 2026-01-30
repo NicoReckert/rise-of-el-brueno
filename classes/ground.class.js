@@ -1,4 +1,6 @@
-class Ground extends MovableObject {
+import { MovableObject } from './movable-object.class.js';
+
+export class Ground extends MovableObject {
 
     constructor(img, x, y = 240, height = 480, width = 722) {
         super();

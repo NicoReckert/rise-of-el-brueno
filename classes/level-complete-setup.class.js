@@ -1,4 +1,6 @@
-class LevelCompleteSetup {
+import { AnimatedEntity } from './animated-entity.class.js';
+
+export class LevelCompleteSetup {
     constructor(world) {
         this.world = world;
         this.entityImages = this.world.entityImages;

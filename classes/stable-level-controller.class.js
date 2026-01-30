@@ -1,4 +1,7 @@
-class StableLevelController {
+import { EventManager } from './event-manager.class.js';
+import { QuestManager } from './quest-manager.class.js';
+
+export class StableLevelController {
     constructor(setup) {
         this.setup = setup;
         this.world = setup.world;

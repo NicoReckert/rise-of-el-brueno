@@ -1,4 +1,4 @@
-class SandstormEffect {
+export class SandstormEffect {
     constructor(canvas, imageSrc = './assets/sandstorm-texture.png', worldWidth = 7200) {
         this.canvas = canvas;
         this.ctx = null;
@@ -12,14 +12,14 @@ class SandstormEffect {
         this.alpha = 0.3;
 
         this.worldWidth = worldWidth;
-        this.pressure = 0; 
+        this.pressure = 0;
         this.currentAlpha = this.alpha;
     }
 
     update() {
         if (!this.enabled) return;
         this.scrollX = (this.scrollX + this.scrollSpeed) % this.image.width;
-       this.pressure *= 0.9;
+        this.pressure *= 0.9;
         if (this.pressure < 0.01) this.pressure = 0;
 
         const p = Math.min(1, Math.max(0, this.pressure));
@@ -31,49 +31,49 @@ class SandstormEffect {
     }
 
     draw(ctx, cameraX = 0, shield = null) {
-    if (!this.enabled || !this.image.complete) return;
-
-    ctx.save();
-
-    if (shield) {
-        const { x, y, radius } = shield;
-
-        ctx.beginPath();
-        ctx.rect(0, 0, this.canvas.width, this.canvas.height);
-
-        ctx.moveTo(x, y);
-        ctx.arc(x, y, radius * 0.9, 0, Math.PI * 2, true);
-
-        ctx.clip("evenodd"); 
-    }
-
-    this.drawSand(ctx, cameraX);
-
-    ctx.restore();
-
-    // Glow-Rand (optional)
-    if (shield) {
-        const { x, y, radius } = shield;
-
-        const g = ctx.createRadialGradient(
-            x, y, radius * 0.6,
-            x, y, radius
-        );
-        g.addColorStop(0, "rgba(0,160,255,0)");
-        g.addColorStop(1, "rgba(0,160,255,0.55)");
+        if (!this.enabled || !this.image.complete) return;
 
         ctx.save();
-        ctx.globalCompositeOperation = "lighter";
-        ctx.fillStyle = g;
-        ctx.beginPath();
-        ctx.arc(x, y, radius, 0, Math.PI * 2);
-        ctx.fill();
+
+        if (shield) {
+            const { x, y, radius } = shield;
+
+            ctx.beginPath();
+            ctx.rect(0, 0, this.canvas.width, this.canvas.height);
+
+            ctx.moveTo(x, y);
+            ctx.arc(x, y, radius * 0.9, 0, Math.PI * 2, true);
+
+            ctx.clip("evenodd");
+        }
+
+        this.drawSand(ctx, cameraX);
+
         ctx.restore();
+
+        // Glow-Rand (optional)
+        if (shield) {
+            const { x, y, radius } = shield;
+
+            const g = ctx.createRadialGradient(
+                x, y, radius * 0.6,
+                x, y, radius
+            );
+            g.addColorStop(0, "rgba(0,160,255,0)");
+            g.addColorStop(1, "rgba(0,160,255,0.55)");
+
+            ctx.save();
+            ctx.globalCompositeOperation = "lighter";
+            ctx.fillStyle = g;
+            ctx.beginPath();
+            ctx.arc(x, y, radius, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.restore();
+        }
     }
-}
 
 
-drawSand(ctx, cameraX) {
+    drawSand(ctx, cameraX) {
         ctx.save();
 
         ctx.globalAlpha = this.currentAlpha;  // NICHT mehr alpha - pressure

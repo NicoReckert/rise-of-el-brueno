@@ -3,7 +3,7 @@
 // Sonnenuntergang 🌞 → Musikabend 🎸 → Nacht 🌙
 // Verwendet FarmHelper + EventManager
 
-const farmEvents_part3 = [
+export const farmEvents_part3 = [
     // 🌅 STEP 10 – SONNENUNTERGANG BEGINNT ===========================
     {
         type: "quest",

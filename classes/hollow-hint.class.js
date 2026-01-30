@@ -1,4 +1,4 @@
-class HollowHint {
+export class HollowHint {
     constructor(text, target, yOffset = 80, theme = "desert", sound = null) {
         this.text = text.toUpperCase();
         this.target = target;

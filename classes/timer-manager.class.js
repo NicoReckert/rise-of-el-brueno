@@ -1,4 +1,4 @@
-class TimerManager {
+export class TimerManager {
     constructor() {
         this.timers = new Map(); // id → timer
     }

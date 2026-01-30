@@ -1,9 +1,11 @@
+import { MovableObject } from './movable-object.class.js';
+
 /**
  * Represents a playable or controllable character with movement, animations, and state handling.
  * Handles transitions, emotions, combat, and environmental interactions.
  * @extends MovableObject
  */
-class Character extends MovableObject {
+export class Character extends MovableObject {
     VOIDLESS_ANIMS = new Set([
         'kneel-and-cry', 'stand-up-and-look-determined', 'cry', 'look-determined',
         'look-determined-and-stand-up', 'strong-determined', 'caress', 'caress-loop',

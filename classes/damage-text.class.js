@@ -1,4 +1,4 @@
-class DamageText {
+export class DamageText {
     constructor(x, y, value) {
         this.x = x;
         this.y = y;

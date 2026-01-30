@@ -1,4 +1,10 @@
-class StableLevelSetup {
+import { LifeEnergyCharacterBar } from './life-energy-character-bar.class.js';
+import { AnimatedEntity } from './animated-entity.class.js';
+import { HollowHint } from './hollow-hint.class.js';
+import { stableLevel } from '../levels/stable-level.js';
+import { stableEvents } from '../events/stable-level-events.js';
+
+export class StableLevelSetup {
     constructor(world) {
         this.world = world;
         this.entityImages = this.world.entityImages;
@@ -37,6 +43,5 @@ class StableLevelSetup {
             new HollowHint("Verlassen", this.world.character, 100, 'desert'),
             new HollowHint("Erinnerung", this.environment.memoryLight, 100, 'default'),
         ];
-
     }
 }

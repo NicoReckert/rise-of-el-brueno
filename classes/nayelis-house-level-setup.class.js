@@ -1,4 +1,6 @@
-class NayelisHouseLevelSetup {
+import { AnimatedEntity } from './animated-entity.class.js';
+
+export class NayelisHouseLevelSetup {
     constructor(world) {
         this.world = world;
         this.entityImages = this.world.entityImages;

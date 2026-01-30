@@ -1,4 +1,6 @@
-const stableEvents =
+import { PopupText } from "../classes/popup-text.class.js";
+
+export const stableEvents =
     [
         {
             type: 'quest',
@@ -97,9 +99,9 @@ const stableEvents =
             delay: 2000,
             resetOn: 'caressStartChicken',
             step: 2,
-            condition: (setup) => !setup.world.farmLevelSetup.taskWindow.tasks[0].done,
+            condition: (setup) => !setup.world.taskWindow.tasks[0].done,
             action: (setup) => {
-                setup.world.farmLevelSetup.taskWindow.markDone(0)
+                setup.world.taskWindow.markDone(0)
                 setup.world.farmLevelSetup.sounds.taskCompletedSound.currentTime = 0;
                 setup.world.farmLevelSetup.sounds.taskCompletedSound.play();
                 setup.popupTexts.push(new PopupText("Aufgabe erledigt!", setup.world.canvas.width / 2, 440));
@@ -163,9 +165,9 @@ const stableEvents =
             delay: 2000,
             resetOn: 'caressStartChick',
             step: 3,
-            condition: (setup) => !setup.world.farmLevelSetup.taskWindow.tasks[1].done,
+            condition: (setup) => !setup.world.taskWindow.tasks[1].done,
             action: (setup) => {
-                setup.world.farmLevelSetup.taskWindow.markDone(1)
+                setup.world.taskWindow.markDone(1)
                 setup.world.farmLevelSetup.sounds.taskCompletedSound2.currentTime = 0;
                 setup.world.farmLevelSetup.sounds.taskCompletedSound2.play();
                 setup.popupTexts.push(new PopupText("Aufgabe erledigt!", setup.world.canvas.width / 2, 440));
@@ -193,7 +195,7 @@ const stableEvents =
             requireKey: 'F',
             condition: (setup) => setup.world.farmLevelController.questManager.step >= 20,
             action: (setup) => {
-                setup.world.farmLevelSetup.taskWindow.markDone(7)
+                setup.world.taskWindow.markDone(7)
                 setup.world.farmLevelSetup.sounds.taskCompletedSound2.currentTime = 0;
                 setup.world.farmLevelSetup.sounds.taskCompletedSound2.play();
                 setup.popupTexts.push(new PopupText("Aufgabe erledigt!", setup.world.canvas.width / 2, 440));

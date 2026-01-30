@@ -1,3 +1,9 @@
+import { Level } from '../classes/level.class.js';
+import { Ground } from '../classes/ground.class.js';
+import { Cloud } from '../classes/cloud.class.js';
+import { Town } from '../classes/town.class.js';
+import { Sky } from '../classes/sky.class.js';
+
 const groundSrcFarm =
     [
         './assets/img/5_background/layers/3_third_layer/1.webp',
@@ -141,7 +147,7 @@ for (let i = 0; i < 66; i++) {
     calculationXFarm += 50;
 }
 
-function createFarmLevel() {
+export function createFarmLevel() {
     // Wolken
     const clouds = [];
     const cloudCount = 10;

@@ -1,4 +1,11 @@
-class FarmLevelController {
+import { AnimatedEntity } from './animated-entity.class.js';
+import { EventManager } from './event-manager.class.js';
+import { QuestManager } from './quest-manager.class.js';
+import { EarthquakeEffect } from './earthquake-effect.class.js';
+import { WindParticle } from './wind-particle.class.js';
+
+
+export class FarmLevelController {
     constructor(setup) {
         this.setup = setup;
         this.world = setup.world;
@@ -46,7 +53,7 @@ class FarmLevelController {
     }
 
     initWind() {
-        this.windParticles = new WindParticleEffect(this.canvas.width * 9, this.canvas.height, 1000);
+        this.windParticles = new WindParticle(this.canvas.width * 9, this.canvas.height, 1000);
     }
 
     update(timestamp) {
@@ -75,10 +82,7 @@ class FarmLevelController {
         }
         this.handleCharacterHitbox();
         this.handleHint();
-        this.setup.taskWindow.update(timestamp);
-        this.setup.taskWindow.draw(this.ctx);
         this.handlePopup();
-
     }
 
     updateCamera() {

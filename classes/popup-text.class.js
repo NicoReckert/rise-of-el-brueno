@@ -1,4 +1,4 @@
-class PopupText {
+export class PopupText {
   constructor(text, x, y, duration = 2000) {
     this.text = text;
     this.x = x;

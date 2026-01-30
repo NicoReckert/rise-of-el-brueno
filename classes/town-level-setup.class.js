@@ -1,4 +1,15 @@
-class TownLevelSetup {
+import { TaskWindow } from './task-window.class.js';
+import { LifeEnergyCharacterBar } from './life-energy-character-bar.class.js';
+import { LifeEnergyBossBar } from './life-energy-boss-bar.class.js';
+import { CoinBar } from './coin-bar.class.js';
+import { BottleBar } from './bottle-bar.class.js';
+import { AnimatedEntity } from './animated-entity.class.js';
+import { SpeechBubble } from './speech-bubble.class.js';
+import { Endboss } from './endboss.class.js';
+import { EndbossAttack } from './endboss-attack.class.js';
+import { ComicPanel } from './comic-panel.class.js';
+
+export class TownLevelSetup {
     constructor(world) {
         this.world = world;
         this.townLevel = townLevel;

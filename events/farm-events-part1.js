@@ -3,7 +3,7 @@
 // Verwendet FarmHelper + EventManager
 // Global verfügbar (kein Import/Export)
 
-const farmEvents_part1 = [
+export const farmEvents_part1 = [
     // 🟩 INITIALISIERUNG ============================================
     {
         type: "quest",

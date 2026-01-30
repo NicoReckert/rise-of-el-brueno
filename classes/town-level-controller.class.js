@@ -1,4 +1,10 @@
-class TownLevelController {
+import { EventManager } from './event-manager.class.js';
+import { QuestManager } from './quest-manager.class.js';
+import { SandstormEffect } from './sandstorm-effect.class.js';
+import { MagicShieldEffect } from './magic-shield-effect.class.js';
+import { EssenceTrailParticle } from './essence-trail-particle.class.js';
+
+export class TownLevelController {
     constructor(setup) {
         this.setup = setup;
         this.world = setup.world;

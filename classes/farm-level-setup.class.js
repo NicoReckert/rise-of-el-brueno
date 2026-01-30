@@ -1,4 +1,16 @@
-class FarmLevelSetup {
+import { TaskWindow } from './task-window.class.js';
+import { LifeEnergyCharacterBar } from './life-energy-character-bar.class.js';
+import { AnimatedEntity } from './animated-entity.class.js';
+import { SpeechBubble } from './speech-bubble.class.js';
+import { TimerManager } from './timer-manager.class.js';
+import { SunCycle } from './sun-cycle.class.js';
+import { MoonCycle } from './moon-cycle.class.js';
+import { LyricsRenderer } from './lyrics-renderer.class.js';
+import { HollowHint } from './hollow-hint.class.js';
+import { createFarmLevel } from '../levels/farm-level.js';
+import { farmEvents } from '../events/farm-level-events.js';
+
+export class FarmLevelSetup {
     constructor(world) {
         this.world = world;
         this.farmLevel = createFarmLevel();
@@ -117,12 +129,6 @@ class FarmLevelSetup {
         this.droneIsGo = false;
         this.isNight = false;
         this.isGameCharacterOutHouse = false;
-        this.tasks = [
-            "1. Kümmere dich um Juanito",
-            "2. Kümmere dich um Pollito"
-        ];
-        this.taskWindow = new TaskWindow(this.world.canvas, this.tasks);
-        this.tKeyPressed = false;
         this.timerManager = new TimerManager();
         this.popupTexts = [];
         this.comeFromStable = false;

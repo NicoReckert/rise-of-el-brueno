@@ -1,4 +1,4 @@
-class SunCycle {
+export class SunCycle {
     constructor(setup) {
         this.setup = setup;
         this.npc = this.setup.environment.sun;

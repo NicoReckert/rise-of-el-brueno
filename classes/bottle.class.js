@@ -1,8 +1,10 @@
+import { MovableObject } from './movable-object.class.js';
+
 /**
  * Represents a movable object that uses a random image and has collision offsets.
  * @extends MovableObject
  */
-class Bottle extends MovableObject {
+export class Bottle extends MovableObject {
     isGameCharacter = true;
     randomImage;
 

@@ -1,4 +1,7 @@
-class NayelisHouseLevelController {
+import { EventManager } from './event-manager.class.js';
+import { QuestManager } from './quest-manager.class.js';
+
+export class NayelisHouseLevelController {
     constructor(setup, farmLevelSetup) {
         this.setup = setup;
         this.world = setup.world;
@@ -19,7 +22,7 @@ class NayelisHouseLevelController {
     }
 
     init() {
-       
+
     }
 
     update(timestamp) {

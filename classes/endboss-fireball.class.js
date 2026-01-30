@@ -1,4 +1,6 @@
-class EndbossFireball extends Projectile {
+import { Projectile } from './projectile.class.js';
+
+export class EndbossFireball extends Projectile {
     constructor(startX, startY, targetX, targetY, allAudios) {
         const direction = targetX >= startX;
         super("fireball", startX, startY, direction);

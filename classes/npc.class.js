@@ -1,4 +1,6 @@
-class Npc extends MovableObject {
+import { MovableObject } from './movable-object.class.js';
+
+export class Npc extends MovableObject {
 
     standImages = [];
     walkImages = [];

@@ -1,4 +1,6 @@
-class EssenceTrailParticle extends MovableObject {
+import { MovableObject } from './movable-object.class.js';
+
+export class EssenceTrailParticle extends MovableObject {
   constructor(img, x, y) {
     super();
     this.img = img;         // Image-Objekt (z.B. Essence Frame)

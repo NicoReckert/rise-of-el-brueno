@@ -1,4 +1,4 @@
-class NewWeaponLevelController {
+export class NewWeaponLevelController {
     constructor(setup, farmLevelSetup) {
         this.setup = setup;
         this.world = setup.world;

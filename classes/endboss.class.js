@@ -1,9 +1,13 @@
+import { MovableObject } from './movable-object.class.js';
+import { EndbossFireball } from './endboss-fireball.class.js';
+import { EndbossFireBeam } from './endboss-fire-beam.class.js';
+
 /**
  * Represents a complex movable object with gravity, animation, and state handling.
  * Handles movement, jumping, falling, and transitions between animation states.
  * @extends MovableObject
  */
-class Endboss extends MovableObject {
+export class Endboss extends MovableObject {
     isGameCharacter = true;
 
     /**
@@ -15,6 +19,7 @@ class Endboss extends MovableObject {
         this.world = world;
         this.allAudios = allAudios;
         this.isGamecharacter = false;
+        this.customGroundCheck = () => this.y < -35;
         this.entityImages = entityImages;
         this.speedX = 8;
         this.speedY = 0;
@@ -68,7 +73,7 @@ class Endboss extends MovableObject {
 
         this.airPoints = [
             23000,
-                        //23400
+            //23400
             23800,
             24200
         ];
@@ -76,8 +81,8 @@ class Endboss extends MovableObject {
 
         this.airDropSequence = [
             { type: 'small', delay: 0 }, //small
-                                             // { type: 'small', delay: 2000 },
-             { type: 'big', delay: 2000 },// { type: 'big', delay: 4000 },
+            // { type: 'small', delay: 2000 },
+            { type: 'big', delay: 2000 },// { type: 'big', delay: 4000 },
         ];
 
 

@@ -1,4 +1,4 @@
-class ComicPanel {
+export class ComicPanel {
     constructor(canvas, frames) {
         this.canvas = canvas;
         this.frames = frames.filter(f => f.complete && f.naturalWidth > 0);
@@ -96,8 +96,8 @@ class ComicPanel {
 
         // === BACKGROUND GRADIENT ===
         const gradient = ctx.createLinearGradient(W, 0, W * bottomLeftX, H);
-gradient.addColorStop(0,  "rgba(250,245,230,0.95)");
-gradient.addColorStop(1,  "rgba(230,220,200,0.94)");
+        gradient.addColorStop(0, "rgba(250,245,230,0.95)");
+        gradient.addColorStop(1, "rgba(230,220,200,0.94)");
 
 
 

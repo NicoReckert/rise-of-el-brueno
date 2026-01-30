@@ -1,4 +1,4 @@
-class IntroScreen {
+export class IntroScreen {
     constructor(ctx, canvas, text = "Prolog") {
         this.ctx = ctx;
         this.canvas = canvas;
@@ -90,7 +90,7 @@ class IntroScreen {
         ctx.strokeText(this.text, this.canvas.width / 2, this.canvas.height / 2);
 
         // Glow-Effekt (flackert leicht mit der Zeit)
-        const glowStrength = 40 + Math.sin(this.time * 3) * 10; 
+        const glowStrength = 40 + Math.sin(this.time * 3) * 10;
         ctx.shadowColor = "rgba(255,200,50,0.9)";
         ctx.shadowBlur = glowStrength;
 
