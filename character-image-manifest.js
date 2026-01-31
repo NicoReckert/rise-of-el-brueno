@@ -29,9 +29,14 @@ const characterImageManifest = {
 };
 
 const characterManifestImmediate = {
-    idleImages: Array.from({ length: 10 }, (_, i) => `./assets/img/2_character_pepe/1_idle/idle/I-${i + 1}.webp`),
-    walkImages: Array.from({ length: 6 }, (_, i) => `./assets/img/2_character_pepe/2_walk/W-2${i + 1}.webp`),
-    jumpImages: Array.from({ length: 9 }, (_, i) => `./assets/img/2_character_pepe/3_jump/J-3${i + 1}.webp`),
+    idleWalkSheet: {
+        type: 'sheet',
+        json: './assets/img/2_character_pepe/1_idle/idle/idle_walk_sheet.json'
+    },
+    jumpSheet: {
+        type: 'sheet',
+        json: './assets/img/2_character_pepe/3_jump/jump_sheet.json'
+    },
     caressImages: Array.from({ length: 8 }, (_, i) => `./assets/img/2_character_pepe/6_caress/image_${i + 1}.webp`),
     caressLoopImages: Array.from({ length: 3 }, (_, i) => `./assets/img/2_character_pepe/6_caress/image_${6 + i}.webp`)
 }
@@ -55,8 +60,10 @@ const characterManifestDeferred = {
 }
 
 const otherLevelCharacterManifestLazy = {
-    deadImages: Array.from({ length: 7 }, (_, i) => `./assets/img/2_character_pepe/5_dead/D-5${i + 1}.webp`),
-    hurtImages: Array.from({ length: 3 }, (_, i) => `./assets/img/2_character_pepe/4_hurt/H-4${i + 1}.webp`),
+    hurtDeadSheet: {
+        type: 'sheet',
+        json: './assets/img/2_character_pepe/4_hurt/hurt_dead_sheet.json'
+    },
     attackSwordImages: Array.from({ length: 4 }, (_, i) => `./assets/img/2_character_pepe/27/Neu/image_${i + 1}.png`),
     meditationImages: Array.from({ length: 10 }, (_, i) => `./assets/img/2_character_pepe/16/image_${i + 1}.webp`),
     meditationLoopImages: Array.from({ length: 4 }, (_, i) => `./assets/img/2_character_pepe/16/image_${7 + i}.webp`),

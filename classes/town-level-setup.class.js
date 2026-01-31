@@ -8,11 +8,16 @@ import { SpeechBubble } from './speech-bubble.class.js';
 import { Endboss } from './endboss.class.js';
 import { EndbossAttack } from './endboss-attack.class.js';
 import { ComicPanel } from './comic-panel.class.js';
+import { townEvents } from '../events/town-level-events.js';
+import { createTownLevel } from '../levels/town-level.js';
 
 export class TownLevelSetup {
     constructor(world) {
         this.world = world;
-        this.townLevel = townLevel;
+        this.townLevel = createTownLevel({
+            entityImages: this.world.entityImages,
+            allAudios: this.world.allAudios
+        });
         this.entityImages = this.world.entityImages;
         this.allAudios = this.world.allAudios;
         this.townEvents = townEvents;
@@ -98,11 +103,9 @@ export class TownLevelSetup {
         };
         this.sounds.notificationSound.volume = 0.5;
         this.isNotificationPlay = false;
-        this.tasks = [
-            "1. Finde einen weg in die Stadt"
-        ];
-        this.taskWindow = new TaskWindow(this.world.canvas, this.tasks, 360, 180);
-        this.tKeyPressed = false;
+        // this.tasks = [
+        //     "1. Finde einen weg in die Stadt"
+        // ];
         this.endbossMusic = this.allAudios.endbossMusic;
         this.endbossMusic.volume = 0.6;
         this.endbossAlarmSound;

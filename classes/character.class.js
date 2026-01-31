@@ -107,9 +107,8 @@ export class Character extends MovableObject {
     * Initializes character movement-related image sets.
     */
     initMovementImages() {
-        this.idleImages = this.characterImages.idleImages ?? (this.characterImages.idleImages = []);
-        this.walkImages = this.characterImages.walkImages ?? (this.characterImages.walkImages = []);
-        this.jumpImages = this.characterImages.jumpImages ?? (this.characterImages.jumpImages = []);
+        this.idleWalkSheet = this.characterImages.idleWalkSheet ?? null;
+        this.jumpSheet = this.characterImages.jumpSheet ?? null;
         this.walkDeterminedImages = this.characterImages.walkDeterminedImages ?? (this.characterImages.walkDeterminedImages = []);
         this.walkInStormImages = this.characterImages.walkInStormImages ?? (this.characterImages.walkInStormImages = []);
         this.standUpImages = this.characterImages.standUpImages ?? (this.characterImages.standUpImages = []);
@@ -119,8 +118,7 @@ export class Character extends MovableObject {
     * Initializes character emotion-related image sets.
     */
     initEmotionImages() {
-        this.hurtImages = this.characterImages.hurtImages ?? (this.characterImages.hurtImages = []);
-        this.deadImages = this.characterImages.deadImages ?? (this.characterImages.deadImages = []);
+        this.hurtDeadSheet = this.characterImages.hurtDeadSheet ?? null;
         this.kneelDownAndCryImages = this.characterImages.kneelDownAndCryImages ?? (this.characterImages.kneelDownAndCryImages = []);
         this.cryImages = this.characterImages.cryImages ?? (this.characterImages.cryImages = []);
         this.lookDeterminedImages = this.characterImages.lookDeterminedImages ?? (this.characterImages.lookDeterminedImages = []);
@@ -455,12 +453,30 @@ export class Character extends MovableObject {
         if (!this.lastFrameTime) this.lastFrameTime = timestamp;
         const deltaTime = timestamp - this.lastFrameTime;
         if (deltaTime > this.frameInterval) {
-            const images = this.getAnimationImages(this.currentAnimation);
-            if (images?.length > 0) {
-                this.applyNextFrame(images);
+            const anim = this.getAnimationImages(this.currentAnimation);
+            if (!anim) return;
+
+            // 🔹 FALL 1: Einzelbilder (Array)
+            if (Array.isArray(anim) && anim.length > 0) {
+                this.applyNextFrame(anim);
                 this.handleDeferredSizeUpdate();
                 this.frameIndex++;
-                this.checkAnimationEnd(images);
+                this.checkAnimationEnd(anim);
+            }
+
+            // 🔹 FALL 2: Spritesheet
+            else if (anim.type === 'sheet') {
+                this.applyNextSheetFrame(anim);
+                this.handleDeferredSizeUpdate();
+                this.frameIndex++;
+
+                // Animation-Ende für Sheets
+                if (this.frameIndex >= anim.meta.frames) {
+                    if (anim.meta.animations?.default?.loop) {
+                        this.frameIndex = anim.meta.animations.default.from ?? 0;
+                    }
+                }
+
 
 
 
@@ -499,6 +515,7 @@ export class Character extends MovableObject {
     */
     applyNextFrame(images) {
         this.img = images[this.frameIndex % images.length];
+        this.frameSource = null;
     }
 
     /**
@@ -734,7 +751,7 @@ export class Character extends MovableObject {
             this.getMusicImages(state) ??
             this.getCombatImages(state) ??
             this.getSpecialImages(state) ??
-            this.idleImages
+            this.idleWalkSheet
         );
     }
 
@@ -745,8 +762,8 @@ export class Character extends MovableObject {
     */
     getMovementImages(state) {
         switch (state) {
-            case 'walk': return this.walkImages;
-            case 'jump': return this.jumpImages;
+            case 'walk': return this.idleWalkSheet;
+            case 'jump': return this.jumpSheet;
             case 'stand-up': return this.standUpImages;
             case 'walk-determined': return this.walkDeterminedImages;
             case 'walk-in-storm': return this.walkInStormImages;
@@ -761,8 +778,8 @@ export class Character extends MovableObject {
     */
     getEmotionImages(state) {
         switch (state) {
-            case 'dead': return this.deadImages;
-            case 'hurt': return this.hurtImages;
+            case 'dead': return this.hurtDeadSheet;
+            case 'hurt': return this.hurtDeadSheet;
             case 'kneel-and-cry': return this.kneelDownAndCryImages;
             case 'cry': return this.cryImages;
             case 'collapse': return this.collapseImages;
@@ -834,7 +851,7 @@ export class Character extends MovableObject {
     */
     getSpecialImages(state) {
         switch (state) {
-            case 'idle': return this.idleImages;
+            case 'idle': return this.idleWalkSheet;
         }
         return null;
     }
@@ -1025,5 +1042,38 @@ export class Character extends MovableObject {
                 }
                 break;
         }
+    }
+
+    //for Spritesheets
+    applyNextSheetFrame(sheet) {
+        const { image, meta } = sheet;
+
+        // 🔹 Animationsdefinition aus JSON holen
+        const animName = this.currentAnimation;
+        const animDef =
+            meta.animations?.[animName] ??
+            meta.animations?.default;
+
+        // Fallback (sollte praktisch nie greifen)
+        const from = animDef?.from ?? 0;
+        const to = animDef?.to ?? (meta.frames - 1);
+
+        const frameCount = to - from + 1;
+
+        // 🔹 absoluter Frame im Sheet
+        const frame = from + (this.frameIndex % frameCount);
+
+        // 🔹 Grid-Berechnung
+        const col = frame % meta.columns;
+        const row = Math.floor(frame / meta.columns);
+
+        // 🔹 setzen für draw()
+        this.img = image;
+        this.frameSource = {
+            sx: col * meta.frameWidth,
+            sy: row * meta.frameHeight,
+            sw: meta.frameWidth,
+            sh: meta.frameHeight
+        };
     }
 }

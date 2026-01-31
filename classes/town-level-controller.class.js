@@ -3,6 +3,7 @@ import { QuestManager } from './quest-manager.class.js';
 import { SandstormEffect } from './sandstorm-effect.class.js';
 import { MagicShieldEffect } from './magic-shield-effect.class.js';
 import { EssenceTrailParticle } from './essence-trail-particle.class.js';
+import { WindParticle } from './wind-particle.class.js';
 
 export class TownLevelController {
     constructor(setup) {
@@ -42,7 +43,7 @@ export class TownLevelController {
             this.sandstormNear.pressure = 0.6;
             this.sandstormFar.pressure = 0.2;
         };
-        this.windParticles = new WindParticleEffect(this.canvas.width * 38, this.canvas.height, 1200);
+        this.windParticles = new WindParticle(this.canvas.width * 38, this.canvas.height, 1200);
         this.setup.damageTexts ||= [];
 
     }
@@ -52,8 +53,6 @@ export class TownLevelController {
         this.updateCamera();
         this.renderBackgrounds();
         this.renderNPCsAndCharacter();
-        this.setup.taskWindow.update(timestamp);
-        this.setup.taskWindow.draw(this.ctx);
         this.updateCharacter(timestamp);
         this.updateEntities(timestamp);
         this.updateEndboss(timestamp);

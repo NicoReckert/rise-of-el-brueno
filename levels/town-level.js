@@ -3,6 +3,7 @@ import { Ground } from '../classes/ground.class.js';
 import { Cloud } from '../classes/cloud.class.js';
 import { Town } from '../classes/town.class.js';
 import { Sky } from '../classes/sky.class.js';
+import { Bottle } from '../classes/bottle.class.js';
 
 const groundSrcTown =
     [
@@ -28,29 +29,23 @@ const townSrcTown =
 
     ]
 
-let townLevel = null;
-let images = {};
 const cloudArrayTown = [];
 const cloudCountTown = 10;
 for (let i = 0; i < cloudCountTown; i++) {
     cloudArrayTown.push(new Cloud(cloudArrayTown, 100)); // 100px Mindestabstand
 }
 
-function setImages(entityImages) {
-    images = { ...entityImages };
-}
-
-function createTownLevel(allAudios) {
-    townLevel = new Level(
+export function createTownLevel({ entityImages, allAudios }) {
+    const townLevel = new Level(
         {
             enemies:
                 [
-                    // new Chicken('chickenMutatesSmall', images, 120, 120, 545, null, allAudios),
-                    // new Chicken('chickenMutatesSmall', images, 120, 120, 545, null,  allAudios),
-                    // new Chicken('chickenMutatesSmall', images, 120, 120, 545, null,  allAudios),
-                    // new Chicken('chickenMutatesBig', images, 160, 160, 505, null,  allAudios),
-                    // new Chicken('chickenMutatesBig', images, 160, 160, 505, null, allAudios),
-                    // new Chicken('chickenMutatesBig', images, 160, 160, 505, null, allAudios)
+                    // new Chicken('chickenMutatesSmall', entityImages, 120, 120, 545, null, allAudios),
+                    // new Chicken('chickenMutatesSmall', entityImages, 120, 120, 545, null,  allAudios),
+                    // new Chicken('chickenMutatesSmall', entityImages, 120, 120, 545, null,  allAudios),
+                    // new Chicken('chickenMutatesBig', entityImages, 160, 160, 505, null,  allAudios),
+                    // new Chicken('chickenMutatesBig', entityImages, 160, 160, 505, null, allAudios),
+                    // new Chicken('chickenMutatesBig', entityImages, 160, 160, 505, null, allAudios)
                 ],
             clouds: cloudArrayTown,
 
@@ -95,23 +90,23 @@ function createTownLevel(allAudios) {
                 ],
             coins:
                 [
-                    // new Coin(images),
-                    // new Coin(images),
-                    // new Coin(images),
-                    // new Coin(images),
-                    // new Coin(images),
-                    // new Coin(images)
+                    // new Coin(entityImages),
+                    // new Coin(entityImages),
+                    // new Coin(entityImages),
+                    // new Coin(entityImages),
+                    // new Coin(entityImages),
+                    // new Coin(entityImages)
                 ],
             bottles:
                 [
-                    new Bottle(images, 1500),
-                    new Bottle(images, 1550),
-                    // new Bottle(images, 530),
-                    // new Bottle(images, 550),
-                    // new Bottle(images, 560),
-                    // new Bottle(images, 580),
-                    // new Bottle(images, 590),
-                    // new Bottle(images, 600)
+                    new Bottle(entityImages, 1500),
+                    new Bottle(entityImages, 1550),
+                    // new Bottle(entityImages, 530),
+                    // new Bottle(entityImages, 550),
+                    // new Bottle(entityImages, 560),
+                    // new Bottle(entityImages, 580),
+                    // new Bottle(entityImages, 590),
+                    // new Bottle(entityImages, 600)
                 ]
         }
 

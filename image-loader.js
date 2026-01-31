@@ -11,26 +11,61 @@ function loadImage(src, onProgress) {
 }
 
 async function preloadManifestImages(manifest, onProgress) {
+
     async function processNode(node) {
+
+        // ✅ FALL 1: Array = alte Einzelbilder
         if (Array.isArray(node)) {
-            // kleine Pause zwischen großen Batches, damit der Browser flüssig bleibt
             const results = [];
             for (const src of node) {
                 results.push(await loadImage(src, onProgress));
                 await new Promise(r => requestIdleCallback(r, { timeout: 16 }));
             }
             return results;
-        } else if (typeof node === "object" && node !== null) {
+        }
+
+        // ✅ FALL 2: Spritesheet
+        if (typeof node === "object" && node !== null && node.type === "sheet") {
+
+            // 1. JSON laden
+            const meta = await loadJSON(node.json);
+
+            // 2. Bildpfad ableiten (json ↔ webp)
+            const imageSrc = node.json.replace(/\.json$/, '.webp');
+
+            // 3. Bild laden
+            const image = await loadImage(imageSrc, onProgress);
+
+            return {
+                type: 'sheet',
+                meta,
+                image
+            };
+        }
+
+        // ✅ FALL 3: normales Objekt (rekursiv)
+        if (typeof node === "object" && node !== null) {
             const entries = await Promise.all(
-                Object.entries(node).map(async ([key, value]) => [key, await processNode(value)])
+                Object.entries(node).map(
+                    async ([key, value]) => [key, await processNode(value)]
+                )
             );
             return Object.fromEntries(entries);
-        } else {
-            throw new Error("Invalid manifest node: must be array or object");
         }
+
+        throw new Error("Invalid manifest node");
     }
 
     return processNode(manifest);
 }
+
+
+function loadJSON(src) {
+    return fetch(src).then(res => {
+        if (!res.ok) throw new Error(`Failed to load JSON: ${src}`);
+        return res.json();
+    });
+}
+
 
 

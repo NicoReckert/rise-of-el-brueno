@@ -147,8 +147,8 @@ async function loadLazyAssets() {
         world.character?.initActionImages();
         world.character?.initSpecialImages();
 
-        setImages(entityImages);
-        createTownLevel(allAudios);
+        // setImages(entityImages);
+        // createTownLevel(allAudios);
 
 
         // ✅ Alle Lazy-Assets geladen → zusätzliche Level initialisieren

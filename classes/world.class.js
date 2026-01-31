@@ -20,7 +20,7 @@ export class World {
 
     ctx;
     canvas;
-    currentScene = 'farmLevel';
+    currentScene = 'townLevel';
 
     constructor(canvas, characterImages, entityImages, allAudios) {
         this.canvas = canvas;
@@ -76,6 +76,7 @@ export class World {
         this.farmLevelController = new FarmLevelController(this.farmLevelSetup);
         this.stableLevelSetup = new StableLevelSetup(this);
         this.stableLevelController = new StableLevelController(this.stableLevelSetup);
+
         this.setWorld();
         this.draw();
     }
@@ -456,7 +457,8 @@ export class World {
                 0,
                 0,
                 object.width,
-                object.height
+                object.height,
+                object.frameSource
             );
 
             if (object.isGamecharacter) {
@@ -499,7 +501,8 @@ export class World {
                 drawX,
                 drawY,
                 object.width,
-                object.height
+                object.height,
+                object.frameSource
             );
 
             if (object.isGamecharacter) {
@@ -536,26 +539,24 @@ export class World {
         ctx.restore();
     }
 
-    drawSprite(ctx, img, dx, dy, dw, dh) {
-        // 🆕 Spritesheet-Frame
-        if (img && img.image && img.sx !== undefined) {
+    drawSprite(ctx, img, dx, dy, dw, dh, frameSource = null) {
+        if (frameSource) {
             ctx.drawImage(
-                img.image,
-                img.sx,
-                img.sy,
-                img.sw,
-                img.sh,
+                img,
+                frameSource.sx,
+                frameSource.sy,
+                frameSource.sw,
+                frameSource.sh,
                 dx,
                 dy,
                 dw,
                 dh
             );
-        }
-        // 🟩 Legacy: Einzelbild
-        else {
+        } else {
             ctx.drawImage(img, dx, dy, dw, dh);
         }
     }
+
 
 
 
