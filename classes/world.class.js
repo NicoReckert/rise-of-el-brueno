@@ -450,7 +450,14 @@ export class World {
             ctx.scale(-1, 1);
 
             // Draw sprite (local coords)
-            ctx.drawImage(object.img, 0, 0, object.width, object.height);
+            this.drawSprite(
+                ctx,
+                object.img,
+                0,
+                0,
+                object.width,
+                object.height
+            );
 
             if (object.isGamecharacter) {
                 ctx.lineWidth = 3;
@@ -486,7 +493,14 @@ export class World {
             const drawY = Math.round(object.y + dy);
 
             // Draw sprite (world coords)
-            ctx.drawImage(object.img, drawX, drawY, object.width, object.height);
+            this.drawSprite(
+                ctx,
+                object.img,
+                drawX,
+                drawY,
+                object.width,
+                object.height
+            );
 
             if (object.isGamecharacter) {
                 ctx.lineWidth = 3;
@@ -521,6 +535,28 @@ export class World {
 
         ctx.restore();
     }
+
+    drawSprite(ctx, img, dx, dy, dw, dh) {
+        // 🆕 Spritesheet-Frame
+        if (img && img.image && img.sx !== undefined) {
+            ctx.drawImage(
+                img.image,
+                img.sx,
+                img.sy,
+                img.sw,
+                img.sh,
+                dx,
+                dy,
+                dw,
+                dh
+            );
+        }
+        // 🟩 Legacy: Einzelbild
+        else {
+            ctx.drawImage(img, dx, dy, dw, dh);
+        }
+    }
+
 
 
 

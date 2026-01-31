@@ -898,7 +898,7 @@ export const farmEvents =
             once: false,
             action: (setup) => {
                 const camArrived = setup.world.moveCameraToX(800, { speed: 3 });
-                if (world.camera_x <= 1000) {
+                if (setup.world.camera_x <= 1000) {
                     setup.environment.house.updateAnimationState('doorOpens');
                     setup.sounds.doorOpeningSound.play();
                 }
