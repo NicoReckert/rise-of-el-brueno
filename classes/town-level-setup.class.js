@@ -1,4 +1,3 @@
-import { TaskWindow } from './task-window.class.js';
 import { LifeEnergyCharacterBar } from './life-energy-character-bar.class.js';
 import { LifeEnergyBossBar } from './life-energy-boss-bar.class.js';
 import { CoinBar } from './coin-bar.class.js';

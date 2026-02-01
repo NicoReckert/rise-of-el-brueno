@@ -39,7 +39,31 @@ async function preloadManifestImages(manifest, onProgress) {
             return {
                 type: 'sheet',
                 meta,
-                image
+                image,
+                anim: node.anim ?? null
+            };
+        }
+
+        // ✅ FALL: Spritesheet-Sequenz
+        if (typeof node === "object" && node?.type === "sheetSequence") {
+            const sheets = [];
+
+            for (const entry of node.sheets) {
+                const meta = await loadJSON(entry.json);
+                const imageSrc = entry.json.replace(/\.json$/, '.webp');
+                const image = await loadImage(imageSrc, onProgress);
+
+                sheets.push({
+                    type: 'sheet',
+                    meta,
+                    image
+                });
+            }
+
+            return {
+                type: 'sheetSequence',
+                loop: node.loop !== false,
+                sheets
             };
         }
 
@@ -52,6 +76,9 @@ async function preloadManifestImages(manifest, onProgress) {
             );
             return Object.fromEntries(entries);
         }
+
+
+
 
         throw new Error("Invalid manifest node");
     }

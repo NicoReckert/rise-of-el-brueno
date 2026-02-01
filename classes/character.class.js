@@ -64,6 +64,7 @@ export class Character extends MovableObject {
         this.hurtUntil = 0;
         this.invulnerableUntil = 0;
         this.touchingEnemies = new Set();
+        this.sheetIndex = 0;
     }
 
     /**
@@ -153,8 +154,7 @@ export class Character extends MovableObject {
     * Initializes character special interaction and event-related image sets.
     */
     initSpecialImages() {
-        this.caressImages = this.characterImages.caressImages ?? (this.characterImages.caressImages = []);
-        this.caressLoopImages = this.characterImages.caressLoopImages ?? (this.characterImages.caressLoopImages = []);
+        this.caressSheet = this.characterImages.caressSheet ?? null;
         this.sitDownAndPlayGuitarImages = this.characterImages.sitDownAndPlayGuitarImages ?? (this.characterImages.sitDownAndPlayGuitarImages = []);
         this.playGuitarAndSingImages = this.characterImages.playGuitarAndSingImages ?? (this.characterImages.playGuitarAndSingImages = []);
         this.playGuitarImages = this.characterImages.playGuitarImages ?? (this.characterImages.playGuitarImages = []);
@@ -464,6 +464,36 @@ export class Character extends MovableObject {
                 this.checkAnimationEnd(anim);
             }
 
+            else if (anim.type === 'sheetSequence') {
+                const currentSheet = anim.sheets[this.sheetIndex];
+
+                this.applyNextSheetFrame(currentSheet);
+                this.frameIndex++;
+
+                const def =
+                    currentSheet.meta.animations?.[this.currentAnimation] ??
+                    currentSheet.meta.animations?.default;
+
+                const from = def?.from ?? 0;
+                const to = def?.to ?? (currentSheet.meta.frames - 1);
+                const count = to - from + 1;
+
+                if (this.frameIndex >= count) {
+                    this.frameIndex = 0;
+                    this.sheetIndex++;
+
+                    // Ende der Sequenz?
+                    if (this.sheetIndex >= anim.sheets.length) {
+                        if (anim.loop) {
+                            this.sheetIndex = 0;
+                        } else {
+                            this.animationFinished = true;
+                            this.handlePostAnimation(this.currentAnimation);
+                        }
+                    }
+                }
+            }
+
             // 🔹 FALL 2: Spritesheet
             else if (anim.type === 'sheet') {
                 this.applyNextSheetFrame(anim);
@@ -471,9 +501,23 @@ export class Character extends MovableObject {
                 this.frameIndex++;
 
                 // Animation-Ende für Sheets
-                if (this.frameIndex >= anim.meta.frames) {
-                    if (anim.meta.animations?.default?.loop) {
-                        this.frameIndex = anim.meta.animations.default.from ?? 0;
+                const animName = anim.anim ?? this.currentAnimation;
+                const def =
+                    anim.meta.animations?.[animName] ??
+                    anim.meta.animations?.default;
+
+                if (def) {
+                    const from = def.from ?? 0;
+                    const to = def.to ?? (anim.meta.frames - 1);
+                    const frameCount = to - from + 1;
+
+                    if (this.frameIndex >= frameCount) {
+                        if (def.loop) {
+                            this.frameIndex = 0;
+                        } else {
+                            this.animationFinished = true;
+                            this.handleAnimationTransition(this.currentAnimation);
+                        }
                     }
                 }
 
@@ -505,6 +549,9 @@ export class Character extends MovableObject {
 
 
             }
+
+
+
             this.lastFrameTime = timestamp;
         }
     }
@@ -815,8 +862,8 @@ export class Character extends MovableObject {
     */
     getMusicImages(state) {
         switch (state) {
-            case 'caress': return this.caressImages;
-            case 'caress-loop': return this.caressLoopImages;
+            case 'caress': return this.caressSheet;
+            case 'caress-loop': return this.caressSheet;
             case 'sit-down-and-play-guitar': return this.sitDownAndPlayGuitarImages;
             case 'play-guitar-and-sing': return this.playGuitarAndSingImages;
             case 'play-guitar': return this.playGuitarImages;
@@ -864,6 +911,7 @@ export class Character extends MovableObject {
         if (this.currentAnimation !== newAnimation) {
             this.currentAnimation = newAnimation;
             this.frameIndex = 0;
+            this.sheetIndex = 0;
             this.animationFinished = false;
             this.lastFrameTime = null;
             this.deferSizeUpdate = true;
@@ -1046,10 +1094,10 @@ export class Character extends MovableObject {
 
     //for Spritesheets
     applyNextSheetFrame(sheet) {
-        const { image, meta } = sheet;
+        const { image, meta, anim } = sheet;
 
         // 🔹 Animationsdefinition aus JSON holen
-        const animName = this.currentAnimation;
+        const animName = anim ?? this.currentAnimation;
         const animDef =
             meta.animations?.[animName] ??
             meta.animations?.default;

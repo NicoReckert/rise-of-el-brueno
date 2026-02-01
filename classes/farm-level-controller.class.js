@@ -83,6 +83,7 @@ export class FarmLevelController {
         this.handleCharacterHitbox();
         this.handleHint();
         this.handlePopup();
+        this.timerManager.update();
     }
 
     updateCamera() {

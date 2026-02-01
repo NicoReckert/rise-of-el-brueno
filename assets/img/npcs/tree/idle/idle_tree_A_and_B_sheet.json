@@ -1,0 +1,20 @@
+﻿{
+    "frameHeight":  512,
+    "columns":  4,
+    "frameWidth":  512,
+    "animations": {
+    "treeA_idle": {
+      "from": 0,
+      "to": 6,
+      "fps": 7
+    },
+    "treeB_idle": {
+      "from": 7,
+      "to": 12,
+      "fps": 6
+    }
+  },
+    "image":  "idle_tree_A_and_B_sheet.webp",
+    "frames":  13,
+    "rows":  4
+}

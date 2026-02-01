@@ -20,7 +20,7 @@ export class World {
 
     ctx;
     canvas;
-    currentScene = 'townLevel';
+    currentScene = 'farmLevel';
 
     constructor(canvas, characterImages, entityImages, allAudios) {
         this.canvas = canvas;
@@ -557,11 +557,6 @@ export class World {
         }
     }
 
-
-
-
-
-
     checkPressKey() {
         if (!this.isKeysStopp) {
             this.character.isMovingLeft = false;
@@ -874,7 +869,7 @@ export class World {
 
             if (this.townLevelSetup.sounds.soulSpeakSound.currentTime >= 18) {
                 this.character.isMeditation = true
-                this.townLevelSetup.characters.soul.updateState('findsPeace', 1000 / 5);
+                this.townLevelSetup.characters.soul.updateAnimationState('findsPeace', 1000 / 5);
                 this.townLevelSetup.characters.endboss.isFindsPeace = true;
                 if (this.townLevelSetup.characters.soul.y >= -500) {
                     this.townLevelSetup.characters.soul.y -= 1;

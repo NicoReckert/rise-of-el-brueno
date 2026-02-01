@@ -1,0 +1,25 @@
+﻿{
+    "frameHeight":  512,
+    "columns":  4,
+    "frameWidth":  512,
+    "animations": {
+    "flowerA_idle": {
+      "from": 0,
+      "to": 5,
+      "fps": 6
+    },
+    "flowerB_idle": {
+      "from": 6,
+      "to": 11,
+      "fps": 6
+    },
+    "flowerC_idle": {
+      "from": 12,
+      "to": 17,
+      "fps": 6
+    }
+  },
+    "image":  "idle_A_B_C_sheet.webp",
+    "frames":  18,
+    "rows":  5
+}

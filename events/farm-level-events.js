@@ -160,12 +160,15 @@ export const farmEvents =
             objectB: 'cow',
             step: 2,
             requireKey: "F",
-            once: false,
             action: (setup) => {
                 setup.characters.cow.updateAnimationState('standUp', 1000 / 5.5)
-                setup.characters.cow.y = 485
                 setup.hints[1].hide()
-                setup.world.farmLevelController.questManager.advance(3)
+                setup.characters.cow.speedX = 2;
+                setup.timerManager.addUnique('cow-standup-finished', 600,
+                    () => {
+                        setup.characters.cow.y = 485
+                        setup.world.farmLevelController.questManager.advance(3)
+                    })
             }
         },
 
@@ -173,17 +176,6 @@ export const farmEvents =
             type: 'quest',
             step: 2,
             action: (setup) => setup.hints[1].show()
-        },
-
-        {
-            type: 'time',
-            delay: 600,
-            step: 3,
-            action: (setup) => {
-                setup.characters.cow.updateAnimationState('walk');
-                setup.characters.cow.speedX = 2;
-                setup.world.keyboard.F = false;
-            }
         },
 
         {
@@ -195,8 +187,9 @@ export const farmEvents =
             once: false,
             action: (setup) => {
                 setup.hints[1].hide()
-                if (setup.characters.cow.x <= 5300) {
-                    setup.characters.cow.isMovingRight = true;
+                const cow = setup.characters.cow
+                const arrivedX = cow.moveToX(5300);
+                if (!arrivedX) {
                     setup.characters.cow.updateAnimationState('walk')
                 } else setup.world.farmLevelController.questManager.advance(4)
             },

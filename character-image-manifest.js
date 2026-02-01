@@ -37,8 +37,10 @@ const characterManifestImmediate = {
         type: 'sheet',
         json: './assets/img/2_character_pepe/3_jump/jump_sheet.json'
     },
-    caressImages: Array.from({ length: 8 }, (_, i) => `./assets/img/2_character_pepe/6_caress/image_${i + 1}.webp`),
-    caressLoopImages: Array.from({ length: 3 }, (_, i) => `./assets/img/2_character_pepe/6_caress/image_${6 + i}.webp`)
+    caressSheet: {
+        type: 'sheet',
+        json: './assets/img/2_character_pepe/6_caress/caress_sheet.json'
+    },
 }
 
 const characterManifestDeferred = {

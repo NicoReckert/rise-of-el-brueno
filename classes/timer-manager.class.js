@@ -1,46 +1,65 @@
 export class TimerManager {
     constructor() {
-        this.timers = new Map(); // id → timer
+        this.timers = new Map();
+
+        this.timestamp = 0;          // 🕒 interne Weltzeit (ms)
+        this._lastNow = null;        // für deltaTime
+        this.timeScale = 1;          // Pause / SlowMo
+        this.paused = false;
     }
 
-    /**
-     * Timer hinzufügen
-     * @param {string} id - eindeutige ID
-     * @param {number} delay - Zeit in ms
-     * @param {function} callback - Funktion, die nach Ablauf ausgeführt wird
-     * @param {boolean} repeat - Wiederholen?
-     */
     addUnique(id, delay, callback, repeat = false) {
-        if (this.timers.has(id)) return; // existierender Timer läuft noch → nichts tun
+        if (this.timers.has(id)) return;
 
-        const end = performance.now() + delay;
-        const timer = { id, end, delay, callback, repeat };
-        this.timers.set(id, timer);
+        this.timers.set(id, {
+            id,
+            remaining: delay,
+            delay,
+            callback,
+            repeat
+        });
     }
 
-    /**
-     * Timer abbrechen
-     */
     cancel(id) {
         this.timers.delete(id);
     }
 
-    /**
-     * Update in jedem Frame aufrufen
-     * @param {number} deltaTime - optional, Standard ~16.66ms
-     */
     update() {
         const now = performance.now();
+
+        if (this._lastNow === null) {
+            this._lastNow = now;
+            return;
+        }
+
+        let deltaTime = now - this._lastNow;
+        this._lastNow = now;
+
+        if (this.paused) return;
+
+        deltaTime *= this.timeScale;
+        this.timestamp += deltaTime;
+
         for (const [id, timer] of this.timers.entries()) {
-            if (now >= timer.end) {
+            timer.remaining -= deltaTime;
+
+            if (timer.remaining <= 0) {
                 timer.callback();
 
                 if (timer.repeat) {
-                    timer.end = now + timer.delay;
+                    timer.remaining += timer.delay; // kein Drift
                 } else {
-                    this.timers.delete(id); // einmalig → automatisch löschen
+                    this.timers.delete(id);
                 }
             }
         }
+    }
+
+    pause() {
+        this.paused = true;
+    }
+
+    resume() {
+        this.paused = false;
     }
 }

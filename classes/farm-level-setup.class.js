@@ -1,4 +1,3 @@
-import { TaskWindow } from './task-window.class.js';
 import { LifeEnergyCharacterBar } from './life-energy-character-bar.class.js';
 import { AnimatedEntity } from './animated-entity.class.js';
 import { SpeechBubble } from './speech-bubble.class.js';
@@ -39,19 +38,19 @@ export class FarmLevelSetup {
         this.environment = {
             pond: new AnimatedEntity(this.entityImages, 'pond', 500, 600, -28, 320),//500, 600, 150, 120
             trees: [
-                new AnimatedEntity(this.entityImages, 'tree', 450, 450, 500, 250),
-                new AnimatedEntity(this.entityImages, 'tree2', 450, 450, 4600, 250),
-                new AnimatedEntity(this.entityImages, 'tree3', 450, 450, 5700, 255)
+                new AnimatedEntity(this.entityImages, 'treeA', 450, 450, 500, 250),
+                new AnimatedEntity(this.entityImages, 'treeB', 450, 450, 4600, 250),
+                new AnimatedEntity(this.entityImages, 'treeC', 450, 450, 5700, 255)
             ],
             flowers: [
-                new AnimatedEntity(this.entityImages, 'flower', 65, 65, 5650, 600),
-                new AnimatedEntity(this.entityImages, 'flower2', 65, 65, 5600, 600),
-                new AnimatedEntity(this.entityImages, 'flower3', 65, 65, 5550, 600),
-                new AnimatedEntity(this.entityImages, 'flower', 65, 65, 5070, 600),
-                new AnimatedEntity(this.entityImages, 'flower2', 65, 65, 5120, 600),
-                new AnimatedEntity(this.entityImages, 'flower3', 65, 65, 5170, 600),
-                new AnimatedEntity(this.entityImages, 'flower', 65, 65, 4730, 600),
-                new AnimatedEntity(this.entityImages, 'flower', 65, 65, 4800, 600)
+                new AnimatedEntity(this.entityImages, 'flowerA', 65, 65, 5650, 600),
+                new AnimatedEntity(this.entityImages, 'flowerB', 65, 65, 5600, 600),
+                new AnimatedEntity(this.entityImages, 'flowerC', 65, 65, 5550, 600),
+                new AnimatedEntity(this.entityImages, 'flowerA', 65, 65, 5070, 600),
+                new AnimatedEntity(this.entityImages, 'flowerB', 65, 65, 5120, 600),
+                new AnimatedEntity(this.entityImages, 'flowerC', 65, 65, 5170, 600),
+                new AnimatedEntity(this.entityImages, 'flowerA', 65, 65, 4730, 600),
+                new AnimatedEntity(this.entityImages, 'flowerA', 65, 65, 4800, 600)
             ],
             house: new AnimatedEntity(this.entityImages, 'house', 900, 900, 800, -30),
             stable: new AnimatedEntity(this.entityImages, 'stable', 600, 600, 1550, 177),

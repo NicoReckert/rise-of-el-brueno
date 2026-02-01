@@ -31,40 +31,40 @@ export class AnimatedEntity extends MovableObject {
         this.fading = null; // "in" | "out" | null
         this.fadeStart = null;
         this.fadeDuration = 1000;
+        this.sheetIndex = 0;
     }
 
     loadImgFromCurrentEntity(currentEntity) {
-        this.idleImages = this.entityImages[currentEntity]?.idle || [];
-        this.hypnoImages = this.entityImages[currentEntity]?.hypno || [];
-        this.walkImages = this.entityImages[currentEntity]?.walk || [];
-        this.walk2Images = this.entityImages[currentEntity]?.walk2 || [];
-        this.loveImages = this.entityImages[currentEntity]?.love || [];
-        this.eatImages = this.entityImages[currentEntity]?.eat || [];
-        this.flyUpImages = this.entityImages[currentEntity]?.flyUp || [];
-        this.flyImages = this.entityImages[currentEntity]?.fly || [];
-        this.afraidImages = this.entityImages[currentEntity]?.afraid || [];
-        this.halfSizeFlyImages = this.entityImages[currentEntity]?.halfSizeFly || [];
-        this.fullSizeFlyImages = this.entityImages[currentEntity]?.fullSizeFly || [];
-        this.idleOpenImages = this.entityImages[currentEntity]?.idleOpen || [];
-        this.doorOpensImages = this.entityImages[currentEntity]?.doorOpens || [];
-        this.doorClosesImages = this.entityImages[currentEntity]?.doorCloses || [];
-        this.happyImages = this.entityImages[currentEntity]?.happy || [];
-        this.standUpImages = this.entityImages[currentEntity]?.standUp || [];
-        this.swingToMusicImages = this.entityImages[currentEntity]?.swingToMusic || [];
-        this.burningFireImages = this.entityImages[currentEntity]?.burningFire || [];
-        this.fireGoesOnImages = this.entityImages[currentEntity]?.fireGoesOn || [];
-        this.fireGoesOutImages = this.entityImages[currentEntity]?.fireGoesOut || [];
-        this.findsPeaceImages = this.entityImages[currentEntity]?.findsPeace || [];
-        this.findsPeaceLoopImages = this.entityImages[currentEntity]?.findsPeaceLoop || [];
-        this.sleepImages = this.entityImages[currentEntity]?.sleep || [];
-        this.portraitImages = this.entityImages[currentEntity]?.portrait || [];
-        this.walkWithStoneImages = this.entityImages[currentEntity]?.walkWithStone || [];
-        this.idleWithStoneImages = this.entityImages[currentEntity]?.idleWithStone || [];
-        this.stoneActivatedImages = this.entityImages[currentEntity]?.stoneActivated || [];
-        this.brokenImages = this.entityImages[currentEntity]?.broken || [];
-        this.spiritCuddleImages = this.entityImages[currentEntity]?.spiritCuddle || [];
-        this.spiritCuddleLoopImages = this.entityImages[currentEntity]?.spiritCuddleLoop || [];
-
+        this.idle = this.entityImages[currentEntity]?.idle ?? [];
+        this.hypno = this.entityImages[currentEntity]?.hypno ?? [];
+        this.walk = this.entityImages[currentEntity]?.walk ?? [];
+        this.walk2 = this.entityImages[currentEntity]?.walk2 ?? [];
+        this.love = this.entityImages[currentEntity]?.love ?? [];
+        this.eat = this.entityImages[currentEntity]?.eat ?? [];
+        this.flyUp = this.entityImages[currentEntity]?.flyUp ?? [];
+        this.fly = this.entityImages[currentEntity]?.fly ?? [];
+        this.afraid = this.entityImages[currentEntity]?.afraid ?? [];
+        this.halfSizeFly = this.entityImages[currentEntity]?.halfSizeFly ?? [];
+        this.fullSizeFly = this.entityImages[currentEntity]?.fullSizeFly ?? [];
+        this.idleOpen = this.entityImages[currentEntity]?.idleOpen ?? [];
+        this.doorOpens = this.entityImages[currentEntity]?.doorOpens ?? [];
+        this.doorCloses = this.entityImages[currentEntity]?.doorCloses ?? [];
+        this.happy = this.entityImages[currentEntity]?.happy ?? [];
+        this.standUp = this.entityImages[currentEntity]?.standUp ?? [];
+        this.swingToMusic = this.entityImages[currentEntity]?.swingToMusic ?? [];
+        this.burningFire = this.entityImages[currentEntity]?.burningFire ?? [];
+        this.fireGoesOn = this.entityImages[currentEntity]?.fireGoesOn ?? [];
+        this.fireGoesOut = this.entityImages[currentEntity]?.fireGoesOut ?? [];
+        this.findsPeace = this.entityImages[currentEntity]?.findsPeace || [];
+        this.findsPeaceLoop = this.entityImages[currentEntity]?.findsPeaceLoop ?? [];
+        this.sleep = this.entityImages[currentEntity]?.sleep ?? [];
+        this.portrait = this.entityImages[currentEntity]?.portrait ?? [];
+        this.walkWithStone = this.entityImages[currentEntity]?.walkWithStone ?? [];
+        this.idleWithStone = this.entityImages[currentEntity]?.idleWithStone ?? [];
+        this.stoneActivated = this.entityImages[currentEntity]?.stoneActivated ?? [];
+        this.broken = this.entityImages[currentEntity]?.broken ?? [];
+        this.spiritCuddle = this.entityImages[currentEntity]?.spiritCuddle ?? [];
+        this.spiritCuddleLoop = this.entityImages[currentEntity]?.spiritCuddleLoop ?? [];
     }
 
     fade(direction = "in", timestamp, duration = 1000) {
@@ -105,47 +105,47 @@ export class AnimatedEntity extends MovableObject {
     updateAnimationState(state, frameInterval = 1000 / 5.5) {
         switch (state) {
             case 'idle':
-                this.currentAnimation = 'idle';
+                this.setAnimation('idle');
                 this.frameInterval = frameInterval;
                 break;
             case 'walk':
-                this.currentAnimation = 'walk';
+                this.setAnimation('walk');
                 this.frameInterval = frameInterval;
                 break;
             case 'walk2':
-                this.currentAnimation = 'walk2';
+                this.setAnimation('walk2');
                 this.frameInterval = frameInterval;
                 break;
             case 'hypno':
-                this.currentAnimation = 'hypno';
+                this.setAnimation('hypno');
                 this.frameInterval = frameInterval;
                 break;
             case 'love':
-                this.currentAnimation = 'love';
+                this.setAnimation('love');
                 this.frameInterval = frameInterval;
                 break;
             case 'eat':
-                this.currentAnimation = 'eat';
+                this.setAnimation('eat');
                 this.frameInterval = frameInterval;
                 break;
             case 'flyUp':
-                this.currentAnimation = 'flyUp';
+                this.setAnimation('flyUp');
                 this.frameInterval = frameInterval;
                 break;
             case 'fly':
-                this.currentAnimation = 'fly';
+                this.setAnimation('fly');
                 this.frameInterval = frameInterval;
                 break;
             case 'afraid':
-                this.currentAnimation = 'afraid';
+                this.setAnimation('afraid');
                 this.frameInterval = frameInterval;
                 break;
             case 'halfSizeFly':
-                this.currentAnimation = 'halfSizeFly';
+                this.setAnimation('halfSizeFly');
                 this.frameInterval = frameInterval;
                 break;
             case 'idleOpen':
-                this.currentAnimation = 'idleOpen';
+                this.setAnimation('idleOpen');
                 this.frameInterval = frameInterval;
                 break;
             case 'doorOpens':
@@ -161,19 +161,19 @@ export class AnimatedEntity extends MovableObject {
                 }
                 break;
             case 'happy':
-                this.currentAnimation = 'happy';
+                this.setAnimation('happy');
                 this.frameInterval = frameInterval;
                 break;
             case 'standUp':
-                this.currentAnimation = 'standUp';
+                this.setAnimation('standUp');
                 this.frameInterval = frameInterval;
                 break;
             case 'swingToMusic':
-                this.currentAnimation = 'swingToMusic';
+                this.setAnimation('swingToMusic');
                 this.frameInterval = frameInterval;
                 break;
             case 'burningFire':
-                this.currentAnimation = 'burningFire';
+                this.setAnimation('burningFire');
                 this.frameInterval = frameInterval;
                 break;
             case 'fireGoesOn':
@@ -266,110 +266,133 @@ export class AnimatedEntity extends MovableObject {
         const deltaTime = timestamp - this.lastFrameTime;
 
         if (deltaTime > this.frameInterval) {
-            let images = this.getAnimationImages(this.currentAnimation);
+            const anim = this.getAnimationImages(this.currentAnimation);
+            if (!anim) return;
 
-            if (images && images.length > 0) {
-                this.img = images[this.frameIndex % images.length];
-                // if (this.deferSizeUpdate) {
-                //     if (['walk', 'walk2' ].includes(this.currentAnimation) && (this.currentEntity === 'chicken2' || this.currentEntity === 'chick')) {
-                //         this.width = 158;
-                //         this.height = 183;
-                //         this.y = 487;
-                // this.offset.top = 13;
-                // this.offset.left = 33;
-                // this.offset.right = 55;
-                // this.offset.bottom = 15;
-
-                // } else {
-                //     this.width = 130;
-                //     this.height = 300;
-                //     this.y = 370;
-                // this.offset.top = 130;
-                // this.offset.left = 20;
-                // this.offset.right = 40;
-                // this.offset.bottom = 15;
-
-                //     }
-                //     this.deferSizeUpdate = false;
-                // }
+            // 🔹 Einzelbilder
+            if (Array.isArray(anim)) {
+                if (anim.length === 0) return;
+                this.applyNextFrame(anim);
                 this.frameIndex++;
-            }
-            this.lastFrameTime = timestamp;
-            if (this.frameIndex >= images.length && (this.currentAnimation == 'doorOpens' || this.currentAnimation == 'doorCloses' || this.currentAnimation == 'fireGoesOn' || this.currentAnimation == 'fireGoesOut' || this.currentAnimation == 'findsPeace' || this.currentAnimation == 'stoneActivated' || this.currentAnimation == 'broken' || this.currentAnimation == 'spiritCuddle')) {
-                this.animationFinished = true;
-                switch (this.currentAnimation) {
-                    case 'doorOpens':
-                        this.setAnimation('idleOpen');
-                        break;
-                    case 'doorCloses':
-                        this.setAnimation('idle');
-                        break;
-                    case 'fireGoesOn':
-                        this.setAnimation('burningFire');
-                        break;
-                    case 'fireGoesOut':
-                        this.setAnimation('idle');
-                        break;
-                    case 'findsPeace':
-                        this.setAnimation('findsPeaceLoop');
-                        break;
-                    case 'stoneActivated':
-                        this.setAnimation('idleWithStone');
-                        break;
-                    case 'broken':
-                        this.setAnimation('idle');
-                        break;
-                    case 'spiritCuddle':
-                        this.setAnimation('spiritCuddleLoop');
-                        break;
+
+                // One-Shot für Arrays
+                if (
+                    this.frameIndex >= anim.length &&
+                    this.isOneShotAnimation(this.currentAnimation)
+                ) {
+                    this.animationFinished = true;
+                    this.handlePostAnimation(this.currentAnimation);
                 }
             }
+
+            else if (anim.type === 'sheetSequence') {
+                const currentSheet = anim.sheets[this.sheetIndex];
+
+                this.applyNextSheetFrame(currentSheet);
+                this.frameIndex++;
+
+                const def =
+                    currentSheet.meta.animations?.[this.currentAnimation] ??
+                    currentSheet.meta.animations?.default;
+
+                const from = def?.from ?? 0;
+                const to = def?.to ?? (currentSheet.meta.frames - 1);
+                const count = to - from + 1;
+
+                if (this.frameIndex >= count) {
+                    this.frameIndex = 0;
+                    this.sheetIndex++;
+
+                    // Ende der Sequenz?
+                    if (this.sheetIndex >= anim.sheets.length) {
+                        if (anim.loop) {
+                            this.sheetIndex = 0;
+                        } else {
+                            this.animationFinished = true;
+                            this.handlePostAnimation(this.currentAnimation);
+                        }
+                    }
+                }
+            }
+
+
+            // 🔹 Spritesheet
+            else if (anim.type === 'sheet') {
+                this.applyNextSheetFrame(anim);
+                this.frameIndex++;
+
+                const animName = anim.anim ?? this.currentAnimation;
+                const def =
+                    anim.meta.animations?.[animName] ??
+                    anim.meta.animations?.default;
+
+                if (def) {
+                    const from = def.from ?? 0;
+                    const to = def.to ?? (anim.meta.frames - 1);
+                    const count = to - from + 1;
+
+                    if (this.frameIndex >= count) {
+                        if (def.loop !== false) {
+                            this.frameIndex = 0;
+                        } else {
+                            this.animationFinished = true;
+                            this.handlePostAnimation(this.currentAnimation);
+                        }
+                    }
+                }
+            }
+
+            this.lastFrameTime = timestamp;
         }
+
         this.updateFade(timestamp);
     }
 
     getAnimationImages(state) {
+
+        // return this[state] ?? null;
+
         switch (state) {
-            case 'idle': return this.idleImages;
-            case 'hypno': return this.hypnoImages;
-            case 'walk': return this.walkImages;
-            case 'walk2': return this.walk2Images;
-            case 'love': return this.loveImages;
-            case 'eat': return this.eatImages;
-            case 'flyUp': return this.flyUpImages;
-            case 'fly': return this.flyImages;
-            case 'afraid': return this.afraidImages;
-            case 'halfSizeFly': return this.halfSizeFlyImages;
-            case 'fullSizeFly': return this.fullSizeFlyImages;
-            case 'idleOpen': return this.idleOpenImages;
-            case 'doorOpens': return this.doorOpensImages;
-            case 'doorCloses': return this.doorClosesImages;
-            case 'happy': return this.happyImages;
-            case 'standUp': return this.standUpImages;
-            case 'swingToMusic': return this.swingToMusicImages;
-            case 'burningFire': return this.burningFireImages;
-            case 'fireGoesOn': return this.fireGoesOnImages;
-            case 'fireGoesOut': return this.fireGoesOutImages;
-            case 'findsPeace': return this.findsPeaceImages;
-            case 'findsPeaceLoop': return this.findsPeaceLoopImages;
-            case 'sleep': return this.sleepImages;
-            case 'portrait': return this.portraitImages;
-            case 'walkWithStone': return this.walkWithStoneImages;
-            case 'idleWithStone': return this.idleWithStoneImages;
-            case 'stoneActivated': return this.stoneActivatedImages;
-            case 'broken': return this.brokenImages;
-            case 'spiritCuddle': return this.spiritCuddleImages;
-            case 'spiritCuddleLoop': return this.spiritCuddleLoopImages;
+            case 'idle': return this.idle;
+            case 'hypno': return this.hypno;
+            case 'walk': return this.walk;
+            case 'walk2': return this.walk2;
+            case 'love': return this.love;
+            case 'eat': return this.eat;
+            case 'flyUp': return this.flyUp;
+            case 'fly': return this.fly;
+            case 'afraid': return this.afraid;
+            case 'halfSizeFly': return this.halfSizeFly;
+            case 'fullSizeFly': return this.fullSizeFly;
+            case 'idleOpen': return this.idleOpen;
+            case 'doorOpens': return this.doorOpens;
+            case 'doorCloses': return this.doorCloses;
+            case 'happy': return this.happy;
+            case 'standUp': return this.standUp;
+            case 'swingToMusic': return this.swingToMusic;
+            case 'burningFire': return this.burningFire;
+            case 'fireGoesOn': return this.fireGoesOn;
+            case 'fireGoesOut': return this.fireGoesOut;
+            case 'findsPeace': return this.findsPeace
+            case 'findsPeaceLoop': return this.findsPeaceLoop;
+            case 'sleep': return this.sleep;
+            case 'portrait': return this.portrait;
+            case 'walkWithStone': return this.walkWithStone;
+            case 'idleWithStone': return this.idleWithStone;
+            case 'stoneActivated': return this.stoneActivated;
+            case 'broken': return this.broken;
+            case 'spiritCuddle': return this.spiritCuddle;
+            case 'spiritCuddleLoop': return this.spiritCuddleLoop;
         }
     }
 
     setAnimation(newAnimation) {
         if (this.currentAnimation !== newAnimation) {
             this.currentAnimation = newAnimation;
-            this.frameIndex = 0;          // Frame-Index zurücksetzen
+            this.frameIndex = 0;
+            this.sheetIndex = 0;          // Frame-Index zurücksetzen
             this.animationFinished = false; // Flag zurücksetzen
             this.lastFrameTime = null;     // Timer zurücksetzen
-            this.deferSizeUpdate = true;
         }
     }
 
@@ -417,5 +440,61 @@ export class AnimatedEntity extends MovableObject {
         return false;
     }
 
+    applyNextSheetFrame(sheet) {
+        const { image, meta, anim } = sheet;
+
+        const animName = anim ?? this.currentAnimation;
+        const def =
+            meta.animations?.[animName] ??
+            meta.animations?.default;
+
+        const from = def?.from ?? 0;
+        const to = def?.to ?? (meta.frames - 1);
+        const count = to - from + 1;
+
+        const frame = from + (this.frameIndex % count);
+        const col = frame % meta.columns;
+        const row = Math.floor(frame / meta.columns);
+
+        this.img = image;
+        this.frameSource = {
+            sx: col * meta.frameWidth,
+            sy: row * meta.frameHeight,
+            sw: meta.frameWidth,
+            sh: meta.frameHeight
+        };
+    }
+
+    isOneShotAnimation(anim) {
+        return [
+            'doorOpens',
+            'doorCloses',
+            'fireGoesOn',
+            'fireGoesOut',
+            'findsPeace',
+            'stoneActivated',
+            'broken',
+            'spiritCuddle'
+        ].includes(anim);
+    }
+
+    handlePostAnimation(anim) {
+        switch (anim) {
+            case 'doorOpens': return this.setAnimation('idleOpen');
+            case 'doorCloses': return this.setAnimation('idle');
+            case 'fireGoesOn': return this.setAnimation('burningFire');
+            case 'fireGoesOut': return this.setAnimation('idle');
+            case 'findsPeace': return this.setAnimation('findsPeaceLoop');
+            case 'stoneActivated': return this.setAnimation('idleWithStone');
+            case 'broken': return this.setAnimation('idle');
+            case 'spiritCuddle': return this.setAnimation('spiritCuddleLoop');
+        }
+    }
+
+    // Ergänzung in AnimatedEntity
+    applyNextFrame(images) {
+        this.img = images[this.frameIndex % images.length];
+        this.frameSource = null;  // wichtig für Nicht-Sheet-Animationen
+    }
 
 }

@@ -6,34 +6,6 @@ let characterImages = {};
 let entityImages = {};
 let allAudios = {};
 
-// async function init() {
-//     canvas = document.getElementById('canvas');
-//     characterImages = await preloadManifestImages(characterImageManifest);
-//     entityImages = await preloadManifestImages(entityImageManifest);
-//     allAudios = await preloadManifestAudio(audioManifest);
-//     world = new World(canvas, characterImages, entityImages, allAudios);
-//     createTownLevel(entityImages);
-//     listenStartButton();
-// }
-
-// function countManifestFiles(manifests) {
-//     let count = 0;
-//     for (const manifest of manifests) {
-//         for (const value of Object.values(manifest)) {
-//             if (Array.isArray(value)) {
-//                 count += value.length; // mehrere Einträge (z. B. Animationframes)
-//             } else if (typeof value === "object" && value !== null) {
-//                 // verschachteltes Manifest (z. B. npc: { walk: [...], idle: [...] })
-//                 count += countManifestFiles([value]);
-//             } else {
-//                 count++; // einzelner Pfad
-//             }
-//         }
-//     }
-//     return count;
-// }
-
-
 async function init() {
     const overlay = document.getElementById('loading-overlay');
     const bar = document.getElementById('loading-bar');
@@ -72,8 +44,6 @@ async function init() {
 
     canvas = document.getElementById('canvas');
     world = new World(canvas, characterImages, entityImages, allAudios);
-    // setImages(entityImages);
-    // createTownLevel();
     listenStartButton();
 
     loadDeferredAssets(characterImages, entityImages, allAudios);
@@ -100,7 +70,7 @@ async function loadDeferredAssets() {
         ]);
 
         Object.assign(characterImages, charDeferred);
-        smartMerge(entityImages, entityDeferred);
+        smartMerge(world.entityImages, entityDeferred);
         Object.assign(allAudios, audioDeferred);
 
         if (isMuted) {
@@ -134,7 +104,7 @@ async function loadLazyAssets() {
         ]);
 
         Object.assign(characterImages, charLazy, world.characterImages);
-        smartMerge(entityImages, entityLazy, world.entityImages);
+        smartMerge(world.entityImages, entityLazy);
         Object.assign(allAudios, audioLazy, world.allAudios);
 
         if (isMuted) {
@@ -146,10 +116,6 @@ async function loadLazyAssets() {
         world.character?.initEmotionImages();
         world.character?.initActionImages();
         world.character?.initSpecialImages();
-
-        // setImages(entityImages);
-        // createTownLevel(allAudios);
-
 
         // ✅ Alle Lazy-Assets geladen → zusätzliche Level initialisieren
         if (world && typeof world.initRemainingSetups === "function") {
@@ -167,17 +133,26 @@ function smartMerge(target, source) {
     if (!source || typeof source !== "object") return target || {};
     if (!target || typeof target !== "object") target = {};
 
-    for (const key of Object.keys(source)) {
-        const value = source[key];
+    for (const [key, value] of Object.entries(source)) {
+        // 🔹 Sprite-Sheet: nicht rekursiv mergen, sondern komplett übernehmen
+        if (value && typeof value === "object" && !Array.isArray(value) && value.type === "sheet") {
+            target[key] = value;
+            continue;
+        }
+
         if (value && typeof value === "object" && !Array.isArray(value)) {
-            if (!target[key]) target[key] = {};
+            if (!target[key] || typeof target[key] !== "object") {
+                target[key] = {};
+            }
             smartMerge(target[key], value);
         } else {
             target[key] = value;
         }
     }
+
     return target;
 }
+
 
 
 
