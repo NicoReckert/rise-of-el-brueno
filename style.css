@@ -1763,9 +1763,58 @@ canvas {
   /* noch weiter nach links */
 }
 
+body.fullscreen-active .bruno-img,
+body.fullscreen-active .kuecken-img,
+body.fullscreen-active .huhn-img,
+body.fullscreen-active .earth-video,
+body.fullscreen-active .portal-video {
+  transform: scale(1) !important;
+}
+
 
 .d-none {
   display: none;
+}
+
+@media only screen and (max-width: 1700px) {
+  .dragon2 {
+    width: 1200px;
+  }
+
+  .title {
+    font-size: 120px;
+  }
+}
+
+@media only screen and (max-width: 1530px) {
+  .img-text-box {
+    padding: 24px 32px;
+    flex-direction: column;
+    max-width: 600px;
+    gap: 50px;
+  }
+
+  .back-box {
+    padding-left: 24px;
+  }
+}
+
+@media only screen and (max-width: 1000px) {
+  .img-text-box {
+    padding: 24px 8px;
+    max-width: 450px;
+    gap: 24px;
+  }
+
+  .back-box {
+    padding-left: 16px;
+  }
+}
+
+@media only screen and (max-width: 900px) {
+  .title-characters {
+    font-size: 80px;
+  }
 }
 
 
@@ -1953,68 +2002,9 @@ canvas {
 /* } */
 /* } */
 
-body.fullscreen-active .bruno-img,
-body.fullscreen-active .kuecken-img,
-body.fullscreen-active .huhn-img,
-body.fullscreen-active .earth-video,
-body.fullscreen-active .portal-video {
-  transform: scale(1) !important;
-}
-
-@media only screen and (max-width: 600px) {
-  .welcome-button {
-    font-size: 42px;
-  }
-}
-
-@media only screen and (max-width: 1700px) {
-  .dragon2 {
-    width: 1200px;
-  }
-
-  .title {
-    font-size: 120px;
-  }
-}
 
 
-/*site characters*/
-/* @media only screen and (max-width: 1600px) {
-  .img-text-box {
-    padding-left: 174px;
-  }
-} */
 
-@media only screen and (max-width: 1530px) {
-  .img-text-box {
-    padding: 24px 32px;
-    flex-direction: column;
-    max-width: 600px;
-    gap: 50px;
-  }
-
-  .back-box {
-    padding-left: 24px;
-  }
-}
-
-@media only screen and (max-width: 1000px) {
-  .img-text-box {
-    padding: 24px 8px;
-    max-width: 450px;
-    gap: 24px;
-  }
-
-  .back-box {
-    padding-left: 16px;
-  }
-}
-
-@media only screen and (max-width: 900px) {
-  .title-characters {
-    font-size: 80px;
-  }
-}
 
 @media only screen and (max-width: 750px) {
   .img-text-box {
@@ -2036,22 +2026,8 @@ body.fullscreen-active .portal-video {
   }
 }
 
-@media only screen and (max-width: 900px) {
-  .title-characters {
-    font-size: 60px;
+@media only screen and (max-width: 600px) {
+  .welcome-button {
+    font-size: 42px;
   }
-
-  /* .img-text-box {
-    margin-left: 120px;
-  } */
 }
-
-/* @media only screen and (max-width: 1400px) {
-  .img-text-box {
-    padding: 24px 32px;
-    flex-direction: column;
-    max-width: 600px;
-    gap: 50px;
-    margin-left: 174px;
-  }
-} */

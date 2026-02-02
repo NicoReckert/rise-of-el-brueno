@@ -1,0 +1,16 @@
+﻿{
+    "frameHeight":  243,
+    "columns":  3,
+    "frameWidth":  248,
+    "animations":  {
+                       "default":  {
+                                       "loop":  true,
+                                       "from":  0,
+                                       "to":  2,
+                                       "fps":  12
+                                   }
+                   },
+    "image":  "walk_sheet.webp",
+    "frames":  3,
+    "rows":  1
+}

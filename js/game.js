@@ -1,10 +1,14 @@
 import { World } from '../classes/world.class.js';
+import { allAudios } from '../audio-store.js';
+import { initScript } from '../script.js';
+import { stopTitleMusic } from '../script.js';
+import { fadeInTitleMusic } from '../script.js';
+import { preloadManifestAudio } from '../audio-loader.js';
 
 let canvas;
 let world;
 let characterImages = {};
 let entityImages = {};
-let allAudios = {};
 
 async function init() {
     const overlay = document.getElementById('loading-overlay');
@@ -21,15 +25,14 @@ async function init() {
     };
     const onFileLoaded = () => { loaded++; updateProgress(); };
 
-    const [chars, entities, audios] = await Promise.all([
+    const [chars, entities] = await Promise.all([
         preloadManifestImages(characterManifestImmediate, onFileLoaded),
         preloadManifestImages(farmEntityManifestImmediate, onFileLoaded),
-        preloadManifestAudio(farmAudioManifestImmediate)
     ]);
-
+    await preloadManifestAudio(farmAudioManifestImmediate);
+    initScript();
     Object.assign(characterImages, chars);
     smartMerge(entityImages, entities);
-    Object.assign(allAudios, audios);
 
     // 🔊🔇 hier: gespeicherten Mute-State wiederherstellen
     const savedMuted = localStorage.getItem("elBruenoMuted");
@@ -63,7 +66,7 @@ function countManifestFiles(manifests) {
 
 async function loadDeferredAssets() {
     try {
-        const [charDeferred, entityDeferred, audioDeferred] = await Promise.all([
+        const [charDeferred, entityDeferred] = await Promise.all([
             preloadManifestImages(characterManifestDeferred),
             preloadManifestImages(farmEntityManifestDeferred),
             preloadManifestAudio(farmAudioManifestDeferred)
@@ -71,7 +74,6 @@ async function loadDeferredAssets() {
 
         Object.assign(characterImages, charDeferred);
         smartMerge(world.entityImages, entityDeferred);
-        Object.assign(allAudios, audioDeferred);
 
         if (isMuted) {
             applyMuteToAllAudios(allAudios);
@@ -80,7 +82,6 @@ async function loadDeferredAssets() {
         if (world) {
             Object.assign(world.characterImages, charDeferred);
             smartMerge(world.entityImages, entityDeferred);
-            Object.assign(world.allAudios, audioDeferred);
             world.character?.initMovementImages();
             world.character?.initEmotionImages();
             world.character?.initActionImages();
@@ -97,7 +98,7 @@ async function loadLazyAssets() {
                 : setTimeout(r, 1500)
         );
 
-        const [charLazy, entityLazy, audioLazy] = await Promise.all([
+        const [charLazy, entityLazy] = await Promise.all([
             preloadManifestImages(otherLevelCharacterManifestLazy),
             preloadManifestImages(otherLevelEntityManifestLazy),
             preloadManifestAudio(otherLevelAudioManifestLazy)
@@ -105,7 +106,6 @@ async function loadLazyAssets() {
 
         Object.assign(characterImages, charLazy, world.characterImages);
         smartMerge(world.entityImages, entityLazy);
-        Object.assign(allAudios, audioLazy, world.allAudios);
 
         if (isMuted) {
             applyMuteToAllAudios(allAudios);
@@ -194,8 +194,7 @@ document.getElementById('repeat-level-button').addEventListener('click', () => {
 
 document.getElementById('menu-level-button').addEventListener('click', () => {
     fadeOutAudio(world.levelCompleteSetup.sounds.levelCompleteMusic, 1000);
-    titleMusic2.currentTime = 0;
-    fadeInAudio(titleMusic2, 2000);
+    fadeInTitleMusic();
     document.getElementById('overlay-startscreen').style.display = 'flex';
     // document.getElementById('overlay-startscreen').classList.remove('opacity-none');
     // document.getElementById('canvas').style.display = 'none';
@@ -235,8 +234,7 @@ function listenStartButton() {
         // document.getElementById('background-music').play();
         // this.character.playSpeakSound();
         setFullscreen();
-        titleMusic.pause();
-        titleMusic2.pause();
+        stopTitleMusic();
     });
 }
 
@@ -471,8 +469,7 @@ function returnToMainMenu() {
         // falls levelCompleteSetup hier noch nicht existiert → ignorieren
     }
 
-    titleMusic2.currentTime = 0;
-    fadeInAudio(titleMusic2, 2000);
+    fadeInTitleMusic();
     document.getElementById('overlay-startscreen').style.display = 'flex';
     document.getElementById('move-button-box').classList.add('d-none');
 

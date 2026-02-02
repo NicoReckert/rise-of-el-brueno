@@ -30,9 +30,9 @@ export class FarmLevelSetup {
         };
 
         this.cutsceneActors = {
-            chickenHypno: new AnimatedEntity(this.entityImages, 'chickenHypno', 90, 90, 200, 580),
-            chickHypno: new AnimatedEntity(this.entityImages, 'chickHypno', 60, 60, 500, 600),
-            cowHypno: new AnimatedEntity(this.entityImages, 'cowHypno', 200, 200, -100, 492)
+            chickenTranced: new AnimatedEntity(this.entityImages, 'chickenTranced', 90, 90, 200, 580),
+            chickTranced: new AnimatedEntity(this.entityImages, 'chickTranced', 60, 60, 500, 600),
+            cowTranced: new AnimatedEntity(this.entityImages, 'cowTranced', 200, 200, -100, 492)
         }
 
         this.environment = {
@@ -60,14 +60,13 @@ export class FarmLevelSetup {
             moon: new AnimatedEntity(this.entityImages, 'moon', 200, 200, 3000, 50)
         }
         this.environment.pond.isFlipped = false;
-        this.cutsceneActors.cowHypno.isFlipped = true;
+        this.cutsceneActors.cowTranced.isFlipped = true;
         this.characters.bird.updateAnimationState('idle', 1000 / 7);
         this.characters.drone.updateAnimationState('idle', 1000 / 7);
         this.world.camera_x = 800;
         this.statusBar = new LifeEnergyCharacterBar(this.entityImages);
         this.sounds = {
             farmMusic: this.allAudios.farmMusic,
-            notificationSound: this.allAudios.notificationSound,
             nightMusic: this.allAudios.nightMusic,
             drohneSound: this.allAudios.drohneSound,
             drohneHypnoSound: this.allAudios.drohneHypnoSound,
@@ -76,7 +75,6 @@ export class FarmLevelSetup {
             snoringSound: this.allAudios.snoringSound,
             earthquakeSound: this.allAudios.earthquakeSound,
             sadMusic: this.allAudios.sadMusic,
-            dragonRoarSound: this.allAudios.dragonRoarSound,
             newTaskSound: this.allAudios.newTaskSound,
             taskCompletedSound: this.allAudios.taskCompletedSound,
             taskCompletedSound2: this.allAudios.taskCompletedSound.cloneNode(),
@@ -87,7 +85,6 @@ export class FarmLevelSetup {
             happyTogetherMusic: this.allAudios.happyTogetherMusic,
             determinedMusic: this.allAudios.determinedMusic,
             windSound: this.allAudios.windSound,
-            hintSound: this.allAudios.hintSound9,
             sadSoulMusic: this.allAudios.sadSoulMusic
         };
         this.speechBubbles = {
@@ -105,7 +102,6 @@ export class FarmLevelSetup {
         };
         this.sounds.farmMusic.loop = true;
         this.sounds.farmMusic.volume = 0.6;
-        this.sounds.notificationSound.volume = 0.5;
         this.isNotificationPlay = false;
         this.isGameCharacterInHouse = false;
         this.shakeIntensity = 20;

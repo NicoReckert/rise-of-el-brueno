@@ -1,9 +1,9 @@
 const entityImageManifest = {
   // blackDragon: {
-  //   idle: Array.from({ length: 16 }, (_, i) => `./assets/img/npcs/dragon/test2/image_${i + 1}.webp`),
-  //   flyUp: Array.from({ length: 9 }, (_, i) => `./assets/img/npcs/dragon/fly_up/image_${i + 1}.webp`),
-  //   halfSizeFly: Array.from({ length: 10 }, (_, i) => `./assets/img/npcs/dragon/half-size-fly/image_${i + 1}.webp`),
-  //   fullSizeFly: Array.from({ length: 5 }, (_, i) => `./assets/img/npcs/dragon/full-size-fly/image_${6 + i}.webp`)
+  //   idle: Array.from({ length: 16 }, (_, i) => `./assets/img/entities/dragon/test2/image_${i + 1}.webp`),
+  //   flyUp: Array.from({ length: 9 }, (_, i) => `./assets/img/entities/dragon/fly_up/image_${i + 1}.webp`),
+  //   halfSizeFly: Array.from({ length: 10 }, (_, i) => `./assets/img/entities/dragon/half-size-fly/image_${i + 1}.webp`),
+  //   fullSizeFly: Array.from({ length: 5 }, (_, i) => `./assets/img/entities/dragon/full-size-fly/image_${6 + i}.webp`)
   // },
 }
 
@@ -12,33 +12,33 @@ const farmEntityManifestImmediate = {
     idle: {
       type: 'sheetSequence',
       sheets: [
-        { json: './assets/img/npcs/cow/idle/idle_sheet_01.json' },
-        { json: './assets/img/npcs/cow/idle/idle_sheet_02.json' }
+        { json: './assets/img/entities/cow/idle/idle_sheet_01.json' },
+        { json: './assets/img/entities/cow/idle/idle_sheet_02.json' }
       ]
     },
     happy: {
       type: 'sheet',
-      json: './assets/img/npcs/cow/happy/happy_sheet.json'
+      json: './assets/img/entities/cow/happy/happy_sheet.json'
     },
     walk: {
       type: 'sheet',
-      json: './assets/img/npcs/cow/walk_and_stand_up/walk_and_stand_up_sheet.json'
+      json: './assets/img/entities/cow/walk_and_stand_up/walk_and_stand_up_sheet.json'
     },
     standUp: {
       type: 'sheet',
-      json: './assets/img/npcs/cow/walk_and_stand_up/walk_and_stand_up_sheet.json'
+      json: './assets/img/entities/cow/walk_and_stand_up/walk_and_stand_up_sheet.json'
     },
     afraid: {
       type: 'sheet',
-      json: './assets/img/npcs/cow/afraid/afraid_sheet.json'
+      json: './assets/img/entities/cow/afraid/afraid_sheet.json'
     },
     eat: {
       type: 'sheet',
-      json: './assets/img/npcs/cow/eat_and_love/eat_and_love_sheet.json'
+      json: './assets/img/entities/cow/eat_and_love/eat_and_love_sheet.json'
     },
     love: {
       type: 'sheet',
-      json: './assets/img/npcs/cow/eat_and_love/eat_and_love_sheet.json'
+      json: './assets/img/entities/cow/eat_and_love/eat_and_love_sheet.json'
     },
   },
 
@@ -46,8 +46,8 @@ const farmEntityManifestImmediate = {
     idle: {
       type: 'sheetSequence',
       sheets: [
-        { json: './assets/img/npcs/bird/idle/idle_sheet_01.json' },
-        { json: './assets/img/npcs/bird/idle/idle_sheet_02.json' }
+        { json: './assets/img/entities/bird/idle/idle_sheet_01.json' },
+        { json: './assets/img/entities/bird/idle/idle_sheet_02.json' }
       ]
     },
   },
@@ -55,7 +55,7 @@ const farmEntityManifestImmediate = {
   pond: {
     idle: {
       type: 'sheet',
-      json: './assets/img/npcs/pond/idle/idle_sheet.json',
+      json: './assets/img/entities/pond/idle/idle_sheet.json',
       anim: 'treeA_idle'
     },
   },
@@ -63,7 +63,7 @@ const farmEntityManifestImmediate = {
   treeA: {
     idle: {
       type: 'sheet',
-      json: './assets/img/npcs/tree/idle/idle_tree_A_and_B_sheet.json',
+      json: './assets/img/entities/tree_A_and_B/idle/idle_tree_A_and_B_sheet.json',
       anim: 'treeA_idle'
     },
   },
@@ -71,7 +71,7 @@ const farmEntityManifestImmediate = {
   treeB: {
     idle: {
       type: 'sheet',
-      json: './assets/img/npcs/tree/idle/idle_tree_A_and_B_sheet.json',
+      json: './assets/img/entities/tree_A_and_B/idle/idle_tree_A_and_B_sheet.json',
       anim: 'treeB_idle'
     },
   },
@@ -79,7 +79,7 @@ const farmEntityManifestImmediate = {
   treeC: {
     idle: {
       type: 'sheet',
-      json: './assets/img/npcs/tree3/idle/idle_tree_C_and_D_sheet.json',
+      json: './assets/img/entities/tree_C_and_D/idle/idle_tree_C_and_D_sheet.json',
       anim: 'treeC_idle'
     },
   },
@@ -87,7 +87,7 @@ const farmEntityManifestImmediate = {
   treeD: {
     idle: {
       type: 'sheet',
-      json: './assets/img/npcs/tree3/idle/idle_tree_C_and_D_sheet.json',
+      json: './assets/img/entities/tree_C_and_D/idle/idle_tree_C_and_D_sheet.json',
       anim: 'treeD_idle'
     },
   },
@@ -95,7 +95,7 @@ const farmEntityManifestImmediate = {
   flowerA: {
     idle: {
       type: 'sheet',
-      json: './assets/img/npcs/flower/idle/idle_A_B_C_sheet.json',
+      json: './assets/img/entities/flowers/idle/idle_A_B_C_sheet.json',
       anim: 'flowerA_idle'
     }
   },
@@ -103,7 +103,7 @@ const farmEntityManifestImmediate = {
   flowerB: {
     idle: {
       type: 'sheet',
-      json: './assets/img/npcs/flower/idle/idle_A_B_C_sheet.json',
+      json: './assets/img/entities/flowers/idle/idle_A_B_C_sheet.json',
       anim: 'flowerB_idle'
     }
   },
@@ -111,7 +111,7 @@ const farmEntityManifestImmediate = {
   flowerC: {
     idle: {
       type: 'sheet',
-      json: './assets/img/npcs/flower/idle/idle_A_B_C_sheet.json',
+      json: './assets/img/entities/flowers/idle/idle_A_B_C_sheet.json',
       anim: 'flowerC_idle'
     }
   },
@@ -123,23 +123,23 @@ const farmEntityManifestImmediate = {
   stable: {
     idle: {
       type: 'sheet',
-      json: './assets/img/npcs/stable/door_open_close/door_open_close_sheet.json'
+      json: './assets/img/entities/stable/door_open_close/door_open_close_sheet.json'
     },
     doorOpens: {
       type: 'sheet',
-      json: './assets/img/npcs/stable/door_open_close/door_open_close_sheet.json'
+      json: './assets/img/entities/stable/door_open_close/door_open_close_sheet.json'
     },
     doorCloses: {
       type: 'sheet',
-      json: './assets/img/npcs/stable/door_open_close/door_open_close_sheet.json'
+      json: './assets/img/entities/stable/door_open_close/door_open_close_sheet.json'
     },
     idleOpen: {
       type: 'sheet',
-      json: './assets/img/npcs/stable/door_open_close/door_open_close_sheet.json'
+      json: './assets/img/entities/stable/door_open_close/door_open_close_sheet.json'
     }
   },
   campfire: {
-    idle: Array.from({ length: 1 }, _ => `./assets/img/npcs/campfire/idle/image_1.webp`),
+    idle: Array.from({ length: 1 }, _ => `./assets/img/entities/campfire/idle/image_1.webp`),
   },
 
   chicken: {
@@ -168,6 +168,13 @@ const farmEntityManifestImmediate = {
     status: Array.from({ length: 6 }, (_, i) => `./assets/img/7_statusbars/1_statusbar/2_statusbar_health/green/${i * 20}.webp`)
   },
 
+  clock: {
+    idle: {
+      type: 'sheet',
+      json: './assets/img/entities/clock/idle/idle_sheet.json'
+    }
+  }
+
 }
 
 const farmEntityManifestDeferred = {
@@ -175,33 +182,33 @@ const farmEntityManifestDeferred = {
     swingToMusic: {
       type: 'sheetSequence',
       sheets: [
-        { json: './assets/img/npcs/cow/swing_to_music/swing_to_music_sheet_01.json' },
-        { json: './assets/img/npcs/cow/swing_to_music/swing_to_music_sheet_02.json' }
+        { json: './assets/img/entities/cow/swing_to_music/swing_to_music_sheet_01.json' },
+        { json: './assets/img/entities/cow/swing_to_music/swing_to_music_sheet_02.json' }
       ]
     },
     sleep: {
       type: 'sheetSequence',
       sheets: [
-        { json: './assets/img/npcs/cow/sleep/sleep_sheet_01.json' },
-        { json: './assets/img/npcs/cow/sleep/sleep_sheet_02.json' }
+        { json: './assets/img/entities/cow/sleep/sleep_sheet_01.json' },
+        { json: './assets/img/entities/cow/sleep/sleep_sheet_02.json' }
       ]
     },
     portrait: {
       type: 'sheet',
-      json: './assets/img/npcs/cow/portrait/portrait_sheet.json'
+      json: './assets/img/entities/cow/portrait/portrait_sheet.json'
     },
   },
 
   house: {
-    doorOpens: Array.from({ length: 6 }, (_, i) => `./assets/img/npcs/house/door_opens/image_${i + 1}.webp`),
-    doorCloses: Array.from({ length: 6 }, (_, i) => `./assets/img/npcs/house/door_closes/image_${i + 1}.webp`),
-    idleOpen: Array.from({ length: 1 }, _ => `./assets/img/npcs/house/idle_open/image_1.webp`)
+    doorOpens: Array.from({ length: 6 }, (_, i) => `./assets/img/entities/house/door_opens/image_${i + 1}.webp`),
+    doorCloses: Array.from({ length: 6 }, (_, i) => `./assets/img/entities/house/door_closes/image_${i + 1}.webp`),
+    idleOpen: Array.from({ length: 1 }, _ => `./assets/img/entities/house/idle_open/image_1.webp`)
   },
 
   campfire: {
-    burningFire: Array.from({ length: 7 }, (_, i) => `./assets/img/npcs/campfire/burning_fire/image_${i + 1}.webp`),
-    fireGoesOn: Array.from({ length: 13 }, (_, i) => `./assets/img/npcs/campfire/fire_goes_on/image_${i + 1}.webp`),
-    fireGoesOut: Array.from({ length: 6 }, (_, i) => `./assets/img/npcs/campfire/fire_goes_out/image_${i + 1}.webp`)
+    burningFire: Array.from({ length: 7 }, (_, i) => `./assets/img/entities/campfire/burning_fire/image_${i + 1}.webp`),
+    fireGoesOn: Array.from({ length: 13 }, (_, i) => `./assets/img/entities/campfire/fire_goes_on/image_${i + 1}.webp`),
+    fireGoesOut: Array.from({ length: 6 }, (_, i) => `./assets/img/entities/campfire/fire_goes_out/image_${i + 1}.webp`)
   },
 
   chicken: {
@@ -223,56 +230,58 @@ const farmEntityManifestDeferred = {
     hypno: Array.from({ length: 18 }, (_, i) => `./assets/img/drohne/hypno/image_${3 + i}.webp`)
   },
 
-  cowHypno: {
-    // idle: Array.from({ length: 10 }, (_, i) => `./assets/img/npcs/cow/idle/image_${i + 1}.webp`),
-    walk: Array.from({ length: 5 }, (_, i) => `./assets/img/npcs/cow/hypno/image_${i + 1}.webp`)
+  cowTranced: {
+    walk: {
+      type: 'sheet',
+      json: './assets/img/entities/cow_tranced/walk/walk_sheet.json'
+    }
   },
 
-  chickenHypno: {
-    idle: Array.from({ length: 1 }, _ => `./assets/img/3_enemies_chicken/chicken_normal/5_hypno/1_w.webp`),
-    walk: Array.from({ length: 3 }, (_, i) => `./assets/img/3_enemies_chicken/chicken_normal/5_hypno/${i + 1}_w.webp`)
+  chickenTranced: {
+    walk: {
+      type: 'sheet',
+      json: './assets/img/entities/chicken_tranced/walk/walk_sheet.json'
+    }
   },
 
-  chickHypno: {
-    idle: Array.from({ length: 1 }, _ => `./assets/img/3_enemies_chicken/chicken_small/3_walk_hypno/1_w.webp`),
-    walk: Array.from({ length: 3 }, (_, i) => `./assets/img/3_enemies_chicken/chicken_small/3_walk_hypno/${i + 1}_w.webp`)
-  },
-
-  clock: {
-    idle: Array.from({ length: 10 }, (_, i) => `./assets/img/npcs/clock/idle/image_${i + 1}.webp`)
+  chickTranced: {
+    walk: {
+      type: 'sheet',
+      json: './assets/img/entities/chick_tranced/walk/walk_sheet.json'
+    }
   },
 
   sun: {
-    idle: Array.from({ length: 10 }, (_, i) => `./assets/img/npcs/sun/idle/image_${i + 1}.webp`)
+    idle: Array.from({ length: 10 }, (_, i) => `./assets/img/entities/sun/idle/image_${i + 1}.webp`)
   },
 
   moon: {
-    idle: Array.from({ length: 1 }, _ => `./assets/img/npcs/moon/idle/image_1.webp`),
-    swingToMusic: Array.from({ length: 10 }, (_, i) => `./assets/img/npcs/moon/idle/image_${i + 1}.webp`)
+    idle: Array.from({ length: 1 }, _ => `./assets/img/entities/moon/idle/image_1.webp`),
+    swingToMusic: Array.from({ length: 10 }, (_, i) => `./assets/img/entities/moon/idle/image_${i + 1}.webp`)
   },
 }
 
 const otherLevelEntityManifestLazy = {
   soul: {
-    idle: Array.from({ length: 18 }, (_, i) => `./assets/img/npcs/soul/idle/image_${i + 1}.webp`),
-    findsPeace: Array.from({ length: 22 }, (_, i) => `./assets/img/npcs/soul/finds-peace/image_${i + 1}.webp`),
-    findsPeaceLoop: Array.from({ length: 9 }, (_, i) => `./assets/img/npcs/soul/finds-peace/image_${13 + i}.webp`)
+    idle: Array.from({ length: 18 }, (_, i) => `./assets/img/entities/soul/idle/image_${i + 1}.webp`),
+    findsPeace: Array.from({ length: 22 }, (_, i) => `./assets/img/entities/soul/finds-peace/image_${i + 1}.webp`),
+    findsPeaceLoop: Array.from({ length: 9 }, (_, i) => `./assets/img/entities/soul/finds-peace/image_${13 + i}.webp`)
   },
 
   nayeli: {
-    idle: Array.from({ length: 10 }, (_, i) => `./assets/img/npcs/nayeli/idle/image_${i + 1}.webp`)
+    idle: Array.from({ length: 10 }, (_, i) => `./assets/img/entities/nayeli/idle/image_${i + 1}.webp`)
   },
 
   macuahuitl: {
-    idle: Array.from({ length: 30 }, (_, i) => `./assets/img/npcs/macuahuitl/idle/image_${i + 1}.webp`)
+    idle: Array.from({ length: 30 }, (_, i) => `./assets/img/entities/macuahuitl/idle/image_${i + 1}.webp`)
   },
 
   memoryLight: {
-    idle: Array.from({ length: 10 }, (_, i) => `./assets/img/npcs/memory_light/idle/image_${i + 1}.webp`)
+    idle: Array.from({ length: 10 }, (_, i) => `./assets/img/entities/memory_light/idle/image_${i + 1}.webp`)
   },
 
   levelCompleteCharacter: {
-    idle: Array.from({ length: 10 }, (_, i) => `./assets/img/npcs/level_complete/idle/image_${i + 1}.webp`)
+    idle: Array.from({ length: 10 }, (_, i) => `./assets/img/entities/level_complete/idle/image_${i + 1}.webp`)
   },
 
   endboss: {
@@ -334,58 +343,58 @@ const otherLevelEntityManifestLazy = {
   coin: Array.from({ length: 2 }, (_, i) => `./assets/img/8_coin/coin_${i + 1}.webp`),
 
   tadeo: {
-    idle: Array.from({ length: 10 }, (_, i) => `./assets/img/npcs/tadeo/idle/image_${i + 1}.webp`),
-    walk: Array.from({ length: 8 }, (_, i) => `./assets/img/npcs/tadeo/walk/image_${i + 1}.png`),
-    walkWithStone: Array.from({ length: 5 }, (_, i) => `./assets/img/npcs/tadeo/walk_with_stone/image_${i + 1}.png`),
-    idleWithStone: Array.from({ length: 20 }, (_, i) => `./assets/img/npcs/tadeo/idle_with_stone/image_${i + 1}.png`),
-    stoneActivated: Array.from({ length: 55 }, (_, i) => `./assets/img/npcs/tadeo/stone_activated/image_${i + 1}.png`)
+    idle: Array.from({ length: 10 }, (_, i) => `./assets/img/entities/tadeo/idle/image_${i + 1}.webp`),
+    walk: Array.from({ length: 8 }, (_, i) => `./assets/img/entities/tadeo/walk/image_${i + 1}.png`),
+    walkWithStone: Array.from({ length: 5 }, (_, i) => `./assets/img/entities/tadeo/walk_with_stone/image_${i + 1}.png`),
+    idleWithStone: Array.from({ length: 20 }, (_, i) => `./assets/img/entities/tadeo/idle_with_stone/image_${i + 1}.png`),
+    stoneActivated: Array.from({ length: 55 }, (_, i) => `./assets/img/entities/tadeo/stone_activated/image_${i + 1}.png`)
   },
 
   projectile: {
-    fireball: Array.from({ length: 6 }, (_, i) => `./assets/img/npcs/projectile/fireball/idle/image_${i + 1}.png`)
+    fireball: Array.from({ length: 6 }, (_, i) => `./assets/img/entities/projectile/fireball/idle/image_${i + 1}.png`)
   },
 
   musician: {
-    idle: Array.from({ length: 6 }, (_, i) => `./assets/img/npcs/musician/idle/image_${i + 1}.png`)
+    idle: Array.from({ length: 6 }, (_, i) => `./assets/img/entities/musician/idle/image_${i + 1}.png`)
   },
 
   sollita: {
-    idle: Array.from({ length: 20 }, (_, i) => `./assets/img/npcs/sollita/idle/image_${i + 1}.png`)
+    idle: Array.from({ length: 20 }, (_, i) => `./assets/img/entities/sollita/idle/image_${i + 1}.png`)
   },
 
   egg: {
-    idle: Array.from({ length: 1 }, _ => `./assets/img/npcs/egg/idle/image_1.png`),
-    broken: Array.from({ length: 6 }, (_, i) => `./assets/img/npcs/egg/broken/image_${i + 1}.png`)
+    idle: Array.from({ length: 1 }, _ => `./assets/img/entities/egg/idle/image_1.png`),
+    broken: Array.from({ length: 6 }, (_, i) => `./assets/img/entities/egg/broken/image_${i + 1}.png`)
   },
 
   rockyDesertPedestal: {
-    idle: Array.from({ length: 1 }, _ => `./assets/img/npcs/rocky-desert-pedestal/idle/image_1.png`)
+    idle: Array.from({ length: 1 }, _ => `./assets/img/entities/rocky-desert-pedestal/idle/image_1.png`)
   },
 
   fire: {
-    idle: Array.from({ length: 8 }, (_, i) => `./assets/img/npcs/fire/idle/image_${i + 1}.png`)
+    idle: Array.from({ length: 8 }, (_, i) => `./assets/img/entities/fire/idle/image_${i + 1}.png`)
   },
 
   juanitoSpirit: {
-    idle: Array.from({ length: 8 }, (_, i) => `./assets/img/npcs/juanito-ghost/idle/image_${i + 1}.png`),
-    spiritCuddle: Array.from({ length: 8 }, (_, i) => `./assets/img/npcs/juanito-ghost/spirit-cuddle/image_${i + 1}.png`),
-    spiritCuddleLoop: Array.from({ length: 6 }, (_, i) => `./assets/img/npcs/juanito-ghost/spirit-cuddle-loop/image_${i + 1}.png`)
+    idle: Array.from({ length: 8 }, (_, i) => `./assets/img/entities/juanito-ghost/idle/image_${i + 1}.png`),
+    spiritCuddle: Array.from({ length: 8 }, (_, i) => `./assets/img/entities/juanito-ghost/spirit-cuddle/image_${i + 1}.png`),
+    spiritCuddleLoop: Array.from({ length: 6 }, (_, i) => `./assets/img/entities/juanito-ghost/spirit-cuddle-loop/image_${i + 1}.png`)
   },
 
   pollitoSpirit: {
-    idle: Array.from({ length: 6 }, (_, i) => `./assets/img/npcs/pollito-spirit/idle/image_${i + 1}.png`),
-    spiritCuddle: Array.from({ length: 8 }, (_, i) => `./assets/img/npcs/pollito-spirit/spirit-cuddle/image_${i + 1}.png`),
-    spiritCuddleLoop: Array.from({ length: 6 }, (_, i) => `./assets/img/npcs/pollito-spirit/spirit-cuddle-loop/image_${i + 1}.png`)
+    idle: Array.from({ length: 6 }, (_, i) => `./assets/img/entities/pollito-spirit/idle/image_${i + 1}.png`),
+    spiritCuddle: Array.from({ length: 8 }, (_, i) => `./assets/img/entities/pollito-spirit/spirit-cuddle/image_${i + 1}.png`),
+    spiritCuddleLoop: Array.from({ length: 6 }, (_, i) => `./assets/img/entities/pollito-spirit/spirit-cuddle-loop/image_${i + 1}.png`)
   },
 
   lolaSpirit: {
-    idle: Array.from({ length: 6 }, (_, i) => `./assets/img/npcs/lola-spirit/idle/image_${i + 1}.png`),
-    spiritCuddle: Array.from({ length: 8 }, (_, i) => `./assets/img/npcs/lola-spirit/spirit-cuddle/image_${i + 1}.png`),
-    spiritCuddleLoop: Array.from({ length: 8 }, (_, i) => `./assets/img/npcs/lola-spirit/spirit-cuddle-loop/image_${i + 1}.png`)
+    idle: Array.from({ length: 6 }, (_, i) => `./assets/img/entities/lola-spirit/idle/image_${i + 1}.png`),
+    spiritCuddle: Array.from({ length: 8 }, (_, i) => `./assets/img/entities/lola-spirit/spirit-cuddle/image_${i + 1}.png`),
+    spiritCuddleLoop: Array.from({ length: 8 }, (_, i) => `./assets/img/entities/lola-spirit/spirit-cuddle-loop/image_${i + 1}.png`)
   },
 
   spiritEssence: {
-    idle: Array.from({ length: 8 }, (_, i) => `./assets/img/npcs/spirit-essence/idle/image_${i + 1}.png`)
+    idle: Array.from({ length: 8 }, (_, i) => `./assets/img/entities/spirit-essence/idle/image_${i + 1}.png`)
   }
 
 }

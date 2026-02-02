@@ -1,7 +1,9 @@
-let titleMusic = new Audio('./assets/audio/title-music.opus');
-let titleMusic2 = new Audio('./assets/audio/title-music2.opus');
-let titleSound = new Audio('./assets/audio/title-sound5.opus');
-let welcomeButtonHoverSound = new Audio('./assets/audio/ui-tuping-391160.opus');
+import { allAudios } from "./audio-store.js";
+
+let titleMusic;
+let titleMusic2;
+let titleSound;
+let welcomeButtonHoverSound;
 let titleSoundIsPlayed = false;
 let videos = {};
 let currentCharacterMusic;
@@ -52,75 +54,63 @@ const controls =
         },
     ]
 
-const audios = {
-    nayelisMusic: new Audio('./assets/audio/nayelis-music.opus'),
-    sollitasMusic: new Audio('./assets/audio/sollitas-music.opus'),
-    tadeoMusic: new Audio('./assets/audio/tadeo-music.opus'),
-    soulMusic: new Audio('./assets/audio/soul-music.opus'),
-    happyTogetherMusic: new Audio('./assets/audio/happy-together-music.opus'),
-    infoScreenMusic: new Audio('./assets/audio/info-screen-music4.opus'),
-    brünöTextSpeechSound: new Audio('./assets/audio/brünö-character-text-speech.opus'),
-    juanitoTextSpeechSound: new Audio('./assets/audio/juanito-character-text-speech.opus'),
-    pollitoTextSpeechSound: new Audio('./assets/audio/pollito-character-text-speech.opus'),
-    lolaTextSpeechSound: new Audio('./assets/audio/lola-character-text-speech.opus'),
-    sollitaTextSpeechSound: new Audio('./assets/audio/sollita-character-text-speech.opus'),
-    nayeliTextSpeechSound: new Audio('./assets/audio/nayeli-character-text-speech.opus'),
-    tadeoTextSpeechSound: new Audio('./assets/audio/tadeo-character-text-speech.opus'),
-    storyTextSpeechSound: new Audio('./assets/audio/story-text-speech.opus')
-}
+let audios = {};
+let characters = [];
 
-const characters =
-    [
-        {
-            name: 'Brünö',
-            text: 'Ein einfacher Bauer mit großem Herz. Beschützt seine Tiere und ist bereit, alles für sie zu tun.',
-            text2: 'Brünö ist ein einfacher mexikanischer Bauer, der sein Leben seinen Tieren widmet. Als seine Freunde von einer mysteriösen Macht entführt werden, wird aus dem stillen Bauern ein Held. Mit Mut und einem reinen Herzen stellt er sich einer gefährlichen Reise.',
-            music: audios.soulMusic,
-            textSpeechSound: audios.brünöTextSpeechSound
-        },
-        {
-            name: 'Juanito',
-            text: 'Das schlaue Huhn. Treu, mutig und Brünös ältester tierischer Freund.',
-            text2: 'Juanito ist nicht nur ein Huhn. Er ist Brünös engster Freund. Klug und mutig, oft derjenige, der Gefahren zuerst wittert.',
-            music: audios.happyTogetherMusic,
-            textSpeechSound: audios.juanitoTextSpeechSound
-        },
-        {
-            name: 'Pollito',
-            text: 'Ein quirliges Küken, das immer für Chaos sorgt und Brünö zum Lachen bringt.',
-            text2: 'Das freche Küken Pollito bringt Leben und Energie in Brünös kleine Welt. Trotz seiner Größe beweist er überraschend viel Mut.',
-            music: audios.happyTogetherMusic,
-            textSpeechSound: audios.pollitoTextSpeechSound
-        },
-        {
-            name: 'Lola',
-            text: 'Die ruhige Kuh. Gibt Brünö Kraft und Ruhe, eine Art „Familienmutter“.',
-            text2: 'Die Kuh Lola ist für Brünö wie eine Schwester. Sie hat ein sanftes Herz, sorgt für Ruhe und Ausgeglichenheit.',
-            music: audios.happyTogetherMusic,
-            textSpeechSound: audios.lolaTextSpeechSound
-        },
-        {
-            name: 'Sollita',
-            text: 'Eine starke Frau aus der Stadt. Kämpft gegen Ungerechtigkeit und hilft Brünö.',
-            text2: 'Sollita ist eine mutige Kämpferin in der Stadt, die Brünö auf seinem Weg unterstützt. Sie weiß mehr über die Portale und die Wesen als Brünö zunächst ahnt.',
-            music: audios.sollitasMusic,
-            textSpeechSound: audios.sollitaTextSpeechSound
-        },
-        {
-            name: 'Nayeli',
-            text: 'Die weise Älteste, die mit den Ahnen verbunden ist und Brünö auf seine Mission schickt.',
-            text2: 'Nayeli ist eine weise Frau mit alten Kräften. Sie kennt Brünös Schicksal und gibt ihm das Schwert der Ahnen.',
-            music: audios.nayelisMusic,
-            textSpeechSound: audios.nayeliTextSpeechSound
-        },
-        {
-            name: 'Tadeo',
-            text: 'Ein mutiger Junge mit großem Herzen. Von Nayeli gesandt, um Brünö auf seiner Reise zu helfen.',
-            text2: 'Tadeo ist ein aufgeweckter Junge mit starkem Herz. Er lebt im Einklang mit der Natur und wurde von der weisen Nayeli geschickt, um Brünö zu helfen. Trotz seines jungen Alters zeigt er Mut, Mitgefühl und Entschlossenheit. Für ihn ist es eine Ehre, Teil von Brünös Reise zu sein.',
-            music: audios.tadeoMusic,
-            textSpeechSound: audios.tadeoTextSpeechSound
-        }
-    ];
+function buildCharacters() {
+    characters =
+        [
+            {
+                name: 'Brünö',
+                text: 'Ein einfacher Bauer mit großem Herz. Beschützt seine Tiere und ist bereit, alles für sie zu tun.',
+                text2: 'Brünö ist ein einfacher mexikanischer Bauer, der sein Leben seinen Tieren widmet. Als seine Freunde von einer mysteriösen Macht entführt werden, wird aus dem stillen Bauern ein Held. Mit Mut und einem reinen Herzen stellt er sich einer gefährlichen Reise.',
+                music: audios.soulMusic,
+                textSpeechSound: audios.brünöTextSpeechSound
+            },
+            {
+                name: 'Juanito',
+                text: 'Das schlaue Huhn. Treu, mutig und Brünös ältester tierischer Freund.',
+                text2: 'Juanito ist nicht nur ein Huhn. Er ist Brünös engster Freund. Klug und mutig, oft derjenige, der Gefahren zuerst wittert.',
+                music: audios.happyTogetherMusic,
+                textSpeechSound: audios.juanitoTextSpeechSound
+            },
+            {
+                name: 'Pollito',
+                text: 'Ein quirliges Küken, das immer für Chaos sorgt und Brünö zum Lachen bringt.',
+                text2: 'Das freche Küken Pollito bringt Leben und Energie in Brünös kleine Welt. Trotz seiner Größe beweist er überraschend viel Mut.',
+                music: audios.happyTogetherMusic,
+                textSpeechSound: audios.pollitoTextSpeechSound
+            },
+            {
+                name: 'Lola',
+                text: 'Die ruhige Kuh. Gibt Brünö Kraft und Ruhe, eine Art „Familienmutter“.',
+                text2: 'Die Kuh Lola ist für Brünö wie eine Schwester. Sie hat ein sanftes Herz, sorgt für Ruhe und Ausgeglichenheit.',
+                music: audios.happyTogetherMusic,
+                textSpeechSound: audios.lolaTextSpeechSound
+            },
+            {
+                name: 'Sollita',
+                text: 'Eine starke Frau aus der Stadt. Kämpft gegen Ungerechtigkeit und hilft Brünö.',
+                text2: 'Sollita ist eine mutige Kämpferin in der Stadt, die Brünö auf seinem Weg unterstützt. Sie weiß mehr über die Portale und die Wesen als Brünö zunächst ahnt.',
+                music: audios.sollitasMusic,
+                textSpeechSound: audios.sollitaTextSpeechSound
+            },
+            {
+                name: 'Nayeli',
+                text: 'Die weise Älteste, die mit den Ahnen verbunden ist und Brünö auf seine Mission schickt.',
+                text2: 'Nayeli ist eine weise Frau mit alten Kräften. Sie kennt Brünös Schicksal und gibt ihm das Schwert der Ahnen.',
+                music: audios.nayelisMusic,
+                textSpeechSound: audios.nayeliTextSpeechSound
+            },
+            {
+                name: 'Tadeo',
+                text: 'Ein mutiger Junge mit großem Herzen. Von Nayeli gesandt, um Brünö auf seiner Reise zu helfen.',
+                text2: 'Tadeo ist ein aufgeweckter Junge mit starkem Herz. Er lebt im Einklang mit der Natur und wurde von der weisen Nayeli geschickt, um Brünö zu helfen. Trotz seines jungen Alters zeigt er Mut, Mitgefühl und Entschlossenheit. Für ihn ist es eine Ehre, Teil von Brünös Reise zu sein.',
+                music: audios.tadeoMusic,
+                textSpeechSound: audios.tadeoTextSpeechSound
+            }
+        ];
+}
 const storyText = 'Rise of El Brünö erzählt die Geschichte eines einfachen mexikanischen Bauern, der sein friedliches Leben auf dem Hof mit seinen Tieren genießt. Eines Nachts werden seine geliebten Freunde von einer dunklen Macht entführt. Brünö bleibt nichts anderes übrig, als sich auf eine Reise voller Gefahren, Magie und uralter Geheimnisse zu begeben. Auf seinem Weg trifft er Verbündete und stellt sich Wesen, die von einem wahnsinnigen Wissenschaftler erschaffen wurden. Doch je weiter Brünö kommt, desto mehr erkennt er, dass seine Mission größer ist, als nur seine Freunde zu retten. Er kämpft für das Gleichgewicht der Welt.';
 
 
@@ -130,9 +120,7 @@ function startVideo() {
     video2.classList.remove('opacity-none');
     video2.classList.add('animation-video2');
     video2.play();
-    video.load();
     titleMusic.play();
-    titleMusic2.load();
     setTimeout(() => {
         video.play();
         video.playbackRate = 1.0;
@@ -150,28 +138,63 @@ function playHoverSound() {
     welcomeButtonHoverSound.play();
 }
 
-titleMusic.addEventListener("ended", () => {
-    titleMusic2.play();
-    titleMusic2.loop = true;
-});
+// document.getElementById('welcome-button').addEventListener('click', () => {
+//     playHoverSound();
+//     openFullscreen(document.body);
+// })
+
+
 
 const title = document.querySelector("h1");
 title.addEventListener("animationend", () => {
     titleSound.play();
 });
 
-titleMusic.addEventListener('timeupdate', () => {
-    if (titleMusic.currentTime >= 22.8 && !titleSoundIsPlayed) {
-        titleSound.play();
-        document.getElementById('h1').classList.add('animation');
-        titleSoundIsPlayed = true;
-        setTimeout(() => {
-            document.getElementById('h1').classList.remove('before-animation');
-        }, 800);
-    }
-});
+let scriptInitialized = false;
 
-async function init() {
+export async function initScript() {
+    if (scriptInitialized) return;
+    scriptInitialized = true;
+    titleMusic = allAudios.titleMusic
+    titleMusic2 = allAudios.titleMusic2;
+    titleSound = allAudios.titleSound;
+    welcomeButtonHoverSound = allAudios.welcomeButtonHoverSound;
+
+    audios = {
+        nayelisMusic: allAudios.nayelisMusic,
+        sollitasMusic: allAudios.sollitasMusic,
+        tadeoMusic: allAudios.tadeoMusic,
+        soulMusic: allAudios.soulMusic,
+        happyTogetherMusic: allAudios.happyTogetherMusic,
+        infoScreenMusic: allAudios.infoScreenMusic,
+        brünöTextSpeechSound: allAudios.brünöTextSpeechSound,
+        juanitoTextSpeechSound: allAudios.juanitoTextSpeechSound,
+        pollitoTextSpeechSound: allAudios.pollitoTextSpeechSound,
+        lolaTextSpeechSound: allAudios.lolaTextSpeechSound,
+        sollitaTextSpeechSound: allAudios.sollitaTextSpeechSound,
+        nayeliTextSpeechSound: allAudios.nayeliTextSpeechSound,
+        tadeoTextSpeechSound: allAudios.tadeoTextSpeechSound,
+        storyTextSpeechSound: allAudios.storyTextSpeechSound
+    }
+
+    buildCharacters();
+
+    titleMusic.addEventListener("ended", () => {
+        titleMusic2.play();
+        titleMusic2.loop = true;
+    });
+
+    titleMusic.addEventListener('timeupdate', () => {
+        if (titleMusic.currentTime >= 22.8 && !titleSoundIsPlayed) {
+            titleSound.play();
+            document.getElementById('h1').classList.add('animation');
+            titleSoundIsPlayed = true;
+            setTimeout(() => {
+                document.getElementById('h1').classList.remove('before-animation');
+            }, 800);
+        }
+    });
+
     // 1. Intro sofort laden
     await attachVideoSource("start-initialisation-video", videoManifest.intro);
 
@@ -180,6 +203,10 @@ async function init() {
 
     //3. Klick startet es sofort
     document.getElementById("welcome-button").addEventListener("click", () => {
+
+
+        playHoverSound();
+        openFullscreen(document.body);
         const video2 = document.getElementById("start-initialisation-video2");
         // console.log('hat geklappt')
         // video2.play();
@@ -196,7 +223,17 @@ async function init() {
     ]);
 }
 
-init();
+export function stopTitleMusic() {
+    allAudios.titleMusic?.pause();
+    allAudios.titleMusic2?.pause();
+}
+
+export function fadeInTitleMusic() {
+    titleMusic2.currentTime = 0;
+    fadeInAudio(titleMusic2, 2000);
+}
+
+
 
 function openBigBox() {
     document.getElementById('overlay-big-card').classList.remove('d-none');

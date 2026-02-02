@@ -809,9 +809,9 @@ export const farmEvents =
                 setup.sounds.drohneHypnoSound.loop = true;
                 setup.sounds.drohneHypnoSound.play();
                 setup.characters.drone.updateAnimationState('hypno', 1000 / 7);
-                setup.cutsceneActors.chickenHypno.updateAnimationState('walk', 1000 / 7);
-                setup.cutsceneActors.cowHypno.updateAnimationState('walk', 1000 / 5);
-                setup.cutsceneActors.chickHypno.updateAnimationState('walk', 1000 / 7);
+                setup.cutsceneActors.chickenTranced.updateAnimationState('walk', 1000 / 7);
+                setup.cutsceneActors.cowTranced.updateAnimationState('walk', 1000 / 5);
+                setup.cutsceneActors.chickTranced.updateAnimationState('walk', 1000 / 7);
             }
         },
 
@@ -821,12 +821,12 @@ export const farmEvents =
             step: 16,
             once: false,
             action: (setup) => {
-                setup.cutsceneActors.chickenHypno.moveToX(2600, { speed: 1.5 });
-                setup.cutsceneActors.cowHypno.moveToX(2600, {
+                setup.cutsceneActors.chickenTranced.moveToX(2600, { speed: 1.5 });
+                setup.cutsceneActors.cowTranced.moveToX(2600, {
                     speed: 1.5,
                     onArrive: () => setup.world.farmLevelController.questManager.advance(17)
                 })
-                setup.cutsceneActors.chickHypno.moveToX(2600, { speed: 1.5 });
+                setup.cutsceneActors.chickTranced.moveToX(2600, { speed: 1.5 });
             }
         },
 

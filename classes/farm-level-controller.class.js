@@ -175,9 +175,9 @@ export class FarmLevelController {
             if (this.questManager.step < 14) this.world.addToWorld(this.setup.environment.moon);
             if (this.questManager.step >= 14 && this.questManager.step < 18) {
                 this.addToWorld(this.setup.characters.drone);
-                this.addToWorld(this.setup.cutsceneActors.chickenHypno);
-                this.addToWorld(this.setup.cutsceneActors.cowHypno);
-                this.addToWorld(this.setup.cutsceneActors.chickHypno);
+                this.addToWorld(this.setup.cutsceneActors.chickenTranced);
+                this.addToWorld(this.setup.cutsceneActors.cowTranced);
+                this.addToWorld(this.setup.cutsceneActors.chickTranced);
             }
             this.ctx.restore();
         }

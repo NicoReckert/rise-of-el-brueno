@@ -28,15 +28,12 @@ export class StableLevelSetup {
         this.sounds = {
             chickSound: this.allAudios.chickSound,
             chickenSound: this.allAudios.chickenSound,
-            notificationSound: this.allAudios.notificationSound,
-            hintSound: this.allAudios.hintSound7
         };
 
         this.video = document.createElement('video');
         this.video.src = './assets/videos/memory.mp4';
         this.video.preload = 'auto';
         // document.body.appendChild(this.video);
-        this.sounds.hintSound.volume = 0.2;
         this.hints = [
             new HollowHint("Streicheln", this.characters.chicken, 100, 'rose'),
             new HollowHint("Streicheln", this.characters.chick, 100, 'rose'),
