@@ -20,6 +20,7 @@ export function createFarmSounds(allAudios) {
         determinedMusic: allAudios.determinedMusic,
         windSound: allAudios.windSound,
         sadSoulMusic: allAudios.sadSoulMusic,
+        attackSound: allAudios.attackSound
     };
 
     // 🎚️ Initiale Sound-Konfiguration gehört ins Setup

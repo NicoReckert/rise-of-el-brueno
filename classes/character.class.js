@@ -398,7 +398,7 @@ export class Character extends MovableObject {
         if (this.isAttack) {
             if (!this.isHaveSword) {
                 return this.setAnim('attack', 7);
-            } else return this.setAnim('attack-sword', 6.5);
+            } else return this.setAnim('attack-sword', 6);
         }
         if (this.isMeditation) return this.setAnim('meditation', 6, 'meditation-loop');
         if (this.isNewWeapon) return this.setAnim('new-weapon', 6, 'new-weapon-loop');
@@ -523,32 +523,32 @@ export class Character extends MovableObject {
 
 
 
+            }
+            if (this.currentAnimation === 'attack') {
+                // Aktiv bei jedem 6. Frame (Frame 6 → Index 6)
+                const everySixthFrame = this.frameIndex % 6 === 0 && this.frameIndex !== 0;
+                this.attackHitbox.active = everySixthFrame;
 
-                if (this.currentAnimation === 'attack') {
-                    // Aktiv bei jedem 6. Frame (Frame 6 → Index 6)
-                    const everySixthFrame = this.frameIndex % 6 === 0 && this.frameIndex !== 0;
-                    this.attackHitbox.active = everySixthFrame;
-
-                    if (this.frameIndex >= 6) {
-                        this.frameIndex = 0;
-                    }
-
-                } else if (this.currentAnimation === 'attack-sword') {
-                    // Aktiv bei jedem 4. Frame (Frame 4 → Index 4)
-                    const everyFourthFrame = this.frameIndex % 4 === 0 && this.frameIndex !== 0;
-                    this.attackHitbox.active = everyFourthFrame;
-
-                    if (this.frameIndex >= 4) {
-                        this.frameIndex = 0;
-                    }
-
-                } else {
-                    this.attackHitbox.active = false;
+                if (this.frameIndex >= 6) {
+                    this.frameIndex = 0;
                 }
 
+            } else if (this.currentAnimation === 'attack-sword') {
+                // Aktiv bei jedem 4. Frame (Frame 4 → Index 4)
+                const everyFourthFrame = this.frameIndex % 4 === 0 && this.frameIndex !== 0;
+                this.attackHitbox.active = everyFourthFrame;
 
+                if (this.frameIndex >= 4) {
+                    this.frameIndex = 0;
+                }
 
+            } else {
+                this.attackHitbox.active = false;
             }
+
+
+
+
 
 
 

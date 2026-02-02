@@ -7,14 +7,18 @@ export class EarthquakeEffect {
         this.lastTimestamp = 0;
     }
 
-    handle(timestamp) {
-        if (!this.setup.earthquakeStart) return;
+    render(timestamp, drawFn) {
+        if (!this.setup.state.earthquakeStart) {
+            drawFn();
+            return;
+        }
+
         const deltaTime = this._computeDeltaTime(timestamp);
         this._updateShakeValues(deltaTime);
-        this._applyShake();
-    }
 
-    restore() {
+        this.ctx.save();
+        this.ctx.translate(this.shakeX, this.shakeY);
+        drawFn();
         this.ctx.restore();
     }
 
@@ -27,7 +31,7 @@ export class EarthquakeEffect {
 
     _updateShakeValues(deltaTime) {
         if (this.setup.state.shakeIntensity <= 0) {
-            this.setup.earthquakeStart = false;
+            this.setup.state.earthquakeStart = false;
             this.shakeX = 0;
             this.shakeY = 0;
             return;
@@ -38,10 +42,5 @@ export class EarthquakeEffect {
 
         const decayRate = 0.9955;
         this.setup.state.shakeIntensity *= Math.pow(decayRate, deltaTime * 60);
-    }
-
-    _applyShake() {
-        this.ctx.save();
-        this.ctx.translate(this.shakeX, this.shakeY);
     }
 }
