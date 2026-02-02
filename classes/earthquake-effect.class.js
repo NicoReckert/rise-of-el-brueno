@@ -26,18 +26,18 @@ export class EarthquakeEffect {
     }
 
     _updateShakeValues(deltaTime) {
-        if (this.setup.shakeIntensity <= 0) {
+        if (this.setup.state.shakeIntensity <= 0) {
             this.setup.earthquakeStart = false;
             this.shakeX = 0;
             this.shakeY = 0;
             return;
         }
 
-        this.shakeX = Math.round((Math.random() - 0.5) * this.setup.shakeIntensity);
-        this.shakeY = Math.round((Math.random() - 0.5) * this.setup.shakeIntensity);
+        this.shakeX = Math.round((Math.random() - 0.5) * this.setup.state.shakeIntensity);
+        this.shakeY = Math.round((Math.random() - 0.5) * this.setup.state.shakeIntensity);
 
         const decayRate = 0.9955;
-        this.setup.shakeIntensity *= Math.pow(decayRate, deltaTime * 60);
+        this.setup.state.shakeIntensity *= Math.pow(decayRate, deltaTime * 60);
     }
 
     _applyShake() {

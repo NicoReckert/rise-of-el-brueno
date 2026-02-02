@@ -120,7 +120,7 @@ export class FarmLevelController {
     }
 
     renderStatusBar() {
-        if (this.setup.isGamecharacterInHouse) {
+        if (this.setup.state.isGamecharacterInHouse) {
             return;
         }
         this.addToWorld(this.setup.statusBar);
@@ -147,7 +147,7 @@ export class FarmLevelController {
         if (this.questManager.step < 8) this.addToWorld(this.setup.environment.campfire);
         this.setup.environment.house.isFlipped = false;
         this.setup.environment.stable.isFlipped = false;
-        if (!this.setup.isGamecharacterInHouse) {
+        if (!this.setup.state.isGamecharacterInHouse) {
             if (this.character.isCaress) {
                 this.addToWorld(this.character);
                 this.addToWorld(this.setup.characters.cow);
@@ -216,8 +216,8 @@ export class FarmLevelController {
 
     handlePopup() {
         const now = performance.now();
-        this.setup.popupTexts.forEach(p => p.draw(this.ctx, now));
-        this.setup.popupTexts = this.setup.popupTexts.filter(p => p.active);
+        this.setup.state.popupTexts.forEach(p => p.draw(this.ctx, now));
+        this.setup.state.popupTexts = this.setup.state.popupTexts.filter(p => p.active);
     }
 
     updateSunAndMoonCycle(timestamp) {

@@ -19,13 +19,12 @@ export const farmEvents =
             name: 'initialize',
             once: true,
             action: (setup) => {
-                setup.comeFromStable ? setup.world.character.x = 1700 : setup.world.character.x = 1000;
+                setup.state.comeFromStable ? setup.world.character.x = 1700 : setup.world.character.x = 1000;
                 setup.world.camera_x = setup.world.character.x - 500;
                 setup.farmLevel.level_end_x = 6409;
                 setup.world.character.level_start_x = 440;
                 setup.sounds.farmMusic.play();
-                setup.sounds.farmMusic.loop = true;
-                setup.comeFromStable = false;
+                setup.state.comeFromStable = false;
             }
         },
 
@@ -37,16 +36,16 @@ export const farmEvents =
         //     cooldown: 3000,
         //     action: (setup) => {
         //         const anim = setup.environment.stable.currentAnimation;
-        //         if (setup.doorState !== 'open' && anim !== 'doorOpens' && anim !== 'idleOpen') {
-        //             setup.doorState = 'open';
+        //         if (setup.state.doorState !== 'open' && anim !== 'doorOpens' && anim !== 'idleOpen') {
+        //             setup.state.doorState = 'open';
         //             setup.environment.stable.updateAnimationState("doorOpens");
         //             setup.sounds.doorOpeningSound.play();
         //         }
         //     },
         //     onLeave: (setup) => {
         //         const anim = setup.environment.stable.currentAnimation;
-        //         if (setup.doorState !== 'closed' && anim !== 'doorCloses' && anim !== 'idle') {
-        //             setup.doorState = 'closed';
+        //         if (setup.state.doorState !== 'closed' && anim !== 'doorCloses' && anim !== 'idle') {
+        //             setup.state.doorState = 'closed';
         //             setup.environment.stable.updateAnimationState("doorCloses");
         //             setup.sounds.doorClosingSound.play();
         //         }
@@ -61,17 +60,17 @@ export const farmEvents =
                 const c = setup.world.character;
                 const a = setup.environment.stable.currentAnimation;
                 if (c.x >= 1620 && c.x <= 1810) {
-                    if (!setup.timeOnStable) setup.timeOnStable = performance.now();
-                    const elapsed = performance.now() - setup.timeOnStable;
-                    if (setup.doorState !== 'open' && a !== 'doorOpens' && a !== 'idleOpen' && elapsed >= 350) {
-                        setup.doorState = 'open';
+                    if (!setup.state.timeOnStable) setup.state.timeOnStable = performance.now();
+                    const elapsed = performance.now() - setup.state.timeOnStable;
+                    if (setup.state.doorState !== 'open' && a !== 'doorOpens' && a !== 'idleOpen' && elapsed >= 350) {
+                        setup.state.doorState = 'open';
                         setup.environment.stable.updateAnimationState('doorOpens');
                         setup.sounds.doorOpeningSound.play();
                     }
                 } else {
-                    setup.timeOnStable = null;
-                    if (setup.doorState !== 'closed' && a !== 'doorCloses' && a !== 'idle') {
-                        setup.doorState = 'closed';
+                    setup.state.timeOnStable = null;
+                    if (setup.state.doorState !== 'closed' && a !== 'doorCloses' && a !== 'idle') {
+                        setup.state.doorState = 'closed';
                         setup.environment.stable.updateAnimationState('doorCloses');
                         setup.sounds.doorClosingSound.play();
                     }
@@ -85,7 +84,7 @@ export const farmEvents =
             step: 1,
             action: (setup) => {
                 setup.sounds.newTaskSound.play();
-                setup.popupTexts.push(new PopupText("Neue Aufgaben im Log!", setup.world.canvas.width / 2, 400));
+                setup.state.popupTexts.push(new PopupText("Neue Aufgaben im Log!", setup.world.canvas.width / 2, 400));
             }
 
         },
@@ -151,7 +150,7 @@ export const farmEvents =
             action: (setup) => {
                 setup.world.taskWindow.addTask('3. Bringe Lola zur Wiese', { active: true })
                 setup.sounds.newTaskSound.play()
-                setup.popupTexts.push(new PopupText("Neue Aufgabe im Log!", setup.world.canvas.width / 2, 400))
+                setup.state.popupTexts.push(new PopupText("Neue Aufgabe im Log!", setup.world.canvas.width / 2, 400))
             }
         },
 
@@ -218,7 +217,7 @@ export const farmEvents =
             action: (setup) => {
                 setup.hints[1].hide();
                 setup.world.taskWindow.markDone(2);
-                setup.popupTexts.push(new PopupText("Aufgabe Erledigt!", setup.world.canvas.width / 2, 400));
+                setup.state.popupTexts.push(new PopupText("Aufgabe Erledigt!", setup.world.canvas.width / 2, 400));
                 setup.sounds.taskCompletedSound.play();
                 setup.characters.cow.isMovingRight = false;
                 setup.characters.cow.updateAnimationState('eat', 1000 / 5.5);
@@ -233,7 +232,7 @@ export const farmEvents =
                 setup.hints[2].show();
                 setup.world.taskWindow.addTask('4. Warte bis Lola fertig ist', { active: true });
                 setup.sounds.newTaskSound.play();
-                setup.popupTexts.push(new PopupText("Neue Aufgabe im Log!", setup.world.canvas.width / 2, 400));
+                setup.state.popupTexts.push(new PopupText("Neue Aufgabe im Log!", setup.world.canvas.width / 2, 400));
             }
         },
 
@@ -259,7 +258,7 @@ export const farmEvents =
                 setup.hints[2].hide();
                 setup.world.taskWindow.markDone(3)
                 setup.sounds.taskCompletedSound.play()
-                setup.popupTexts.push(new PopupText("Aufgabe erledigt!", setup.world.canvas.width / 2, 400))
+                setup.state.popupTexts.push(new PopupText("Aufgabe erledigt!", setup.world.canvas.width / 2, 400))
             }
         },
 
@@ -271,7 +270,7 @@ export const farmEvents =
                 setup.hints[3].show();
                 setup.world.taskWindow.addTask('5. Belohne Lola', { active: true })
                 setup.sounds.newTaskSound.play()
-                setup.popupTexts.push(new PopupText("Neue Aufgabe im Log!", setup.world.canvas.width / 2, 400))
+                setup.state.popupTexts.push(new PopupText("Neue Aufgabe im Log!", setup.world.canvas.width / 2, 400))
                 setup.world.farmLevelController.questManager.advance(5)
             }
         },
@@ -326,7 +325,7 @@ export const farmEvents =
                 setup.hints[3].hide();
                 setup.world.taskWindow.markDone(4);
                 setup.sounds.taskCompletedSound.play();
-                setup.popupTexts.push(new PopupText("Aufgabe erledigt!", setup.world.canvas.width / 2, 400));
+                setup.state.popupTexts.push(new PopupText("Aufgabe erledigt!", setup.world.canvas.width / 2, 400));
             },
         },
 
@@ -345,7 +344,7 @@ export const farmEvents =
             action: (setup) => {
                 setup.world.taskWindow.addTask('6. Bringe Lola wieder zurück', { active: true });
                 setup.sounds.newTaskSound.play();
-                setup.popupTexts.push(new PopupText("Neue Aufgabe im Log!", setup.world.canvas.width / 2, 400));
+                setup.state.popupTexts.push(new PopupText("Neue Aufgabe im Log!", setup.world.canvas.width / 2, 400));
                 setup.characters.cow.updateAnimationState('walk');
                 setup.characters.cow.isFlipped = false;
             },
@@ -367,7 +366,7 @@ export const farmEvents =
                     setup.characters.cow.isMovingLeft = false;
                     setup.world.taskWindow.markDone(5);
                     setup.sounds.taskCompletedSound.play();
-                    setup.popupTexts.push(new PopupText("Aufgabe erledigt!", setup.world.canvas.width / 2, 400));
+                    setup.state.popupTexts.push(new PopupText("Aufgabe erledigt!", setup.world.canvas.width / 2, 400));
                     setup.characters.cow.updateAnimationState('idle');
                     setup.world.farmLevelController.questManager.advance(8)
                 }
@@ -552,9 +551,9 @@ export const farmEvents =
             step: 10,
             once: false,
             action: (setup) => {
-                if (setup.volumeLevel > setup.minVolumeLevel) {
-                    setup.volumeLevel = Math.max(setup.volumeLevel - 0.005, setup.minVolumeLevel);
-                    setup.sounds.farmMusic.volume = setup.volumeLevel;
+                if (setup.state.volumeLevel > setup.state.minVolumeLevel) {
+                    setup.state.volumeLevel = Math.max(setup.state.volumeLevel - 0.005, setup.state.minVolumeLevel);
+                    setup.sounds.farmMusic.volume = setup.state.volumeLevel;
                 }
             }
         },
@@ -570,19 +569,19 @@ export const farmEvents =
             type: 'time',
             delay: 5000,
             step: 10,
-            action: (setup) => setup.isNight = true
+            action: (setup) => setup.state.isNight = true
         },
 
         {
             type: 'quest',
             once: false,
             action: (setup) => {
-                if ([10, 11, 12, 13, 14, 15, 16, 17].includes(setup.world.farmLevelController.questManager.step) && setup.isNight) {
-                    if (setup.darknessLevel < setup.maxDarkness) setup.darknessLevel += 0.005;
+                if ([10, 11, 12, 13, 14, 15, 16, 17].includes(setup.world.farmLevelController.questManager.step) && setup.state.isNight) {
+                    if (setup.state.darknessLevel < setup.state.maxDarkness) setup.state.darknessLevel += 0.005;
                 } else {
-                    if (setup.darknessLevel > 0) setup.darknessLevel -= 0.005;
+                    if (setup.state.darknessLevel > 0) setup.state.darknessLevel -= 0.005;
                 }
-                setup.world.ctx.fillStyle = `rgba(10,10,40,${setup.darknessLevel})`;
+                setup.world.ctx.fillStyle = `rgba(10,10,40,${setup.state.darknessLevel})`;
                 setup.world.ctx.fillRect(0, 0, setup.world.canvas.width, setup.world.canvas.height);
             }
         },
@@ -651,7 +650,7 @@ export const farmEvents =
             action: (setup) => {
                 setup.world.taskWindow.addTask('7. Gehe ins Haus', { active: true })
                 setup.sounds.newTaskSound.play()
-                setup.popupTexts.push(new PopupText("Neue Aufgabe im Log!", setup.world.canvas.width / 2, 400))
+                setup.state.popupTexts.push(new PopupText("Neue Aufgabe im Log!", setup.world.canvas.width / 2, 400))
             }
         },
 
@@ -717,7 +716,7 @@ export const farmEvents =
                 setup.world.taskWindow.markDone(6)
                 setup.world.farmLevelSetup.sounds.taskCompletedSound2.currentTime = 0;
                 setup.world.farmLevelSetup.sounds.taskCompletedSound2.play();
-                setup.popupTexts.push(new PopupText("Aufgabe erledigt!", setup.world.canvas.width / 2, 440));
+                setup.state.popupTexts.push(new PopupText("Aufgabe erledigt!", setup.world.canvas.width / 2, 440));
                 setup.world.farmLevelController.questManager.advance(13);
             }
         },
@@ -755,7 +754,7 @@ export const farmEvents =
             step: 14,
             action: (setup) => {
                 setup.sounds.earthquakeSound.play();
-                setup.earthquakeStart = true;
+                setup.state.earthquakeStart = true;
             }
         },
 
@@ -857,11 +856,11 @@ export const farmEvents =
             step: 18,
             once: false,
             action: (setup) => {
-                if (setup.volumeLevel2 > setup.minVolumeLevel) {
-                    setup.volumeLevel2 = Math.max(setup.volumeLevel2 - 0.002, setup.minVolumeLevel);
-                    setup.sounds.drohneSound.volume = setup.volumeLevel2;
-                    setup.sounds.nightMusic.volume = setup.volumeLevel2;
-                    setup.sounds.eveningSound.volume = setup.volumeLevel2;
+                if (setup.state.volumeLevel2 > setup.state.minVolumeLevel) {
+                    setup.state.volumeLevel2 = Math.max(setup.state.volumeLevel2 - 0.002, setup.state.minVolumeLevel);
+                    setup.sounds.drohneSound.volume = setup.state.volumeLevel2;
+                    setup.sounds.nightMusic.volume = setup.state.volumeLevel2;
+                    setup.sounds.eveningSound.volume = setup.state.volumeLevel2;
                 }
             }
         },
@@ -871,7 +870,7 @@ export const farmEvents =
             delay: 3000,
             step: 18,
             action: (setup) => {
-                setup.isNight = false;
+                setup.state.isNight = false;
                 setup.sounds.sadMusic.play();
             }
         },
@@ -1090,7 +1089,7 @@ export const farmEvents =
                 setup.world.isKeysStopp = false;
                 setup.world.taskWindow.addTask('8. Besuche nochmal den Stall', { active: true })
                 setup.sounds.newTaskSound.play()
-                setup.popupTexts.push(new PopupText("Neue Aufgabe im Log!", setup.world.canvas.width / 2, 400))
+                setup.state.popupTexts.push(new PopupText("Neue Aufgabe im Log!", setup.world.canvas.width / 2, 400))
                 setup.world.farmLevelController.questManager.advance(20);
             }
         },
