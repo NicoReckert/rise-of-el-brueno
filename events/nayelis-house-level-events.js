@@ -1,4 +1,4 @@
-const nayelisHouseEvents =
+export const nayelisHouseEvents =
     [
         {
             type: 'quest',

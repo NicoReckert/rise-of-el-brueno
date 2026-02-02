@@ -2,7 +2,7 @@ import { AnimatedEntity } from './animated-entity.class.js';
 import { EventManager } from './event-manager.class.js';
 import { QuestManager } from './quest-manager.class.js';
 import { EarthquakeEffect } from './earthquake-effect.class.js';
-import { WindParticle } from './wind-particle.class.js';
+import { WindParticleEffect } from './wind-particle.class.js';
 
 
 export class FarmLevelController {
@@ -53,7 +53,7 @@ export class FarmLevelController {
     }
 
     initWind() {
-        this.windParticles = new WindParticle(this.canvas.width * 9, this.canvas.height, 1000);
+        this.windParticleEffect = new WindParticleEffect(this.canvas.width * 9, this.canvas.height, 1000);
     }
 
     update(timestamp) {
@@ -76,7 +76,7 @@ export class FarmLevelController {
         this.questManager.update();
         // this.eventManager.debug = true;
         this.renderAfterDark()
-        if (this.questManager.step >= 20) this.windParticles.update();
+        if (this.questManager.step >= 20) this.windParticleEffect.update();
         for (const cloud of this.setup.farmLevel.clouds) {
             cloud.update(timestamp);
         }
@@ -160,7 +160,7 @@ export class FarmLevelController {
 
 
         this.ctx.restore();
-        if (this.questManager.step >= 20) this.windParticles.draw(this.ctx, this.renderCameraX);
+        if (this.questManager.step >= 20) this.windParticleEffect.draw(this.ctx, this.renderCameraX);
     }
 
     renderAfterDark() {

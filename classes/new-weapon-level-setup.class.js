@@ -15,7 +15,7 @@ export class NewWeaponLevelSetup {
         this.sounds.newWeaponMusic.volume = 0.8;
         this.environment.macuahuitl.isFlipped = false;
         this.video = document.createElement('video');
-        this.video.src = './assets/videos/test2/304-135918292_medium.mp4';
+        this.video.src = './assets/videos/level_new_weapon_background_video.mp4';
         this.video.preload = 'auto';
         this.video.muted = true;
         this.video.loop = true;

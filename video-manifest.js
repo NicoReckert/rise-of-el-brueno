@@ -1,4 +1,4 @@
-const videoManifest = {
+export const videoManifest = {
     intro: "./assets/videos/214405_medium.mp4",
     vorspann: "./assets/videos/Vorspann2.mp4",
     background: "./assets/videos/background-video3.mp4",

@@ -1,4 +1,4 @@
-const levelCompleteEvents =
+export const levelCompleteEvents =
     [
         {
             type: 'quest',

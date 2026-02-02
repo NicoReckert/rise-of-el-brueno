@@ -1,11 +1,13 @@
 import { AnimatedEntity } from './animated-entity.class.js';
+import { createNayelisHouseLevel } from '../levels/nayelis-house-level.js';
+import { nayelisHouseEvents } from '../events/nayelis-house-level-events.js';
 
 export class NayelisHouseLevelSetup {
     constructor(world) {
         this.world = world;
         this.entityImages = this.world.entityImages;
         this.allAudios = this.world.allAudios;
-        this.nayelisHouseLevel = nayelisHouseLevel;
+        this.nayelisHouseLevel = createNayelisHouseLevel();
         this.nayelisHouseEvents = nayelisHouseEvents;
         this.isNotificationPlay = false;
         this.popupTexts = [];
@@ -23,7 +25,7 @@ export class NayelisHouseLevelSetup {
         };
 
         this.video = document.createElement('video');
-        this.video.src = './assets/videos/test/190522-888122666_medium.mp4';
+        this.video.src = './assets/videos/level_nayelis_house_background_video.mp4';
         this.video.preload = 'auto';
         this.video.muted = true;
         this.video.loop = true;

@@ -1,4 +1,4 @@
-export class WindParticle {
+class WindParticle {
     constructor(worldWidth, worldHeight) {
         this.worldWidth = worldWidth;
         this.worldHeight = worldHeight;
@@ -48,7 +48,7 @@ export class WindParticle {
     }
 }
 
-class WindParticleEffect {
+export class WindParticleEffect {
     constructor(worldWidth, worldHeight, particleCount = 200) {
         this.worldWidth = worldWidth;
         this.worldHeight = worldHeight;

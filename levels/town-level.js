@@ -25,7 +25,7 @@ const townSrcTown =
         './assets/img/town4.webp',
         './assets/img/town5.webp',
         './assets/img/town6.webp',
-        './assets/img/house-weise.png'
+        './assets/img/house_nayeli.png'
 
     ]
 

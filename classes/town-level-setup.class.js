@@ -63,7 +63,6 @@ export class TownLevelSetup {
 
         this.characters = { endboss, soul, tadeo, sollita, musician };
         this.sounds = {
-            notificationSound: this.allAudios.notificationSound,
             taskCompletedSound: this.allAudios.taskCompletedSound,
             soulMusic: this.allAudios.soulMusic,
             soulSpeakSound: this.allAudios.soulSpeakSound,
@@ -100,11 +99,7 @@ export class TownLevelSetup {
         this.speechBubbles = {
             // bubbleFarm: new SpeechBubble("In den Hühnerstall gehen? {F} drücken!", this.world.character, 'info'),
         };
-        this.sounds.notificationSound.volume = 0.5;
         this.isNotificationPlay = false;
-        // this.tasks = [
-        //     "1. Finde einen weg in die Stadt"
-        // ];
         this.endbossMusic = this.allAudios.endbossMusic;
         this.endbossMusic.volume = 0.6;
         this.endbossAlarmSound;

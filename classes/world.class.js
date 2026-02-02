@@ -15,6 +15,7 @@ import { LevelCompleteSetup } from './level-complete-setup.class.js';
 import { LevelCompleteController } from './level-complete-controller.class.js';
 import { Keyboard } from './keyboard.class.js';
 import { TaskWindow } from './task-window.class.js';
+import { fadeOutAudio } from '../script.js';
 
 export class World {
 
@@ -76,7 +77,6 @@ export class World {
         this.farmLevelController = new FarmLevelController(this.farmLevelSetup);
         this.stableLevelSetup = new StableLevelSetup(this);
         this.stableLevelController = new StableLevelController(this.stableLevelSetup);
-
         this.setWorld();
         this.draw();
     }
@@ -1164,7 +1164,7 @@ export class World {
 
         // Liste aller Sounds im World-Scope
         [
-            this.townLevelSetup.endbossMusic,
+            // this.townLevelSetup.endbossMusic,
             this.footStepSound,
             this.jumpSound,
             this.landingSound,

@@ -69,7 +69,7 @@ export class FarmLevelSetup {
             farmMusic: this.allAudios.farmMusic,
             nightMusic: this.allAudios.nightMusic,
             drohneSound: this.allAudios.drohneSound,
-            drohneHypnoSound: this.allAudios.drohneHypnoSound,
+            drohneControlledSound: this.allAudios.drohneControlledSound,
             eveningSound: this.allAudios.eveningSound,
             yawningSound: this.allAudios.yawningSound,
             snoringSound: this.allAudios.snoringSound,
@@ -119,7 +119,7 @@ export class FarmLevelSetup {
         this.isSnore = false;
         this.earthquakeSoundIsPlaying = false;
         this.droneSoundIsPlaying = false;
-        this.droneHypnoSoundIsPlaying = false;
+        this.droneControlledSoundIsPlaying = false;
         this.nightMusicIsPlaying = false;
         this.droneIsGo = false;
         this.isNight = false;

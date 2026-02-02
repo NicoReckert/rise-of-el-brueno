@@ -1,4 +1,4 @@
-const farmAudioManifestImmediate = {
+export const farmAudioManifestImmediate = {
     //Menü
     titleMusic: './assets/audio/title-music.opus',
     titleMusic2: './assets/audio/title-music2.opus',
@@ -31,7 +31,7 @@ const farmAudioManifestImmediate = {
     taskCompletedSound: './assets/audio/task-completed-sound2.opus'
 }
 
-const farmAudioManifestDeferred = {
+export const farmAudioManifestDeferred = {
     attackSound: './assets/audio/attack-sound.opus',
     cowSound: './assets/audio/cow-sound.opus',
     cowSound2: './assets/audio/cow-sound3.opus',
@@ -43,7 +43,7 @@ const farmAudioManifestDeferred = {
 
     nightMusic: './assets/audio/night-music.opus',
     drohneSound: './assets/audio/drohne-sound.opus',
-    drohneHypnoSound: './assets/audio/drohne-sound2.opus',
+    drohneControlledSound: './assets/audio/drohne-sound2.opus',
     eveningSound: './assets/audio/evening-sound.opus',
     yawningSound: './assets/audio/yawning-sound.opus',
     snoringSound: './assets/audio/snoring-sound.opus',
@@ -53,7 +53,7 @@ const farmAudioManifestDeferred = {
     speechSound: './assets/audio/speech-sound5.opus',
 }
 
-const otherLevelAudioManifestLazy = {
+export const otherLevelAudioManifestLazy = {
     soulSpeakSound: './assets/audio/soul-speak-sound.opus',
     nayelisSpeakSound: './assets/audio/nayelis-speak-sound.opus',
     newWeaponMusic: './assets/audio/new-weapon-music.opus',

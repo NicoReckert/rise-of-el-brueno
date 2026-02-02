@@ -4,12 +4,12 @@ import { Town } from '../classes/town.class.js';
 
 const groundSrcStable =
     [
-        './assets/img/holz_hintergrund.webp'
+        './assets/img/wood_background.webp'
     ]
 
 const townSrcStable =
     [
-        './assets/img/Hühnerstall innen2.webp'
+        './assets/img/stable_interior.webp'
     ]
 
 export const stableLevel = new Level(

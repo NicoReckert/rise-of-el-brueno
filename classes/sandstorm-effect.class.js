@@ -1,5 +1,5 @@
 export class SandstormEffect {
-    constructor(canvas, imageSrc = './assets/sandstorm-texture.png', worldWidth = 7200) {
+    constructor(canvas, imageSrc = './assets/img/sandstorm_texture.png', worldWidth = 7200) {
         this.canvas = canvas;
         this.ctx = null;
 

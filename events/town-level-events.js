@@ -1,6 +1,8 @@
 import { PopupText } from "../classes/popup-text.class.js";
 import { Chicken } from "../classes/chicken.class.js";
 import { DamageText } from "../classes/damage-text.class.js";
+import { fadeOutAudio } from "../script.js";
+import { fadeInAudio } from "../script.js";
 
 export const townEvents =
     [

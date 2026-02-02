@@ -31,7 +31,7 @@ export class StableLevelSetup {
         };
 
         this.video = document.createElement('video');
-        this.video.src = './assets/videos/memory.mp4';
+        this.video.src = './assets/videos/memory_video.mp4';
         this.video.preload = 'auto';
         // document.body.appendChild(this.video);
         this.hints = [

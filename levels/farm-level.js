@@ -12,7 +12,7 @@ const groundSrcFarm =
         './assets/img/5_background/layers/3_third_layer/2.webp',
         './assets/img/5_background/layers/2_second_layer/2.webp',
         './assets/img/5_background/layers/1_first_layer/2.webp',
-        './assets/img/grass3.webp',
+        './assets/img/grass.webp',
         './assets/img/5_background/layers/ground-town.webp',
         './assets/img/5_background/layers/ground-town2.webp',
         './assets/img/5_background/layers/ground-town3.webp'
@@ -20,11 +20,7 @@ const groundSrcFarm =
 
 const townSrcFarm =
     [
-        './assets/img/bauernhof1.webp',
-        './assets/img/bauernhof2.webp',
-        './assets/img/Hühnerstall 2.webp',
-        './assets/img/stable.webp',
-        './assets/img/stable2.webp'
+        './assets/img/wooden_cart.webp',
     ]
 
 const cloudArray = [];
@@ -119,7 +115,7 @@ const farmLevel = new Level(
         },
         towns: [
             // new Town(townSrcFarm[0], 800, -30, 900, 900), // 800, -42, 600, 450
-            new Town(townSrcFarm[1], 1310, 408, 300, 300),
+            new Town(townSrcFarm[0], 1310, 408, 300, 300),
             // new Town(townSrcFarm[2], 1600, 70, 400, 400),
             // new Town(townSrcFarm[3], 1550, 177, 600, 600)
 
@@ -212,7 +208,7 @@ export function createFarmLevel() {
 
     // Towns
     const towns = [
-        new Town(townSrcFarm[1], 1310, 408, 300, 300),
+        new Town(townSrcFarm[0], 1310, 408, 300, 300),
     ];
 
     // Himmel

@@ -1,4 +1,4 @@
-function attachVideoSource(id, src) {
+export function attachVideoSource(id, src) {
     return new Promise((resolve, reject) => {
         const video = document.getElementById(id);
         if (!video) return reject(new Error(`Video mit ID ${id} nicht gefunden`));

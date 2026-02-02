@@ -414,7 +414,7 @@ canvas {
   pointer-events: none;
 }
 
-.kuecken-img {
+.chick-img {
   width: 100px;
   object-fit: cover;
   /* transform: translateX(30px); */
@@ -422,7 +422,7 @@ canvas {
   z-index: 2;
 }
 
-.huhn-img {
+.chicken-img {
   width: 130px;
   object-fit: cover;
   /* padding-left: 10px; */
@@ -715,13 +715,13 @@ canvas {
   transition: filter 0.4s ease-in-out;
 }
 
-.huhn-img {
+.chicken-img {
   filter: drop-shadow(0 0 6px gold)
           drop-shadow(0 0 12px rgba(255, 0, 0, 0.6));
   transition: filter 0.4s ease-in-out;
 }
 
-.kuecken-img {
+.chick-img {
   filter: drop-shadow(0 0 6px gold)
           drop-shadow(0 0 12px rgba(255, 0, 0, 0.6));
   transition: filter 0.4s ease-in-out;
@@ -735,12 +735,12 @@ canvas {
 }
 
 
-.huhn-img {
+.chicken-img {
   filter: drop-shadow(0 0 6px rgba(255, 255, 255, 0.8)) drop-shadow(0 0 12px rgba(200, 200, 200, 0.4));
   transition: filter 0.4s ease-in-out;
 }
 
-.kuecken-img {
+.chick-img {
   filter: drop-shadow(0 0 6px rgba(255, 255, 255, 0.8)) drop-shadow(0 0 12px rgba(200, 200, 200, 0.4));
   transition: filter 0.4s ease-in-out;
 }
@@ -1061,7 +1061,7 @@ canvas {
 
   /* 1️⃣ Textur als Basis */
   background:
-    url("./assets/img/textur2.jpg"),
+    url("./assets/img/card_textur_background.jpg"),
     radial-gradient(circle at top left, rgba(255, 255, 255, 0.25), rgba(0, 0, 0, 0.25));
   background-size: cover;
   background-blend-mode: overlay;
@@ -1177,7 +1177,7 @@ canvas {
   border: 2px solid rgba(255, 220, 160, 0.6);
   border-radius: 16px;
   background:
-    url("./assets/img/textur2.jpg"),
+    url("./assets/img/card_textur_background.jpg"),
     radial-gradient(circle at top left, rgba(255, 255, 255, 0.25), rgba(0, 0, 0, 0.25));
   background-size: cover;
   background-blend-mode: overlay;
@@ -1315,7 +1315,7 @@ canvas {
 
   /* 1️⃣ Textur als Basis */
   background:
-    url("./assets/img/textur2.jpg"),
+    url("./assets/img/card_textur_background"),
     radial-gradient(circle at top left, rgba(255, 255, 255, 0.25), rgba(0, 0, 0, 0.25));
   background-size: cover;
   background-blend-mode: overlay;
@@ -1764,8 +1764,8 @@ canvas {
 }
 
 body.fullscreen-active .bruno-img,
-body.fullscreen-active .kuecken-img,
-body.fullscreen-active .huhn-img,
+body.fullscreen-active .chick-img,
+body.fullscreen-active .chicken-img,
 body.fullscreen-active .earth-video,
 body.fullscreen-active .portal-video {
   transform: scale(1) !important;
@@ -1851,12 +1851,12 @@ body.fullscreen-active .portal-video {
     margin-bottom: -8px;
   }
 
-  .kuecken-img {
+  .chick-img {
     width: 30px;
     margin-bottom: -3px;
   }
 
-  .huhn-img {
+  .chicken-img {
     width: 45px;
     margin-bottom: -2px;
   }
@@ -1945,8 +1945,8 @@ body.fullscreen-active .portal-video {
 
 
   .bruno-img,
-  .kuecken-img,
-  .huhn-img,
+  .chick-img,
+  .chicken-img,
   .earth-video,
   .portal-video {
     transform-origin: bottom center;
@@ -1968,8 +1968,8 @@ body.fullscreen-active .portal-video {
   }
 
   /* .bruno-img,
-  .kuecken-img,
-  .huhn-img {
+  .chick-img,
+  .chicken-img {
     margin-bottom: 0;
   } */
 

@@ -3,6 +3,7 @@ import { farmEvents_part1 } from "./farm-events-part1.js";
 import { farmEvents_part2 } from "./farm-events-part2.js";
 import { farmEvents_part3 } from "./farm-events-part3.js";
 import { farmEvents_part4 } from "./farm-events-part4.js";
+import { fadeOutAudio } from "../script.js";
 
 const farmEvents2 = [
     ...farmEvents_part1,
@@ -806,9 +807,9 @@ export const farmEvents =
             step: 16,
             action: (setup) => {
                 setup.sounds.drohneSound.pause();
-                setup.sounds.drohneHypnoSound.loop = true;
-                setup.sounds.drohneHypnoSound.play();
-                setup.characters.drone.updateAnimationState('hypno', 1000 / 7);
+                setup.sounds.drohneControlledSound.loop = true;
+                setup.sounds.drohneControlledSound.play();
+                setup.characters.drone.updateAnimationState('controlled', 1000 / 7);
                 setup.cutsceneActors.chickenTranced.updateAnimationState('walk', 1000 / 7);
                 setup.cutsceneActors.cowTranced.updateAnimationState('walk', 1000 / 5);
                 setup.cutsceneActors.chickTranced.updateAnimationState('walk', 1000 / 7);
@@ -834,7 +835,7 @@ export const farmEvents =
             type: 'quest',
             step: 17,
             action: (setup) => {
-                setup.sounds.drohneHypnoSound.pause();
+                setup.sounds.drohneControlledSound.pause();
                 setup.sounds.drohneSound.play();
                 setup.characters.drone.updateAnimationState('idle', 1000 / 7);
             }

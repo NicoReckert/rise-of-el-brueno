@@ -10,7 +10,7 @@ function loadImage(src, onProgress) {
     });
 }
 
-async function preloadManifestImages(manifest, onProgress) {
+export async function preloadManifestImages(manifest, onProgress) {
 
     async function processNode(node) {
 

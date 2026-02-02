@@ -1,4 +1,5 @@
 import { AnimatedEntity } from './animated-entity.class.js';
+import { levelCompleteEvents } from '../events/level-complete-events.js';
 
 export class LevelCompleteSetup {
     constructor(world) {
@@ -14,7 +15,7 @@ export class LevelCompleteSetup {
             levelCompleteSound: this.allAudios.levelCompleteSound
         };
         this.video = document.createElement('video');
-        this.video.src = './assets/videos/level-complete-background.mp4';
+        this.video.src = './assets/videos/level_complete_background_video.mp4';
         this.video.preload = 'auto';
         this.video.muted = true;
         this.video.loop = true;

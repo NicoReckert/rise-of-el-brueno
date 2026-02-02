@@ -7,7 +7,7 @@ const entityImageManifest = {
   // },
 }
 
-const farmEntityManifestImmediate = {
+export const farmEntityManifestImmediate = {
   cow: {
     idle: {
       type: 'sheetSequence',
@@ -117,7 +117,7 @@ const farmEntityManifestImmediate = {
   },
 
   house: {
-    idle: Array.from({ length: 1 }, _ => `./assets/img/bauernhof1.webp`),
+    idle: Array.from({ length: 1 }, _ => `./assets/img/farmhouse.webp`),
   },
 
   stable: {
@@ -177,7 +177,7 @@ const farmEntityManifestImmediate = {
 
 }
 
-const farmEntityManifestDeferred = {
+export const farmEntityManifestDeferred = {
   cow: {
     swingToMusic: {
       type: 'sheetSequence',
@@ -226,8 +226,14 @@ const farmEntityManifestDeferred = {
   },
 
   drone: {
-    idle: Array.from({ length: 10 }, (_, i) => `./assets/img/drohne/image_${i + 1}.webp`),
-    hypno: Array.from({ length: 18 }, (_, i) => `./assets/img/drohne/hypno/image_${3 + i}.webp`)
+    idle: {
+      type: 'sheet',
+      json: './assets/img/entities/drone/idle/idle_sheet.json'
+    },
+    controlled: {
+      type: 'sheet',
+      json: './assets/img/entities/drone/controlled/controlled_sheet.json'
+    }
   },
 
   cowTranced: {
@@ -261,7 +267,7 @@ const farmEntityManifestDeferred = {
   },
 }
 
-const otherLevelEntityManifestLazy = {
+export const otherLevelEntityManifestLazy = {
   soul: {
     idle: Array.from({ length: 18 }, (_, i) => `./assets/img/entities/soul/idle/image_${i + 1}.webp`),
     findsPeace: Array.from({ length: 22 }, (_, i) => `./assets/img/entities/soul/finds-peace/image_${i + 1}.webp`),
@@ -292,13 +298,16 @@ const otherLevelEntityManifestLazy = {
     findsPeace: Array.from({ length: 20 }, (_, i) => `./assets/img/4_enemie_boss_chicken/6_finds_peace/image_${i + 1}.webp`),
     fly: Array.from({ length: 8 }, (_, i) => `./assets/img/4_enemie_boss_chicken/7_fly/image_${i + 1}.png`),
     fireballAttack: Array.from({ length: 14 }, (_, i) => `./assets/img/4_enemie_boss_chicken/8_fireball_attack/image_${i + 1}.png`),
-    tornadoAttack: Array.from({ length: 10 }, (_, i) => `./assets/img/tornado/image_${i + 1}.webp`),
+    tornadoAttack: {
+      type: 'sheet',
+      json: './assets/img/entities/tornado/idle/idle_sheet.json'
+    },
     fireBreathAttack: Array.from({ length: 3 }, (_, i) => `./assets/img/4_enemie_boss_chicken/8_fireball_attack/image_${12 + i}.png`)
   },
 
   chickenMutatesSmall: {
     walk: Array.from({ length: 5 }, (_, i) => `./assets/img/3_enemies_chicken/chicken_mutates/walk/image_${2 + i}.webp`),
-    dead: Array.from({ length: 1 }, _ => `assets/img/3_enemies_chicken/chicken_mutates/dead/image_1.webp`),
+    dead: Array.from({ length: 1 }, _ => `./assets/img/3_enemies_chicken/chicken_mutates/dead/image_1.webp`),
     hurt: Array.from({ length: 6 }, (_, i) => `./assets/img/3_enemies_chicken/chicken_mutates/hurt/image_${i + 1}.webp`),
     attack: Array.from({ length: 8 }, (_, i) => `./assets/img/3_enemies_chicken/chicken_mutates/attack/image_${i + 1}.png`)
 
@@ -306,7 +315,7 @@ const otherLevelEntityManifestLazy = {
 
   chickenMutatesBig: {
     walk: Array.from({ length: 9 }, (_, i) => `./assets/img/3_enemies_chicken/chicken_mutates/walk2/image_${i + 1}.png`),
-    dead: Array.from({ length: 1 }, _ => `assets/img/3_enemies_chicken/chicken_mutates/dead/image_1.webp`),
+    dead: Array.from({ length: 1 }, _ => `./assets/img/3_enemies_chicken/chicken_mutates/dead/image_1.webp`),
     hurt: Array.from({ length: 8 }, (_, i) => `./assets/img/3_enemies_chicken/chicken_mutates/hurt2/image_${i + 1}.png`),
     attack: Array.from({ length: 9 }, (_, i) => `./assets/img/3_enemies_chicken/chicken_mutates/attack2/image_${i + 1}.png`)
   },

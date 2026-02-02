@@ -4,6 +4,17 @@ import { initScript } from '../script.js';
 import { stopTitleMusic } from '../script.js';
 import { fadeInTitleMusic } from '../script.js';
 import { preloadManifestAudio } from '../audio-loader.js';
+import { fadeOutAudio } from '../script.js';
+import { farmAudioManifestImmediate } from '../audio-manifest.js';
+import { farmAudioManifestDeferred } from '../audio-manifest.js';
+import { otherLevelAudioManifestLazy } from '../audio-manifest.js';
+import { characterManifestImmediate } from '../character-image-manifest.js';
+import { characterManifestDeferred } from '../character-image-manifest.js';
+import { otherLevelCharacterManifestLazy } from '../character-image-manifest.js';
+import { farmEntityManifestImmediate } from '../entity-image-manifest.js';
+import { farmEntityManifestDeferred } from '../entity-image-manifest.js';
+import { otherLevelEntityManifestLazy } from '../entity-image-manifest.js';
+import { preloadManifestImages } from '../image-loader.js';
 
 let canvas;
 let world;

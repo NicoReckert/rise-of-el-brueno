@@ -29,24 +29,24 @@ export class Projectile extends MovableObject {
 
     this.imageSets = {
       fireball: [
-        './assets/img/npcs/projectile/fireball/idle/image_1.png',
-        './assets/img/npcs/projectile/fireball/idle/image_2.png',
-        './assets/img/npcs/projectile/fireball/idle/image_3.png',
-        './assets/img/npcs/projectile/fireball/idle/image_4.png',
-        './assets/img/npcs/projectile/fireball/idle/image_5.png',
-        './assets/img/npcs/projectile/fireball/idle/image_6.png'
+        './assets/img/entities/projectile/fireball/idle/image_1.png',
+        './assets/img/entities/projectile/fireball/idle/image_2.png',
+        './assets/img/entities/projectile/fireball/idle/image_3.png',
+        './assets/img/entities/projectile/fireball/idle/image_4.png',
+        './assets/img/entities/projectile/fireball/idle/image_5.png',
+        './assets/img/entities/projectile/fireball/idle/image_6.png'
       ],
       fireball_explode: [
-        './assets/img/npcs/projectile/fireball/explode/image_1.png',
-        './assets/img/npcs/projectile/fireball/explode/image_2.png',
-        './assets/img/npcs/projectile/fireball/explode/image_3.png',
-        './assets/img/npcs/projectile/fireball/explode/image_4.png',
-        './assets/img/npcs/projectile/fireball/explode/image_5.png',
-        './assets/img/npcs/projectile/fireball/explode/image_6.png',
-        './assets/img/npcs/projectile/fireball/explode/image_7.png',
-        './assets/img/npcs/projectile/fireball/explode/image_8.png',
-        './assets/img/npcs/projectile/fireball/explode/image_9.png',
-        './assets/img/npcs/projectile/fireball/explode/image_10.png'
+        './assets/img/entities/projectile/fireball/explode/image_1.png',
+        './assets/img/entities/projectile/fireball/explode/image_2.png',
+        './assets/img/entities/projectile/fireball/explode/image_3.png',
+        './assets/img/entities/projectile/fireball/explode/image_4.png',
+        './assets/img/entities/projectile/fireball/explode/image_5.png',
+        './assets/img/entities/projectile/fireball/explode/image_6.png',
+        './assets/img/entities/projectile/fireball/explode/image_7.png',
+        './assets/img/entities/projectile/fireball/explode/image_8.png',
+        './assets/img/entities/projectile/fireball/explode/image_9.png',
+        './assets/img/entities/projectile/fireball/explode/image_10.png'
       ]
     };
 

@@ -1,4 +1,6 @@
 import { allAudios } from "./audio-store.js";
+import { attachVideoSource } from "./video-loader.js";
+import { videoManifest } from "./video-manifest.js";
 
 let titleMusic;
 let titleMusic2;
@@ -514,7 +516,7 @@ function template5() {
             </div>`
 }
 
-function fadeOutAudio(audio, duration = 2000) {
+export function fadeOutAudio(audio, duration = 2000) {
     // Sicherheitschecks
     if (!audio) return;
     if (audio.paused && audio.currentTime === 0) return; // noch nie gestartet
@@ -543,7 +545,7 @@ function fadeOutAudio(audio, duration = 2000) {
     requestAnimationFrame(fade);
 }
 
-function fadeInAudio(audio, duration = 2000, targetVolume = 1) {
+export function fadeInAudio(audio, duration = 2000, targetVolume = 1) {
     // Sicherheitschecks
     if (!audio) return;
 
@@ -581,7 +583,7 @@ function fadeInAudio(audio, duration = 2000, targetVolume = 1) {
     requestAnimationFrame(fade);
 }
 
-function fadeAudioTo(audio, duration = 2000, targetVolume = 1) {
+export function fadeAudioTo(audio, duration = 2000, targetVolume = 1) {
     // Sicherheitschecks
     if (!audio) return;
 

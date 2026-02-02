@@ -1,6 +1,8 @@
 import { MovableObject } from './movable-object.class.js';
 import { EndbossFireball } from './endboss-fireball.class.js';
 import { EndbossFireBeam } from './endboss-fire-beam.class.js';
+import { fadeOutAudio } from '../script.js';
+import { fadeInAudio } from '../script.js';
 
 /**
  * Represents a complex movable object with gravity, animation, and state handling.

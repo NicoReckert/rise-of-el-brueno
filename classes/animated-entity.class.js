@@ -36,9 +36,8 @@ export class AnimatedEntity extends MovableObject {
 
     loadImgFromCurrentEntity(currentEntity) {
         this.idle = this.entityImages[currentEntity]?.idle ?? [];
-        this.hypno = this.entityImages[currentEntity]?.hypno ?? [];
+        this.controlled = this.entityImages[currentEntity]?.controlled ?? [];
         this.walk = this.entityImages[currentEntity]?.walk ?? [];
-        this.walk2 = this.entityImages[currentEntity]?.walk2 ?? [];
         this.love = this.entityImages[currentEntity]?.love ?? [];
         this.eat = this.entityImages[currentEntity]?.eat ?? [];
         this.flyUp = this.entityImages[currentEntity]?.flyUp ?? [];
@@ -112,12 +111,8 @@ export class AnimatedEntity extends MovableObject {
                 this.setAnimation('walk');
                 this.frameInterval = frameInterval;
                 break;
-            case 'walk2':
-                this.setAnimation('walk2');
-                this.frameInterval = frameInterval;
-                break;
-            case 'hypno':
-                this.setAnimation('hypno');
+            case 'controlled':
+                this.setAnimation('controlled');
                 this.frameInterval = frameInterval;
                 break;
             case 'love':
@@ -354,9 +349,8 @@ export class AnimatedEntity extends MovableObject {
 
         switch (state) {
             case 'idle': return this.idle;
-            case 'hypno': return this.hypno;
+            case 'controlled': return this.controlled;
             case 'walk': return this.walk;
-            case 'walk2': return this.walk2;
             case 'love': return this.love;
             case 'eat': return this.eat;
             case 'flyUp': return this.flyUp;

@@ -28,7 +28,7 @@ const characterImageManifest = {
     // standDeterminedLoopImages: Array.from({ length: 2 }, (_, i) => `./assets/img/2_character_pepe/20/image_${7 + i}.webp`)
 };
 
-const characterManifestImmediate = {
+export const characterManifestImmediate = {
     idleWalkSheet: {
         type: 'sheet',
         json: './assets/img/2_character_pepe/1_idle/idle/idle_walk_sheet.json'
@@ -43,7 +43,7 @@ const characterManifestImmediate = {
     },
 }
 
-const characterManifestDeferred = {
+export const characterManifestDeferred = {
     kneelDownAndCryImages: Array.from({ length: 8 }, (_, i) => `./assets/img/2_character_pepe/7_kneel-down-and-cry/image_${i + 1}.webp`),
     cryImages: Array.from({ length: 3 }, (_, i) => `./assets/img/2_character_pepe/7_kneel-down-and-cry/image_${6 + i}.webp`),
     standUpAndLookDeterminedImages: Array.from({ length: 10 }, (_, i) => `./assets/img/2_character_pepe/8_stand_up_look_determined/image_${i + 1}.webp`),
@@ -61,7 +61,7 @@ const characterManifestDeferred = {
     attackImages: Array.from({ length: 6 }, (_, i) => `./assets/img/2_character_pepe/21/Neu3/image_${i + 1}.png`)
 }
 
-const otherLevelCharacterManifestLazy = {
+export const otherLevelCharacterManifestLazy = {
     hurtDeadSheet: {
         type: 'sheet',
         json: './assets/img/2_character_pepe/4_hurt/hurt_dead_sheet.json'

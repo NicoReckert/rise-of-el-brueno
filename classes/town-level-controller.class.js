@@ -3,7 +3,7 @@ import { QuestManager } from './quest-manager.class.js';
 import { SandstormEffect } from './sandstorm-effect.class.js';
 import { MagicShieldEffect } from './magic-shield-effect.class.js';
 import { EssenceTrailParticle } from './essence-trail-particle.class.js';
-import { WindParticle } from './wind-particle.class.js';
+import { WindParticleEffect } from './wind-particle.class.js';
 
 export class TownLevelController {
     constructor(setup) {
@@ -43,7 +43,7 @@ export class TownLevelController {
             this.sandstormNear.pressure = 0.6;
             this.sandstormFar.pressure = 0.2;
         };
-        this.windParticles = new WindParticle(this.canvas.width * 38, this.canvas.height, 1200);
+        this.windParticleEffect = new WindParticleEffect(this.canvas.width * 38, this.canvas.height, 1200);
         this.setup.damageTexts ||= [];
 
     }
@@ -69,7 +69,7 @@ export class TownLevelController {
         this.renderStatusBar();
         this.setup.panel.update(timestamp);
         this.setup.panel.draw(this.ctx);
-        this.windParticles.update();
+        this.windParticleEffect.update();
         this.updateSpiritEssenceSequence(timestamp);
         if (Array.isArray(this.setup.damageTexts)) {
             this.setup.damageTexts = this.setup.damageTexts.filter(dt => dt?.update?.(timestamp) !== false);
@@ -149,7 +149,7 @@ export class TownLevelController {
         this.addToWorld(this.setup.characters.tadeo);
         this.addToWorld(this.setup.characters.sollita);
         this.addToWorld(this.setup.characters.musician);
-        this.windParticles.draw(this.ctx, this.renderCameraX);
+        this.windParticleEffect.draw(this.ctx, this.renderCameraX);
         this.ctx.restore();
         // this.sandstorm.draw(this.ctx, this.renderCameraX);
         // this.sandstormFar.draw(this.ctx, this.renderCameraX);
