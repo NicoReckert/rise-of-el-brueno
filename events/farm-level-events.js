@@ -442,14 +442,14 @@ export const farmEvents =
             delay: 12000,
             step: 8,
             action: (setup) => {
-                setup.characters.chicken.updateAnimationState('walk', 1000 / 8);
-                setup.characters.chick.updateAnimationState('walk', 1000 / 8);
-                setup.characters.chicken.speedX = 3;
-                setup.characters.chicken.isMovingLeft = true;
-                setup.characters.chick.speedX = 3;
-                setup.characters.chick.isMovingLeft = true;
-                setup.characters.chicken.isFlipped = true;
-                setup.characters.chick.isFlipped = false;
+                setup.characters.juanito.updateAnimationState('walk', 1000 / 8);
+                setup.characters.pollito.updateAnimationState('walk', 1000 / 8);
+                setup.characters.juanito.speedX = 3;
+                setup.characters.juanito.isMovingLeft = true;
+                setup.characters.pollito.speedX = 3;
+                setup.characters.pollito.isMovingLeft = true;
+                setup.characters.juanito.isFlipped = true;
+                setup.characters.pollito.isFlipped = false;
             }
         },
 
@@ -459,14 +459,14 @@ export const farmEvents =
             step: 8,
             once: false,
             action: (setup) => {
-                if (setup.characters.chicken.x <= 500) setup.characters.chicken.isMovingLeft = false;
-                if (setup.characters.chick.x <= 575) setup.characters.chick.isMovingLeft = false;
+                if (setup.characters.juanito.x <= 500) setup.characters.juanito.isMovingLeft = false;
+                if (setup.characters.pollito.x <= 575) setup.characters.pollito.isMovingLeft = false;
             }
         },
 
         {
             type: 'position',
-            objectA: 'chick',
+            objectA: 'pollito',
             area: { x: 525, width: 50 },
             step: 8,
             action: (setup) => {
@@ -478,10 +478,10 @@ export const farmEvents =
             type: 'quest',
             step: 9,
             action: (setup) => {
-                setup.characters.chicken.updateAnimationState('idle');
-                setup.characters.chicken.isFlipped = false;
-                setup.characters.chick.updateAnimationState('idle');
-                setup.characters.chick.isFlipped = true;
+                setup.characters.juanito.updateAnimationState('idle');
+                setup.characters.juanito.isFlipped = false;
+                setup.characters.pollito.updateAnimationState('idle');
+                setup.characters.pollito.isFlipped = true;
                 setup.world.character.isWalk = true;
                 setup.world.character.speedX = 5;
             }
@@ -598,8 +598,8 @@ export const farmEvents =
                 setup.sounds.eveningSound.loop = true;
                 setup.sounds.eveningSound.play();
                 setup.characters.cow.updateAnimationState('swingToMusic', 1000 / 6.5);
-                setup.characters.chick.updateAnimationState('swingToMusic', 1000 / 6.5);
-                setup.characters.chicken.updateAnimationState('swingToMusic', 1000 / 6.5);
+                setup.characters.pollito.updateAnimationState('swingToMusic', 1000 / 6.5);
+                setup.characters.juanito.updateAnimationState('swingToMusic', 1000 / 6.5);
                 setup.environment.moon.updateAnimationState('swingToMusic');
             }
         },
@@ -621,8 +621,8 @@ export const farmEvents =
             action: (setup) => {
                 if (setup.sounds.happyTogetherMusic.currentTime >= 97.0) {
                     setup.characters.cow.updateAnimationState('sleep', 1000 / 5.5);
-                    setup.characters.chick.updateAnimationState('sleep', 1000 / 5.5);
-                    setup.characters.chicken.updateAnimationState('sleep', 1000 / 5.5);
+                    setup.characters.pollito.updateAnimationState('sleep', 1000 / 5.5);
+                    setup.characters.juanito.updateAnimationState('sleep', 1000 / 5.5);
                     setup.environment.campfire.updateAnimationState('fireGoesOut');
                     setup.environment.moon.updateAnimationState('idle');
                     setup.world.character.isPlayGuitar = false;
@@ -1149,9 +1149,9 @@ export const farmEvents =
             action: (setup) => {
                 setup.world.character.isWalkDetermined = false;
                 setup.world.character.isStandDetermined = true;
-                setup.characters.portraits.chick.fadeIn(setup.world.farmLevelController.timestamp, 10000);
-                setup.characters.portraits.chick.updateAnimationState('portrait', 1000 / 5);
-                setup.characters.portraits.chicken.updateAnimationState('portrait', 1000 / 5);
+                setup.characters.portraits.pollito.fadeIn(setup.world.farmLevelController.timestamp, 10000);
+                setup.characters.portraits.pollito.updateAnimationState('portrait', 1000 / 5);
+                setup.characters.portraits.juanito.updateAnimationState('portrait', 1000 / 5);
                 setup.characters.portraits.cow.updateAnimationState('portrait', 1000 / 5);
             }
         },
@@ -1184,7 +1184,7 @@ export const farmEvents =
             action: (setup) => {
                 // setup.world.ctx.save();
                 // setup.world.ctx.translate(-setup.world.farmLevelController.renderCameraX, 0);
-                // setup.world.addToWorld(setup.characters.portraits.chick);
+                // setup.world.addToWorld(setup.characters.portraits.pollito);
                 // setup.world.ctx.restore();
 
 
@@ -1193,7 +1193,7 @@ export const farmEvents =
                 setup.world.ctx.translate(-setup.world.farmLevelController.renderCameraX, 0);
 
                 // === 1. Offscreen-Canvas vorbereiten ===
-                const portrait = setup.characters.portraits.chick;
+                const portrait = setup.characters.portraits.pollito;
                 const fadeOpacity = 0.75;
 
                 const offscreen = document.createElement("canvas");
@@ -1256,14 +1256,14 @@ export const farmEvents =
             action: (setup) => {
                 // setup.world.ctx.save();
                 // setup.world.ctx.translate(-setup.world.farmLevelController.renderCameraX, 0);
-                // setup.world.addToWorld(setup.characters.portraits.chicken);
+                // setup.world.addToWorld(setup.characters.portraits.juanito);
                 // setup.world.ctx.restore();
 
                 setup.world.ctx.save();
                 setup.world.ctx.translate(-setup.world.farmLevelController.renderCameraX, 0);
 
                 // === 1. Offscreen-Canvas vorbereiten ===
-                const portrait = setup.characters.portraits.chicken;
+                const portrait = setup.characters.portraits.juanito;
                 const fadeOpacity = 0.75;
 
                 const offscreen = document.createElement("canvas");

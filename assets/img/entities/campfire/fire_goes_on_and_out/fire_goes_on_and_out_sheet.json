@@ -1,0 +1,19 @@
+﻿{
+    "frameHeight":  512,
+    "columns":  4,
+    "frameWidth":  512,
+    "fireGoesOn": {
+      "from": 0,
+      "to": 12,
+      "fps": 13
+    },
+    "fireGoesOut": {
+      "from": 13,
+      "to": 18,
+      "fps": 6
+    }
+  },
+    "image":  "fire_goes_on_and_out_sheet.webp",
+    "frames":  19,
+    "rows":  5
+}

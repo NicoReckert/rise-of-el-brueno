@@ -45,7 +45,7 @@ export const stableEvents =
         {
             type: 'collision',
             objectA: 'character',
-            objectB: 'chicken',
+            objectB: 'juanito',
             requireKey: 'F',
             once: false,
             step: 1,
@@ -55,7 +55,7 @@ export const stableEvents =
                     setup.world.isKeysStopp = true
                     setup.world.character.x = 560;
                     setup.world.character.isFlipped = false
-                    setup.characters.chicken.updateAnimationState('love')
+                    setup.characters.juanito.updateAnimationState('love')
                     setup.sounds.chickenSound.loop = true
                     setup.sounds.chickenSound.play()
                     setup.world.stableLevelController.eventManager.emitNow('caressStartChicken');
@@ -67,7 +67,7 @@ export const stableEvents =
         {
             type: 'collision',
             objectA: 'character',
-            objectB: 'chicken',
+            objectB: 'juanito',
             once: false,
             step: 1,
             condition: (setup) => setup.world.farmLevelController.questManager.step < 8,
@@ -88,7 +88,7 @@ export const stableEvents =
                 setup.world.character.isCaress = false
                 setup.world.keyboard.F = false
                 setup.world.isKeysStopp = false
-                setup.characters.chicken.updateAnimationState('idle')
+                setup.characters.juanito.updateAnimationState('idle')
                 setup.sounds.chickenSound.loop = false;
                 setup.world.stableLevelController.questManager.advance(1)
             }
@@ -111,7 +111,7 @@ export const stableEvents =
         {
             type: 'collision',
             objectA: 'character',
-            objectB: 'chick',
+            objectB: 'pollito',
             requireKey: 'F',
             once: false,
             step: 1,
@@ -121,7 +121,7 @@ export const stableEvents =
                     setup.world.isKeysStopp = true
                     setup.world.character.x = 720;
                     setup.world.character.isFlipped = false
-                    setup.characters.chick.updateAnimationState('love')
+                    setup.characters.pollito.updateAnimationState('love')
                     setup.sounds.chickSound.loop = true
                     setup.sounds.chickSound.play()
                     setup.world.stableLevelController.eventManager.emitNow('caressStartChick');
@@ -133,7 +133,7 @@ export const stableEvents =
         {
             type: 'collision',
             objectA: 'character',
-            objectB: 'chick',
+            objectB: 'pollito',
             once: false,
             step: 1,
             condition: (setup) => setup.world.farmLevelController.questManager.step < 8,
@@ -154,7 +154,7 @@ export const stableEvents =
                 setup.world.character.isCaress = false
                 setup.world.keyboard.F = false
                 setup.world.isKeysStopp = false
-                setup.characters.chick.updateAnimationState('idle')
+                setup.characters.pollito.updateAnimationState('idle')
                 setup.sounds.chickSound.loop = false;
                 setup.world.stableLevelController.questManager.advance(1)
             }

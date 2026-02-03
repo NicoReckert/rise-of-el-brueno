@@ -1,0 +1,32 @@
+﻿{
+    "frameHeight":  512,
+    "columns":  4,
+    "frameWidth":  512,
+    "animations": {
+    "idle": {
+      "from": 0,
+      "to": 0,
+      "fps": 1
+    },
+    "idleOpen": {
+      "from": 1,
+      "to": 1,
+      "fps": 1
+    },
+    "doorOpens": {
+      "from": 2,
+      "to": 7,
+      "fps": 6,
+      "loop": false
+    },
+    "doorCloses": {
+      "from": 8,
+      "to": 13,
+      "fps": 6,
+      "loop": false
+    }
+  },
+    "image":  "spritesheet_01.webp",
+    "frames":  14,
+    "rows":  4
+}

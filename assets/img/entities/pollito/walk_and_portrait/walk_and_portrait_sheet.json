@@ -1,0 +1,20 @@
+﻿{
+    "frameHeight":  512,
+    "columns":  4,
+    "frameWidth":  512,
+    "animations": {
+    "walk": {
+      "from": 0,
+      "to": 2,
+      "fps": 3
+    },
+    "portrait": {
+      "from": 3,
+      "to": 12,
+      "fps": 10
+    }
+  },
+    "image":  "walk_and_portrait_sheet.webp",
+    "frames":  13,
+    "rows":  4
+}

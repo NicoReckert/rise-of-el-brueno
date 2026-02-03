@@ -86,8 +86,8 @@ export class FarmRenderer {
             if (questStep < 14) this.addToWorld(this.setup.characters.cow);
             if (questStep < 13) this.addToWorld(this.character);
             this.addToWorld(this.setup.environment.campfire);
-            if (questStep < 14) this.addToWorld(this.setup.characters.chick);
-            if (questStep < 14) this.addToWorld(this.setup.characters.chicken);
+            if (questStep < 14) this.addToWorld(this.setup.characters.pollito);
+            if (questStep < 14) this.addToWorld(this.setup.characters.juanito);
             if (questStep < 14) this.addToWorld(this.setup.environment.moon);
             if (questStep >= 14 && questStep < 18) {
                 this.addToWorld(this.setup.characters.drone);

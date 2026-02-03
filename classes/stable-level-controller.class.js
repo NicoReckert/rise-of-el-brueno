@@ -63,13 +63,13 @@ export class StableLevelController {
         if (this.character.isCaress) {
             this.addToWorld(this.character);
             if (this.setup.world.farmLevelController.questManager.step < 8) {
-                this.addToWorld(this.setup.characters.chicken);
-                this.addToWorld(this.setup.characters.chick);
+                this.addToWorld(this.setup.characters.juanito);
+                this.addToWorld(this.setup.characters.pollito);
             }
         } else {
             if (this.setup.world.farmLevelController.questManager.step < 8) {
-                this.addToWorld(this.setup.characters.chicken);
-                this.addToWorld(this.setup.characters.chick);
+                this.addToWorld(this.setup.characters.juanito);
+                this.addToWorld(this.setup.characters.pollito);
             }
             if (this.setup.world.farmLevelController.questManager.step >= 20) this.addToWorld(this.setup.environment.memoryLight);
             this.addToWorld(this.character);
@@ -95,7 +95,7 @@ export class StableLevelController {
             this.setup.isNotificationPlay = false;
             this.setup.speechBubbles.bubbleStable1.startTime = null;
         }
-        if (this.character.isColliding(this.setup.characters.chicken, 0, 0)) {
+        if (this.character.isColliding(this.setup.characters.juanito, 0, 0)) {
             this.ctx.save();
             this.ctx.translate(-this.renderCameraX, 0);
             // if (!this.setup.speechBubbles.bubbleStable2.startTime) {
@@ -104,7 +104,7 @@ export class StableLevelController {
             // this.setup.speechBubbles.bubbleStable2.update(performance.now());
             // this.setup.speechBubbles.bubbleStable2.draw(this.ctx, 0);
         }
-        if (this.character.isColliding(this.setup.characters.chick, 0, 0)) {
+        if (this.character.isColliding(this.setup.characters.pollito, 0, 0)) {
             this.ctx.save();
             this.ctx.translate(-this.renderCameraX, 0);
             // if (!this.setup.speechBubbles.bubbleStable2.startTime) {

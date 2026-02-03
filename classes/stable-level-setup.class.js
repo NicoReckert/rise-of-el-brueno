@@ -17,14 +17,14 @@ export class StableLevelSetup {
 
 
         this.characters = {
-            chicken: new AnimatedEntity(this.entityImages, 'chicken', 150, 150, 635, 460, 0, 100, -20, 0),
-            chick: new AnimatedEntity(this.entityImages, 'chick', 120, 120, 805, 515)
+            juanito: new AnimatedEntity(this.entityImages, 'juanito', 150, 150, 635, 460, 0, 100, -20, 0),
+            pollito: new AnimatedEntity(this.entityImages, 'pollito', 120, 120, 805, 515)
         };
 
         this.environment = {
             memoryLight: new AnimatedEntity(this.entityImages, 'memoryLight', 200, 200, 590, 473, 0, 50, 50, 0)
         };
-        this.characters.chick.isFlipped = false;
+        this.characters.pollito.isFlipped = false;
         this.sounds = {
             chickSound: this.allAudios.chickSound,
             chickenSound: this.allAudios.chickenSound,
@@ -35,8 +35,8 @@ export class StableLevelSetup {
         this.video.preload = 'auto';
         // document.body.appendChild(this.video);
         this.hints = [
-            new HollowHint("Streicheln", this.characters.chicken, 100, 'rose'),
-            new HollowHint("Streicheln", this.characters.chick, 100, 'rose'),
+            new HollowHint("Streicheln", this.characters.juanito, 100, 'rose'),
+            new HollowHint("Streicheln", this.characters.pollito, 100, 'rose'),
             new HollowHint("Verlassen", this.world.character, 100, 'desert'),
             new HollowHint("Erinnerung", this.environment.memoryLight, 100, 'default'),
         ];
