@@ -124,14 +124,14 @@ export class Endboss extends MovableObject {
      * Initializes base image sets.
      */
     initBaseImages() {
-        this.idleImages = this.entityImages.endboss.idle || [];
-        this.walkImages = this.entityImages.endboss.walk || [];
-        this.deadImages = this.entityImages.endboss.dead || [];
-        this.hurtImages = this.entityImages.endboss.hurt || [];
-        this.flyImages = this.entityImages.endboss.fly || [];
-        this.findsPeaceImages = this.entityImages.endboss.findsPeace || [];
-        this.fireballAttackImages = this.entityImages.endboss.fireballAttack || [];
-        this.fireBreathAttackImages = this.entityImages.endboss.fireBreathAttack || [];
+        this.idleImages = this.entityImages.endboss?.idle ?? [];
+        this.walkImages = this.entityImages.endboss?.walk ?? [];
+        this.deadImages = this.entityImages.endboss?.dead ?? [];
+        this.hurtImages = this.entityImages.endboss?.hurt ?? [];
+        this.flyImages = this.entityImages.endboss?.fly ?? [];
+        this.findsPeaceImages = this.entityImages.endboss?.findsPeace ?? [];
+        this.fireballAttackImages = this.entityImages.endboss?.fireballAttack ?? [];
+        this.fireBreathAttackImages = this.entityImages.endboss?.fireBreathAttack ?? [];
     }
 
     /**

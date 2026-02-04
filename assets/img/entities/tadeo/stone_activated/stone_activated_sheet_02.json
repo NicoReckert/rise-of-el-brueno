@@ -1,0 +1,16 @@
+﻿{
+    "frameHeight":  512,
+    "columns":  4,
+    "frameWidth":  512,
+    "animations":  {
+                       "default":  {
+                                       "loop":  true,
+                                       "from":  0,
+                                       "to":  18,
+                                       "fps":  12
+                                   }
+                   },
+    "image":  "stone_activated_sheet_02.webp",
+    "frames":  19,
+    "rows":  5
+}

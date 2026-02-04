@@ -1,0 +1,20 @@
+﻿{
+    "frameHeight":  512,
+    "columns":  4,
+    "frameWidth":  512,
+    "animations": {
+    "idle": {
+      "from": 0,
+      "to": 9,
+      "fps": 10
+    },
+    "walk": {
+      "from": 10,
+      "to": 17,
+      "fps": 8
+    }
+  },
+    "image":  "idle_and_walk_sheet.webp",
+    "frames":  18,
+    "rows":  5
+}

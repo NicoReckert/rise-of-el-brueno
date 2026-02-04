@@ -12,7 +12,7 @@ export class CoinBar extends StatusBar {
     constructor(entityImages) {
         super();
         this.entityImages = entityImages;
-        this.statusImages = this.entityImages.coinBar.status || [];
+        this.statusImages = this.entityImages.coinBar?.status ?? [];
         this.setPercentage(0);
         this.y = 50;
     }

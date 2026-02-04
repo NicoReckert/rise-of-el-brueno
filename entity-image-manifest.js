@@ -288,36 +288,69 @@ export const farmEntityManifestDeferred = {
   },
 
   sun: {
-    idle: Array.from({ length: 10 }, (_, i) => `./assets/img/entities/sun/idle/image_${i + 1}.webp`)
+    idle: {
+      type: 'sheet',
+      json: './assets/img/entities/sun/idle/idle_sheet.json'
+    }
   },
 
   moon: {
-    idle: Array.from({ length: 1 }, _ => `./assets/img/entities/moon/idle/image_1.webp`),
-    swingToMusic: Array.from({ length: 10 }, (_, i) => `./assets/img/entities/moon/idle/image_${i + 1}.webp`)
+    idle: {
+      type: 'sheet',
+      json: './assets/img/entities/moon/idle_and_swing_to_music/idle_and_swing_to_music_sheet.json'
+    },
+    swingToMusic: {
+      type: 'sheet',
+      json: './assets/img/entities/moon/idle_and_swing_to_music/idle_and_swing_to_music_sheet.json'
+    }
   },
 }
 
 export const otherLevelEntityManifestLazy = {
   soul: {
-    idle: Array.from({ length: 18 }, (_, i) => `./assets/img/entities/soul/idle/image_${i + 1}.webp`),
-    findsPeace: Array.from({ length: 22 }, (_, i) => `./assets/img/entities/soul/finds-peace/image_${i + 1}.webp`),
-    findsPeaceLoop: Array.from({ length: 9 }, (_, i) => `./assets/img/entities/soul/finds-peace/image_${13 + i}.webp`)
+    idle: {
+      type: 'sheet',
+      json: './assets/img/entities/soul/idle/idle_sheet.json'
+    },
+    findsPeace: {
+      type: 'sheet',
+      json: './assets/img/entities/soul/finds_peace/finds_peace_sheet.json'
+    },
+    findsPeaceLoop: {
+      type: 'sheet',
+      json: './assets/img/entities/soul/finds_peace/finds_peace_sheet.json'
+    }
   },
 
   nayeli: {
-    idle: Array.from({ length: 10 }, (_, i) => `./assets/img/entities/nayeli/idle/image_${i + 1}.webp`)
+    idle: {
+      type: 'sheet',
+      json: './assets/img/entities/nayeli/idle/idle_sheet.json'
+    }
   },
 
   macuahuitl: {
-    idle: Array.from({ length: 30 }, (_, i) => `./assets/img/entities/macuahuitl/idle/image_${i + 1}.webp`)
+    idle: {
+      type: 'sheetSequence',
+      sheets: [
+        { json: './assets/img/entities/macuahuitl/idle/idle_sheet_01.json' },
+        { json: './assets/img/entities/macuahuitl/idle/idle_sheet_02.json' }
+      ]
+    }
   },
 
   memoryLight: {
-    idle: Array.from({ length: 10 }, (_, i) => `./assets/img/entities/memory_light/idle/image_${i + 1}.webp`)
+    idle: {
+      type: 'sheet',
+      json: './assets/img/entities/memory_light/idle/idle_sheet.json'
+    }
   },
 
   levelCompleteCharacter: {
-    idle: Array.from({ length: 10 }, (_, i) => `./assets/img/entities/level_complete/idle/image_${i + 1}.webp`)
+    idle: {
+      type: 'sheet',
+      json: './assets/img/entities/level_complete/idle/idle_sheet.json'
+    }
   },
 
   endboss: {
@@ -382,11 +415,33 @@ export const otherLevelEntityManifestLazy = {
   coin: Array.from({ length: 2 }, (_, i) => `./assets/img/8_coin/coin_${i + 1}.webp`),
 
   tadeo: {
-    idle: Array.from({ length: 10 }, (_, i) => `./assets/img/entities/tadeo/idle/image_${i + 1}.webp`),
-    walk: Array.from({ length: 8 }, (_, i) => `./assets/img/entities/tadeo/walk/image_${i + 1}.png`),
-    walkWithStone: Array.from({ length: 5 }, (_, i) => `./assets/img/entities/tadeo/walk_with_stone/image_${i + 1}.png`),
-    idleWithStone: Array.from({ length: 20 }, (_, i) => `./assets/img/entities/tadeo/idle_with_stone/image_${i + 1}.png`),
-    stoneActivated: Array.from({ length: 55 }, (_, i) => `./assets/img/entities/tadeo/stone_activated/image_${i + 1}.png`)
+    idle: {
+      type: 'sheet',
+      json: './assets/img/entities/tadeo/idle_and_walk/idle_and_walk_sheet.json'
+    },
+    walk: {
+      type: 'sheet',
+      json: './assets/img/entities/tadeo/idle_and_walk/idle_and_walk_sheet.json'
+    },
+    walkWithStone: {
+      type: 'sheet',
+      json: './assets/img/entities/tadeo/walk_with_stone/walk_with_stone_sheet.json'
+    },
+    idleWithStone: {
+      type: 'sheetSequence',
+      sheets: [
+        { json: './assets/img/entities/tadeo/idle_with_stone/idle_with_stone_sheet_01.json' },
+        { json: './assets/img/entities/tadeo/idle_with_stone/idle_with_stone_sheet_02.json' }
+      ]
+    },
+    stoneActivated: {
+      type: 'sheetSequence',
+      sheets: [
+        { json: './assets/img/entities/tadeo/stone_activated/stone_activated_sheet_01.json' },
+        { json: './assets/img/entities/tadeo/stone_activated/stone_activated_sheet_02.json' },
+        { json: './assets/img/entities/tadeo/stone_activated/stone_activated_sheet_03.json' }
+      ]
+    }
   },
 
   projectile: {

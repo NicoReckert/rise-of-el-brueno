@@ -12,7 +12,7 @@ export class BottleBar extends StatusBar {
     constructor(entityImages) {
         super();
         this.entityImages = entityImages;
-        this.statusImages = this.entityImages.bottleBar.status || [];
+        this.statusImages = this.entityImages.bottleBar?.status ?? [];
         this.setPercentage(0);
         this.y = 100;
     }

@@ -173,11 +173,11 @@ function smartMerge(target, source) {
 
 
 window.addEventListener('keydown', (event) => {
-    world.keyboard.setKeyTrue(event.key);
+    world.keyboard?.setKeyTrue(event.key);
 });
 
 window.addEventListener('keyup', (event) => {
-    world.keyboard.setKeyFalse(event.key);
+    world.keyboard?.setKeyFalse(event.key);
 });
 
 function setFullscreen() {
@@ -417,7 +417,7 @@ pauseToggleButton.addEventListener('click', () => {
 });
 
 window.addEventListener('keydown', (event) => {
-    world.keyboard.setKeyTrue(event.key);
+    world.keyboard?.setKeyTrue(event.key);
 
     const pauseToggleButton = document.getElementById('pause-toggle-button');
     const pauseButtonVisible = !pauseToggleButton.classList.contains('d-none');

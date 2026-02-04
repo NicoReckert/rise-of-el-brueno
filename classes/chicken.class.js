@@ -96,6 +96,7 @@ export class Chicken extends MovableObject {
         this.deathPhase = null;        // 'fall' | 'impact' | 'done'
         this.deathFallSpeed = 350;     // px/s, kannst du tunen
         this.deathGroundY = 525;
+        this.hasBeenHitThisDive = false;
     }
 
     /**
@@ -695,6 +696,21 @@ export class Chicken extends MovableObject {
         onDeathSound = null
     } = {}) {
         if (this.isDead || this.isHurt) return false;
+        if (this.currentEnemy === 'dragonSmall') {
+            const vulnerableStates = ['dive_fast', 'attack', 'approach_low'];
+
+            // nur in diesen States darfst du ihn treffen
+            if (!vulnerableStates.includes(this.airState)) {
+                return false;
+            }
+
+            // wenn er in diesem Dive schon getroffen wurde → kein weiterer Treffer
+            if (this.hasBeenHitThisDive) {
+                return false;
+            }
+
+            this.hasBeenHitThisDive = true;
+        }
         this.attackHitbox.active = false;
         this.hasHitPlayerThisAttack = false;
 
@@ -956,6 +972,7 @@ export class Chicken extends MovableObject {
                     this.lowApproachSpeed = this.flySpeed * 2.5;
                     this.lockDirection = true;
                     this.hasAttackedThisDive = false;
+                    this.hasBeenHitThisDive = false;
                     this.airState = 'dive_start';
                     this.diveStartTime = timestamp;
                 }
