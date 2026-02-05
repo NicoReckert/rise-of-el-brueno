@@ -1,5 +1,5 @@
 import { PopupText } from "../classes/popup-text.class.js";
-import { Chicken } from "../classes/chicken.class.js";
+import { Enemy } from "../classes/enemy.class.js";
 import { DamageText } from "../classes/damage-text.class.js";
 import { fadeOutAudio } from "../script.js";
 import { fadeInAudio } from "../script.js";
@@ -30,7 +30,7 @@ export const townEvents =
             area: { x: 200, width: 100 },
             action: (setup) => {
                 setup.townLevel.enemies.push(
-                    new Chicken('dragonSmall', setup.entityImages, 170, 170, 300, 1000, setup.allAudios),
+                    new Enemy('dragonSmall', setup.entityImages, 170, 170, 300, 1000, setup.allAudios),
                 )
                 setup.townLevel.enemies.forEach(enemy => {
                     enemy.curentAnimation = 'idle';
@@ -139,18 +139,18 @@ export const townEvents =
             area: { x: 5000, width: 100 },
             action: (setup) => {
                 setup.townLevel.enemies.push(
-                    new Chicken('chickenMutatesSmall', setup.entityImages, 120, 120, 545, 6000, setup.allAudios),
-                    new Chicken('chickenMutatesSmall', setup.entityImages, 120, 120, 545, 6100, setup.allAudios),
-                    new Chicken('chickenMutatesBig', setup.entityImages, 160, 160, 505, 6200, setup.allAudios),
-                    // new Chicken('chickenMutatesBig', images, 160, 160, 505, 2100, allAudios),
-                    // new Chicken('chickenMutatesBig', images, 160, 160, 505, 2100, allAudios),
-                    // new Chicken('chickenMutatesBig', images, 160, 160, 505, 2100, allAudios),
-                    // new Chicken('chickenMutatesBig', images, 160, 160, 505, 2100, allAudios),
-                    // new Chicken('chickenMutatesBig', images, 160, 160, 505, 2100, allAudios),
-                    // new Chicken('chickenMutatesBig', images, 160, 160, 505, 2100, allAudios),
-                    // new Chicken('chickenMutatesBig', images, 160, 160, 505, 2100, allAudios),
-                    // new Chicken('chickenMutatesBig', images, 160, 160, 505, 2100, allAudios),
-                    // new Chicken('chickenMutatesBig', images, 160, 160, 505, 2100, allAudios),
+                    new Enemy('chickenMutatesSmall', setup.entityImages, 120, 120, 545, 6000, setup.allAudios),
+                    new Enemy('chickenMutatesSmall', setup.entityImages, 120, 120, 545, 6100, setup.allAudios),
+                    new Enemy('chickenMutatesBig', setup.entityImages, 160, 160, 505, 6200, setup.allAudios),
+                    // new Enemy('chickenMutatesBig', images, 160, 160, 505, 2100, allAudios),
+                    // new Enemy('chickenMutatesBig', images, 160, 160, 505, 2100, allAudios),
+                    // new Enemy('chickenMutatesBig', images, 160, 160, 505, 2100, allAudios),
+                    // new Enemy('chickenMutatesBig', images, 160, 160, 505, 2100, allAudios),
+                    // new Enemy('chickenMutatesBig', images, 160, 160, 505, 2100, allAudios),
+                    // new Enemy('chickenMutatesBig', images, 160, 160, 505, 2100, allAudios),
+                    // new Enemy('chickenMutatesBig', images, 160, 160, 505, 2100, allAudios),
+                    // new Enemy('chickenMutatesBig', images, 160, 160, 505, 2100, allAudios),
+                    // new Enemy('chickenMutatesBig', images, 160, 160, 505, 2100, allAudios),
 
 
 
@@ -166,18 +166,18 @@ export const townEvents =
             area: { x: 6000, width: 100 },
             action: (setup) => {
                 setup.townLevel.enemies.push(
-                    new Chicken('chickenMutatesSmall', setup.entityImages, 120, 120, 545, 7000, setup.allAudios),
-                    new Chicken('chickenMutatesSmall', setup.entityImages, 120, 120, 545, 7100, setup.allAudios),
-                    new Chicken('chickenMutatesBig', setup.entityImages, 160, 160, 505, 7200, setup.allAudios),
-                    // new Chicken('chickenMutatesBig', images, 160, 160, 505, 2100, allAudios),
-                    // new Chicken('chickenMutatesBig', images, 160, 160, 505, 2100, allAudios),
-                    // new Chicken('chickenMutatesBig', images, 160, 160, 505, 2100, allAudios),
-                    // new Chicken('chickenMutatesBig', images, 160, 160, 505, 2100, allAudios),
-                    // new Chicken('chickenMutatesBig', images, 160, 160, 505, 2100, allAudios),
-                    // new Chicken('chickenMutatesBig', images, 160, 160, 505, 2100, allAudios),
-                    // new Chicken('chickenMutatesBig', images, 160, 160, 505, 2100, allAudios),
-                    // new Chicken('chickenMutatesBig', images, 160, 160, 505, 2100, allAudios),
-                    // new Chicken('chickenMutatesBig', images, 160, 160, 505, 2100, allAudios),
+                    new Enemy('chickenMutatesSmall', setup.entityImages, 120, 120, 545, 7000, setup.allAudios),
+                    new Enemy('chickenMutatesSmall', setup.entityImages, 120, 120, 545, 7100, setup.allAudios),
+                    new Enemy('chickenMutatesBig', setup.entityImages, 160, 160, 505, 7200, setup.allAudios),
+                    // new Enemy('chickenMutatesBig', images, 160, 160, 505, 2100, allAudios),
+                    // new Enemy('chickenMutatesBig', images, 160, 160, 505, 2100, allAudios),
+                    // new Enemy('chickenMutatesBig', images, 160, 160, 505, 2100, allAudios),
+                    // new Enemy('chickenMutatesBig', images, 160, 160, 505, 2100, allAudios),
+                    // new Enemy('chickenMutatesBig', images, 160, 160, 505, 2100, allAudios),
+                    // new Enemy('chickenMutatesBig', images, 160, 160, 505, 2100, allAudios),
+                    // new Enemy('chickenMutatesBig', images, 160, 160, 505, 2100, allAudios),
+                    // new Enemy('chickenMutatesBig', images, 160, 160, 505, 2100, allAudios),
+                    // new Enemy('chickenMutatesBig', images, 160, 160, 505, 2100, allAudios),
 
 
 
@@ -193,18 +193,18 @@ export const townEvents =
             area: { x: 7000, width: 100 },
             action: (setup) => {
                 setup.townLevel.enemies.push(
-                    new Chicken('chickenMutatesSmall', setup.entityImages, 120, 120, 545, 8000, setup.allAudios),
-                    new Chicken('chickenMutatesSmall', setup.entityImages, 120, 120, 545, 8100, setup.allAudios),
-                    new Chicken('chickenMutatesBig', setup.entityImages, 160, 160, 505, 8200, setup.allAudios),
-                    // new Chicken('chickenMutatesBig', images, 160, 160, 505, 2100, allAudios),
-                    // new Chicken('chickenMutatesBig', images, 160, 160, 505, 2100, allAudios),
-                    // new Chicken('chickenMutatesBig', images, 160, 160, 505, 2100, allAudios),
-                    // new Chicken('chickenMutatesBig', images, 160, 160, 505, 2100, allAudios),
-                    // new Chicken('chickenMutatesBig', images, 160, 160, 505, 2100, allAudios),
-                    // new Chicken('chickenMutatesBig', images, 160, 160, 505, 2100, allAudios),
-                    // new Chicken('chickenMutatesBig', images, 160, 160, 505, 2100, allAudios),
-                    // new Chicken('chickenMutatesBig', images, 160, 160, 505, 2100, allAudios),
-                    // new Chicken('chickenMutatesBig', images, 160, 160, 505, 2100, allAudios),
+                    new Enemy('chickenMutatesSmall', setup.entityImages, 120, 120, 545, 8000, setup.allAudios),
+                    new Enemy('chickenMutatesSmall', setup.entityImages, 120, 120, 545, 8100, setup.allAudios),
+                    new Enemy('chickenMutatesBig', setup.entityImages, 160, 160, 505, 8200, setup.allAudios),
+                    // new Enemy('chickenMutatesBig', images, 160, 160, 505, 2100, allAudios),
+                    // new Enemy('chickenMutatesBig', images, 160, 160, 505, 2100, allAudios),
+                    // new Enemy('chickenMutatesBig', images, 160, 160, 505, 2100, allAudios),
+                    // new Enemy('chickenMutatesBig', images, 160, 160, 505, 2100, allAudios),
+                    // new Enemy('chickenMutatesBig', images, 160, 160, 505, 2100, allAudios),
+                    // new Enemy('chickenMutatesBig', images, 160, 160, 505, 2100, allAudios),
+                    // new Enemy('chickenMutatesBig', images, 160, 160, 505, 2100, allAudios),
+                    // new Enemy('chickenMutatesBig', images, 160, 160, 505, 2100, allAudios),
+                    // new Enemy('chickenMutatesBig', images, 160, 160, 505, 2100, allAudios),
 
 
 
@@ -220,18 +220,18 @@ export const townEvents =
             area: { x: 8000, width: 100 },
             action: (setup) => {
                 setup.townLevel.enemies.push(
-                    new Chicken('chickenMutatesSmall', setup.entityImages, 120, 120, 545, 9000, setup.allAudios),
-                    new Chicken('chickenMutatesSmall', setup.entityImages, 120, 120, 545, 9100, setup.allAudios),
-                    new Chicken('chickenMutatesBig', setup.entityImages, 160, 160, 505, 9200, setup.allAudios),
-                    // new Chicken('chickenMutatesBig', images, 160, 160, 505, 2100, allAudios),
-                    // new Chicken('chickenMutatesBig', images, 160, 160, 505, 2100, allAudios),
-                    // new Chicken('chickenMutatesBig', images, 160, 160, 505, 2100, allAudios),
-                    // new Chicken('chickenMutatesBig', images, 160, 160, 505, 2100, allAudios),
-                    // new Chicken('chickenMutatesBig', images, 160, 160, 505, 2100, allAudios),
-                    // new Chicken('chickenMutatesBig', images, 160, 160, 505, 2100, allAudios),
-                    // new Chicken('chickenMutatesBig', images, 160, 160, 505, 2100, allAudios),
-                    // new Chicken('chickenMutatesBig', images, 160, 160, 505, 2100, allAudios),
-                    // new Chicken('chickenMutatesBig', images, 160, 160, 505, 2100, allAudios),
+                    new Enemy('chickenMutatesSmall', setup.entityImages, 120, 120, 545, 9000, setup.allAudios),
+                    new Enemy('chickenMutatesSmall', setup.entityImages, 120, 120, 545, 9100, setup.allAudios),
+                    new Enemy('chickenMutatesBig', setup.entityImages, 160, 160, 505, 9200, setup.allAudios),
+                    // new Enemy('chickenMutatesBig', images, 160, 160, 505, 2100, allAudios),
+                    // new Enemy('chickenMutatesBig', images, 160, 160, 505, 2100, allAudios),
+                    // new Enemy('chickenMutatesBig', images, 160, 160, 505, 2100, allAudios),
+                    // new Enemy('chickenMutatesBig', images, 160, 160, 505, 2100, allAudios),
+                    // new Enemy('chickenMutatesBig', images, 160, 160, 505, 2100, allAudios),
+                    // new Enemy('chickenMutatesBig', images, 160, 160, 505, 2100, allAudios),
+                    // new Enemy('chickenMutatesBig', images, 160, 160, 505, 2100, allAudios),
+                    // new Enemy('chickenMutatesBig', images, 160, 160, 505, 2100, allAudios),
+                    // new Enemy('chickenMutatesBig', images, 160, 160, 505, 2100, allAudios),
 
 
 

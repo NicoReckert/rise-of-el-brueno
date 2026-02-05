@@ -25,10 +25,15 @@ export class Endboss extends MovableObject {
         this.entityImages = entityImages;
         this.speedX = 8;
         this.speedY = 0;
-        this.lastFrameTime = 0;
+
         this.currentAnimation = 'idle';
         this.frameInterval = 1000 / 8;
         this.frameIndex = 0;
+        this.sheetIndex = 0;
+        this.lastFrameTime = 0;
+        this.animationFinished = false;
+        this.frameSource = null;
+
         this.gravityInterval = 1000 / 60;
         this.isMovingLeft = false;
         this.isMovingRight = false;
@@ -132,6 +137,7 @@ export class Endboss extends MovableObject {
         this.findsPeaceImages = this.entityImages.endboss?.findsPeace ?? [];
         this.fireballAttackImages = this.entityImages.endboss?.fireballAttack ?? [];
         this.fireBreathAttackImages = this.entityImages.endboss?.fireBreathAttack ?? [];
+        this.jumpImages = this.entityImages.endboss?.jump ?? [];
     }
 
     /**
@@ -388,9 +394,24 @@ export class Endboss extends MovableObject {
      */
     playFindsPeace() {
         this.setAnimation('findsPeace', 6);
-        if (this.frameIndex >= this.findsPeaceImages.length) {
-            this.isFindsPeace = false;
-            this.frameIndex = 0;
+        const anim = this.findsPeaceImages;
+        if (!anim) return;
+
+        // 🔹 Sequenz: über animationFinished
+        if (anim.type === 'sheetSequence') {
+            if (this.animationFinished && this.currentAnimation === 'findsPeace') {
+                this.isFindsPeace = false;
+                this.frameIndex = 0;
+                this.sheetIndex = 0;
+                this.animationFinished = false;
+            }
+        } else {
+            // 🔹 Array oder Einzel-Sheet: über Frame-Anzahl
+            const count = this.getFrameCountFor(anim, 'findsPeace');
+            if (count && this.frameIndex >= count) {
+                this.isFindsPeace = false;
+                this.frameIndex = 0;
+            }
         }
     }
 
@@ -410,9 +431,22 @@ export class Endboss extends MovableObject {
      */
     playHurtAnimation() {
         this.setAnimation('hurt', 4);
-        if (this.frameIndex >= this.hurtImages.length) {
-            this.isHurt = false;
-            this.frameIndex = 0;
+        const anim = this.hurtImages;
+        if (!anim) return;
+
+        if (anim.type === 'sheetSequence') {
+            if (this.animationFinished && this.currentAnimation === 'hurt') {
+                this.isHurt = false;
+                this.frameIndex = 0;
+                this.sheetIndex = 0;
+                this.animationFinished = false;
+            }
+        } else {
+            const count = this.getFrameCountFor(anim, 'hurt');
+            if (count && this.frameIndex >= count) {
+                this.isHurt = false;
+                this.frameIndex = 0;
+            }
         }
     }
 
@@ -429,10 +463,24 @@ export class Endboss extends MovableObject {
 
     playFireballAttackAnimation() {
         this.setAnimation('fireballAttack', 5);
-        if (this.frameIndex >= this.fireballAttackImages.length) {
-            this.isFireballAttack = false;
-            this.hasFiredThisAttack = false;
-            this.frameIndex = 0;
+        const anim = this.fireballAttackImages;
+        if (!anim) return;
+
+        if (anim.type === 'sheetSequence') {
+            if (this.animationFinished && this.currentAnimation === 'fireballAttack') {
+                this.isFireballAttack = false;
+                this.hasFiredThisAttack = false;
+                this.frameIndex = 0;
+                this.sheetIndex = 0;
+                this.animationFinished = false;
+            }
+        } else {
+            const count = this.getFrameCountFor(anim, 'fireballAttack');
+            if (count && this.frameIndex >= count) {
+                this.isFireballAttack = false;
+                this.hasFiredThisAttack = false;
+                this.frameIndex = 0;
+            }
         }
     }
 
@@ -442,9 +490,19 @@ export class Endboss extends MovableObject {
      * @param {number} fps - Frames per second.
      */
     setAnimation(name, fps) {
-        this.currentAnimation = name;
-        this.frameInterval = 1000 / fps;
+        if (this.currentAnimation !== name) {
+            this.currentAnimation = name;
+            this.frameIndex = 0;
+            this.sheetIndex = 0;
+            this.animationFinished = false;
+            this.lastFrameTime = null;
+        }
+
+        if (fps) {
+            this.frameInterval = 1000 / fps;
+        }
     }
+
 
     /**
      * Returns the image set for a given animation state.
@@ -465,6 +523,81 @@ export class Endboss extends MovableObject {
         }
     }
 
+    applyNextFrame(images) {
+        this.img = images[this.frameIndex % images.length];
+        this.frameSource = null; // kein Spritesheet-Crop
+    }
+
+    applyNextSheetFrame(sheet) {
+        const { image, meta, anim } = sheet;
+
+        const animName = anim ?? this.currentAnimation;
+        const def =
+            meta.animations?.[animName] ??
+            meta.animations?.default;
+
+        const from = def?.from ?? 0;
+        const to = def?.to ?? (meta.frames - 1);
+        const count = to - from + 1;
+
+        const frame = from + (this.frameIndex % count);
+        const col = frame % meta.columns;
+        const row = Math.floor(frame / meta.columns);
+
+        this.img = image;
+        this.frameSource = {
+            sx: col * meta.frameWidth,
+            sy: row * meta.frameHeight,
+            sw: meta.frameWidth,
+            sh: meta.frameHeight
+        };
+    }
+
+    /** Anzahl der Frames für eine Animation (Array oder Sheet) */
+    /** Anzahl der Frames für eine Animation (Array, Sheet oder SheetSequence) */
+    getFrameCountFor(anim, animName = this.currentAnimation) {
+        if (!anim) return 0;
+
+        // 🔹 Arrays
+        if (Array.isArray(anim)) return anim.length;
+
+        // 🔹 Einzel-Sheet
+        if (anim.type === 'sheet') {
+            const meta = anim.meta;
+            const name = anim.anim ?? animName;
+            const def =
+                meta.animations?.[name] ??
+                meta.animations?.default;
+
+            const from = def?.from ?? 0;
+            const to = def?.to ?? (meta.frames - 1);
+            return to - from + 1;
+        }
+
+        // 🔹 Sequenz aus mehreren Sheets
+        if (anim.type === 'sheetSequence') {
+            let total = 0;
+
+            for (const sheet of anim.sheets ?? []) {
+                const meta = sheet.meta;
+                const name = sheet.anim ?? animName;
+                const def =
+                    meta.animations?.[name] ??
+                    meta.animations?.default;
+
+                const from = def?.from ?? 0;
+                const to = def?.to ?? (meta.frames - 1);
+                total += (to - from + 1);
+            }
+
+            return total;
+        }
+
+        return 0;
+    }
+
+
+
     /**
      * Updates the animation frame based on elapsed time.
      * @param {number} timestamp - Current time in milliseconds.
@@ -473,44 +606,96 @@ export class Endboss extends MovableObject {
         if (!this.lastFrameTime) this.lastFrameTime = timestamp;
         const deltaTime = timestamp - this.lastFrameTime;
         if (deltaTime <= this.frameInterval) return;
-        const currentFrame = this.frameIndex;
-        this.updateFrameImage();
 
+        const anim = this.getAnimationImages(this.currentAnimation);
+        if (!anim) {
+            this.lastFrameTime = timestamp;
+            return;
+        }
+
+        const frameCount = this.getFrameCountFor(anim, this.currentAnimation);
+        const currentFrame = this.frameIndex; // für Fireball-Timing
+
+        // 🔹 1) Einzelbilder (Array)
+        if (Array.isArray(anim) && anim.length > 0) {
+            this.applyNextFrame(anim);
+            this.frameIndex++;
+        }
+
+        // 🔹 2) Spritesheet-Sequenz
+        else if (anim.type === 'sheetSequence') {
+            const currentSheet = anim.sheets[this.sheetIndex];
+
+            if (!currentSheet) {
+                // Sicherheitsnetz: wenn irgendwas schief läuft
+                this.animationFinished = true;
+            } else {
+                this.applyNextSheetFrame(currentSheet);
+
+                const meta = currentSheet.meta;
+                const def =
+                    meta.animations?.[this.currentAnimation] ??
+                    meta.animations?.default;
+
+                const from = def?.from ?? 0;
+                const to = def?.to ?? (meta.frames - 1);
+                const count = to - from + 1;
+
+                // wie bei Chicken: erst inkrementieren, DANN prüfen
+                this.frameIndex++;
+
+                if (this.frameIndex >= count) {
+                    this.frameIndex = 0;
+                    this.sheetIndex++;
+
+                    if (this.sheetIndex >= anim.sheets.length) {
+                        if (anim.loop) {
+                            this.sheetIndex = 0;
+                        } else {
+                            this.animationFinished = true;
+                        }
+                    }
+                }
+            }
+        }
+
+        // 🔹 3) Einzelnes Spritesheet
+        else if (anim.type === 'sheet') {
+            this.applyNextSheetFrame(anim);
+            this.frameIndex++;
+        }
+
+        // 🔥 Fireball-Attacke: Schuss-Frame
         if (this.isFireballAttack) {
-            const shootFrame = 13; // anpassen! (0..len-1)
+            const shootFrame = 13; // wie vorher (0-basiert)
             if (currentFrame === shootFrame && !this.hasFiredThisAttack) {
                 const audio = this.allAudios.fireballShotSound.cloneNode();
                 audio.play();
-
                 this.shootProjectile(this.world.character);
                 this.hasFiredThisAttack = true;
             }
         }
 
-        this.handleDeathAnimation();
+        // 💀 Death-Animation fertig?
+        if (this.currentAnimation === 'dead') {
+            const animDead = this.deadImages;
+
+            if (animDead?.type === 'sheetSequence') {
+                // Sequenz: über animationFinished
+                if (this.animationFinished) {
+                    this.isDeadAnimationReady = true;
+                }
+            } else {
+                // Array oder Einzel-Sheet
+                if (frameCount && this.frameIndex >= frameCount - 1) {
+                    this.isDeadAnimationReady = true;
+                }
+            }
+        }
+
         this.lastFrameTime = timestamp;
     }
 
-    /**
-     * Updates the currently displayed animation frame.
-     */
-    updateFrameImage() {
-        const images = this.getAnimationImages(this.currentAnimation);
-        if (!images || images.length === 0) return;
-        this.img = images[this.frameIndex % images.length];
-        this.frameIndex++;
-    }
-
-    /**
-     * Handles logic for death animation progression and final frame handling.
-     */
-    handleDeathAnimation() {
-        if (this.currentAnimation !== 'dead') return;
-        if (this.frameIndex < this.deadImages.length) return;
-        this.isDeadAnimationReady = true;
-        this.frameIndex = 0;
-        this.img = this.deadImages[7];
-    }
 
     setPhase(newPhase) {
         this.phase = newPhase;

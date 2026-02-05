@@ -1,5 +1,5 @@
 import { MovableObject } from './movable-object.class.js';
-import { Chicken } from './chicken.class.js';
+import { Enemy } from './enemy.class.js';
 import { EndbossTornado } from './endboss-tornado.class.js';
 import { Egg } from './egg.class.js';
 
@@ -178,7 +178,7 @@ export class EndbossAttack extends MovableObject {
                     return;
                 }
 
-                const enemy = new Chicken(
+                const enemy = new Enemy(
                     cfg.type,
                     setup.entityImages,     // oder images, je nachdem wie du’s nutzt
                     cfg.w,
