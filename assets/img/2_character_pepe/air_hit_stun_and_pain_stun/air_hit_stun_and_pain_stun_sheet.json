@@ -1,0 +1,20 @@
+﻿{
+    "frameHeight":  512,
+    "columns":  4,
+    "frameWidth":  512,
+    "animations": {
+    "air-hit-stun": {
+      "from": 0,
+      "to": 9,
+      "fps": 3
+    },
+    "air-pain-stun": {
+      "from": 10,
+      "to": 19,
+      "fps": 7
+    }
+  },
+    "image":  "air_hit_stun_and_pain_stun_sheet.webp",
+    "frames":  20,
+    "rows":  5
+}

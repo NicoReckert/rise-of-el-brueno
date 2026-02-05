@@ -1,0 +1,16 @@
+﻿{
+    "frameHeight":  512,
+    "columns":  4,
+    "frameWidth":  512,
+    "animations":  {
+                       "default":  {
+                                       "loop":  false,
+                                       "from":  0,
+                                       "to":  9,
+                                       "fps":  12
+                                   }
+                   },
+    "image":  "stand_up_after_collapse_sheet.webp",
+    "frames":  10,
+    "rows":  3
+}

@@ -7,16 +7,16 @@ import { MovableObject } from './movable-object.class.js';
  */
 export class Character extends MovableObject {
     VOIDLESS_ANIMS = new Set([
-        'kneel-and-cry', 'stand-up-and-look-determined', 'cry', 'look-determined',
-        'look-determined-and-stand-up', 'strong-determined', 'caress', 'caress-loop',
+        'kneel-and-cry', 'stand-up-determined', 'kneel-and-cry-loop', 'stand-up-determined-loop',
+        'determined-rise', 'determined-rise-loop', 'caress', 'caress-loop',
         'sit-down-and-play-guitar', 'play-guitar-and-sing', 'play-guitar',
         'light-a-campfire', 'meditation', 'meditation-loop', 'stand-up',
         'walk-determined', 'stand-determined', 'stand-determined-loop',
         'walk-in-storm', 'collapse', 'collapse-loop', 'stand-up-after-collapse', 'air-hit-stun', 'air-pain-stun'
     ]);
     TRANSITIONABLE_ANIMS = new Set([
-        'kneel-and-cry', 'stand-up-and-look-determined', 'look-determined-and-stand-up',
-        'caress', 'sit-down-and-play-guitar', 'light-a-campfire', 'attack', 'attack-sword',
+        'kneel-and-cry', 'stand-up-determined', 'determined-rise',
+        'caress', 'sit-down-and-play-guitar', 'light-a-campfire', 'attack-staff', 'attack-sword',
         'meditation', 'new-weapon', 'stand-up', 'stand-determined', 'collapse', 'stand-up-after-collapse', 'protect', 'air-hit-stun', 'hurt'
     ]);
 
@@ -110,9 +110,6 @@ export class Character extends MovableObject {
     initMovementImages() {
         this.idleWalkSheet = this.characterImages.idleWalkSheet ?? null;
         this.jumpSheet = this.characterImages.jumpSheet ?? null;
-        this.walkDeterminedImages = this.characterImages.walkDeterminedImages ?? (this.characterImages.walkDeterminedImages = []);
-        this.walkInStormImages = this.characterImages.walkInStormImages ?? (this.characterImages.walkInStormImages = []);
-        this.standUpImages = this.characterImages.standUpImages ?? (this.characterImages.standUpImages = []);
     }
 
     /**
@@ -120,34 +117,25 @@ export class Character extends MovableObject {
     */
     initEmotionImages() {
         this.hurtDeadSheet = this.characterImages.hurtDeadSheet ?? null;
-        this.kneelDownAndCryImages = this.characterImages.kneelDownAndCryImages ?? (this.characterImages.kneelDownAndCryImages = []);
-        this.cryImages = this.characterImages.cryImages ?? (this.characterImages.cryImages = []);
-        this.lookDeterminedImages = this.characterImages.lookDeterminedImages ?? (this.characterImages.lookDeterminedImages = []);
-        this.lookDeterminedStandUpImages = this.characterImages.lookDeterminedStandUpImages ?? (this.characterImages.lookDeterminedStandUpImages = []);
-        this.strongDeterminedImages = this.characterImages.strongDeterminedImages ?? (this.characterImages.strongDeterminedImages = []);
-        this.standDeterminedImages = this.characterImages.standDeterminedImages ?? (this.characterImages.standDeterminedImages = []);
-        this.standDeterminedLoopImages = this.characterImages.standDeterminedLoopImages ?? (this.characterImages.standDeterminedLoopImages = []);
-        this.collapseImages = this.characterImages.collapseImages ?? (this.characterImages.collapseImages = []);
-        this.collapseLoopImages = this.characterImages.collapseLoopImages ?? (this.characterImages.collapseLoopImages = []);
-        this.standUpAfterCollapseImages = this.characterImages.standUpAfterCollapseImages ?? (this.characterImages.standUpAfterCollapseImages = []);
-        this.airHitStunImages = this.characterImages.airHitStunImages ?? (this.characterImages.airHitStunImages = []);
-        this.airPainStunImages = this.characterImages.airPainStunImages ?? (this.characterImages.airPainStunImages = []);
+        this.kneelCryStandUpDeterminedSheet = this.characterImages.kneelCryStandUpDeterminedSheet ?? null;
+        this.determinedRiseSheet = this.characterImages.determinedRiseSheet ?? null;
+        this.walkStandDeterminedSheet = this.characterImages.walkStandDeterminedSheet ?? null;
+        this.walkInStormCollapseSheet = this.characterImages.walkInStormCollapseSheet ?? null;
+        this.standUpAfterCollapseSheet = this.characterImages.standUpAfterCollapseSheet ?? null;
+        this.airHitPainStunSheet = this.characterImages.airHitPainStunSheet ?? null;
     }
-
 
     /**
     * Initializes character action-related image sets.
     */
     initActionImages() {
-        this.attackImages = this.characterImages.attackImages ?? (this.characterImages.attackImages = []);
-        this.attackSwordImages = this.characterImages.attackSwordImages ?? (this.characterImages.attackSwordImages = []);
+        this.attackStaffSheet = this.characterImages.attackStaffSheet ?? null;
+        this.attackSwordSheet = this.characterImages.attackSwordSheet ?? null;
         this.jetPackImages = this.characterImages.jetPackImages ?? (this.characterImages.jetPackImages = []);
-        this.meditationImages = this.characterImages.meditationImages ?? (this.characterImages.meditationImages = []);
-        this.meditationLoopImages = this.characterImages.meditationLoopImages ?? (this.characterImages.meditationLoopImages = []);
-        this.newWeaponImages = this.characterImages.newWeaponImages ?? (this.characterImages.newWeaponImages = []);
-        this.newWeaponLoopImages = this.characterImages.newWeaponLoopImages ?? (this.characterImages.newWeaponLoopImages = []);
-        this.protectImages = this.characterImages.protectImages ?? (this.characterImages.protectImages = []);
-        this.protectLoopImages = this.characterImages.protectLoopImages ?? (this.characterImages.protectLoopImages = []);
+        this.meditationSheet = this.characterImages.meditationSheet ?? null;
+        this.newWeaponStartSheet = this.characterImages.newWeaponStartSheet ?? null;
+        this.newWeaponLoopSheet = this.characterImages.newWeaponLoopSheet ?? null;
+        this.protectSheet = this.characterImages.protectSheet ?? null;
     }
 
     /**
@@ -155,11 +143,10 @@ export class Character extends MovableObject {
     */
     initSpecialImages() {
         this.caressSheet = this.characterImages.caressSheet ?? null;
-        this.sitDownAndPlayGuitarImages = this.characterImages.sitDownAndPlayGuitarImages ?? (this.characterImages.sitDownAndPlayGuitarImages = []);
-        this.playGuitarAndSingImages = this.characterImages.playGuitarAndSingImages ?? (this.characterImages.playGuitarAndSingImages = []);
-        this.playGuitarImages = this.characterImages.playGuitarImages ?? (this.characterImages.playGuitarImages = []);
-        this.lightACampfireImages = this.characterImages.lightACampfireImages ?? (this.characterImages.lightACampfireImages = []);
-        this.standUpAndLookDeterminedImages = this.characterImages.standUpAndLookDeterminedImages ?? (this.characterImages.standUpAndLookDeterminedImages = []);
+        this.sitDownAndPlayGuitarSheet = this.characterImages.sitDownAndPlayGuitarSheet ?? null;
+        this.playGuitarAndSingSheet = this.characterImages.playGuitarAndSingSheet ?? null;
+        this.playGuitarSheet = this.characterImages.playGuitarSheet ?? null;
+        this.lightCampfireStandUpSheet = this.characterImages.lightCampfireStandUpSheet ?? null;
     }
 
     /**
@@ -363,11 +350,11 @@ export class Character extends MovableObject {
     */
     handleEmotionalAnimations() {
         if (this.isCaress) return this.setAnim('caress', 6, 'caress-loop');
-        if (this.isKneelAndCry) return this.setAnim('kneel-and-cry', 5, 'cry');
+        if (this.isKneelAndCry) return this.setAnim('kneel-and-cry', 5, 'kneel-and-cry-loop');
         if (this.isStandUpAndLookDetermined)
-            return this.setAnim('stand-up-and-look-determined', 6, 'look-determined');
+            return this.setAnim('stand-up-determined', 6, 'stand-up-determined-loop');
         if (this.isLookDeterminedAndStandUp)
-            return this.setAnim('look-determined-and-stand-up', 6, 'strong-determined');
+            return this.setAnim('determined-rise', 6, 'determined-rise-loop');
         if (this.isStandDetermined)
             return this.setAnim('stand-determined', 5, 'stand-determined-loop');
         if (this.isCollapse) return this.setAnim('collapse', 6, 'collapse-loop');
@@ -397,7 +384,7 @@ export class Character extends MovableObject {
     handleCombatAndMeditation() {
         if (this.isAttack) {
             if (!this.isHaveSword) {
-                return this.setAnim('attack', 7);
+                return this.setAnim('attack-staff', 7);
             } else return this.setAnim('attack-sword', 6);
         }
         if (this.isMeditation) return this.setAnim('meditation', 6, 'meditation-loop');
@@ -524,7 +511,7 @@ export class Character extends MovableObject {
 
 
             }
-            if (this.currentAnimation === 'attack') {
+            if (this.currentAnimation === 'attack-staff') {
                 // Aktiv bei jedem 6. Frame (Frame 6 → Index 6)
                 const everySixthFrame = this.frameIndex % 6 === 0 && this.frameIndex !== 0;
                 this.attackHitbox.active = everySixthFrame;
@@ -614,7 +601,7 @@ export class Character extends MovableObject {
         this.y = oldBottom - this.height;
 
         // z.B. in handleDeferredSizeUpdate() oder wenn isAttack true wird:
-        if (this.currentAnimation === 'attack') {
+        if (this.currentAnimation === 'attack-staff') {
             this.drawOffset = { x: 0, y: 0, flipX: -100 }; // Wert anpassen (-20 / -60 etc.)
         } else if (this.currentAnimation === 'attack-sword') {
             this.drawOffset = { x: 0, y: 0, flipX: -120 };
@@ -644,7 +631,7 @@ export class Character extends MovableObject {
     * @returns {boolean} True if the animation is large.
     */
     isLargeAnimationA(anim) {
-        return ['attack'].includes(anim);
+        return ['attack-staff'].includes(anim);
     }
 
     isLargeAnimationB(anim) {
@@ -694,10 +681,10 @@ export class Character extends MovableObject {
     */
     handleDeterminedTransitions(anim) {
         switch (anim) {
-            case 'stand-up-and-look-determined':
-                return this.setTransition('look-determined', 5.5);
-            case 'look-determined-and-stand-up':
-                return this.setTransition('strong-determined', 4);
+            case 'stand-up-determined':
+                return this.setTransition('stand-up-determined-loop', 5.5);
+            case 'determined-rise':
+                return this.setTransition('determined-rise-loop', 4);
             case 'stand-up':
                 this.isStandUp = false;
                 return true;
@@ -718,7 +705,7 @@ export class Character extends MovableObject {
                 this.isHurt = false;
                 return true;
             case 'kneel-and-cry':
-                return this.setTransition('cry');
+                return this.setTransition('kneel-and-cry-loop');
             case 'caress':
                 return this.setTransition('caress-loop', 6);
             case 'collapse':
@@ -755,7 +742,7 @@ export class Character extends MovableObject {
     */
     handleCombatTransitions(anim) {
         switch (anim) {
-            case 'attack':
+            case 'attack-staff':
                 this.isAttack = false;
                 this.hasHitEnemyThisAttack = false;
                 return true;
@@ -811,9 +798,9 @@ export class Character extends MovableObject {
         switch (state) {
             case 'walk': return this.idleWalkSheet;
             case 'jump': return this.jumpSheet;
-            case 'stand-up': return this.standUpImages;
-            case 'walk-determined': return this.walkDeterminedImages;
-            case 'walk-in-storm': return this.walkInStormImages;
+            case 'stand-up': return this.lightCampfireStandUpSheet;
+            case 'walk-determined': return this.walkStandDeterminedSheet;
+            case 'walk-in-storm': return this.walkInStormCollapseSheet;
         }
         return null;
     }
@@ -827,13 +814,13 @@ export class Character extends MovableObject {
         switch (state) {
             case 'dead': return this.hurtDeadSheet;
             case 'hurt': return this.hurtDeadSheet;
-            case 'kneel-and-cry': return this.kneelDownAndCryImages;
-            case 'cry': return this.cryImages;
-            case 'collapse': return this.collapseImages;
-            case 'collapse-loop': return this.collapseLoopImages;
-            case 'stand-up-after-collapse': return this.standUpAfterCollapseImages;
-            case 'air-hit-stun': return this.airHitStunImages;
-            case 'air-pain-stun': return this.airPainStunImages;
+            case 'kneel-and-cry': return this.kneelCryStandUpDeterminedSheet;
+            case 'kneel-and-cry-loop': return this.kneelCryStandUpDeterminedSheet;
+            case 'collapse': return this.walkInStormCollapseSheet;
+            case 'collapse-loop': return this.walkInStormCollapseSheet;
+            case 'stand-up-after-collapse': return this.standUpAfterCollapseSheet;
+            case 'air-hit-stun': return this.airHitPainStunSheet;
+            case 'air-pain-stun': return this.airHitPainStunSheet;
         }
         return null;
     }
@@ -845,12 +832,12 @@ export class Character extends MovableObject {
     */
     getDeterminedImages(state) {
         switch (state) {
-            case 'stand-up-and-look-determined': return this.standUpAndLookDeterminedImages;
-            case 'look-determined': return this.lookDeterminedImages;
-            case 'look-determined-and-stand-up': return this.lookDeterminedStandUpImages;
-            case 'strong-determined': return this.strongDeterminedImages;
-            case 'stand-determined': return this.standDeterminedImages;
-            case 'stand-determined-loop': return this.standDeterminedLoopImages;
+            case 'stand-up-determined': return this.kneelCryStandUpDeterminedSheet;
+            case 'stand-up-determined-loop': return this.kneelCryStandUpDeterminedSheet;
+            case 'determined-rise': return this.determinedRiseSheet;
+            case 'determined-rise-loop': return this.determinedRiseSheet;
+            case 'stand-determined': return this.walkStandDeterminedSheet;
+            case 'stand-determined-loop': return this.walkStandDeterminedSheet;
         }
         return null;
     }
@@ -864,10 +851,10 @@ export class Character extends MovableObject {
         switch (state) {
             case 'caress': return this.caressSheet;
             case 'caress-loop': return this.caressSheet;
-            case 'sit-down-and-play-guitar': return this.sitDownAndPlayGuitarImages;
-            case 'play-guitar-and-sing': return this.playGuitarAndSingImages;
-            case 'play-guitar': return this.playGuitarImages;
-            case 'light-a-campfire': return this.lightACampfireImages;
+            case 'sit-down-and-play-guitar': return this.sitDownAndPlayGuitarSheet;
+            case 'play-guitar-and-sing': return this.playGuitarAndSingSheet;
+            case 'play-guitar': return this.playGuitarSheet;
+            case 'light-a-campfire': return this.lightCampfireStandUpSheet;
         }
         return null;
     }
@@ -879,14 +866,14 @@ export class Character extends MovableObject {
     */
     getCombatImages(state) {
         switch (state) {
-            case 'attack': return this.attackImages;
-            case 'attack-sword': return this.attackSwordImages;
-            case 'meditation': return this.meditationImages;
-            case 'meditation-loop': return this.meditationLoopImages;
-            case 'new-weapon': return this.newWeaponImages;
-            case 'new-weapon-loop': return this.newWeaponLoopImages;
-            case 'protect': return this.protectImages;
-            case 'protect-loop': return this.protectLoopImages;
+            case 'attack-staff': return this.attackStaffSheet;
+            case 'attack-sword': return this.attackSwordSheet;
+            case 'meditation': return this.meditationSheet;
+            case 'meditation-loop': return this.meditationSheet;
+            case 'new-weapon': return this.newWeaponStartSheet;
+            case 'new-weapon-loop': return this.newWeaponLoopSheet;
+            case 'protect': return this.protectSheet;
+            case 'protect-loop': return this.protectSheet;
         }
         return null;
     }

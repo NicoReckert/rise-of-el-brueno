@@ -6,12 +6,14 @@
     "fireGoesOn": {
       "from": 0,
       "to": 12,
-      "fps": 13
+      "fps": 13,
+      "loop": false
     },
     "fireGoesOut": {
       "from": 13,
       "to": 18,
-      "fps": 6
+      "fps": 6,
+      "loop": false
     }
   },
     "image":  "fire_goes_on_and_out_sheet.webp",

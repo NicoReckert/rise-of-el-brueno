@@ -1,0 +1,30 @@
+﻿{
+    "frameHeight":  512,
+    "columns":  4,
+    "frameWidth":  512,
+    "animations": {
+    "kneel-and-cry": {
+      "from": 0,
+      "to": 7,
+      "fps": 3
+    },
+    "kneel-and-cry-loop": {
+      "from": 5,
+      "to": 7,
+      "fps": 7
+    },
+    "stand-up-determined": {
+      "from": 8,
+      "to": 17,
+      "fps": 7
+    },
+    "stand-up-determined-loop": {
+      "from": 15,
+      "to": 17,
+      "fps": 7
+    }
+  },
+    "image":  "kneel_cry_and_stand_up_determined_sheet.webp",
+    "frames":  18,
+    "rows":  5
+}

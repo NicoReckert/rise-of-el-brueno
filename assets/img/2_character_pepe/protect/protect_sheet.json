@@ -1,0 +1,20 @@
+﻿{
+    "frameHeight":  512,
+    "columns":  4,
+    "frameWidth":  512,
+    "animations": {
+    "protect": {
+      "from": 0,
+      "to": 7,
+      "fps": 10
+    },
+    "protect-loop": {
+      "from": 6,
+      "to": 7,
+      "fps": 6
+    }
+  },
+    "image":  "protect_sheet.webp",
+    "frames":  8,
+    "rows":  2
+}

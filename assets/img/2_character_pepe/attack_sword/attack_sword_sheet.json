@@ -1,0 +1,16 @@
+﻿{
+    "frameHeight":  848,
+    "columns":  4,
+    "frameWidth":  948,
+    "animations":  {
+                       "default":  {
+                                       "loop":  false,
+                                       "from":  0,
+                                       "to":  3,
+                                       "fps":  12
+                                   }
+                   },
+    "image":  "attack_sword_sheet.webp",
+    "frames":  4,
+    "rows":  1
+}

@@ -1,82 +1,96 @@
 const characterImageManifest = {
-    // idleImages: Array.from({ length: 10 }, (_, i) => `./assets/img/2_character_pepe/1_idle/idle/I-${i + 1}.webp`),
-    // walkImages: Array.from({ length: 6 }, (_, i) => `./assets/img/2_character_pepe/2_walk/W-2${i + 1}.webp`),
-    // jumpImages: Array.from({ length: 9 }, (_, i) => `./assets/img/2_character_pepe/3_jump/J-3${i + 1}.webp`),
-    // deadImages: Array.from({ length: 7 }, (_, i) => `./assets/img/2_character_pepe/5_dead/D-5${i + 1}.webp`),
-    // hurtImages: Array.from({ length: 3 }, (_, i) => `./assets/img/2_character_pepe/4_hurt/H-4${i + 1}.webp`),
     jetPackImages: Array.from({ length: 1 }, _ => `./assets/img/Pepe_Jetpack.webp`),
-    // caressImages: Array.from({ length: 8 }, (_, i) => `./assets/img/2_character_pepe/6_caress/image_${i + 1}.webp`),
-    // caressLoopImages: Array.from({ length: 3 }, (_, i) => `./assets/img/2_character_pepe/6_caress/image_${6 + i}.webp`),
-    // kneelDownAndCryImages: Array.from({ length: 8 }, (_, i) => `./assets/img/2_character_pepe/7_kneel-down-and-cry/image_${i + 1}.webp`),
-    // cryImages: Array.from({ length: 3 }, (_, i) => `./assets/img/2_character_pepe/7_kneel-down-and-cry/image_${6 + i}.webp`),
-    // standUpAndLookDeterminedImages: Array.from({ length: 10 }, (_, i) => `./assets/img/2_character_pepe/8_stand_up_look_determined/image_${i + 1}.webp`),
-    // lookDeterminedImages: Array.from({ length: 3 }, (_, i) => `./assets/img/2_character_pepe/8_stand_up_look_determined/image_${8 + i}.webp`),
-    // lookDeterminedStandUpImages: Array.from({ length: 15 }, (_, i) => `./assets/img/2_character_pepe/10/image_${i + 1}.webp`),
-    // strongDeterminedImages: Array.from({ length: 4 }, (_, i) => `./assets/img/2_character_pepe/10/image_${12 + i}.webp`),
-    // sitDownAndPlayGuitarImages: Array.from({ length: 6 }, (_, i) => `./assets/img/2_character_pepe/12/image_${i + 1}.webp`),
-    // playGuitarAndSingImages: Array.from({ length: 23 }, (_, i) => `./assets/img/2_character_pepe/12/image_${6 + i}.webp`),
-    // playGuitarImages: Array.from({ length: 20 }, (_, i) => `./assets/img/2_character_pepe/13/image_${i + 1}.webp`),
-    // lightACampfireImages: Array.from({ length: 10 }, (_, i) => `./assets/img/2_character_pepe/14/image_${i + 1}.webp`),
-    // attackImages: Array.from({ length: 4 }, (_, i) => `./assets/img/2_character_pepe/15/image_${i + 1}.webp`),
-    // meditationImages: Array.from({ length: 10 }, (_, i) => `./assets/img/2_character_pepe/16/image_${i + 1}.webp`),
-    // meditationLoopImages: Array.from({ length: 4 }, (_, i) => `./assets/img/2_character_pepe/16/image_${7 + i}.webp`),
-    // newWeaponImages: Array.from({ length: 58 }, (_, i) => `./assets/img/2_character_pepe/17/image_${i + 1}.webp`),
-    // newWeaponLoopImages: Array.from({ length: 22 }, (_, i) => `./assets/img/2_character_pepe/17/image_${31 + i}.webp`),
-    // standUpImages: Array.from({ length: 3 }, (_, i) => `./assets/img/2_character_pepe/18/image_${i + 1}.webp`),
-    // walkDeterminedImages: Array.from({ length: 4 }, (_, i) => `./assets/img/2_character_pepe/19/image_${4 + i}.webp`),
-    // standDeterminedImages: Array.from({ length: 8 }, (_, i) => `./assets/img/2_character_pepe/20/image_${i + 1}.webp`),
-    // standDeterminedLoopImages: Array.from({ length: 2 }, (_, i) => `./assets/img/2_character_pepe/20/image_${7 + i}.webp`)
 };
 
 export const characterManifestImmediate = {
     idleWalkSheet: {
         type: 'sheet',
-        json: './assets/img/2_character_pepe/1_idle/idle/idle_walk_sheet.json'
+        json: './assets/img/2_character_pepe/idle_and_walk/idle/idle_and_walk_sheet.json'
     },
     jumpSheet: {
         type: 'sheet',
-        json: './assets/img/2_character_pepe/3_jump/jump_sheet.json'
+        json: './assets/img/2_character_pepe/jump/jump_sheet.json'
     },
     caressSheet: {
         type: 'sheet',
-        json: './assets/img/2_character_pepe/6_caress/caress_sheet.json'
+        json: './assets/img/2_character_pepe/caress/caress_sheet.json'
     },
 }
 
 export const characterManifestDeferred = {
-    kneelDownAndCryImages: Array.from({ length: 8 }, (_, i) => `./assets/img/2_character_pepe/7_kneel-down-and-cry/image_${i + 1}.webp`),
-    cryImages: Array.from({ length: 3 }, (_, i) => `./assets/img/2_character_pepe/7_kneel-down-and-cry/image_${6 + i}.webp`),
-    standUpAndLookDeterminedImages: Array.from({ length: 10 }, (_, i) => `./assets/img/2_character_pepe/8_stand_up_look_determined/image_${i + 1}.webp`),
-    lookDeterminedImages: Array.from({ length: 3 }, (_, i) => `./assets/img/2_character_pepe/8_stand_up_look_determined/image_${8 + i}.webp`),
-    lookDeterminedStandUpImages: Array.from({ length: 15 }, (_, i) => `./assets/img/2_character_pepe/10/image_${i + 1}.webp`),
-    strongDeterminedImages: Array.from({ length: 4 }, (_, i) => `./assets/img/2_character_pepe/10/image_${12 + i}.webp`),
-    sitDownAndPlayGuitarImages: Array.from({ length: 6 }, (_, i) => `./assets/img/2_character_pepe/12/image_${i + 1}.webp`),
-    playGuitarAndSingImages: Array.from({ length: 23 }, (_, i) => `./assets/img/2_character_pepe/12/image_${6 + i}.webp`),
-    playGuitarImages: Array.from({ length: 20 }, (_, i) => `./assets/img/2_character_pepe/13/image_${i + 1}.webp`),
-    lightACampfireImages: Array.from({ length: 10 }, (_, i) => `./assets/img/2_character_pepe/14/image_${i + 1}.webp`),
-    standUpImages: Array.from({ length: 3 }, (_, i) => `./assets/img/2_character_pepe/18/image_${i + 1}.webp`),
-    walkDeterminedImages: Array.from({ length: 4 }, (_, i) => `./assets/img/2_character_pepe/19/image_${4 + i}.webp`),
-    standDeterminedImages: Array.from({ length: 8 }, (_, i) => `./assets/img/2_character_pepe/20/image_${i + 1}.webp`),
-    standDeterminedLoopImages: Array.from({ length: 2 }, (_, i) => `./assets/img/2_character_pepe/20/image_${7 + i}.webp`),
-    attackImages: Array.from({ length: 6 }, (_, i) => `./assets/img/2_character_pepe/21/Neu3/image_${i + 1}.png`)
+    kneelCryStandUpDeterminedSheet: {
+        type: 'sheet',
+        json: './assets/img/2_character_pepe/kneel_cry_and_stand_up_determined/kneel_cry_and_stand_up_determined_sheet.json'
+    },
+    determinedRiseSheet: {
+        type: 'sheet',
+        json: './assets/img/2_character_pepe/determined_rise/determined_rise_sheet.json'
+    },
+    sitDownAndPlayGuitarSheet: {
+        type: 'sheet',
+        json: './assets/img/2_character_pepe/sit_down_and_play_guitar/sit_down_and_play_guitar_sheet.json'
+    },
+    playGuitarAndSingSheet: {
+        type: 'sheet',
+        json: './assets/img/2_character_pepe/play_guitar_and_sing/play_guitar_and_sing_sheet.json'
+    },
+    playGuitarSheet: {
+        type: 'sheet',
+        json: './assets/img/2_character_pepe/play_guitar/play_guitar_sheet.json'
+    },
+    lightCampfireStandUpSheet: {
+        type: 'sheet',
+        json: './assets/img/2_character_pepe/light_campfire_and_stand_up/light_campfire_and_stand_up_sheet.json'
+    },
+    walkStandDeterminedSheet: {
+        type: 'sheet',
+        json: './assets/img/2_character_pepe/walk_and_stand_determined/walk_and_stand_determined_sheet.json'
+    },
+    attackStaffSheet: {
+        type: 'sheet',
+        json: './assets/img/2_character_pepe/attack_staff/attack_staff_sheet.json'
+    }
 }
 
 export const otherLevelCharacterManifestLazy = {
     hurtDeadSheet: {
         type: 'sheet',
-        json: './assets/img/2_character_pepe/4_hurt/hurt_dead_sheet.json'
+        json: './assets/img/2_character_pepe/hurt_and_dead/hurt_and_dead_sheet.json'
     },
-    attackSwordImages: Array.from({ length: 4 }, (_, i) => `./assets/img/2_character_pepe/27/Neu/image_${i + 1}.png`),
-    meditationImages: Array.from({ length: 10 }, (_, i) => `./assets/img/2_character_pepe/16/image_${i + 1}.webp`),
-    meditationLoopImages: Array.from({ length: 4 }, (_, i) => `./assets/img/2_character_pepe/16/image_${7 + i}.webp`),
-    newWeaponImages: Array.from({ length: 58 }, (_, i) => `./assets/img/2_character_pepe/17/image_${i + 1}.webp`),
-    newWeaponLoopImages: Array.from({ length: 22 }, (_, i) => `./assets/img/2_character_pepe/17/image_${31 + i}.webp`),
-    walkInStormImages: Array.from({ length: 8 }, (_, i) => `./assets/img/2_character_pepe/22/image_${3 + i}.png`),
-    collapseImages: Array.from({ length: 10 }, (_, i) => `./assets/img/2_character_pepe/23/image_${i + 1}.png`),
-    collapseLoopImages: Array.from({ length: 1 }, _ => `./assets/img/2_character_pepe/23/image_10.png`),
-    standUpAfterCollapseImages: Array.from({ length: 10 }, (_, i) => `./assets/img/2_character_pepe/23/image_${10 - i}.png`),
-    protectImages: Array.from({ length: 8 }, (_, i) => `./assets/img/2_character_pepe/24/image_${i + 1}.png`),
-    protectLoopImages: Array.from({ length: 2 }, (_, i) => `./assets/img/2_character_pepe/24/image_${7 + i}.png`),
-    airHitStunImages: Array.from({ length: 10 }, (_, i) => `./assets/img/2_character_pepe/25/image_${i + 1}.png`),
-    airPainStunImages: Array.from({ length: 10 }, (_, i) => `./assets/img/2_character_pepe/26/image_${i + 1}.png`)
+    attackSwordSheet: {
+        type: 'sheet',
+        json: './assets/img/2_character_pepe/attack_sword/attack_sword_sheet.json'
+    },
+    meditationSheet: {
+        type: 'sheet',
+        json: './assets/img/2_character_pepe/meditation/meditation_sheet.json'
+    },
+    newWeaponStartSheet: {
+        type: 'sheetSequence',
+        sheets: [
+            { json: './assets/img/2_character_pepe/new_weapon_start_and_loop/start/new_weapon_start_sheet_01.json' },
+            { json: './assets/img/2_character_pepe/new_weapon_start_and_loop/start/new_weapon_start_sheet_02.json' },
+            { json: './assets/img/2_character_pepe/new_weapon_start_and_loop/start/new_weapon_start_sheet_03.json' }
+        ]
+    },
+    newWeaponLoopSheet: {
+        type: 'sheet',
+        json: './assets/img/2_character_pepe/new_weapon_start_and_loop/loop/new_weapon_loop_sheet.json'
+    },
+    walkInStormCollapseSheet: {
+        type: 'sheet',
+        json: './assets/img/2_character_pepe/walk_in_storm_and_collapse/walk_in_storm_and_collapse_sheet.json'
+    },
+    standUpAfterCollapseSheet: {
+        type: 'sheet',
+        json: './assets/img/2_character_pepe/stand_up_after_collapse/stand_up_after_collapse_sheet.json'
+    },
+    protectSheet: {
+        type: 'sheet',
+        json: './assets/img/2_character_pepe/protect/protect_sheet.json'
+    },
+    airHitPainStunSheet: {
+        type: 'sheet',
+        json: './assets/img/2_character_pepe/air_hit_stun_and_pain_stun/air_hit_stun_and_pain_stun_sheet.json'
+    }
 }
