@@ -1,0 +1,20 @@
+﻿{
+    "frameHeight":  512,
+    "columns":  4,
+    "frameWidth":  512,
+    "animations": {
+    "fallDown": {
+      "from": 0,
+      "to": 7,
+      "fps": 10
+    },
+    "impact": {
+      "from": 8,
+      "to": 10,
+      "fps": 8
+    }
+  },
+    "image":  "fall_down_and_impact_sheet.webp",
+    "frames":  11,
+    "rows":  3
+}

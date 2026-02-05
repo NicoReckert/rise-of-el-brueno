@@ -46,6 +46,7 @@ export class FarmLevelController {
 
     initWind() {
         this.windParticleEffect = new WindParticleEffect(this.canvas.width * 9, this.canvas.height, 1000);
+        this.renderer.windParticleEffect = this.windParticleEffect;
     }
 
     update(timestamp) {

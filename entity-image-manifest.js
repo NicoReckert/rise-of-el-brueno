@@ -384,18 +384,54 @@ export const otherLevelEntityManifestLazy = {
   },
 
   dragonSmall: {
-    idle: Array.from({ length: 6 }, (_, i) => `./assets/img/3_enemies_chicken/dragon_small/idle/image_${i + 1}.png`),
-    airApproach: Array.from({ length: 4 }, (_, i) => `./assets/img/3_enemies_chicken/dragon_small/air_approach/image_${i + 1}.png`),
-    diveStart: Array.from({ length: 4 }, (_, i) => `./assets/img/3_enemies_chicken/dragon_small/dive_start/image_${i + 1}.png`),
-    diveFast: Array.from({ length: 4 }, (_, i) => `./assets/img/3_enemies_chicken/dragon_small/dive_fast/image_${i + 1}.png`),
-    attack: Array.from({ length: 3 }, (_, i) => `./assets/img/3_enemies_chicken/dragon_small/attack/image_${i + 1}.png`),
-    diveUpShallow: Array.from({ length: 4 }, (_, i) => `./assets/img/3_enemies_chicken/dragon_small/dive_up_shallow/image_${i + 1}.png`),
-    diveUpMedium: Array.from({ length: 4 }, (_, i) => `./assets/img/3_enemies_chicken/dragon_small/dive_up_medium/image_${i + 1}.png`),
-    diveUpSteep: Array.from({ length: 4 }, (_, i) => `./assets/img/3_enemies_chicken/dragon_small/dive_up_steep/image_${i + 1}.png`),
-    hurt: Array.from({ length: 5 }, (_, i) => `./assets/img/3_enemies_chicken/dragon_small/hurt/image_${i + 1}.png`),
-    fallDown: Array.from({ length: 8 }, (_, i) => `./assets/img/3_enemies_chicken/dragon_small/fall_down/image_${i + 1}.png`),
-    impact: Array.from({ length: 3 }, (_, i) => `./assets/img/3_enemies_chicken/dragon_small/impact/image_${i + 1}.png`),
-    dead: Array.from({ length: 1 }, _ => `./assets/img/3_enemies_chicken/dragon_small/dead/image_1.png`)
+    idle: {
+      type: 'sheet',
+      json: './assets/img/3_enemies_chicken/dragon_small/idle_hurt_attack_dead/idle_hurt_attack_dead_sheet.json'
+    },
+    airApproach: {
+      type: 'sheet',
+      json: './assets/img/3_enemies_chicken/dragon_small/air_approach_dive_start_and_fast/air_approach_dive_start_and_fast_sheet.json'
+    },
+    diveStart: {
+      type: 'sheet',
+      json: './assets/img/3_enemies_chicken/dragon_small/air_approach_dive_start_and_fast/air_approach_dive_start_and_fast_sheet.json'
+    },
+    diveFast: {
+      type: 'sheet',
+      json: './assets/img/3_enemies_chicken/dragon_small/air_approach_dive_start_and_fast/air_approach_dive_start_and_fast_sheet.json'
+    },
+    attack: {
+      type: 'sheet',
+      json: './assets/img/3_enemies_chicken/dragon_small/idle_hurt_attack_dead/idle_hurt_attack_dead_sheet.json'
+    },
+    diveUpShallow: {
+      type: 'sheet',
+      json: './assets/img/3_enemies_chicken/dragon_small/dive_up_shallow_medium_steep/dive_up_shallow_medium_steep_sheet.json'
+    },
+    diveUpMedium: {
+      type: 'sheet',
+      json: './assets/img/3_enemies_chicken/dragon_small/dive_up_shallow_medium_steep/dive_up_shallow_medium_steep_sheet.json'
+    },
+    diveUpSteep: {
+      type: 'sheet',
+      json: './assets/img/3_enemies_chicken/dragon_small/dive_up_shallow_medium_steep/dive_up_shallow_medium_steep_sheet.json'
+    },
+    hurt: {
+      type: 'sheet',
+      json: './assets/img/3_enemies_chicken/dragon_small/idle_hurt_attack_dead/idle_hurt_attack_dead_sheet.json'
+    },
+    fallDown: {
+      type: 'sheet',
+      json: './assets/img/3_enemies_chicken/dragon_small/fall_down_and_impact/fall_down_and_impact_sheet.json'
+    },
+    impact: {
+      type: 'sheet',
+      json: './assets/img/3_enemies_chicken/dragon_small/fall_down_and_impact/fall_down_and_impact_sheet.json'
+    },
+    dead: {
+      type: 'sheet',
+      json: './assets/img/3_enemies_chicken/dragon_small/idle_hurt_attack_dead/idle_hurt_attack_dead_sheet.json'
+    }
   },
 
   lifeEnergyBoss: {
@@ -470,21 +506,48 @@ export const otherLevelEntityManifestLazy = {
   },
 
   juanitoSpirit: {
-    idle: Array.from({ length: 8 }, (_, i) => `./assets/img/entities/juanito-ghost/idle/image_${i + 1}.png`),
-    spiritCuddle: Array.from({ length: 8 }, (_, i) => `./assets/img/entities/juanito-ghost/spirit-cuddle/image_${i + 1}.png`),
-    spiritCuddleLoop: Array.from({ length: 6 }, (_, i) => `./assets/img/entities/juanito-ghost/spirit-cuddle-loop/image_${i + 1}.png`)
+    idle: {
+      type: 'sheet',
+      json: './assets/img/entities/juanito_spirit/idle_and_spirit_cuddle/idle_and_spirit_cuddle_sheet.json'
+    },
+    spiritCuddle: {
+      type: 'sheet',
+      json: './assets/img/entities/juanito_spirit/idle_and_spirit_cuddle/idle_and_spirit_cuddle_sheet.json'
+    },
+    spiritCuddleLoop: {
+      type: 'sheet',
+      json: './assets/img/entities/juanito_spirit/idle_and_spirit_cuddle/idle_and_spirit_cuddle_sheet.json'
+    }
   },
 
   pollitoSpirit: {
-    idle: Array.from({ length: 6 }, (_, i) => `./assets/img/entities/pollito-spirit/idle/image_${i + 1}.png`),
-    spiritCuddle: Array.from({ length: 8 }, (_, i) => `./assets/img/entities/pollito-spirit/spirit-cuddle/image_${i + 1}.png`),
-    spiritCuddleLoop: Array.from({ length: 6 }, (_, i) => `./assets/img/entities/pollito-spirit/spirit-cuddle-loop/image_${i + 1}.png`)
+    idle: {
+      type: 'sheet',
+      json: './assets/img/entities/pollito_spirit/idle_and_spirit_cuddle/idle_and_spirit_cuddle_sheet.json'
+    },
+    spiritCuddle: {
+      type: 'sheet',
+      json: './assets/img/entities/pollito_spirit/idle_and_spirit_cuddle/idle_and_spirit_cuddle_sheet.json'
+    },
+    spiritCuddleLoop: {
+      type: 'sheet',
+      json: './assets/img/entities/pollito_spirit/idle_and_spirit_cuddle/idle_and_spirit_cuddle_sheet.json'
+    }
   },
 
   lolaSpirit: {
-    idle: Array.from({ length: 6 }, (_, i) => `./assets/img/entities/lola-spirit/idle/image_${i + 1}.png`),
-    spiritCuddle: Array.from({ length: 8 }, (_, i) => `./assets/img/entities/lola-spirit/spirit-cuddle/image_${i + 1}.png`),
-    spiritCuddleLoop: Array.from({ length: 8 }, (_, i) => `./assets/img/entities/lola-spirit/spirit-cuddle-loop/image_${i + 1}.png`)
+    idle: {
+      type: 'sheet',
+      json: './assets/img/entities/lola_spirit/idle_and_spirit_cuddle/idle_and_spirit_cuddle_sheet.json'
+    },
+    spiritCuddle: {
+      type: 'sheet',
+      json: './assets/img/entities/lola_spirit/idle_and_spirit_cuddle/idle_and_spirit_cuddle_sheet.json'
+    },
+    spiritCuddleLoop: {
+      type: 'sheet',
+      json: './assets/img/entities/lola_spirit/idle_and_spirit_cuddle/idle_and_spirit_cuddle_sheet.json'
+    }
   },
 
   spiritEssence: {
