@@ -1,4 +1,5 @@
 import { AnimatedEntity } from './animated-entity.class.js';
+import { allVideos } from '../media-store.js';
 
 export class NewWeaponLevelSetup {
     constructor(world) {
@@ -14,11 +15,6 @@ export class NewWeaponLevelSetup {
         };
         this.sounds.newWeaponMusic.volume = 0.8;
         this.environment.macuahuitl.isFlipped = false;
-        this.video = document.createElement('video');
-        this.video.src = './assets/videos/level_new_weapon_background_video.mp4';
-        this.video.preload = 'auto';
-        this.video.muted = true;
-        this.video.loop = true;
-        // document.body.appendChild(this.video);
+        this.video = allVideos.new_weapon_bg_video || null;
     }
 }

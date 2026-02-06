@@ -1,10 +1,12 @@
 import { World } from '../classes/world.class.js';
-import { allAudios } from '../audio-store.js';
-import { initScript } from '../script.js';
+import { allAudios } from '../media-store.js';
+import { initScriptAudioIntro, initScriptVisuals } from '../script.js';
+import { initScriptAudio } from '../script.js';
 import { stopTitleMusic } from '../script.js';
 import { fadeInTitleMusic } from '../script.js';
 import { preloadManifestAudio } from '../audio-loader.js';
 import { fadeOutAudio } from '../script.js';
+import { introAudioManifest } from '../audio-manifest.js';
 import { farmAudioManifestImmediate } from '../audio-manifest.js';
 import { farmAudioManifestDeferred } from '../audio-manifest.js';
 import { otherLevelAudioManifestLazy } from '../audio-manifest.js';
@@ -15,33 +17,90 @@ import { farmEntityManifestImmediate } from '../entity-image-manifest.js';
 import { farmEntityManifestDeferred } from '../entity-image-manifest.js';
 import { otherLevelEntityManifestLazy } from '../entity-image-manifest.js';
 import { preloadManifestImages } from '../image-loader.js';
+import { preloadManifestVideos } from '../video-loader.js';
+import { farmVideoManifestDeferred } from '../video-manifest.js';
 
 let canvas;
 let world;
 let characterImages = {};
 let entityImages = {};
+let progressValue = 0;
 
 async function init() {
     const overlay = document.getElementById('loading-overlay');
     const bar = document.getElementById('loading-bar');
     const text = document.getElementById('loading-text');
 
-    const manifests = [characterManifestImmediate, farmEntityManifestImmediate, farmAudioManifestImmediate];
+    // 0–5%: kleines Fake-Intro („Preparing experience…“)
+    await smoothFillProgress(
+        bar,
+        text,
+        0,
+        5,
+        400,
+        {
+            showPercent: false,
+            label: "Preparing experience…"
+        }
+    );
+
+    // Menü-Videos + Intro-Audios laden
+    await initScriptVisuals();
+    await preloadManifestAudio(introAudioManifest);
+    initScriptAudioIntro();
+
+    // === AB HIER: echter Fortschritt für alle Immediate-Assets (Bilder + Audio) ===
+
+    const manifests = [
+        characterManifestImmediate,
+        farmEntityManifestImmediate,
+        farmAudioManifestImmediate
+    ];
+
     const totalFiles = countManifestFiles(manifests);
     let loaded = 0;
-    const updateProgress = () => {
-        const percent = Math.round((loaded / totalFiles) * 100);
-        bar.style.width = `${percent}%`;
-        text.textContent = `Loading... ${percent}%`;
-    };
-    const onFileLoaded = () => { loaded++; updateProgress(); };
 
+    // Ab 5% geht es „real“ los, bis ca. 70%
+    const BASE_PROGRESS = 5;
+    const REAL_PROGRESS_RANGE = 65; // 5 → 70
+
+    const updateProgress = (label = "Loading assets…") => {
+        const percent =
+            BASE_PROGRESS +
+            Math.round((loaded / totalFiles) * REAL_PROGRESS_RANGE);
+
+        setProgress(bar, percent);
+        text.textContent = `${label} ${percent}%`;
+    };
+
+    const onFileLoaded = () => {
+        loaded++;
+        updateProgress();
+    };
+
+    // Direkt nach Setup einmal anzeigen
+    updateProgress("Loading assets…");
+
+    // Bilder + Audio parallel laden, alle zählen in denselben Fortschritt
     const [chars, entities] = await Promise.all([
         preloadManifestImages(characterManifestImmediate, onFileLoaded),
         preloadManifestImages(farmEntityManifestImmediate, onFileLoaded),
+        preloadManifestAudio(farmAudioManifestImmediate, onFileLoaded)
     ]);
-    await preloadManifestAudio(farmAudioManifestImmediate);
-    initScript();
+
+    // Jetzt sollten wir irgendwo um 70% herum sein
+    initScriptAudio();
+
+    // 70 → 100%: kleiner „Finishing“-Fake
+    await smoothFillProgress(
+        bar,
+        text,
+        progressValue || 70,
+        100,
+        600,
+        { label: "Finalizing…" }
+    );
+
     Object.assign(characterImages, chars);
     smartMerge(entityImages, entities);
 
@@ -60,8 +119,8 @@ async function init() {
     world = new World(canvas, characterImages, entityImages, allAudios);
     listenStartButton();
 
-    loadDeferredAssets(characterImages, entityImages, allAudios);
-    loadLazyAssets(characterImages, entityImages, allAudios);
+    loadDeferredAssets();
+    loadLazyAssets();
 }
 
 function countManifestFiles(manifests) {
@@ -80,7 +139,8 @@ async function loadDeferredAssets() {
         const [charDeferred, entityDeferred] = await Promise.all([
             preloadManifestImages(characterManifestDeferred),
             preloadManifestImages(farmEntityManifestDeferred),
-            preloadManifestAudio(farmAudioManifestDeferred)
+            preloadManifestAudio(farmAudioManifestDeferred),
+            // preloadManifestVideos(farmVideoManifestDeferred)
         ]);
 
         Object.assign(characterImages, charDeferred);
@@ -99,6 +159,13 @@ async function loadDeferredAssets() {
             world.character?.initSpecialImages();
         }
     } catch { }
+
+    try {
+        await preloadManifestVideos(farmVideoManifestDeferred);
+        console.log('[loadDeferredAssets] videos loaded');
+    } catch (e) {
+        console.warn('[loadDeferredAssets] video preload failed:', e);
+    }
 }
 
 async function loadLazyAssets() {
@@ -136,10 +203,6 @@ async function loadLazyAssets() {
     } catch { }
 }
 
-
-
-
-
 function smartMerge(target, source) {
     if (!source || typeof source !== "object") return target || {};
     if (!target || typeof target !== "object") target = {};
@@ -165,6 +228,45 @@ function smartMerge(target, source) {
 }
 
 
+function smoothFillProgress(
+    bar,
+    text,
+    from,
+    to,
+    duration = 600,
+    { showPercent = true, label = "Loading..." } = {}
+) {
+    return new Promise(resolve => {
+        const start = performance.now();
+
+        function step(now) {
+            const progress = Math.min((now - start) / duration, 1);
+            const value = Math.round(from + (to - from) * progress);
+
+            setProgress(bar, value);
+
+
+            if (showPercent) {
+                text.textContent = `${label} ${value}%`;
+            } else {
+                text.textContent = label;
+            }
+
+            if (progress < 1) {
+                requestAnimationFrame(step);
+            } else {
+                resolve();
+            }
+        }
+
+        requestAnimationFrame(step);
+    });
+}
+
+function setProgress(bar, value) {
+    progressValue = Math.max(progressValue, value);
+    bar.style.width = `${progressValue}%`;
+}
 
 
 
@@ -172,9 +274,10 @@ function smartMerge(target, source) {
 
 
 
-window.addEventListener('keydown', (event) => {
-    world.keyboard?.setKeyTrue(event.key);
-});
+
+
+
+
 
 window.addEventListener('keyup', (event) => {
     world.keyboard?.setKeyFalse(event.key);
@@ -190,46 +293,6 @@ document.getElementById('next-level-button').addEventListener('click', () => {
     document.getElementById('level-complete-button-box').classList.add('d-none');
 });
 
-document.getElementById('repeat-level-button').addEventListener('click', () => {
-    // resetAllAudios(allAudios, { log: true });
-    // world.restartLevel('farmLevel');
-    document.getElementById('level-complete-button-box').classList.add('d-none');
-    if (world) world.destroy();
-    resetAllAudios(allAudios, { log: true });
-    world = new World(canvas, characterImages, entityImages, allAudios);
-    if (typeof world.initRemainingSetups === "function") {
-        world.initRemainingSetups();
-    }
-    world.startGame();
-});
-
-document.getElementById('menu-level-button').addEventListener('click', () => {
-    fadeOutAudio(world.levelCompleteSetup.sounds.levelCompleteMusic, 1000);
-    fadeInTitleMusic();
-    document.getElementById('overlay-startscreen').style.display = 'flex';
-    // document.getElementById('overlay-startscreen').classList.remove('opacity-none');
-    // document.getElementById('canvas').style.display = 'none';
-    // document.getElementById('canvas-button-box').style.display = 'none';
-    document.getElementById('move-button-box').classList.add('d-none');
-    document.getElementById('level-complete-button-box').classList.add('d-none');
-    if (document.fullscreenElement) {
-        try {
-            document.exitFullscreen();
-        } catch (err) {
-            console.warn('Fehler beim Beenden des Fullscreens:', err);
-        }
-    }
-    if (world) world.destroy();
-
-    resetAllAudios(allAudios, { log: true });
-    console.log("happyTogetherMusic nach reset:", allAudios.happyTogetherMusic?.currentTime);
-
-    world = new World(canvas, characterImages, entityImages, allAudios);
-    // init();
-    if (typeof world.initRemainingSetups === "function") {
-        world.initRemainingSetups();
-    }
-});
 
 function listenStartButton() {
     document.getElementById('start-button').addEventListener('click', () => {

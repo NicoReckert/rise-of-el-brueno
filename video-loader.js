@@ -1,45 +1,101 @@
-export function attachVideoSource(id, src) {
+import { allVideos } from "./media-store.js";
+
+export function attachVideo(key, elementId, src) {
+    const el = document.getElementById(elementId);
+    if (!el) {
+        console.warn(`[attachVideo] Video element '${elementId}' not found yet`);
+        return null;
+    }
+
+    if (allVideos[key]) {
+        return allVideos[key];
+    }
+
+    el.preload = "none";
+    el.muted = true;
+    el.playsInline = true;
+
+    // 🔑 NUR merken, NICHT setzen
+    el.dataset.src = src;
+
+    allVideos[key] = el;
+    return el;
+}
+
+export function loadVideo(video) {
     return new Promise((resolve, reject) => {
-        const video = document.getElementById(id);
-        if (!video) return reject(new Error(`Video mit ID ${id} nicht gefunden`));
+        if (!video) return reject("Kein Video übergeben");
 
-        // Autoplay-Policy freundlich
-        video.muted = true;
-        video.playsInline = true;
-        // video.autoplay = true;
-        video.preload = "auto";
-
-        // Keine doppelten Quellen
-        if (!video.querySelector(`source[src="${src}"]`)) {
-            const source = document.createElement("source");
-            source.src = src;
-            source.type = "video/mp4";
-            video.appendChild(source);
+        // Schon geladen?
+        if (video.src) {
+            resolve(video);
+            return;
         }
 
+        const src = video.dataset.src;
+        if (!src) {
+            reject("Kein Video-src vorhanden");
+            return;
+        }
+
+        const source = document.createElement("source");
+        source.src = src;
+        source.type = "video/mp4";
+        video.appendChild(source);
+
+        video.preload = "auto";
+
         const cleanup = () => {
-            video.removeEventListener("canplaythrough", onReady);
             video.removeEventListener("loadeddata", onReady);
             video.removeEventListener("error", onError);
         };
 
-        const onReady = () => { cleanup(); resolve(video); };
-        const onError = () => { cleanup(); reject(new Error(`Fehler beim Laden: ${src}`)); };
+        const onReady = () => {
+            cleanup();
+            resolve(video);
+        };
 
-        video.addEventListener("canplaythrough", onReady, { once: true });
-        video.addEventListener("loadeddata", onReady, { once: true }); // Safari-Fallback
+        const onError = () => {
+            cleanup();
+            reject(new Error(`Fehler beim Laden: ${src}`));
+        };
+
+        video.addEventListener("loadeddata", onReady, { once: true });
         video.addEventListener("error", onError, { once: true });
 
-        try {
-            video.load();
-            // Direkt checken
-            if (video.readyState >= 3) {
-                cleanup();
-                resolve(video);
-            }
-        } catch (e) {
-            cleanup();
-            reject(e);
-        }
+        video.load();
     });
+}
+
+export async function preloadManifestVideos(manifest, onFileLoaded) {
+    const entries = Object.entries(manifest);
+
+    const results = await Promise.all(
+        entries.map(async ([key, src]) => {
+            // Schon ein Video registriert? → wiederverwenden
+            let video = allVideos[key];
+
+            if (!video) {
+                // eigenes Video-Element im JS (muss nicht im DOM sein)
+                video = document.createElement("video");
+                video.preload = "auto";
+                video.playsInline = true;
+                video.muted = true; // für Preload meist leise
+                video.dataset.src = src;
+
+                allVideos[key] = video;
+            }
+
+            // lädt nur, wenn noch kein src gesetzt ist
+            await loadVideo(video);
+
+            if (typeof onFileLoaded === "function") {
+                onFileLoaded();
+            }
+
+            return [key, video];
+        })
+    );
+
+    return Object.fromEntries(results);
 }

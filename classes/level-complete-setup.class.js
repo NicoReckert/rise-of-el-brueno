@@ -1,5 +1,6 @@
 import { AnimatedEntity } from './animated-entity.class.js';
 import { levelCompleteEvents } from '../events/level-complete-events.js';
+import { allVideos } from '../media-store.js';
 
 export class LevelCompleteSetup {
     constructor(world) {
@@ -14,11 +15,6 @@ export class LevelCompleteSetup {
             levelCompleteMusic: this.allAudios.levelCompleteMusic,
             levelCompleteSound: this.allAudios.levelCompleteSound
         };
-        this.video = document.createElement('video');
-        this.video.src = './assets/videos/level_complete_background_video.mp4';
-        this.video.preload = 'auto';
-        this.video.muted = true;
-        this.video.loop = true;
-        // document.body.appendChild(this.video);
+        this.video = allVideos.complete_bg_video || null;
     }
 }

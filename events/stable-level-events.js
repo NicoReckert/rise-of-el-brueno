@@ -211,7 +211,7 @@ export const stableEvents =
             objectA: 'character',
             objectB: 'memoryLight',
             once: false,
-            condition: (setup) => setup.world.farmLevelController.questManager.step >= 20,
+            condition: (setup) => setup.video && setup.world.farmLevelController.questManager.step >= 20,
             action: (setup) => {
                 if (setup.video.readyState >= 2 && !setup.video.paused && !setup.video.ended) {
                     setup.world.ctx.save();
@@ -226,7 +226,7 @@ export const stableEvents =
         {
             type: 'input',
             key: 'S',
-            condition: (setup) => setup.video.readyState >= 2 && !setup.video.paused && !setup.video.ended,
+            condition: (setup) => setup.video && setup.video.readyState >= 2 && !setup.video.paused && !setup.video.ended,
             action: (setup) => {
                 setup.video.pause();
             }

@@ -1,4 +1,4 @@
-import { allAudios } from "./audio-store.js";
+import { allAudios } from "./media-store.js";
 
 const audioCache = new Map();
 
@@ -31,26 +31,32 @@ function loadAudio(src) {
 }
 
 
-export async function preloadManifestAudio(manifest) {
+export async function preloadManifestAudio(manifest, onFileLoaded) {
   const entries = Object.entries(manifest);
 
   const results = await Promise.all(
     entries.map(async ([key, paths]) => {
+      const sources = Array.isArray(paths) ? paths : [paths];
 
-      // ✅ EXISTIERT SCHON → NICHT NEU LADEN
+      // ✅ Wenn Audio schon existiert, trotzdem Progress hochzählen
       if (allAudios[key]) {
+        if (typeof onFileLoaded === "function") {
+          sources.forEach(() => onFileLoaded());
+        }
         return [key, allAudios[key]];
       }
 
-      const sources = Array.isArray(paths) ? paths : [paths];
-
       const loaded = await Promise.all(
-        sources.map(src => loadAudio(src))
+        sources.map(async (src) => {
+          const audio = await loadAudio(src);
+          if (typeof onFileLoaded === "function") {
+            onFileLoaded();     // 👉 jedes einzelne File zählt
+          }
+          return audio;
+        })
       );
 
       const audio = loaded.length === 1 ? loaded[0] : loaded;
-
-      // ✅ DIREKT REGISTRIEREN
       allAudios[key] = audio;
 
       return [key, audio];

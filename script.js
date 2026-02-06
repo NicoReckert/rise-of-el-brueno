@@ -1,6 +1,8 @@
-import { allAudios } from "./audio-store.js";
-import { attachVideoSource } from "./video-loader.js";
+import { allAudios } from "./media-store.js";
+import { allVideos } from "./media-store.js";
+import { attachVideo } from "./video-loader.js";
 import { videoManifest } from "./video-manifest.js";
+import { loadVideo } from "./video-loader.js";
 
 let titleMusic;
 let titleMusic2;
@@ -116,24 +118,96 @@ function buildCharacters() {
 const storyText = 'Rise of El Brünö erzählt die Geschichte eines einfachen mexikanischen Bauern, der sein friedliches Leben auf dem Hof mit seinen Tieren genießt. Eines Nachts werden seine geliebten Freunde von einer dunklen Macht entführt. Brünö bleibt nichts anderes übrig, als sich auf eine Reise voller Gefahren, Magie und uralter Geheimnisse zu begeben. Auf seinem Weg trifft er Verbündete und stellt sich Wesen, die von einem wahnsinnigen Wissenschaftler erschaffen wurden. Doch je weiter Brünö kommt, desto mehr erkennt er, dass seine Mission größer ist, als nur seine Freunde zu retten. Er kämpft für das Gleichgewicht der Welt.';
 
 
-function startVideo() {
-    let video = document.getElementById('background-video');
-    let video2 = document.getElementById('start-initialisation-video2');
-    video2.classList.remove('opacity-none');
-    video2.classList.add('animation-video2');
-    video2.play();
-    titleMusic.play();
-    setTimeout(() => {
-        video.play();
-        video.playbackRate = 1.0;
-        video.loop = true;
+async function startVideo() {
+    const menuVideo = allVideos.menuBg;
+    const vorspann = allVideos.vorspann;
+
+    if (!menuVideo._loaded) {
+        menuVideo._loaded = true;
+        loadVideo(menuVideo);
+    }
+    vorspann.classList.remove('opacity-none');
+    vorspann.classList.add('animation-video2');
+    playVorspannWithMusic();
+    menuVideo.loop = true;
+    menuVideo.playbackRate = 1.0;
+    setTimeout(async () => {
+        await menuVideo.play();
         document.getElementById('overlay-start-initialisation').classList.add('animation-overlay-fade-out');
         document.getElementById('overlay-startscreen').classList.remove('opacity-none');
+        preloadMenuBackgroundDetails();
         setTimeout(() => {
             document.getElementById('overlay-start-initialisation').classList.add('opacity-none');
         }, 400);
-    }, 0); //23000
+    }, 23000);
+
 }
+
+async function preloadMenuBackgroundWarm() {
+    const videos = [allVideos.earth, allVideos.portal, allVideos.thunder];
+
+    for (const v of videos) {
+        if (v._warmed) continue;
+        v._warmed = true;
+
+        await loadVideo(v);
+        v.muted = true;
+        v.playsInline = true;
+    }
+}
+
+
+
+function preloadMenuBackgroundDetails() {
+    const bgDetails = [
+        allVideos.earth,
+        allVideos.portal,
+        allVideos.thunder
+    ];
+
+    bgDetails.forEach(video => {
+        video.loop = true;
+        video.muted = false;
+        video.play().catch(() => { });
+    });
+}
+
+
+async function preloadVorspann() {
+    const v = allVideos.vorspann;
+    if (v._warmed) return;
+    v._warmed = true;
+
+    await loadVideo(v);
+
+    v.muted = true;
+    v.playsInline = true;
+    v.preload = "auto";
+}
+
+
+async function playVorspannWithMusic() {
+    const video = allVideos.vorspann;
+
+    // beides reset
+    video.currentTime = 0;
+    titleMusic.currentTime = 0;
+
+    // beides stumm
+    video.muted = true;
+    titleMusic.volume = 0;
+
+    // parallel starten
+    await Promise.all([
+        video.play(),
+        titleMusic.play()
+    ]);
+
+    // exakt JETZT hörbar machen
+    titleMusic.volume = 1;
+    video.muted = false;
+}
+
 
 function playHoverSound() {
     welcomeButtonHoverSound.currentTime = 0;
@@ -154,13 +228,53 @@ title.addEventListener("animationend", () => {
 
 let scriptInitialized = false;
 
-export async function initScript() {
-    if (scriptInitialized) return;
-    scriptInitialized = true;
+export async function initScriptVisuals() {
+    // if (scriptInitialized) return;
+    // scriptInitialized = true;
+    attachVideo("introBg", "start-initialisation-video", videoManifest.intro);
+    attachVideo("vorspann", "start-initialisation-video2", videoManifest.vorspann);
+    attachVideo("menuBg", "background-video", videoManifest.background);
+    attachVideo("earth", "earth-video", videoManifest.earth);
+    attachVideo("portal", "portal-video", videoManifest.portal);
+    attachVideo("thunder", "thunder-video", videoManifest.thunder);
+    attachVideo("submenuBg", "submenu-video", videoManifest.subMenuBackground);
+    await loadVideo(allVideos.introBg);
+    allVideos.introBg.play();
+    preloadVorspann();
+    preloadMenuBackgroundWarm();
+}
+
+export function initScriptAudioIntro() {
     titleMusic = allAudios.titleMusic
     titleMusic2 = allAudios.titleMusic2;
     titleSound = allAudios.titleSound;
     welcomeButtonHoverSound = allAudios.welcomeButtonHoverSound;
+
+    titleMusic.addEventListener("ended", () => {
+        titleMusic2.play();
+        titleMusic2.loop = true;
+    });
+
+    titleMusic.addEventListener('timeupdate', () => {
+        if (titleMusic.currentTime >= 22.8 && !titleSoundIsPlayed) {
+            titleSound.play();
+            document.getElementById('h1').classList.add('animation');
+            titleSoundIsPlayed = true;
+            setTimeout(() => {
+                document.getElementById('h1').classList.remove('before-animation');
+            }, 800);
+        }
+    });
+
+    //3. Klick startet es sofort
+    document.getElementById("welcome-button").addEventListener("click", () => {
+        playHoverSound();
+        openFullscreen(document.body);
+        startVideo()
+    });
+}
+
+export function initScriptAudio() {
 
     audios = {
         nayelisMusic: allAudios.nayelisMusic,
@@ -179,50 +293,9 @@ export async function initScript() {
         storyTextSpeechSound: allAudios.storyTextSpeechSound
     }
 
+
+
     buildCharacters();
-
-    titleMusic.addEventListener("ended", () => {
-        titleMusic2.play();
-        titleMusic2.loop = true;
-    });
-
-    titleMusic.addEventListener('timeupdate', () => {
-        if (titleMusic.currentTime >= 22.8 && !titleSoundIsPlayed) {
-            titleSound.play();
-            document.getElementById('h1').classList.add('animation');
-            titleSoundIsPlayed = true;
-            setTimeout(() => {
-                document.getElementById('h1').classList.remove('before-animation');
-            }, 800);
-        }
-    });
-
-    // 1. Intro sofort laden
-    await attachVideoSource("start-initialisation-video", videoManifest.intro);
-
-    // 2. Vorspann-Video im Hintergrund schon vorbereiten
-    attachVideoSource("start-initialisation-video2", videoManifest.vorspann);
-
-    //3. Klick startet es sofort
-    document.getElementById("welcome-button").addEventListener("click", () => {
-
-
-        playHoverSound();
-        openFullscreen(document.body);
-        const video2 = document.getElementById("start-initialisation-video2");
-        // console.log('hat geklappt')
-        // video2.play();
-        startVideo()
-    });
-
-
-    // 3. Hintergrund-Videos nebenbei (ohne zu blockieren) laden
-    Promise.allSettled([
-        attachVideoSource("background-video", videoManifest.background),
-        attachVideoSource("earth-video", videoManifest.earth),
-        attachVideoSource("portal-video", videoManifest.portal),
-        attachVideoSource("thunder-video", videoManifest.thunder)
-    ]);
 }
 
 export function stopTitleMusic() {
@@ -255,6 +328,15 @@ function closeBigBox() {
 }
 
 function openOverlay() {
+    const v = allVideos.submenuBg;
+
+    if (!v._loaded) {
+        v._loaded = true;
+        loadVideo(v);
+    }
+
+    v.play();
+
     document.getElementById('overlay-info').classList.remove('d-none');
     renderCharacters();
     fadeOutAudio(titleMusic, 1000);
@@ -264,6 +346,7 @@ function openOverlay() {
 }
 
 function closeOverlay() {
+    allVideos.submenuBg?.pause();
     document.getElementById('overlay-info').classList.add('d-none');
     fadeOutAudio(audios.infoScreenMusic, 1000);
     titleMusic2.currentTime = 0;
@@ -271,6 +354,15 @@ function closeOverlay() {
 }
 
 function openStoryOverlay() {
+    const v = allVideos.submenuBg;
+
+    if (!v._loaded) {
+        v._loaded = true;
+        loadVideo(v);
+    }
+
+    v.play();
+
     document.getElementById('overlay-story').classList.remove('d-none');
     renderStoryCard();
     fadeOutAudio(titleMusic, 1000);
@@ -287,6 +379,7 @@ function openStoryOverlay() {
 }
 
 function closeStoryOverlay() {
+    allVideos.submenuBg?.pause();
     document.getElementById('overlay-story').classList.add('d-none');
     fadeOutAudio(audios.infoScreenMusic, 1000);
     fadeOutAudio(audios.storyTextSpeechSound, 1000);
@@ -296,6 +389,15 @@ function closeStoryOverlay() {
 
 
 function openControlsOverlay() {
+    const v = allVideos.submenuBg;
+
+    if (!v._loaded) {
+        v._loaded = true;
+        loadVideo(v);
+    }
+
+    v.play();
+
     document.getElementById('overlay-controls').classList.remove('d-none');
     renderControlsCard()
     fadeOutAudio(titleMusic, 1000);
@@ -305,6 +407,7 @@ function openControlsOverlay() {
 }
 
 function closeControlsOverlay() {
+    allVideos.submenuBg?.pause();
     document.getElementById('overlay-controls').classList.add('d-none');
     fadeOutAudio(audios.infoScreenMusic, 1000);
     titleMusic2.currentTime = 0;
@@ -312,6 +415,15 @@ function closeControlsOverlay() {
 }
 
 function openCreditsOverlay() {
+    const v = allVideos.submenuBg;
+
+    if (!v._loaded) {
+        v._loaded = true;
+        loadVideo(v);
+    }
+
+    v.play();
+
     document.getElementById('overlay-credits').classList.remove('d-none');
     renderCreditsCard();
     fadeOutAudio(titleMusic, 1000);
@@ -321,6 +433,7 @@ function openCreditsOverlay() {
 }
 
 function closeCreditsOverlay() {
+    allVideos.submenuBg?.pause();
     document.getElementById('overlay-credits').classList.add('d-none');
     fadeOutAudio(audios.infoScreenMusic, 1000);
     titleMusic2.currentTime = 0;

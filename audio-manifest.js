@@ -1,9 +1,16 @@
-export const farmAudioManifestImmediate = {
-    //Menü
-    titleMusic: './assets/audio/title-music.opus',
+export const introAudioManifest = {
+    titleMusic: "./assets/audio/title-music.opus",
     titleMusic2: './assets/audio/title-music2.opus',
     titleSound: './assets/audio/title-sound5.opus',
-    welcomeButtonHoverSound: './assets/audio/ui-tuping-391160.opus',
+    welcomeButtonHoverSound: './assets/audio/ui-tuping-391160.opus'
+};
+
+export const farmAudioManifestImmediate = {
+    //Menü
+    // titleMusic: './assets/audio/title-music.opus',
+    // titleMusic2: './assets/audio/title-music2.opus',
+    // titleSound: './assets/audio/title-sound5.opus',
+    // welcomeButtonHoverSound: './assets/audio/ui-tuping-391160.opus',
 
     //Menü Characters
     nayelisMusic: './assets/audio/nayelis-music.opus',
