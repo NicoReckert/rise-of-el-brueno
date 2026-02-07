@@ -1,8 +1,11 @@
 import { PopupText } from "../classes/popup-text.class.js";
 import { Enemy } from "../classes/enemy.class.js";
 import { DamageText } from "../classes/damage-text.class.js";
-import { fadeOutAudio } from "../script.js";
-import { fadeInAudio } from "../script.js";
+import { AudioManager } from "../core/audio-manager.class.js";
+
+const audioManager = new AudioManager();
+const fadeOutAudio = audioManager.fadeOutAudio.bind(audioManager);
+const fadeInAudio = audioManager.fadeInAudio.bind(audioManager);
 
 export const townEvents =
     [

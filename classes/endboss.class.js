@@ -1,8 +1,7 @@
 import { MovableObject } from './movable-object.class.js';
 import { EndbossFireball } from './endboss-fireball.class.js';
 import { EndbossFireBeam } from './endboss-fire-beam.class.js';
-import { fadeOutAudio } from '../script.js';
-import { fadeInAudio } from '../script.js';
+import { AudioManager } from '../core/audio-manager.class.js';
 
 /**
  * Represents a complex movable object with gravity, animation, and state handling.
@@ -25,7 +24,9 @@ export class Endboss extends MovableObject {
         this.entityImages = entityImages;
         this.speedX = 8;
         this.speedY = 0;
-
+        this.audioManager = new AudioManager();
+        this.fadeOutAudio = this.audioManager.fadeOutAudio.bind(this.audioManager);
+        this.fadeInAudio = this.audioManager.fadeInAudio.bind(this.audioManager);
         this.currentAnimation = 'idle';
         this.frameInterval = 1000 / 8;
         this.frameIndex = 0;
@@ -1143,8 +1144,8 @@ export class Endboss extends MovableObject {
 
     startFireBreath(setup, timestamp) {
         setup.world.character.startAirHitStun(timestamp);
-        fadeOutAudio(setup.backgroundMusic, 1000);
-        fadeInAudio(setup.sounds.airHitStunMusic, 2000, 1.0);
+        this.fadeOutAudio(setup.backgroundMusic, 1000);
+        this.fadeInAudio(setup.sounds.airHitStunMusic, 2000, 1.0);
         if (!setup.spiritEssenceSeq?.active && setup.world.character.isAirHitStun) {
             setup.world.townLevelController.startSpiritEssenceSequence(timestamp);
         }

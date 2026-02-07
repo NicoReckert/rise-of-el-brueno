@@ -3,8 +3,10 @@ import { farmEvents_part1 } from "./farm-events-part1.js";
 import { farmEvents_part2 } from "./farm-events-part2.js";
 import { farmEvents_part3 } from "./farm-events-part3.js";
 import { farmEvents_part4 } from "./farm-events-part4.js";
-import { fadeOutAudio } from "../script.js";
+import { AudioManager } from "../core/audio-manager.class.js";
 
+const audioManager = new AudioManager();
+const fadeOutAudio = audioManager.fadeOutAudio.bind(audioManager);
 const farmEvents2 = [
     ...farmEvents_part1,
     ...farmEvents_part2,

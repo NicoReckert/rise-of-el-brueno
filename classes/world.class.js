@@ -15,7 +15,10 @@ import { LevelCompleteSetup } from './level-complete-setup.class.js';
 import { LevelCompleteController } from './level-complete-controller.class.js';
 import { Keyboard } from './keyboard.class.js';
 import { TaskWindow } from './task-window.class.js';
-import { fadeOutAudio } from '../script.js';
+import { AudioManager } from '../core/audio-manager.class.js';
+
+import { allAudios } from '../media-store.js';
+import { smartMerge } from '../utils/asset-merge.util.js';
 
 export class World {
 
@@ -23,10 +26,15 @@ export class World {
     canvas;
     currentScene = 'farmLevel';
 
-    constructor(canvas, characterImages, entityImages, allAudios) {
+    constructor(canvas, keyboard, characterImages, entityImages) {
+
+        //New
+        this.audioManager = new AudioManager();
+        this.fadeOutAudio = this.audioManager.fadeOutAudio.bind(this.audioManager);
+
         this.canvas = canvas;
         this.ctx = canvas.getContext('2d');
-        this.keyboard = new Keyboard();
+        this.keyboard = keyboard;
         this.characterImages = characterImages;
         this.entityImages = entityImages;
         this.allAudios = allAudios;
@@ -39,14 +47,14 @@ export class World {
         this.lastStepCheck = 0;
         this.stepCheckDelay = 400;
         this.character = new Character(this.characterImages);
-        this.footStepSound = this.allAudios.footStepSound;
-        this.jumpSound = this.allAudios.jumpSound;
-        this.landingSound = this.allAudios.landingSound;
+        this.footStepSound = allAudios.footStepSound;
+        this.jumpSound = allAudios.jumpSound;
+        this.landingSound = allAudios.landingSound;
         this.camera_x = 0;
 
         this.lastTime = performance.now();
         this.intro = new IntroScreen(this.ctx, this.canvas);
-        this.chapterSound = this.allAudios.chapterSound;
+        this.chapterSound = allAudios.chapterSound;
         this.isChapterSoundPlayed = false;
         this.isKeysStopp = false;
 
@@ -73,13 +81,48 @@ export class World {
     }
 
     startGame() {
+        this.initLevels();
+        this.draw();
+    }
+
+    initLevels() {
         this.farmLevelSetup = new FarmLevelSetup(this);
         this.farmLevelController = new FarmLevelController(this.farmLevelSetup);
         this.stableLevelSetup = new StableLevelSetup(this);
         this.stableLevelController = new StableLevelController(this.stableLevelSetup);
         this.setWorld();
-        this.draw();
     }
+
+    // world.class.js
+    applyDeferredAssets(charDeferred, entityDeferred) {
+        if (!charDeferred && !entityDeferred) return;
+
+        Object.assign(this.characterImages, charDeferred);
+        smartMerge(this.entityImages, entityDeferred);
+
+        this.character?.initMovementImages();
+        this.character?.initEmotionImages();
+        this.character?.initActionImages();
+        this.character?.initSpecialImages();
+    }
+
+    applyLazyAssets(charLazy, entityLazy) {
+        if (!charLazy && !entityLazy) return;
+
+        Object.assign(this.characterImages, charLazy);
+        smartMerge(this.entityImages, entityLazy);
+
+        this.character?.initMovementImages();
+        this.character?.initEmotionImages();
+        this.character?.initActionImages();
+        this.character?.initSpecialImages();
+
+        if (typeof this.initRemainingSetups === 'function') {
+            this.initRemainingSetups();
+        }
+    }
+
+
 
     pauseGame() {
         this.paused = true;
@@ -984,39 +1027,39 @@ export class World {
     }
 
     playCoinSound() {
-        const baseSound = this.allAudios.coinSound;
+        const baseSound = allAudios.coinSound;
         const sound = baseSound.cloneNode();
         sound.volume = 0.4;
         sound.play();
     }
 
     playBottleSound() {
-        const baseSound = this.allAudios.bottleClinkSound;
+        const baseSound = allAudios.bottleClinkSound;
         const sound = baseSound.cloneNode();
         sound.volume = 0.6;
         sound.play();
     }
 
     playChickenDeathSound() {
-        const sound = this.allAudios.chickenDeathSound;
+        const sound = allAudios.chickenDeathSound;
         sound.volume = 0.6;
         sound.play();
     }
 
     playEmptyBottelsSound() {
-        const sound = this.allAudios.bottleEmptySound;
+        const sound = allAudios.bottleEmptySound;
         sound.volume = 0.6;
         sound.play();
     }
 
     playBottelBrokenSound() {
-        const sound = this.allAudios.bottleBrokenSound;
+        const sound = allAudios.bottleBrokenSound;
         sound.volume = 0.6;
         sound.play();
     }
 
     playBottelThrowSound() {
-        const sound = this.allAudios.bottleThrowSound;
+        const sound = allAudios.bottleThrowSound;
         sound.volume = 0.6;
         sound.play();
     }
@@ -1035,7 +1078,7 @@ export class World {
     }
 
     playEndbossAlarmSound() {
-        this.endbossAlarmSound = this.allAudios.endbossAlarmSound;
+        this.endbossAlarmSound = allAudios.endbossAlarmSound;
         this.endbossAlarmSound.play();
     }
 
@@ -1096,7 +1139,7 @@ export class World {
 
         // LevelComplete-Musik ausblenden
         if (this.levelCompleteSetup?.sounds?.levelCompleteMusic) {
-            fadeOutAudio(this.levelCompleteSetup.sounds.levelCompleteMusic);
+            this.fadeOutAudio(this.levelCompleteSetup.sounds.levelCompleteMusic);
         }
 
         // alten Character aufräumen
