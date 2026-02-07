@@ -7,7 +7,7 @@ export class AnimatedEntity extends MovableObject {
         this.isGamecharacter = false;
         this.entityImages = entityImages;
         this.currentEntity = currentEntity;
-        this.loadImgFromCurrentEntity(this.currentEntity);
+        // this.loadImgFromCurrentEntity(this.currentEntity);
         this.height = height;
         this.width = width;
         this.x = x;
@@ -34,37 +34,37 @@ export class AnimatedEntity extends MovableObject {
         this.sheetIndex = 0;
     }
 
-    loadImgFromCurrentEntity(currentEntity) {
-        this.idle = this.entityImages[currentEntity]?.idle ?? [];
-        this.controlled = this.entityImages[currentEntity]?.controlled ?? [];
-        this.walk = this.entityImages[currentEntity]?.walk ?? [];
-        this.love = this.entityImages[currentEntity]?.love ?? [];
-        this.eat = this.entityImages[currentEntity]?.eat ?? [];
-        this.flyUp = this.entityImages[currentEntity]?.flyUp ?? [];
-        this.fly = this.entityImages[currentEntity]?.fly ?? [];
-        this.afraid = this.entityImages[currentEntity]?.afraid ?? [];
-        this.halfSizeFly = this.entityImages[currentEntity]?.halfSizeFly ?? [];
-        this.fullSizeFly = this.entityImages[currentEntity]?.fullSizeFly ?? [];
-        this.idleOpen = this.entityImages[currentEntity]?.idleOpen ?? [];
-        this.doorOpens = this.entityImages[currentEntity]?.doorOpens ?? [];
-        this.doorCloses = this.entityImages[currentEntity]?.doorCloses ?? [];
-        this.happy = this.entityImages[currentEntity]?.happy ?? [];
-        this.standUp = this.entityImages[currentEntity]?.standUp ?? [];
-        this.swingToMusic = this.entityImages[currentEntity]?.swingToMusic ?? [];
-        this.burningFire = this.entityImages[currentEntity]?.burningFire ?? [];
-        this.fireGoesOn = this.entityImages[currentEntity]?.fireGoesOn ?? [];
-        this.fireGoesOut = this.entityImages[currentEntity]?.fireGoesOut ?? [];
-        this.findsPeace = this.entityImages[currentEntity]?.findsPeace || [];
-        this.findsPeaceLoop = this.entityImages[currentEntity]?.findsPeaceLoop ?? [];
-        this.sleep = this.entityImages[currentEntity]?.sleep ?? [];
-        this.portrait = this.entityImages[currentEntity]?.portrait ?? [];
-        this.walkWithStone = this.entityImages[currentEntity]?.walkWithStone ?? [];
-        this.idleWithStone = this.entityImages[currentEntity]?.idleWithStone ?? [];
-        this.stoneActivated = this.entityImages[currentEntity]?.stoneActivated ?? [];
-        this.broken = this.entityImages[currentEntity]?.broken ?? [];
-        this.spiritCuddle = this.entityImages[currentEntity]?.spiritCuddle ?? [];
-        this.spiritCuddleLoop = this.entityImages[currentEntity]?.spiritCuddleLoop ?? [];
-    }
+    // loadImgFromCurrentEntity(currentEntity) {
+    //     this.idle = this.entityImages[currentEntity]?.idle ?? [];
+    //     this.controlled = this.entityImages[currentEntity]?.controlled ?? [];
+    //     this.walk = this.entityImages[currentEntity]?.walk ?? [];
+    //     this.love = this.entityImages[currentEntity]?.love ?? [];
+    //     this.eat = this.entityImages[currentEntity]?.eat ?? [];
+    //     this.flyUp = this.entityImages[currentEntity]?.flyUp ?? [];
+    //     this.fly = this.entityImages[currentEntity]?.fly ?? [];
+    //     this.afraid = this.entityImages[currentEntity]?.afraid ?? [];
+    //     this.halfSizeFly = this.entityImages[currentEntity]?.halfSizeFly ?? [];
+    //     this.fullSizeFly = this.entityImages[currentEntity]?.fullSizeFly ?? [];
+    //     this.idleOpen = this.entityImages[currentEntity]?.idleOpen ?? [];
+    //     this.doorOpens = this.entityImages[currentEntity]?.doorOpens ?? [];
+    //     this.doorCloses = this.entityImages[currentEntity]?.doorCloses ?? [];
+    //     this.happy = this.entityImages[currentEntity]?.happy ?? [];
+    //     this.standUp = this.entityImages[currentEntity]?.standUp ?? [];
+    //     this.swingToMusic = this.entityImages[currentEntity]?.swingToMusic ?? [];
+    //     this.burningFire = this.entityImages[currentEntity]?.burningFire ?? [];
+    //     this.fireGoesOn = this.entityImages[currentEntity]?.fireGoesOn ?? [];
+    //     this.fireGoesOut = this.entityImages[currentEntity]?.fireGoesOut ?? [];
+    //     this.findsPeace = this.entityImages[currentEntity]?.findsPeace || [];
+    //     this.findsPeaceLoop = this.entityImages[currentEntity]?.findsPeaceLoop ?? [];
+    //     this.sleep = this.entityImages[currentEntity]?.sleep ?? [];
+    //     this.portrait = this.entityImages[currentEntity]?.portrait ?? [];
+    //     this.walkWithStone = this.entityImages[currentEntity]?.walkWithStone ?? [];
+    //     this.idleWithStone = this.entityImages[currentEntity]?.idleWithStone ?? [];
+    //     this.stoneActivated = this.entityImages[currentEntity]?.stoneActivated ?? [];
+    //     this.broken = this.entityImages[currentEntity]?.broken ?? [];
+    //     this.spiritCuddle = this.entityImages[currentEntity]?.spiritCuddle ?? [];
+    //     this.spiritCuddleLoop = this.entityImages[currentEntity]?.spiritCuddleLoop ?? [];
+    // }
 
     fade(direction = "in", timestamp, duration = 1000) {
         this.fading = direction;
@@ -343,42 +343,67 @@ export class AnimatedEntity extends MovableObject {
         this.updateFade(timestamp);
     }
 
+    // getAnimationImages(state) {
+
+    //     // return this[state] ?? null;
+
+    //     switch (state) {
+    //         case 'idle': return this.idle;
+    //         case 'controlled': return this.controlled;
+    //         case 'walk': return this.walk;
+    //         case 'love': return this.love;
+    //         case 'eat': return this.eat;
+    //         case 'flyUp': return this.flyUp;
+    //         case 'fly': return this.fly;
+    //         case 'afraid': return this.afraid;
+    //         case 'halfSizeFly': return this.halfSizeFly;
+    //         case 'fullSizeFly': return this.fullSizeFly;
+    //         case 'idleOpen': return this.idleOpen;
+    //         case 'doorOpens': return this.doorOpens;
+    //         case 'doorCloses': return this.doorCloses;
+    //         case 'happy': return this.happy;
+    //         case 'standUp': return this.standUp;
+    //         case 'swingToMusic': return this.swingToMusic;
+    //         case 'burningFire': return this.burningFire;
+    //         case 'fireGoesOn': return this.fireGoesOn;
+    //         case 'fireGoesOut': return this.fireGoesOut;
+    //         case 'findsPeace': return this.findsPeace
+    //         case 'findsPeaceLoop': return this.findsPeaceLoop;
+    //         case 'sleep': return this.sleep;
+    //         case 'portrait': return this.portrait;
+    //         case 'walkWithStone': return this.walkWithStone;
+    //         case 'idleWithStone': return this.idleWithStone;
+    //         case 'stoneActivated': return this.stoneActivated;
+    //         case 'broken': return this.broken;
+    //         case 'spiritCuddle': return this.spiritCuddle;
+    //         case 'spiritCuddleLoop': return this.spiritCuddleLoop;
+    //     }
+    // }
+
     getAnimationImages(state) {
+        // 🔍 Hol dir die Definition für das aktuelle Entity
+        const entityDef = this.entityImages?.[this.currentEntity];
+        if (!entityDef) return null;
 
-        // return this[state] ?? null;
-
-        switch (state) {
-            case 'idle': return this.idle;
-            case 'controlled': return this.controlled;
-            case 'walk': return this.walk;
-            case 'love': return this.love;
-            case 'eat': return this.eat;
-            case 'flyUp': return this.flyUp;
-            case 'fly': return this.fly;
-            case 'afraid': return this.afraid;
-            case 'halfSizeFly': return this.halfSizeFly;
-            case 'fullSizeFly': return this.fullSizeFly;
-            case 'idleOpen': return this.idleOpen;
-            case 'doorOpens': return this.doorOpens;
-            case 'doorCloses': return this.doorCloses;
-            case 'happy': return this.happy;
-            case 'standUp': return this.standUp;
-            case 'swingToMusic': return this.swingToMusic;
-            case 'burningFire': return this.burningFire;
-            case 'fireGoesOn': return this.fireGoesOn;
-            case 'fireGoesOut': return this.fireGoesOut;
-            case 'findsPeace': return this.findsPeace
-            case 'findsPeaceLoop': return this.findsPeaceLoop;
-            case 'sleep': return this.sleep;
-            case 'portrait': return this.portrait;
-            case 'walkWithStone': return this.walkWithStone;
-            case 'idleWithStone': return this.idleWithStone;
-            case 'stoneActivated': return this.stoneActivated;
-            case 'broken': return this.broken;
-            case 'spiritCuddle': return this.spiritCuddle;
-            case 'spiritCuddleLoop': return this.spiritCuddleLoop;
+        // Sonderfall: das Entity ist direkt ein Array (z.B. einfache idle-Loop)
+        // → dann behandeln wir "idle" als Default
+        if (Array.isArray(entityDef)) {
+            if (!state || state === 'idle') return entityDef;
+            return null;
         }
+
+        // Normalfall: entityDef ist ein Objekt mit States (idle, walk, burningFire, ...)
+        const anim = entityDef[state];
+
+        // Falls z.B. nur "idle" definiert ist und irgendein anderer State angefragt wird,
+        // kannst du hier optional auf idle fallbacken:
+        if (!anim && state !== 'idle') {
+            return entityDef.idle ?? null;
+        }
+
+        return anim ?? null;
     }
+
 
     setAnimation(newAnimation) {
         if (this.currentAnimation !== newAnimation) {

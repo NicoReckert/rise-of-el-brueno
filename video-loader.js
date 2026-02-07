@@ -80,7 +80,7 @@ export async function preloadManifestVideos(manifest, onFileLoaded) {
                 video = document.createElement("video");
                 video.preload = "auto";
                 video.playsInline = true;
-                video.muted = true; // für Preload meist leise
+                video.muted = false; // für Preload meist leise
                 video.dataset.src = src;
 
                 allVideos[key] = video;

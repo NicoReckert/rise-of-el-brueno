@@ -82,16 +82,24 @@ async function init() {
     updateProgress("Loading assets…");
 
     // Bilder + Audio parallel laden, alle zählen in denselben Fortschritt
-    const [chars, entities] = await Promise.all([
+    const [charsRes, entitiesRes, farmAudioRes] = await Promise.allSettled([
         preloadManifestImages(characterManifestImmediate, onFileLoaded),
         preloadManifestImages(farmEntityManifestImmediate, onFileLoaded),
         preloadManifestAudio(farmAudioManifestImmediate, onFileLoaded)
     ]);
 
-    // Jetzt sollten wir irgendwo um 70% herum sein
+    // Fallbacks, falls was schiefgeht
+    const chars =
+        charsRes.status === 'fulfilled' && charsRes.value ? charsRes.value : {};
+    const entities =
+        entitiesRes.status === 'fulfilled' && entitiesRes.value ? entitiesRes.value : {};
+
+    if (farmAudioRes.status === 'rejected') {
+        console.warn('[init] farmAudioManifestImmediate failed:', farmAudioRes.reason);
+    }
+
     initScriptAudio();
 
-    // 70 → 100%: kleiner „Finishing“-Fake
     await smoothFillProgress(
         bar,
         text,
@@ -135,73 +143,94 @@ function countManifestFiles(manifests) {
 }
 
 async function loadDeferredAssets() {
-    try {
-        const [charDeferred, entityDeferred] = await Promise.all([
-            preloadManifestImages(characterManifestDeferred),
-            preloadManifestImages(farmEntityManifestDeferred),
-            preloadManifestAudio(farmAudioManifestDeferred),
-            // preloadManifestVideos(farmVideoManifestDeferred)
-        ]);
+    const results = await Promise.allSettled([
+        preloadManifestImages(characterManifestDeferred),      // 0
+        preloadManifestImages(farmEntityManifestDeferred),     // 1
+        preloadManifestAudio(farmAudioManifestDeferred),       // 2
+        preloadManifestVideos(farmVideoManifestDeferred)       // 3
+    ]);
 
-        Object.assign(characterImages, charDeferred);
+    const [charRes, entityRes, audioRes, videoRes] = results;
+
+    const charDeferred = getSettledValue(charRes, {});
+    const entityDeferred = getSettledValue(entityRes, {});
+    if (audioRes.status === 'rejected') {
+        console.warn('[loadDeferredAssets] farmAudioManifestDeferred failed:', audioRes.reason);
+    }
+    if (videoRes.status === 'rejected') {
+        console.warn('[loadDeferredAssets] farmVideoManifestDeferred failed:', videoRes.reason);
+    } else if (videoRes.status === 'fulfilled') {
+        console.log('[loadDeferredAssets] videos loaded (deferred)');
+    }
+
+    // 👉 jetzt sicher mergen, auch wenn Audio/Video kaputt war
+    Object.assign(characterImages, charDeferred);
+    if (world) {
+        Object.assign(world.characterImages, charDeferred);
+    }
+
+    if (world) {
         smartMerge(world.entityImages, entityDeferred);
+        world.character?.initMovementImages();
+        world.character?.initEmotionImages();
+        world.character?.initActionImages();
+        world.character?.initSpecialImages();
+    } else {
+        smartMerge(entityImages, entityDeferred);
+    }
 
-        if (isMuted) {
-            applyMuteToAllAudios(allAudios);
-        }
-
-        if (world) {
-            Object.assign(world.characterImages, charDeferred);
-            smartMerge(world.entityImages, entityDeferred);
-            world.character?.initMovementImages();
-            world.character?.initEmotionImages();
-            world.character?.initActionImages();
-            world.character?.initSpecialImages();
-        }
-    } catch { }
-
-    try {
-        await preloadManifestVideos(farmVideoManifestDeferred);
-        console.log('[loadDeferredAssets] videos loaded');
-    } catch (e) {
-        console.warn('[loadDeferredAssets] video preload failed:', e);
+    if (isMuted) {
+        applyMuteToAllAudios(allAudios);
     }
 }
+
 
 async function loadLazyAssets() {
     try {
         await new Promise(r =>
-            ("requestIdleCallback" in window)
+            ('requestIdleCallback' in window)
                 ? requestIdleCallback(r, { timeout: 1500 })
                 : setTimeout(r, 1500)
         );
 
-        const [charLazy, entityLazy] = await Promise.all([
+        const [charRes, entityRes, audioRes] = await Promise.allSettled([
             preloadManifestImages(otherLevelCharacterManifestLazy),
             preloadManifestImages(otherLevelEntityManifestLazy),
             preloadManifestAudio(otherLevelAudioManifestLazy)
         ]);
 
-        Object.assign(characterImages, charLazy, world.characterImages);
-        smartMerge(world.entityImages, entityLazy);
-
-        if (isMuted) {
-            applyMuteToAllAudios(allAudios);
+        const charLazy = getSettledValue(charRes, {});
+        const entityLazy = getSettledValue(entityRes, {});
+        if (audioRes.status === 'rejected') {
+            console.warn('[loadLazyAssets] otherLevelAudioManifestLazy failed:', audioRes.reason);
         }
 
+        if (world) {
+            Object.assign(characterImages, charLazy, world.characterImages);
+            smartMerge(world.entityImages, entityLazy);
 
-        world.character?.initMovementImages();
-        world.character?.initEmotionImages();
-        world.character?.initActionImages();
-        world.character?.initSpecialImages();
+            if (isMuted) {
+                applyMuteToAllAudios(allAudios);
+            }
 
-        // ✅ Alle Lazy-Assets geladen → zusätzliche Level initialisieren
-        if (world && typeof world.initRemainingSetups === "function") {
-            world.initRemainingSetups();
+            world.character?.initMovementImages();
+            world.character?.initEmotionImages();
+            world.character?.initActionImages();
+            world.character?.initSpecialImages();
+
+            if (typeof world.initRemainingSetups === 'function') {
+                world.initRemainingSetups();
+            }
+        } else {
+            // falls world aus irgendeinem Grund noch nicht da ist
+            Object.assign(characterImages, charLazy);
+            smartMerge(entityImages, entityLazy);
         }
-
-    } catch { }
+    } catch (e) {
+        console.warn('[loadLazyAssets] unexpected error:', e);
+    }
 }
+
 
 function smartMerge(target, source) {
     if (!source || typeof source !== "object") return target || {};
@@ -267,6 +296,13 @@ function setProgress(bar, value) {
     progressValue = Math.max(progressValue, value);
     bar.style.width = `${progressValue}%`;
 }
+
+function getSettledValue(res, fallback = {}) {
+    return res && res.status === 'fulfilled' && res.value != null
+        ? res.value
+        : fallback;
+}
+
 
 
 
