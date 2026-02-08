@@ -1,19 +1,22 @@
-import { allAudios } from "../media-store.js";
 import { UIManager } from "./ui-manager.class.js";
 
 export class AudioManager {
     constructor() {
         this.isMuted = false;
         this.uiManager = new UIManager();
+        this.audios = {};
+    }
+
+    addAudios(audioMap) {
+        Object.assign(this.audios, audioMap);
     }
 
     setMutedState(muted) {
         this.isMuted = muted;
         localStorage.setItem("elBruenoMuted", muted ? "1" : "0");
         this.uiManager.updateMuteButtonUI(muted);
-        this.applyMuteToAllAudios(allAudios);
+        this.applyMuteToAllAudios(this.audios);
     }
-
 
     fadeInAudio(audio, duration = 2000, targetVolume = 1) {
         // Sicherheitschecks

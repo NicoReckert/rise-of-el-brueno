@@ -1,11 +1,10 @@
 import { AssetLoader } from './asset-loader.class.js';
 import { World } from '../classes/world.class.js';
-import { allAudios } from '../media-store.js';
 import { AudioManager } from './audio-manager.class.js';
 import { UIManager } from './ui-manager.class.js';
 import { InputManager } from './input-manager.class.js';
 import { Keyboard } from '../classes/keyboard.class.js';
-import { stopTitleMusic } from '../script.js';
+import { initScriptAudioIntro, stopTitleMusic, initScriptAudio } from '../script.js';
 import { FullscreenManager } from './fullscreen-manager.class.js';
 import { PauseManager } from './pause-manager.class.js';
 
@@ -34,6 +33,11 @@ export class GameApp {
 
     async initCore() {
         await this.assetLoader.init();
+        this.audioManager.addAudios(this.assetLoader.introAudios);
+        this.audioManager.addAudios(this.assetLoader.immediateAudios);
+        //TODO
+        initScriptAudioIntro(this.audioManager.audios);
+        initScriptAudio(this.audioManager.audios);
         this.restoreMutedState();
         this.uiManager.fadeOutLoadingOverlay();
     }
@@ -43,7 +47,8 @@ export class GameApp {
             this.canvas,
             this.keyboard,
             this.assetLoader.characterImages,
-            this.assetLoader.entityImages
+            this.assetLoader.entityImages,
+            this.audioManager
         );
     }
 
@@ -59,7 +64,7 @@ export class GameApp {
             this.world.startGame();
             this.uiManager.showGameScreen();
             this.fullscreenManager.setFullscreen();
-            stopTitleMusic();
+            stopTitleMusic(this.audioManager.audios);
         });
     }
 
@@ -100,33 +105,31 @@ export class GameApp {
     }
 
     async loadDeferredIntoWorld() {
-        const { charDeferred, entityDeferred, audioRes, videoRes } =
+        const { charDeferred, entityDeferred, deferredAudios } =
             await this.assetLoader.loadDeferredManifests();
-        this.logDeferredErrors(audioRes, videoRes);
+        this.audioManager.addAudios(deferredAudios);
         this.world.applyDeferredAssets(charDeferred, entityDeferred);
         if (this.audioManager.isMuted) {
             this.audioManager.applyMuteToAllAudios();
         }
     }
 
-    logDeferredErrors(audioRes, videoRes) {
-        if (audioRes.status === 'rejected') {
-            console.warn('[loadDeferredAssets] farmAudioManifestDeferred failed:', audioRes.reason);
-        }
-        if (videoRes.status === 'rejected') {
-            console.warn('[loadDeferredAssets] farmVideoManifestDeferred failed:', videoRes.reason);
-        } else if (videoRes.status === 'fulfilled') {
-            console.log('[loadDeferredAssets] videos loaded (deferred)');
-        }
-    }
+    // logDeferredErrors(audioRes, videoRes) {
+    //     if (audioRes.status === 'rejected') {
+    //         console.warn('[loadDeferredAssets] farmAudioManifestDeferred failed:', audioRes.reason);
+    //     }
+    //     if (videoRes.status === 'rejected') {
+    //         console.warn('[loadDeferredAssets] farmVideoManifestDeferred failed:', videoRes.reason);
+    //     } else if (videoRes.status === 'fulfilled') {
+    //         console.log('[loadDeferredAssets] videos loaded (deferred)');
+    //     }
+    // }
 
     async loadLazyIntoWorld() {
         try {
-            const { charLazy, entityLazy, audioRes } =
+            const { charLazy, entityLazy, lazyAudios } =
                 await this.assetLoader.loadLazyManifests();
-            if (audioRes.status === 'rejected') {
-                console.warn('[loadLazyAssets] otherLevelAudioManifestLazy failed:', audioRes.reason);
-            }
+            this.audioManager.addAudios(lazyAudios);
             this.world.applyLazyAssets(charLazy, entityLazy);
             if (this.audioManager.isMuted) {
                 this.audioManager.applyMuteToAllAudios();

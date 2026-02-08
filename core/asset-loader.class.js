@@ -21,6 +21,7 @@ import { smartMerge } from "../utils/asset-merge.util.js";
  * Handles loading and management of game assets.
  */
 export class AssetLoader {
+    // FIXME: JSDoc stimmt nicht mehr
     /**
     * Creates a new instance and initializes asset state.
     */
@@ -28,6 +29,10 @@ export class AssetLoader {
         this.characterImages = {};
         this.entityImages = {};
         this.progressValue = 0;
+        this.introAudios = {};
+        this.immediateAudios = {};
+        this.deferredAudios = {};
+        this.lazyAudios = {};
     }
 
     /**
@@ -69,14 +74,17 @@ export class AssetLoader {
         });
     }
 
+    // FIXME: JSDoc stimmt nicht mehr
     /**
     * Preloads intro assets.
     * @returns {Promise<void>}
     */
     async preloadIntroAssets() {
         await initScriptVisuals();
-        await preloadManifestAudio(introAudioManifest);
-        initScriptAudioIntro();
+        const introAudios = await preloadManifestAudio(introAudioManifest);
+        this.introAudios = introAudios;
+        //TODO
+        initScriptAudioIntro(introAudios);
     }
 
     /**
@@ -155,6 +163,7 @@ export class AssetLoader {
         ]);
     }
 
+    // FIXME: JSDoc stimmt nicht mehr
     /**
      * Applies results of immediate asset loading.
     * @param {Array<PromiseSettledResult>} results Settled load results.
@@ -162,13 +171,16 @@ export class AssetLoader {
     applyImmediateResults([charsRes, entitiesRes, farmAudioRes]) {
         const chars = this.getSettledValue(charsRes, {});
         const entities = this.getSettledValue(entitiesRes, {});
+        const farmAudios = this.getSettledValue(farmAudioRes, {});
         if (farmAudioRes.status === 'rejected') {
             console.warn(
                 '[AssetLoader] farmAudioManifestImmediate failed:',
                 farmAudioRes.reason
             );
         }
-        initScriptAudio();
+        this.immediateAudios = farmAudios;
+        //TODO
+        initScriptAudio(farmAudios);
         Object.assign(this.characterImages, chars);
         smartMerge(this.entityImages, entities);
     }
@@ -257,6 +269,7 @@ export class AssetLoader {
         this.bar.style.width = `${this.progressValue}%`;
     }
 
+    // FIXME: JSDoc stimmt nicht mehr
     /**
     * Loads deferred asset manifests.
     * @returns {Promise<Object>}
@@ -268,14 +281,26 @@ export class AssetLoader {
             preloadManifestAudio(farmAudioManifestDeferred),
             preloadManifestVideos(farmVideoManifestDeferred)
         ]);
+        if (audioRes.status === 'rejected') {
+            console.warn('[loadDeferredAssets] farmAudioManifestDeferred failed:', audioRes.reason);
+        }
+        if (videoRes.status === 'rejected') {
+            console.warn('[loadDeferredAssets] farmVideoManifestDeferred failed:', videoRes.reason);
+        } else if (videoRes.status === 'fulfilled') {
+            console.log('[loadDeferredAssets] videos loaded (deferred)');
+        }
+        const charDeferred = this.getSettledValue(charRes, {});
+        const entityDeferred = this.getSettledValue(entityRes, {});
+        const deferredAudios = this.getSettledValue(audioRes, {});
+        this.deferredAudios = deferredAudios;
         return {
-            charDeferred: this.getSettledValue(charRes, {}),
-            entityDeferred: this.getSettledValue(entityRes, {}),
-            audioRes,
-            videoRes
-        };
+            charDeferred,
+            entityDeferred,
+            deferredAudios
+        }
     }
 
+    // FIXME: JSDoc stimmt nicht mehr
     /**
     * Loads lazy asset manifests after idle time.
     * @returns {Promise<Object>}
@@ -287,12 +312,19 @@ export class AssetLoader {
             preloadManifestImages(otherLevelEntityManifestLazy),
             preloadManifestAudio(otherLevelAudioManifestLazy)
         ]);
+        if (audioRes.status === 'rejected') {
+            console.warn('[loadLazyAssets] otherLevelAudioManifestLazy failed:', audioRes.reason);
+        }
+        const charLazy = this.getSettledValue(charRes, {});
+        const entityLazy = this.getSettledValue(entityRes, {});
+        const lazyAudios = this.getSettledValue(audioRes, {});
+        this.lazyAudios = lazyAudios;
         return {
-            charLazy: this.getSettledValue(charRes, {}),
-            entityLazy: this.getSettledValue(entityRes, {}),
-            audioRes
+            charLazy,
+            entityLazy,
+            lazyAudios
         };
-    }
+    };
 
     /**
     * Waits until the browser is idle or a timeout is reached.

@@ -1,4 +1,3 @@
-import { allAudios } from "./media-store.js";
 import { allVideos } from "./media-store.js";
 import { attachVideo } from "./video-loader.js";
 import { videoManifest } from "./video-manifest.js";
@@ -244,7 +243,7 @@ export async function initScriptVisuals() {
     preloadMenuBackgroundWarm();
 }
 
-export function initScriptAudioIntro() {
+export function initScriptAudioIntro(allAudios) {
     titleMusic = allAudios.titleMusic
     titleMusic2 = allAudios.titleMusic2;
     titleSound = allAudios.titleSound;
@@ -274,7 +273,7 @@ export function initScriptAudioIntro() {
     });
 }
 
-export function initScriptAudio() {
+export function initScriptAudio(allAudios) {
 
     audios = {
         nayelisMusic: allAudios.nayelisMusic,
@@ -298,7 +297,7 @@ export function initScriptAudio() {
     buildCharacters();
 }
 
-export function stopTitleMusic() {
+export function stopTitleMusic(allAudios) {
     allAudios.titleMusic?.pause();
     allAudios.titleMusic2?.pause();
 }
@@ -633,12 +632,24 @@ function template5() {
 window.addEventListener('contextmenu', e => e.preventDefault());
 
 function openFullscreen(element) {
-    if (element.requestFullscreen) {
-        element.requestFullscreen();
-    } else if (element.webkitRequestFullscreen) { // Safari
-        element.webkitRequestFullscreen();
-    } else if (element.msRequestFullscreen) { // ältere IE/Edge
-        element.msRequestFullscreen();
+    const el = element || document.documentElement;
+
+    if (el.requestFullscreen) {
+        el.requestFullscreen().catch(err => {
+            console.warn("Fullscreen request denied:", err);
+        });
+    } else if (el.webkitRequestFullscreen) { // Safari
+        try {
+            el.webkitRequestFullscreen();
+        } catch (err) {
+            console.warn("Fullscreen request denied (webkit):", err);
+        }
+    } else if (el.msRequestFullscreen) { // alte IE/Edge
+        try {
+            el.msRequestFullscreen();
+        } catch (err) {
+            console.warn("Fullscreen request denied (ms):", err);
+        }
     }
 }
 
