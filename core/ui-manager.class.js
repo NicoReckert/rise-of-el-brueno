@@ -1,31 +1,88 @@
 export class UIManager {
     constructor() {
+        this.dom = {};
         this.cacheDom();
     }
 
     cacheDom() {
-        this.muteToggleButton = document.getElementById('mute-toggle-button');
-        this.loadingOverlay = document.getElementById('loading-overlay');
+        this.dom = {
+            ...this.cacheLoadingElements(),
+            ...this.cacheStartScreenElements(),
+            ...this.cacheControlElements(),
+        };
+    }
+
+    cacheLoadingElements() {
+        return {
+            loadingOverlay: document.getElementById('loading-overlay'),
+        };
+    }
+
+    cacheStartScreenElements() {
+        return {
+            overlayStartScreen: document.getElementById('overlay-startscreen'),
+            overlayStartInitialisation: document.getElementById('overlay-start-initialisation'),
+            startButton: document.getElementById('start-button'),
+            nextLevelButton: document.getElementById('next-level-button'),
+            levelCompleteButtonBox: document.getElementById('level-complete-button-box'),
+            pauseResumeButton: document.getElementById('pause-resume-button')
+        };
+    }
+
+    cacheControlElements() {
+        return {
+            canvas: document.getElementById('canvas'),
+            moveButtonBox: document.getElementById('move-button-box'),
+            pauseToggleButton: document.getElementById('pause-toggle-button'),
+            fullscreenToggleButton: document.getElementById('fullscreen-toggle-button'),
+            muteToggleButton: document.getElementById('mute-toggle-button'),
+            pauseOverlay: document.getElementById('pause-overlay')
+        };
     }
 
     updateMuteButtonUI(isMuted) {
-        if (!this.muteToggleButton) return;
-        this.muteToggleButton.textContent = isMuted ? "🔇" : "🔊";
+        if (!this.dom.muteToggleButton) return;
+        this.dom.muteToggleButton.textContent = isMuted ? "🔇" : "🔊";
     }
 
     fadeOutLoadingOverlay() {
-        this.loadingOverlay.style.opacity = 0;
-        setTimeout(() => this.loadingOverlay.remove(), 600);
+        this.dom.loadingOverlay.style.opacity = 0;
+        setTimeout(() => this.dom.loadingOverlay.remove(), 600);
     }
 
     showGameScreen() {
-        document.getElementById('overlay-startscreen').style.display = 'none';
-        document.getElementById('overlay-start-initialisation').style.display = 'none';
-        document.getElementById('canvas').style.display = 'block';
-        document.getElementById('move-button-box').classList.remove('d-none');
-        document.getElementById('pause-toggle-button').classList.remove('d-none');
-        document.getElementById('mute-toggle-button').classList.remove('d-none');
-        document.getElementById('fullscreen-toggle-button').classList.remove('d-none');
-        document.getElementById('move-button-box').classList.add('move-button-box-active');
+        this.dom.overlayStartScreen.style.display = 'none';
+        this.dom.overlayStartInitialisation.style.display = 'none';
+        this.dom.canvas.style.display = 'block';
+        this.dom.moveButtonBox.classList.remove('d-none');
+        this.dom.pauseToggleButton.classList.remove('d-none');
+        this.dom.muteToggleButton.classList.remove('d-none');
+        this.dom.fullscreenToggleButton.classList.remove('d-none');
+        this.dom.moveButtonBox.classList.add('move-button-box-active');
     }
+
+    hideLevelCompleteButtonBox() {
+        this.dom.levelCompleteButtonBox.classList.add('d-none');
+    }
+
+    hidePauseOverlayAndMoveButtonBox() {
+        this.dom.levelCompleteButtonBox.classList.add('d-none');
+    }
+
+    isOpenPauseOverlay() {
+        return !this.dom.pauseOverlay.classList.contains('d-none');
+    }
+
+    showPauseOverlay() {
+        this.dom.pauseOverlay.classList.remove('d-none');
+    }
+
+    hidePauseOverlay() {
+        this.dom.pauseOverlay.classList.add('d-none');
+    }
+
+    setMoveButtonsActive(active) {
+        this.dom.moveButtonBox.classList.toggle('move-button-box-active', active);
+    }
+
 }

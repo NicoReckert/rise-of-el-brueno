@@ -85,6 +85,10 @@ export class World {
         this.draw();
     }
 
+    startNextLevel() {
+        this.currentScene = 'townLevel';
+    }
+
     initLevels() {
         this.farmLevelSetup = new FarmLevelSetup(this);
         this.farmLevelController = new FarmLevelController(this.farmLevelSetup);

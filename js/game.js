@@ -1,43 +1,6 @@
-document.getElementById('next-level-button').addEventListener('click', () => {
-    world.currentScene = 'townLevel';
-    fadeOutAudio(world.levelCompleteSetup.sounds.levelCompleteMusic);
-    document.getElementById('level-complete-button-box').classList.add('d-none');
-});
-
-const pauseToggleButton = document.getElementById('pause-toggle-button');
-const fullscreenToggleButton = document.getElementById('fullscreen-toggle-button');
-const pauseOverlay = document.getElementById('pause-overlay');
 
 
-function openPauseMenu() {
-    if (!world) return;
-    pauseOverlay.classList.remove('d-none');
-    world.pauseGame?.();
-    pauseAllAudios(allAudios);
-    document.getElementById('move-button-box').classList.remove('move-button-box-active');
 
-}
-
-function closePauseMenu() {
-    if (!world) return;
-    pauseOverlay.classList.add('d-none');
-    world.resumeGame?.();
-    resumeAllAudios(allAudios);
-    document.getElementById('move-button-box').classList.add('move-button-box-active');
-
-}
-
-pauseToggleButton.addEventListener('click', () => {
-    if (!world) return;
-
-    const isOpen = !pauseOverlay.classList.contains('d-none');
-
-    if (isOpen) {
-        closePauseMenu();
-    } else {
-        openPauseMenu();
-    }
-});
 
 window.addEventListener('keydown', (event) => {
     world.keyboard?.setKeyTrue(event.key);
@@ -71,9 +34,7 @@ document.getElementById('menu-level-button')
 document.getElementById('pause-menu-main-button')
     .addEventListener('click', returnToMainMenu);
 
-document.getElementById('pause-resume-button').addEventListener('click', () => {
-    closePauseMenu();
-});
+
 
 function isFullscreenActive() {
     return !!document.fullscreenElement;

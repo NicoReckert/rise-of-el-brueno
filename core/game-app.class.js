@@ -5,6 +5,9 @@ import { AudioManager } from './audio-manager.class.js';
 import { UIManager } from './ui-manager.class.js';
 import { InputManager } from './input-manager.class.js';
 import { Keyboard } from '../classes/keyboard.class.js';
+import { stopTitleMusic } from '../script.js';
+import { FullscreenManager } from './fullscreen-manager.class.js';
+import { PauseManager } from './pause-manager.class.js';
 
 export class GameApp {
     constructor() {
@@ -15,26 +18,81 @@ export class GameApp {
         this.assetLoader = new AssetLoader();
         this.uiManager = new UIManager();
         this.audioManager = new AudioManager;
+        this.fullscreenManager = new FullscreenManager();
+        this.pauseManager = new PauseManager(this.uiManager, this.audioManager, this.allAudios);
         this.keyboard = new Keyboard();
-        this.inputManager = new InputManager(this.uiManager, this.keyboard);
+        this.inputManager = new InputManager(this.keyboard, this.uiManager);
     }
 
     async start() {
+        await this.initCore();
+        this.initWorld();
+        this.bindUIEvents();
+        this.startBackgroundAssetLoading();
+    }
+
+
+    async initCore() {
         await this.assetLoader.init();
         this.restoreMutedState();
         this.uiManager.fadeOutLoadingOverlay();
+    }
+
+    initWorld() {
         this.world = new World(
             this.canvas,
             this.keyboard,
             this.assetLoader.characterImages,
             this.assetLoader.entityImages
         );
+    }
+
+    bindUIEvents() {
+        this.bindStartButton();
+        this.bindNextLevelButton();
+        this.bindPauseToggleButton();
+        this.bindPauseResumeButton();
+    }
+
+    bindStartButton() {
         this.inputManager.listenStartButton(() => {
             this.world.startGame();
-        })
+            this.uiManager.showGameScreen();
+            this.fullscreenManager.setFullscreen();
+            stopTitleMusic();
+        });
+    }
+
+    bindNextLevelButton() {
+        this.inputManager.listenNextLevelButton(() => {
+            this.world.startNextLevel();
+            const music = this.world.levelCompleteSetup?.sounds?.levelCompleteMusic;
+            if (music) this.audioManager.fadeOutAudio(music);
+            this.uiManager.hideLevelCompleteButtonBox();
+        });
+    }
+
+    bindPauseToggleButton() {
+        this.inputManager.listenPauseToggleButton(() => {
+            this.pauseManager.toggle(this.world);
+        });
+    }
+
+    bindPauseResumeButton() {
+        this.inputManager.listenPauseResumeButton(() => {
+            this.pauseManager.toggle(this.world);
+        });
+    }
+
+    startBackgroundAssetLoading() {
         this.loadDeferredIntoWorld();
         this.loadLazyIntoWorld();
     }
+
+
+
+
+
 
     restoreMutedState() {
         const savedMuted = localStorage.getItem("elBruenoMuted") === "1";

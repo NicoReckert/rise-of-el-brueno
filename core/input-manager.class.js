@@ -1,11 +1,8 @@
-import { FullscreenManager } from "./fullscreen-manager.class.js";
-import { stopTitleMusic } from "../script.js";
 
 export class InputManager {
-    constructor(uiManager, keyboard) {
-        this.uiManager = uiManager;
+    constructor(keyboard, uiManager) {
         this.keyboard = keyboard;
-        this.fullscreenManager = new FullscreenManager();
+        this.uiManager = uiManager;
         this.init();
     }
 
@@ -28,19 +25,27 @@ export class InputManager {
     }
 
     listenStartButton(onStartGame) {
-        document.getElementById('start-button').addEventListener('click', () => {
+        this.uiManager.dom.startButton.addEventListener('click', () => {
             onStartGame();
-            this.uiManager.showGameScreen();
-            this.fullscreenManager.setFullscreen();
-            stopTitleMusic();
         });
     }
 
 
+    listenNextLevelButton(onStartNextLevel) {
+        this.uiManager.dom.nextLevelButton.addEventListener('click', () => {
+            onStartNextLevel();
+        });
+    }
 
+    listenPauseToggleButton(onTogglePause) {
+        this.uiManager.dom.pauseToggleButton.addEventListener('click', () => {
+            onTogglePause();
+        });
+    }
 
-
-
-
-
+    listenPauseResumeButton(onTogglePause) {
+        this.uiManager.dom.pauseResumeButton.addEventListener('click', () => {
+            onTogglePause();
+        });
+    }
 }

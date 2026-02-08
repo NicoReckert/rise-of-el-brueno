@@ -1,5 +1,0 @@
-export class BreakManager {
-    constructor() {
-
-    }
-}
