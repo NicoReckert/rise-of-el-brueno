@@ -1,32 +1,53 @@
-import { allVideos } from "./media-store.js";
+// video-loader.js
 
+/**
+ * Hängt ein Video an ein DOM-Element an und liefert ein Mapping,
+ * das direkt an den VideoManager übergeben werden kann.
+ *
+ * Beispiel:
+ *   const map = attachVideo("introBg", "start-initialisation-video", "intro.mp4");
+ *   videoManager.addVideos(map);
+ */
 export function attachVideo(key, elementId, src) {
-    const el = document.getElementById(elementId);
-    if (!el) {
-        console.warn(`[attachVideo] Video element '${elementId}' not found yet`);
-        return null;
+    const container = document.getElementById(elementId);
+    if (!container) {
+        console.warn(`[attachVideo] Container element '${elementId}' not found`);
+        return {};
     }
 
-    if (allVideos[key]) {
-        return allVideos[key];
+    let video;
+
+    // Falls das Element selbst schon ein <video> ist, benutze es
+    if (container.tagName && container.tagName.toLowerCase() === "video") {
+        video = container;
+    } else {
+        // sonst: neues <video> in den Container hängen
+        video = document.createElement("video");
+        container.appendChild(video);
     }
 
-    el.preload = "none";
-    el.muted = true;
-    el.playsInline = true;
+    video.preload = "none";
+    video.muted = true;
+    video.playsInline = true;
 
-    // 🔑 NUR merken, NICHT setzen
-    el.dataset.src = src;
+    // Nur merken, noch nicht direkt src setzen (Lazy-Load)
+    video.dataset.src = src;
 
-    allVideos[key] = el;
-    return el;
+    return { [key]: video };
 }
 
+/**
+ * Lädt ein einzelnes Video-Element anhand seines data-src.
+ * Setzt src + <source> nur, wenn noch nicht gesetzt.
+ */
 export function loadVideo(video) {
     return new Promise((resolve, reject) => {
-        if (!video) return reject("Kein Video übergeben");
+        if (!video) {
+            reject("Kein Video übergeben");
+            return;
+        }
 
-        // Schon geladen?
+        // Schon geladen / src bereits gesetzt?
         if (video.src) {
             resolve(video);
             return;
@@ -67,26 +88,34 @@ export function loadVideo(video) {
     });
 }
 
+/**
+ * Lädt alle Videos eines Manifests vor.
+ * Manifest-Form: { introBg: "intro.mp4", menuBg: "menu.mp4", ... }
+ *
+ * Rückgabe ist ein Objekt { key: HTMLVideoElement, ... },
+ * das du direkt in den VideoManager stecken kannst:
+ *
+ *   const videos = await preloadManifestVideos(manifest, onFileLoaded);
+ *   videoManager.addVideos(videos);
+ */
 export async function preloadManifestVideos(manifest, onFileLoaded) {
     const entries = Object.entries(manifest);
+    const cache = {}; // optionaler interner Cache, falls mehrfach aufgerufen
 
     const results = await Promise.all(
         entries.map(async ([key, src]) => {
-            // Schon ein Video registriert? → wiederverwenden
-            let video = allVideos[key];
+            let video = cache[key];
 
             if (!video) {
-                // eigenes Video-Element im JS (muss nicht im DOM sein)
                 video = document.createElement("video");
                 video.preload = "auto";
                 video.playsInline = true;
-                video.muted = false; // für Preload meist leise
+                video.muted = false; // beim Preload egal, Klang kommt erst beim Play
                 video.dataset.src = src;
 
-                allVideos[key] = video;
+                cache[key] = video;
             }
 
-            // lädt nur, wenn noch kein src gesetzt ist
             await loadVideo(video);
 
             if (typeof onFileLoaded === "function") {

@@ -23,7 +23,7 @@ export class World {
     canvas;
     currentScene = 'farmLevel';
 
-    constructor(canvas, keyboard, characterImages, entityImages, audioManager) {
+    constructor(canvas, keyboard, characterImages, entityImages, audioManager, videoManager) {
 
         //New
         this.audioManager = new AudioManager();
@@ -35,7 +35,10 @@ export class World {
         this.characterImages = characterImages;
         this.entityImages = entityImages;
         this.audioManager = audioManager;
+        this.videoManager = videoManager;
         this.allAudios = this.audioManager.audios;
+        this.allVideos = this.videoManager.videos;
+
 
 
 

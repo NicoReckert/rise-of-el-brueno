@@ -1,13 +1,13 @@
 import { AnimatedEntity } from './animated-entity.class.js';
 import { createNayelisHouseLevel } from '../levels/nayelis-house-level.js';
 import { nayelisHouseEvents } from '../events/nayelis-house-level-events.js';
-import { allVideos } from '../media-store.js';
 
 export class NayelisHouseLevelSetup {
     constructor(world) {
         this.world = world;
         this.entityImages = this.world.entityImages;
         this.allAudios = this.world.allAudios;
+        this.allVideos = this.world.allVideos;
         this.nayelisHouseLevel = createNayelisHouseLevel();
         this.nayelisHouseEvents = nayelisHouseEvents;
         this.isNotificationPlay = false;
@@ -25,6 +25,6 @@ export class NayelisHouseLevelSetup {
             nayelisSpeakSound: this.allAudios.nayelisSpeakSound
         };
 
-        this.video = allVideos.nayelis_house_video || null;
+        this.video = this.allVideos.nayelis_house_video || null;
     }
 }

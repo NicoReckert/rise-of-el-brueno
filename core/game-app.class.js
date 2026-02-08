@@ -4,9 +4,11 @@ import { AudioManager } from './audio-manager.class.js';
 import { UIManager } from './ui-manager.class.js';
 import { InputManager } from './input-manager.class.js';
 import { Keyboard } from '../classes/keyboard.class.js';
-import { initScriptAudioIntro, stopTitleMusic, initScriptAudio } from '../script.js';
 import { FullscreenManager } from './fullscreen-manager.class.js';
 import { PauseManager } from './pause-manager.class.js';
+import { VideoManager } from './video-manager.class.js';
+import { MenuVisuals } from './menu-visuals.class.js';
+import { MenuAudioAndCharacters } from './menu-audio-and-characters.class.js';
 
 export class GameApp {
     constructor() {
@@ -21,6 +23,9 @@ export class GameApp {
         this.pauseManager = new PauseManager(this.uiManager, this.audioManager, this.allAudios);
         this.keyboard = new Keyboard();
         this.inputManager = new InputManager(this.keyboard, this.uiManager);
+        this.videoManager = new VideoManager();
+        this.menuVisuals = new MenuVisuals(this.videoManager, this.audioManager);
+        this.menuAudioAndCharacters = new MenuAudioAndCharacters(this.audioManager, this.videoManager, this.uiManager);
     }
 
     async start() {
@@ -33,11 +38,12 @@ export class GameApp {
 
     async initCore() {
         await this.assetLoader.init();
+        this.menuVisuals.init();
         this.audioManager.addAudios(this.assetLoader.introAudios);
         this.audioManager.addAudios(this.assetLoader.immediateAudios);
         //TODO
-        initScriptAudioIntro(this.audioManager.audios);
-        initScriptAudio(this.audioManager.audios);
+        // initScriptAudioIntro(this.audioManager.audios);
+        // initScriptAudio(this.audioManager.audios);
         this.restoreMutedState();
         this.uiManager.fadeOutLoadingOverlay();
     }
@@ -48,7 +54,8 @@ export class GameApp {
             this.keyboard,
             this.assetLoader.characterImages,
             this.assetLoader.entityImages,
-            this.audioManager
+            this.audioManager,
+            this.videoManager
         );
     }
 
@@ -57,6 +64,7 @@ export class GameApp {
         this.bindNextLevelButton();
         this.bindPauseToggleButton();
         this.bindPauseResumeButton();
+        this.bindWelcomeButton();
     }
 
     bindStartButton() {
@@ -89,6 +97,12 @@ export class GameApp {
         });
     }
 
+    bindWelcomeButton() {
+        this.inputManager.listenWelcomeButton(() => {
+            this.menuVisuals.startIntro();
+        });
+    }
+
     startBackgroundAssetLoading() {
         this.loadDeferredIntoWorld();
         this.loadLazyIntoWorld();
@@ -105,9 +119,14 @@ export class GameApp {
     }
 
     async loadDeferredIntoWorld() {
-        const { charDeferred, entityDeferred, deferredAudios } =
+        const { charDeferred, entityDeferred, deferredAudios, deferredVideos } =
             await this.assetLoader.loadDeferredManifests();
-        this.audioManager.addAudios(deferredAudios);
+        if (deferredAudios && this.audioManager) {
+            this.audioManager.addAudios(deferredAudios);
+        }
+        if (deferredVideos && this.videoManager) {
+            this.videoManager.addVideos(deferredVideos);
+        }
         this.world.applyDeferredAssets(charDeferred, entityDeferred);
         if (this.audioManager.isMuted) {
             this.audioManager.applyMuteToAllAudios();
@@ -129,7 +148,9 @@ export class GameApp {
         try {
             const { charLazy, entityLazy, lazyAudios } =
                 await this.assetLoader.loadLazyManifests();
-            this.audioManager.addAudios(lazyAudios);
+            if (lazyAudios && this.audioManager) {
+                this.audioManager.addAudios(lazyAudios);
+            }
             this.world.applyLazyAssets(charLazy, entityLazy);
             if (this.audioManager.isMuted) {
                 this.audioManager.applyMuteToAllAudios();

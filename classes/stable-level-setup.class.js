@@ -3,13 +3,13 @@ import { AnimatedEntity } from './animated-entity.class.js';
 import { HollowHint } from './hollow-hint.class.js';
 import { stableLevel } from '../levels/stable-level.js';
 import { stableEvents } from '../events/stable-level-events.js';
-import { allVideos } from '../media-store.js';
 
 export class StableLevelSetup {
     constructor(world) {
         this.world = world;
         this.entityImages = this.world.entityImages;
         this.allAudios = this.world.allAudios;
+        this.allVideos = this.world.allVideos;
         this.stableLevel = stableLevel;
         this.isNotificationPlay = false;
         this.popupTexts = [];
@@ -31,7 +31,7 @@ export class StableLevelSetup {
             chickenSound: this.allAudios.chickenSound,
         };
 
-        this.video = allVideos.memory || null;
+        this.video = this.allVideos.memory || null;
         this.hints = [
             new HollowHint("Streicheln", this.characters.juanito, 100, 'rose'),
             new HollowHint("Streicheln", this.characters.pollito, 100, 'rose'),

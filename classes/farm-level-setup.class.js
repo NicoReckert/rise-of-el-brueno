@@ -12,7 +12,6 @@ import { createFarmSounds } from '../levels/farm/farm-sounds.js';
 import { createFarmSpeechBubbles } from '../levels/farm/farm-speech-bubbles.js';
 import { createFarmHints } from '../levels/farm/farm-hints.js';
 import { createFarmState } from '../levels/farm/farm-state.js';
-import { allVideos } from '../media-store.js';
 
 /**
  * Sets up and initializes the farm level.
@@ -27,10 +26,11 @@ export class FarmLevelSetup {
         this.farmLevel = createFarmLevel();
         this.entityImages = this.world.entityImages;
         this.allAudios = this.world.allAudios;
+        this.allVideos = this.world.allVideos;
         this.farmEvents = farmEvents;
         this.state = createFarmState();
         this.init();
-        this.video = allVideos.prolog || null;
+        this.video = this.allVideos.prolog || null;
     }
 
     /**

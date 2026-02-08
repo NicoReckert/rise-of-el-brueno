@@ -1,12 +1,9 @@
-import { initScriptVisuals } from "../script.js";
 import { preloadManifestAudio } from "../audio-loader.js";
 import { introAudioManifest } from "../audio-manifest.js";
-import { initScriptAudioIntro } from "../script.js";
 import { characterManifestImmediate } from "../character-image-manifest.js";
 import { farmEntityManifestImmediate } from "../entity-image-manifest.js";
 import { farmAudioManifestImmediate } from "../audio-manifest.js";
 import { preloadManifestImages } from "../image-loader.js";
-import { initScriptAudio } from "../script.js";
 import { characterManifestDeferred } from "../character-image-manifest.js";
 import { farmEntityManifestDeferred } from "../entity-image-manifest.js";
 import { otherLevelCharacterManifestLazy } from "../character-image-manifest.js";
@@ -32,6 +29,7 @@ export class AssetLoader {
         this.introAudios = {};
         this.immediateAudios = {};
         this.deferredAudios = {};
+        this.deferredVideos = {};
         this.lazyAudios = {};
     }
 
@@ -80,11 +78,11 @@ export class AssetLoader {
     * @returns {Promise<void>}
     */
     async preloadIntroAssets() {
-        await initScriptVisuals();
+        // await initScriptVisuals();
         const introAudios = await preloadManifestAudio(introAudioManifest);
         this.introAudios = introAudios;
         //TODO
-        initScriptAudioIntro(introAudios);
+        // initScriptAudioIntro(introAudios);
     }
 
     /**
@@ -180,7 +178,7 @@ export class AssetLoader {
         }
         this.immediateAudios = farmAudios;
         //TODO
-        initScriptAudio(farmAudios);
+        // initScriptAudio(farmAudios);
         Object.assign(this.characterImages, chars);
         smartMerge(this.entityImages, entities);
     }
@@ -286,17 +284,18 @@ export class AssetLoader {
         }
         if (videoRes.status === 'rejected') {
             console.warn('[loadDeferredAssets] farmVideoManifestDeferred failed:', videoRes.reason);
-        } else if (videoRes.status === 'fulfilled') {
-            console.log('[loadDeferredAssets] videos loaded (deferred)');
         }
         const charDeferred = this.getSettledValue(charRes, {});
         const entityDeferred = this.getSettledValue(entityRes, {});
         const deferredAudios = this.getSettledValue(audioRes, {});
+        const deferredVideos = this.getSettledValue(videoRes, {});
         this.deferredAudios = deferredAudios;
+        this.deferredVideos = deferredVideos;
         return {
             charDeferred,
             entityDeferred,
-            deferredAudios
+            deferredAudios,
+            deferredVideos
         }
     }
 

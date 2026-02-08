@@ -48,4 +48,14 @@ export class InputManager {
             onTogglePause();
         });
     }
+
+    listenWelcomeButton(onStartIntro) {
+        this.uiManager.dom.welcomeButton.addEventListener("click", () => {
+            // playHoverSound();
+            // openFullscreen(document.body);
+            onStartIntro();
+            // startVideo()
+        });
+    }
+
 }

@@ -777,7 +777,7 @@ canvas {
   }
 }
 
-.start-initialisation-video {
+.opening-background-video {
   position: absolute;
   top: 50%;
   left: 50%;
@@ -789,7 +789,7 @@ canvas {
   height: 100%;
 }
 
-.start-initialisation-video2 {
+.intro-video {
   position: absolute;
   top: 50%;
   left: 50%;

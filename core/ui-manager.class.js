@@ -36,7 +36,8 @@ export class UIManager {
             pauseToggleButton: document.getElementById('pause-toggle-button'),
             fullscreenToggleButton: document.getElementById('fullscreen-toggle-button'),
             muteToggleButton: document.getElementById('mute-toggle-button'),
-            pauseOverlay: document.getElementById('pause-overlay')
+            pauseOverlay: document.getElementById('pause-overlay'),
+            welcomeButton: document.getElementById("welcome-button")
         };
     }
 
