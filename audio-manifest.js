@@ -1,6 +1,6 @@
 export const introAudioManifest = {
-    titleMusic: "./assets/audio/title-music.opus",
-    titleMusic2: './assets/audio/title-music2.opus',
+    titleMusicIntro: "./assets/audio/title-music-intro.opus",
+    titleMusicLoop: './assets/audio/title-music-loop.opus',
     titleSound: './assets/audio/title-sound5.opus',
     welcomeButtonHoverSound: './assets/audio/ui-tuping-391160.opus'
 };

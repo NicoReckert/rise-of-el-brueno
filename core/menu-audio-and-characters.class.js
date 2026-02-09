@@ -2,7 +2,7 @@ export class MenuAudioAndCharacters {
     constructor(audioManager, videoManager, uiManager) {
         this.audioManager = audioManager;
         this.videoManager = videoManager;
-        this.ui = uiManager;
+        this.uiManager = uiManager;
         this.titleMusic = null;
         this.titleMusic2 = null;
         this.titleSound = null;
@@ -13,28 +13,10 @@ export class MenuAudioAndCharacters {
         this.titleSoundIsPlayed = false;
     }
 
-    initIntroAudio() {
-        const a = this.audioManager.audios;
-        this.titleMusic = a.titleMusic;
-        this.titleMusic2 = a.titleMusic2;
-        this.titleSound = a.titleSound;
-        this.welcomeButtonHoverSound = a.welcomeButtonHoverSound;
-
-        this.titleMusic.addEventListener("ended", () => {
-            this.titleMusic2.play();
-            this.titleMusic2.loop = true;
-        });
-
-        this.titleMusic.addEventListener('timeupdate', () => {
-            if (this.titleMusic.currentTime >= 22.8 && !this.titleSoundIsPlayed) {
-                this.titleSound.play();
-                const h1 = document.getElementById('h1');
-                h1.classList.add('animation');
-                this.titleSoundIsPlayed = true;
-                setTimeout(() => {
-                    h1.classList.remove('before-animation');
-                }, 800);
-            }
+    setupTitleIntro() {
+        this.audioManager.setupTitleMusicChain();
+        this.audioManager.setupTitleIntroCue(() => {
+            this.uiManager.playTitleAnimation();
         });
     }
 
@@ -58,31 +40,6 @@ export class MenuAudioAndCharacters {
     }
 
 
-
-}
-
-
-export function initScriptAudioIntro(allAudios) {
-    titleMusic = allAudios.titleMusic
-    titleMusic2 = allAudios.titleMusic2;
-    titleSound = allAudios.titleSound;
-    welcomeButtonHoverSound = allAudios.welcomeButtonHoverSound;
-
-    titleMusic.addEventListener("ended", () => {
-        titleMusic2.play();
-        titleMusic2.loop = true;
-    });
-
-    titleMusic.addEventListener('timeupdate', () => {
-        if (titleMusic.currentTime >= 22.8 && !titleSoundIsPlayed) {
-            titleSound.play();
-            document.getElementById('h1').classList.add('animation');
-            titleSoundIsPlayed = true;
-            setTimeout(() => {
-                document.getElementById('h1').classList.remove('before-animation');
-            }, 800);
-        }
-    });
 
 }
 

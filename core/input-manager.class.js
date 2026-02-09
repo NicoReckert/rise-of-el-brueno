@@ -54,7 +54,6 @@ export class InputManager {
             // playHoverSound();
             // openFullscreen(document.body);
             onStartIntro();
-            // startVideo()
         });
     }
 

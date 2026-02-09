@@ -125,16 +125,16 @@ export class MenuVisuals {
      */
     async playIntroWithMusic() {
         const video = this.videoManager.get("intro");
-        const titleMusic = this.audioManager.audios.titleMusic;
+        const titleMusicIntro = this.audioManager.audios.titleMusicIntro;
         video.currentTime = 0;
-        titleMusic.currentTime = 0;
+        titleMusicIntro.currentTime = 0;
         video.muted = true;
-        titleMusic.volume = 0;
+        titleMusicIntro.volume = 0;
         await Promise.all([
             video.play(),
-            titleMusic.play()
+            titleMusicIntro.play()
         ]);
-        titleMusic.volume = 1;
+        titleMusicIntro.volume = 1;
         video.muted = false;
     }
 

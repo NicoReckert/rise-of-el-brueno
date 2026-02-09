@@ -26,7 +26,8 @@ export class UIManager {
             nextLevelButton: document.getElementById('next-level-button'),
             levelCompleteButtonBox: document.getElementById('level-complete-button-box'),
             pauseResumeButton: document.getElementById('pause-resume-button'),
-            overlayStartInitialisation: document.getElementById('overlay-start-initialisation')
+            overlayStartInitialisation: document.getElementById('overlay-start-initialisation'),
+            h1: document.getElementById('h1')
         };
     }
 
@@ -100,5 +101,12 @@ export class UIManager {
 
     hideStartInitialisationOverlay() {
         this.dom.overlayStartInitialisation.classList.add('opacity-none');
+    }
+
+    playTitleAnimation() {
+        this.dom.h1.classList.add('animation');
+        setTimeout(() => {
+            this.dom.h1.classList.remove('before-animation');
+        }, 800);
     }
 }

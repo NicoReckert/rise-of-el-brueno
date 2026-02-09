@@ -41,9 +41,10 @@ export class GameApp {
         this.menuVisuals.init();
         this.audioManager.addAudios(this.assetLoader.introAudios);
         this.audioManager.addAudios(this.assetLoader.immediateAudios);
+        this.menuAudioAndCharacters.setupTitleIntro();
         //TODO
-        // initScriptAudioIntro(this.audioManager.audios);
         // initScriptAudio(this.audioManager.audios);
+        //buildCharacters
         this.restoreMutedState();
         this.uiManager.fadeOutLoadingOverlay();
     }

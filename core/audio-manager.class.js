@@ -11,6 +11,11 @@ export class AudioManager {
         Object.assign(this.audios, audioMap);
     }
 
+    get(name) {
+        return this.audios[name];
+    }
+
+
     setMutedState(muted) {
         this.isMuted = muted;
         localStorage.setItem("elBruenoMuted", muted ? "1" : "0");
@@ -275,5 +280,30 @@ export class AudioManager {
         };
 
         visit(root);
+    }
+
+    setupTitleMusicChain() {
+        const titleMusicIntro = this.get('titleMusicIntro');
+        const titleMusicLoop = this.get('titleMusicLoop');
+        if (!titleMusicIntro || !titleMusicLoop) return;
+        titleMusicIntro.addEventListener("ended", () => {
+            titleMusicLoop.currentTime = 0;
+            titleMusicLoop.loop = true;
+            titleMusicLoop.play();
+        });
+    }
+
+    setupTitleIntroCue(callback) {
+        const titleMusicIntro = this.get('titleMusicIntro');
+        const titleSound = this.get('titleSound');
+        if (!titleMusicIntro || !titleSound) return;
+        const handler = () => {
+            if (titleMusicIntro.currentTime >= 22.8 && titleSound.paused) {
+                titleSound.play();
+                callback?.();
+                titleMusicIntro.removeEventListener('timeupdate', handler);
+            }
+        }
+        titleMusicIntro.addEventListener('timeupdate', handler);
     }
 }
