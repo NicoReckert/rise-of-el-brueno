@@ -20,12 +20,13 @@ export class UIManager {
 
     cacheStartScreenElements() {
         return {
-            overlayStartScreen: document.getElementById('overlay-startscreen'),
+            overlayStartScreen: document.getElementById('overlay-start-screen'),
             overlayStartInitialisation: document.getElementById('overlay-start-initialisation'),
             startButton: document.getElementById('start-button'),
             nextLevelButton: document.getElementById('next-level-button'),
             levelCompleteButtonBox: document.getElementById('level-complete-button-box'),
-            pauseResumeButton: document.getElementById('pause-resume-button')
+            pauseResumeButton: document.getElementById('pause-resume-button'),
+            overlayStartInitialisation: document.getElementById('overlay-start-initialisation')
         };
     }
 
@@ -37,7 +38,8 @@ export class UIManager {
             fullscreenToggleButton: document.getElementById('fullscreen-toggle-button'),
             muteToggleButton: document.getElementById('mute-toggle-button'),
             pauseOverlay: document.getElementById('pause-overlay'),
-            welcomeButton: document.getElementById("welcome-button")
+            welcomeButton: document.getElementById("welcome-button"),
+            introVideo: document.getElementById('intro-video')
         };
     }
 
@@ -86,4 +88,17 @@ export class UIManager {
         this.dom.moveButtonBox.classList.toggle('move-button-box-active', active);
     }
 
+    fadeInIntroVideo() {
+        this.dom.introVideo.classList.remove('opacity-none');
+        this.dom.introVideo.classList.add('fade-in-intro');
+    }
+
+    transitionToStartScreen() {
+        this.dom.overlayStartInitialisation.classList.add('animation-overlay-fade-out');
+        this.dom.overlayStartScreen.classList.remove('opacity-none');
+    }
+
+    hideStartInitialisationOverlay() {
+        this.dom.overlayStartInitialisation.classList.add('opacity-none');
+    }
 }

@@ -1,13 +1,37 @@
 import { attachVideo, loadVideo } from "../video-loader.js";
 import { videoManifest } from "../video-manifest.js";
 
+/**
+* Manages menu visuals and related media controllers.
+*/
 export class MenuVisuals {
-    constructor(videoManager, audioManager) {
+    /**
+    * Creates a new menu visuals instance.
+    * @param {Object} videoManager Video manager instance.
+    * @param {Object} audioManager Audio manager instance.
+    * @param {Object} uiManager UI manager instance.
+    */
+    constructor(videoManager, audioManager, uiManager) {
         this.videoManager = videoManager;
         this.audioManager = audioManager;
+        this.uiManager = uiManager;
     }
 
+    /**
+    * Initializes menu visuals.
+    * @returns {Promise<void>}
+    */
     async init() {
+        this.registerMenuVideos();
+        await this.playOpeningBackground();
+        this.preloadIntro();
+        this.preloadMenuBackgroundWarm();
+    }
+
+    /**
+     * Registers menu-related videos.
+    */
+    registerMenuVideos() {
         const map = {
             ...attachVideo("openingBg", "opening-background-video", videoManifest.opening),
             ...attachVideo("intro", "intro-video", videoManifest.intro),
@@ -16,16 +40,24 @@ export class MenuVisuals {
             ...attachVideo("portal", "portal-video", videoManifest.portal),
             ...attachVideo("thunder", "thunder-video", videoManifest.thunder),
             ...attachVideo("submenuBg", "submenu-video", videoManifest.subMenuBackground),
-        }
+        };
         this.videoManager.addVideos(map);
+    }
+
+    /**
+    * Loads and plays the opening background video.
+    * @returns {Promise<void>}
+    */
+    async playOpeningBackground() {
         const openingBg = this.videoManager.get("openingBg");
         await loadVideo(openingBg);
         openingBg.play();
-
-        this.preloadIntro();
-        this.preloadMenuBackgroundWarm();
     }
 
+    /**
+    * Preloads the intro video.
+    * @returns {Promise<void>}
+    */
     async preloadIntro() {
         const v = this.videoManager.get("intro");
         if (!v || v._warmed) return;
@@ -36,6 +68,10 @@ export class MenuVisuals {
         v.preload = "auto";
     }
 
+    /**
+    * Preloads and warms menu background videos.
+    * @returns {Promise<void>}
+    */
     async preloadMenuBackgroundWarm() {
         const videos = [
             this.videoManager.get("earth"),
@@ -51,59 +87,66 @@ export class MenuVisuals {
         }
     }
 
+    /**
+    * Starts the intro sequence.
+    * @returns {Promise<void>}
+    */
     async startIntro() {
         const menuVideo = this.videoManager.get("menuBg");
-        const introVideo = this.videoManager.get("intro");
         if (!menuVideo._loaded) {
             menuVideo._loaded = true;
             loadVideo(menuVideo);
         }
-        introVideo.classList.remove('opacity-none');
-        introVideo.classList.add('animation-video2');
-        this.playVorspannWithMusic();
+        this.uiManager.fadeInIntroVideo();
+        this.playIntroWithMusic();
         menuVideo.loop = true;
         menuVideo.playbackRate = 1.0;
-        setTimeout(async () => {
-            await menuVideo.play();
-            document.getElementById('overlay-start-initialisation').classList.add('animation-overlay-fade-out');
-            document.getElementById('overlay-startscreen').classList.remove('opacity-none');
-            this.preloadMenuBackgroundDetails();
-            setTimeout(() => {
-                document.getElementById('overlay-start-initialisation').classList.add('opacity-none');
-            }, 400);
-        }, 23000);
-
+        this.scheduleStartScreenTransition(menuVideo);
     }
 
-    async playVorspannWithMusic() {
+    /**
+    * Schedules the transition to the start screen.
+    * @param {HTMLVideoElement} menuVideo Menu background video.
+    */
+    scheduleStartScreenTransition(menuVideo) {
+        setTimeout(async () => {
+            await menuVideo.play();
+            this.uiManager.transitionToStartScreen();
+            this.preloadMenuBackgroundDetails();
+            setTimeout(() => {
+                this.uiManager.hideStartInitialisationOverlay();
+            }, 400);
+        }, 23000);
+    }
+
+    /**
+    * Plays the intro video with accompanying music.
+    * @returns {Promise<void>}
+     */
+    async playIntroWithMusic() {
         const video = this.videoManager.get("intro");
         const titleMusic = this.audioManager.audios.titleMusic;
-        // beides reset
         video.currentTime = 0;
         titleMusic.currentTime = 0;
-
-        // beides stumm
         video.muted = true;
         titleMusic.volume = 0;
-
-        // parallel starten
         await Promise.all([
             video.play(),
             titleMusic.play()
         ]);
-
-        // exakt JETZT hörbar machen
         titleMusic.volume = 1;
         video.muted = false;
     }
 
+    /**
+    * Preloads and starts background detail videos.
+    */
     preloadMenuBackgroundDetails() {
         const bgDetails = [
             this.videoManager.videos.earth,
             this.videoManager.videos.portal,
             this.videoManager.videos.thunder
         ];
-
         bgDetails.forEach(video => {
             video.loop = true;
             video.muted = false;
@@ -111,4 +154,3 @@ export class MenuVisuals {
         });
     }
 }
-

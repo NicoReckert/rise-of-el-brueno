@@ -24,7 +24,7 @@ export class GameApp {
         this.keyboard = new Keyboard();
         this.inputManager = new InputManager(this.keyboard, this.uiManager);
         this.videoManager = new VideoManager();
-        this.menuVisuals = new MenuVisuals(this.videoManager, this.audioManager);
+        this.menuVisuals = new MenuVisuals(this.videoManager, this.audioManager, this.uiManager);
         this.menuAudioAndCharacters = new MenuAudioAndCharacters(this.audioManager, this.videoManager, this.uiManager);
     }
 
