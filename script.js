@@ -268,29 +268,29 @@ title.addEventListener("animationend", () => {
 //     });
 // }
 
-export function initScriptAudio(allAudios) {
+// export function initScriptAudio(allAudios) {
 
-    audios = {
-        nayelisMusic: allAudios.nayelisMusic,
-        sollitasMusic: allAudios.sollitasMusic,
-        tadeoMusic: allAudios.tadeoMusic,
-        soulMusic: allAudios.soulMusic,
-        happyTogetherMusic: allAudios.happyTogetherMusic,
-        infoScreenMusic: allAudios.infoScreenMusic,
-        brünöTextSpeechSound: allAudios.brünöTextSpeechSound,
-        juanitoTextSpeechSound: allAudios.juanitoTextSpeechSound,
-        pollitoTextSpeechSound: allAudios.pollitoTextSpeechSound,
-        lolaTextSpeechSound: allAudios.lolaTextSpeechSound,
-        sollitaTextSpeechSound: allAudios.sollitaTextSpeechSound,
-        nayeliTextSpeechSound: allAudios.nayeliTextSpeechSound,
-        tadeoTextSpeechSound: allAudios.tadeoTextSpeechSound,
-        storyTextSpeechSound: allAudios.storyTextSpeechSound
-    }
+//     audios = {
+//         nayelisMusic: allAudios.nayelisMusic,
+//         sollitasMusic: allAudios.sollitasMusic,
+//         tadeoMusic: allAudios.tadeoMusic,
+//         soulMusic: allAudios.soulMusic,
+//         happyTogetherMusic: allAudios.happyTogetherMusic,
+//         infoScreenMusic: allAudios.infoScreenMusic,
+//         brünöTextSpeechSound: allAudios.brünöTextSpeechSound,
+//         juanitoTextSpeechSound: allAudios.juanitoTextSpeechSound,
+//         pollitoTextSpeechSound: allAudios.pollitoTextSpeechSound,
+//         lolaTextSpeechSound: allAudios.lolaTextSpeechSound,
+//         sollitaTextSpeechSound: allAudios.sollitaTextSpeechSound,
+//         nayeliTextSpeechSound: allAudios.nayeliTextSpeechSound,
+//         tadeoTextSpeechSound: allAudios.tadeoTextSpeechSound,
+//         storyTextSpeechSound: allAudios.storyTextSpeechSound
+//     }
 
 
 
-    buildCharacters();
-}
+//     buildCharacters();
+// }
 
 export function stopTitleMusic(allAudios) {
     allAudios.titleMusic?.pause();
@@ -626,27 +626,27 @@ export function fadeInTitleMusic() {
 
 window.addEventListener('contextmenu', e => e.preventDefault());
 
-function openFullscreen(element) {
-    const el = element || document.documentElement;
+// function openFullscreen(element) {
+//     const el = element || document.documentElement;
 
-    if (el.requestFullscreen) {
-        el.requestFullscreen().catch(err => {
-            console.warn("Fullscreen request denied:", err);
-        });
-    } else if (el.webkitRequestFullscreen) { // Safari
-        try {
-            el.webkitRequestFullscreen();
-        } catch (err) {
-            console.warn("Fullscreen request denied (webkit):", err);
-        }
-    } else if (el.msRequestFullscreen) { // alte IE/Edge
-        try {
-            el.msRequestFullscreen();
-        } catch (err) {
-            console.warn("Fullscreen request denied (ms):", err);
-        }
-    }
-}
+//     if (el.requestFullscreen) {
+//         el.requestFullscreen().catch(err => {
+//             console.warn("Fullscreen request denied:", err);
+//         });
+//     } else if (el.webkitRequestFullscreen) { // Safari
+//         try {
+//             el.webkitRequestFullscreen();
+//         } catch (err) {
+//             console.warn("Fullscreen request denied (webkit):", err);
+//         }
+//     } else if (el.msRequestFullscreen) { // alte IE/Edge
+//         try {
+//             el.msRequestFullscreen();
+//         } catch (err) {
+//             console.warn("Fullscreen request denied (ms):", err);
+//         }
+//     }
+// }
 
 document.addEventListener("fullscreenchange", () => {
     if (document.fullscreenElement) {

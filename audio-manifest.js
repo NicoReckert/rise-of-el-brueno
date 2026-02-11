@@ -2,7 +2,7 @@ export const introAudioManifest = {
     titleMusicIntro: "./assets/audio/title-music-intro.opus",
     titleMusicLoop: './assets/audio/title-music-loop.opus',
     titleSound: './assets/audio/title-sound5.opus',
-    welcomeButtonHoverSound: './assets/audio/ui-tuping-391160.opus'
+    welcomeButtonClickSound: './assets/audio/ui-tuping-391160.opus'
 };
 
 export const farmAudioManifestImmediate = {

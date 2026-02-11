@@ -39,7 +39,7 @@ export class MenuVisuals {
             ...attachVideo("earth", "earth-video", videoManifest.earth),
             ...attachVideo("portal", "portal-video", videoManifest.portal),
             ...attachVideo("thunder", "thunder-video", videoManifest.thunder),
-            ...attachVideo("submenuBg", "submenu-video", videoManifest.subMenuBackground),
+            ...attachVideo("submenuBg", "submenu-video", videoManifest.submenuBackground),
         };
         this.videoManager.addVideos(map);
     }
@@ -116,7 +116,7 @@ export class MenuVisuals {
             setTimeout(() => {
                 this.uiManager.hideStartInitialisationOverlay();
             }, 400);
-        }, 23000);
+        }, 0); //23000
     }
 
     /**

@@ -51,10 +51,17 @@ export class InputManager {
 
     listenWelcomeButton(onStartIntro) {
         this.uiManager.dom.welcomeButton.addEventListener("click", () => {
-            // playHoverSound();
-            // openFullscreen(document.body);
             onStartIntro();
         });
     }
 
+    listenMenuCharactersButton(onClick) {
+        this.uiManager.dom.menuCharactersButton.addEventListener('click', () => {
+            onClick();
+        })
+    }
+
+    listenSmallCardBox(onClick) {
+        this.uiManager.dom.smallCardBox.addEventListener('click', onClick);
+    }
 }

@@ -7,8 +7,8 @@ export class FullscreenManager {
         this.enterFullscreen();
     }
 
-    enterFullscreen() {
-        const content = document.getElementById('canvas-button-box');
+    enterFullscreen(element) {
+        const content = element;
         if (content.requestFullscreen) {
             content.requestFullscreen({ navigationUI: "hide" }).catch(() => { });
         }

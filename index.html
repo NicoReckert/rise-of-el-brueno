@@ -103,10 +103,10 @@
                     <img class="dragon2 red-glow" src="./assets/img/black_dragon.webp" alt="">
                     <div class="start-screen">
                         <button class="start-button" id="start-button">Start</button>
-                        <button class="start-button" id="info-button" onclick="openStoryOverlay()">Story</button>
-                        <button class="start-button" id="info-button" onclick="openOverlay()">Characters</button>
-                        <button class="start-button" id="menu-button" onclick="openControlsOverlay()">Steuerung</button>
-                        <button class="start-button" id="menu-button" onclick="openCreditsOverlay()">Credits</button>
+                        <button class="start-button" id="menu-story-button">Story</button>
+                        <button class="start-button" id="menu-characters-button">Characters</button>
+                        <button class="start-button" id="menu-controls-button">Steuerung</button>
+                        <button class="start-button" id="menu-credits-button">Credits</button>
                     </div>
                 </div>
             </div>
@@ -115,16 +115,15 @@
                 <video muted loop playsinline class="opening-background-video" id="opening-background-video">
                     Dein Browser unterstützt kein HTML5-Video.
                 </video>
-                <video muted playsinline class="intro-video opacity-none"
-                    id="intro-video">
+                <video muted playsinline class="intro-video opacity-none" id="intro-video">
                     Dein Browser unterstützt kein HTML5-Video.
                 </video>
             </div>
-            <div class="overlay-info d-none" id="overlay-info">
-                <video muted loop playsinline disablePictureInPicture controlsList="nodownload noremoteplayback"
-                    class="test-video">
-                    Dein Browser unterstützt kein HTML5-Video.
-                </video>
+            <video muted loop playsinline disablePictureInPicture controlsList="nodownload noremoteplayback"
+                class="submenu-video" id="submenu-video">
+                Dein Browser unterstützt kein HTML5-Video.
+            </video>
+            <div class="overlay-info d-none" id="overlay-characters">
                 <div class="back-box">
                     <button class="start-button" onclick="closeOverlay()">Back</button>
                 </div>
@@ -137,10 +136,6 @@
                 </div>
             </div>
             <div class="overlay-big-card d-none" id="overlay-story">
-                <video muted loop playsinline disablePictureInPicture controlsList="nodownload noremoteplayback"
-                    class="test-video">
-                    Dein Browser unterstützt kein HTML5-Video.
-                </video>
                 <div class="back-box">
                     <button class="start-button" onclick="closeStoryOverlay()">Back</button>
                 </div>
@@ -153,10 +148,6 @@
             </div>
 
             <div class="overlay-big-card d-none" id="overlay-controls">
-                <video muted loop playsinline disablePictureInPicture controlsList="nodownload noremoteplayback"
-                    class="test-video">
-                    Dein Browser unterstützt kein HTML5-Video.
-                </video>
                 <div class="back-box">
                     <button class="start-button" onclick="closeControlsOverlay()">Back</button>
                 </div>
@@ -169,10 +160,6 @@
             </div>
 
             <div class="overlay-info d-none" id="overlay-credits">
-                <video muted loop playsinline disablePictureInPicture controlsList="nodownload noremoteplayback"
-                    class="test-video">
-                    Dein Browser unterstützt kein HTML5-Video.
-                </video>
                 <div class="back-box">
                     <button class="start-button" onclick="closeCreditsOverlay()">Back</button>
                 </div>

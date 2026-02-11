@@ -1315,7 +1315,7 @@ canvas {
 
   /* 1️⃣ Textur als Basis */
   background:
-    url("./assets/img/card_textur_background"),
+    url("./assets/img/card_textur_background.jpg"),
     radial-gradient(circle at top left, rgba(255, 255, 255, 0.25), rgba(0, 0, 0, 0.25));
   background-size: cover;
   background-blend-mode: overlay;
@@ -1411,7 +1411,7 @@ canvas {
   padding: 0 36px;
 }
 
-.test-video {
+.submenu-video {
   position: absolute;
   top: 50%;
   left: 50%;
@@ -1421,6 +1421,7 @@ canvas {
   object-fit: cover;
   object-position: center center;
   height: 100%;
+  pointer-events: none;
 }
 
 .controls-box {

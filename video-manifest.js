@@ -5,7 +5,7 @@ export const videoManifest = {
     earth: "./assets/videos/earth_video.mp4",
     portal: "./assets/videos/portal_video.mp4",
     thunder: "./assets/videos/thunder_video.mp4",
-    subMenuBackground: "./assets/videos/submenu_background_video.mp4",
+    submenuBackground: "./assets/videos/submenu_background_video.mp4",
 };
 
 export const farmVideoManifestDeferred = {

@@ -1,3 +1,7 @@
+import { buildCharacters } from "../config/character-data.js";
+import { loadVideo } from "../video-loader.js";
+import { template1, template2 } from "../ui/menu-templates.js";
+
 export class MenuAudioAndCharacters {
     constructor(audioManager, videoManager, uiManager) {
         this.audioManager = audioManager;
@@ -11,6 +15,8 @@ export class MenuAudioAndCharacters {
         this.currentCharacterMusic = null;
         this.currentCharacterSpeechSound = null;
         this.titleSoundIsPlayed = false;
+        this.currentCharacterMusic = null;
+        this.currentCharacterSpeechSound = null;
     }
 
     setupTitleIntro() {
@@ -20,34 +26,60 @@ export class MenuAudioAndCharacters {
         });
     }
 
-    initWelcomeButton(fullscreenManager, menuVisuals) {
-        const btn = document.getElementById("welcome-button");
-        btn.addEventListener("click", () => {
-            this.playHoverSound();
-            fullscreenManager.enter(document.body);
-            menuVisuals.startVideo(this.titleMusic);
+    initCharacterData() {
+        this.characters = buildCharacters(this.audioManager);
+    }
+
+    openCharactersOverlay() {
+        const submenuBg = this.videoManager.get("submenuBg");
+        const overlay = document.getElementById('overlay-characters');
+        overlay.prepend(submenuBg);
+        if (!submenuBg._loaded) {
+            submenuBg._loaded = true;
+            loadVideo(submenuBg);
+        }
+        submenuBg.play();
+        document.getElementById('overlay-characters').classList.remove('d-none'); //ui
+        this.renderCharacters(); //ui
+        this.audioManager.fadeOutAudio(this.audioManager.audios.titleMusicIntro, 1000); //audio
+        this.audioManager.fadeOutAudio(this.audioManager.audios.titleMusicLoop, 1000); // audio
+        this.audioManager.audios.infoScreenMusic.currentTime = 0; // audio
+        this.audioManager.fadeInAudio(this.audioManager.audios.infoScreenMusic, 2000); // audio
+    }
+
+    renderCharacters() {
+        let smallCardBox = document.getElementById('small-card-box');
+        smallCardBox.innerHTML = "";
+        this.characters.forEach(character => smallCardBox.innerHTML += template1(character.name, character.text));
+    }
+
+    renderBigCard(nameCharacter) {
+        let bigCardBox = document.getElementById('big-card-box');
+        this.openBigBox();
+        const character = this.characters.find(element => element.name === nameCharacter);
+        if (character) bigCardBox.innerHTML = template2(character.name, character.text2);
+        character.music.currentTime = 0;
+        this.audioManager.fadeOutAudio(this.audioManager.audios.infoScreenMusic, 1000);
+        this.audioManager.fadeInAudio(character.music, 2000, 0.2);
+        this.currentCharacterMusic = character.music;
+        this.currentCharacterSpeechSound = character.textSpeechSound;
+        character.textSpeechSound.currentTime = 0;
+        setTimeout(() => {
+            this.audioManager.fadeInAudio(character.textSpeechSound, 200);
+        }, 2500);
+        this.currentCharacterSpeechSound.addEventListener('ended', () => {
+            this.audioManager.fadeAudioTo(this.currentCharacterMusic, 2000, 1);
         });
     }
 
-    playHoverSound() {
-        this.welcomeButtonHoverSound.currentTime = 0;
-        this.welcomeButtonHoverSound.play();
+    openBigBox() {
+        document.getElementById('overlay-big-card').classList.remove('d-none');
+        document.getElementById('body').classList.add('overflow-hidden');
+        document.getElementById('overlay-characters').classList.add('blur-effect');
     }
-
-    initCharacterData() {
-        const a = this.audioManager.audios;
-        this.characters = buildCharacters(a);
-    }
-
-
 
 }
 
-function openBigBox() {
-    document.getElementById('overlay-big-card').classList.remove('d-none');
-    document.getElementById('body').classList.add('overflow-hidden');
-    document.getElementById('overlay-info').classList.add('blur-effect');
-}
 
 function closeBigBox() {
     document.getElementById('overlay-big-card').classList.add('d-none');
@@ -60,28 +92,9 @@ function closeBigBox() {
     fadeInAudio(audios.infoScreenMusic, 2000);
 }
 
-
-function openOverlay() {
-    const v = allVideos.submenuBg;
-
-    if (!v._loaded) {
-        v._loaded = true;
-        loadVideo(v);
-    }
-
-    v.play();
-
-    document.getElementById('overlay-info').classList.remove('d-none');
-    renderCharacters();
-    fadeOutAudio(titleMusic, 1000);
-    fadeOutAudio(titleMusic2, 1000);
-    audios.infoScreenMusic.currentTime = 0;
-    fadeInAudio(audios.infoScreenMusic, 2000);
-}
-
-function closeOverlay() {
+function closeCharactersOverlay() {
     allVideos.submenuBg?.pause();
-    document.getElementById('overlay-info').classList.add('d-none');
+    document.getElementById('overlay-characters').classList.add('d-none');
     fadeOutAudio(audios.infoScreenMusic, 1000);
     titleMusic2.currentTime = 0;
     fadeInAudio(titleMusic2, 2000);
@@ -187,33 +200,4 @@ function renderControlsCard() {
 function renderCreditsCard() {
     let creditsBox = document.getElementById('credits-box');
     creditsBox.innerHTML = template5();
-}
-
-
-
-function renderBigCard(nameCharacter) {
-    let bigCardBox = document.getElementById('big-card-box');
-    openBigBox();
-    const character = characters.find(element => element.name === nameCharacter);
-    if (character) bigCardBox.innerHTML = template2(character.name, character.text2);
-    character.music.currentTime = 0;
-    fadeOutAudio(audios.infoScreenMusic, 1000);
-    fadeInAudio(character.music, 2000, 0.2);
-    currentCharacterMusic = character.music;
-    currentCharacterSpeechSound = character.textSpeechSound;
-    character.textSpeechSound.currentTime = 0;
-    setTimeout(() => {
-        fadeInAudio(character.textSpeechSound, 200);
-    }, 2500);
-    currentCharacterSpeechSound.addEventListener('ended', () => {
-        fadeAudioTo(currentCharacterMusic, 2000, 1);
-    });
-}
-
-
-function renderCharacters() {
-    // document.getElementById('test-video').play();
-    let smallCardBox = document.getElementById('small-card-box');
-    smallCardBox.innerHTML = "";
-    characters.forEach(character => smallCardBox.innerHTML += template1(character.name, character.text));
 }

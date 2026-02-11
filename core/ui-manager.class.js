@@ -40,7 +40,10 @@ export class UIManager {
             muteToggleButton: document.getElementById('mute-toggle-button'),
             pauseOverlay: document.getElementById('pause-overlay'),
             welcomeButton: document.getElementById("welcome-button"),
-            introVideo: document.getElementById('intro-video')
+            introVideo: document.getElementById('intro-video'),
+            body: document.body,
+            menuCharactersButton: document.getElementById('menu-characters-button'),
+            smallCardBox: document.getElementById("small-card-box")
         };
     }
 

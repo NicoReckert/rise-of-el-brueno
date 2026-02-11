@@ -306,4 +306,11 @@ export class AudioManager {
         }
         titleMusicIntro.addEventListener('timeupdate', handler);
     }
+
+    playClickSound() {
+        const welcomeButtonClickSound = this.get('welcomeButtonClickSound');
+        welcomeButtonClickSound.currentTime = 0;
+        welcomeButtonClickSound.play();
+    }
+
 }

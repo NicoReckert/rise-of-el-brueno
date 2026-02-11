@@ -1,5 +1,5 @@
-function template1(characterName, characterText) {
-    return ` <div class="img-text-box" id="${characterName}" onclick="renderBigCard('${characterName}')">
+export function template1(characterName, characterText) {
+    return ` <div class="img-text-box" data-character="${characterName}">
                 <div class="name-img-box">
                     <span class="character-name">${characterName}</span>
                     <img class="character-img" src="./assets/img/characters/${characterName}.webp" alt="">
@@ -8,7 +8,7 @@ function template1(characterName, characterText) {
             </div>`
 }
 
-function template2(characterName, characterText) {
+export function template2(characterName, characterText) {
     return ` <div class="big__img-text-box" id="big-${characterName}">
                 <div class="big__name-img-box">
                     <span class="big__character-name">${characterName}</span>

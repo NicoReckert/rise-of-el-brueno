@@ -42,9 +42,7 @@ export class GameApp {
         this.audioManager.addAudios(this.assetLoader.introAudios);
         this.audioManager.addAudios(this.assetLoader.immediateAudios);
         this.menuAudioAndCharacters.setupTitleIntro();
-        //TODO
-        // initScriptAudio(this.audioManager.audios);
-        //buildCharacters
+        this.menuAudioAndCharacters.initCharacterData();
         this.restoreMutedState();
         this.uiManager.fadeOutLoadingOverlay();
     }
@@ -66,6 +64,8 @@ export class GameApp {
         this.bindPauseToggleButton();
         this.bindPauseResumeButton();
         this.bindWelcomeButton();
+        this.bindMenuCharactersButton();
+        this.bindsmallCardBox();
     }
 
     bindStartButton() {
@@ -100,8 +100,26 @@ export class GameApp {
 
     bindWelcomeButton() {
         this.inputManager.listenWelcomeButton(() => {
+            this.audioManager.playClickSound()
+            this.fullscreenManager.enterFullscreen(this.uiManager.dom.body);
             this.menuVisuals.startIntro();
         });
+    }
+
+    bindMenuCharactersButton() {
+        this.inputManager.listenMenuCharactersButton(() => {
+            this.menuAudioAndCharacters.openCharactersOverlay();
+        })
+    }
+
+    bindsmallCardBox() {
+        this.inputManager.listenSmallCardBox((event) => {
+            const card = event.target.closest(".img-text-box");
+            if (!card) return;
+
+            const characterName = card.dataset.character;
+            this.menuAudioAndCharacters.renderBigCard(characterName);
+        })
     }
 
     startBackgroundAssetLoading() {
