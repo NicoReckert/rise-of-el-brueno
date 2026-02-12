@@ -1,6 +1,11 @@
 import { buildCharacters } from "../config/character-data.js";
 import { loadVideo } from "../video-loader.js";
 import { template1, template2 } from "../ui/menu-templates.js";
+import { template3 } from "../ui/menu-templates.js";
+import { storyText } from "../config/story-text.js";
+import { template4 } from "../ui/menu-templates.js";
+import { controls } from "../config/controls-config.js";
+import { template5 } from "../ui/menu-templates.js";
 
 export class MenuAudioAndCharacters {
     constructor(audioManager, videoManager, uiManager) {
@@ -78,126 +83,125 @@ export class MenuAudioAndCharacters {
         document.getElementById('overlay-characters').classList.add('blur-effect');
     }
 
-}
-
-
-function closeBigBox() {
-    document.getElementById('overlay-big-card').classList.add('d-none');
-    document.getElementById('body').classList.remove('overflow-hidden');
-    document.getElementById('overlay-info').classList.remove('blur-effect');
-    fadeOutAudio(currentCharacterMusic, 1000);
-    fadeOutAudio(currentCharacterSpeechSound, 1000);
-    titleMusic2.currentTime = 0;
-    audios.infoScreenMusic.currentTime = 0;
-    fadeInAudio(audios.infoScreenMusic, 2000);
-}
-
-function closeCharactersOverlay() {
-    allVideos.submenuBg?.pause();
-    document.getElementById('overlay-characters').classList.add('d-none');
-    fadeOutAudio(audios.infoScreenMusic, 1000);
-    titleMusic2.currentTime = 0;
-    fadeInAudio(titleMusic2, 2000);
-}
-
-function openStoryOverlay() {
-    const v = allVideos.submenuBg;
-
-    if (!v._loaded) {
-        v._loaded = true;
-        loadVideo(v);
+    closeBigBox() {
+        document.getElementById('overlay-big-card').classList.add('d-none');
+        document.getElementById('body').classList.remove('overflow-hidden');
+        document.getElementById('overlay-characters').classList.remove('blur-effect');
+        this.audioManager.fadeOutAudio(this.currentCharacterMusic, 1000);
+        this.audioManager.fadeOutAudio(this.currentCharacterSpeechSound, 1000);
+        this.audioManager.audios.titleMusicLoop.currentTime = 0;
+        this.audioManager.audios.infoScreenMusic.currentTime = 0;
+        this.audioManager.fadeInAudio(this.audioManager.audios.infoScreenMusic, 2000);
     }
 
-    v.play();
-
-    document.getElementById('overlay-story').classList.remove('d-none');
-    renderStoryCard();
-    fadeOutAudio(titleMusic, 1000);
-    fadeOutAudio(titleMusic2, 1000);
-    audios.infoScreenMusic.currentTime = 0;
-    audios.storyTextSpeechSound.currentTime = 0;
-    fadeInAudio(audios.infoScreenMusic, 2000, 0.2);
-    setTimeout(() => {
-        fadeInAudio(audios.storyTextSpeechSound, 200);
-    }, 2500);
-    audios.storyTextSpeechSound.addEventListener('ended', () => {
-        fadeAudioTo(audios.infoScreenMusic, 2000, 1);
-    });
-}
-
-function closeStoryOverlay() {
-    allVideos.submenuBg?.pause();
-    document.getElementById('overlay-story').classList.add('d-none');
-    fadeOutAudio(audios.infoScreenMusic, 1000);
-    fadeOutAudio(audios.storyTextSpeechSound, 1000);
-    titleMusic2.currentTime = 0;
-    fadeInAudio(titleMusic2, 2000);
-}
-
-function openControlsOverlay() {
-    const v = allVideos.submenuBg;
-
-    if (!v._loaded) {
-        v._loaded = true;
-        loadVideo(v);
+    closeCharactersOverlay() {
+        const submenuBg = this.videoManager.get("submenuBg");
+        submenuBg?.pause();
+        document.getElementById('overlay-characters').classList.add('d-none');
+        this.audioManager.fadeOutAudio(this.audioManager.audios.infoScreenMusic, 1000);
+        this.audioManager.audios.titleMusicLoop.currentTime = 0;
+        this.audioManager.fadeInAudio(this.audioManager.audios.titleMusicLoop, 2000);
     }
 
-    v.play();
+    openStoryOverlay() {
+        const submenuBg = this.videoManager.get("submenuBg");
+        if (!submenuBg._loaded) {
+            submenuBg._loaded = true;
+            loadVideo(submenuBg);
+        }
+        submenuBg.play();
+        document.getElementById('overlay-story').classList.remove('d-none');
+        const overlay = document.getElementById('overlay-story');
+        overlay.prepend(submenuBg);
 
-    document.getElementById('overlay-controls').classList.remove('d-none');
-    renderControlsCard()
-    fadeOutAudio(titleMusic, 1000);
-    fadeOutAudio(titleMusic2, 1000);
-    audios.infoScreenMusic.currentTime = 0;
-    fadeInAudio(audios.infoScreenMusic, 2000);
-}
-
-function closeControlsOverlay() {
-    allVideos.submenuBg?.pause();
-    document.getElementById('overlay-controls').classList.add('d-none');
-    fadeOutAudio(audios.infoScreenMusic, 1000);
-    titleMusic2.currentTime = 0;
-    fadeInAudio(titleMusic2, 2000);
-}
-
-function openCreditsOverlay() {
-    const v = allVideos.submenuBg;
-
-    if (!v._loaded) {
-        v._loaded = true;
-        loadVideo(v);
+        this.renderStoryCard();
+        this.audioManager.fadeOutAudio(this.audioManager.audios.titleMusicIntro, 1000);
+        this.audioManager.fadeOutAudio(this.audioManager.audios.titleMusicLoop, 1000);
+        this.audioManager.audios.infoScreenMusic.currentTime = 0;
+        this.audioManager.audios.storyTextSpeechSound.currentTime = 0;
+        this.audioManager.fadeInAudio(this.audioManager.audios.infoScreenMusic, 2000, 0.2);
+        setTimeout(() => {
+            this.audioManager.fadeInAudio(this.audioManager.audios.storyTextSpeechSound, 200);
+        }, 2500);
+        this.audioManager.audios.storyTextSpeechSound.addEventListener('ended', () => {
+            this.audioManager.fadeAudioTo(this.audioManager.audios.infoScreenMusic, 2000, 1);
+        });
     }
 
-    v.play();
+    renderStoryCard() {
+        let storyBox = document.getElementById('story-box');
+        storyBox.innerHTML = template3(storyText);
+    }
 
-    document.getElementById('overlay-credits').classList.remove('d-none');
-    renderCreditsCard();
-    fadeOutAudio(titleMusic, 1000);
-    fadeOutAudio(titleMusic2, 1000);
-    audios.infoScreenMusic.currentTime = 0;
-    fadeInAudio(audios.infoScreenMusic, 2000);
-}
+    closeStoryOverlay() {
+        const submenuBg = this.videoManager.get("submenuBg");
+        submenuBg?.pause();
+        document.getElementById('overlay-story').classList.add('d-none');
+        this.audioManager.fadeOutAudio(this.audioManager.audios.infoScreenMusic, 1000);
+        this.audioManager.fadeOutAudio(this.audioManager.audios.storyTextSpeechSound, 1000);
+        this.audioManager.audios.titleMusicLoop.currentTime = 0;
+        this.audioManager.fadeInAudio(this.audioManager.audios.titleMusicLoop, 2000);
+    }
 
-function closeCreditsOverlay() {
-    allVideos.submenuBg?.pause();
-    document.getElementById('overlay-credits').classList.add('d-none');
-    fadeOutAudio(audios.infoScreenMusic, 1000);
-    titleMusic2.currentTime = 0;
-    fadeInAudio(titleMusic2, 2000);
-}
+    openControlsOverlay() {
+        const submenuBg = this.videoManager.get("submenuBg");
+        if (!submenuBg._loaded) {
+            submenuBg._loaded = true;
+            loadVideo(submenuBg);
+        }
+        submenuBg.play();
+        const overlay = document.getElementById('overlay-controls');
+        overlay.prepend(submenuBg);
+        document.getElementById('overlay-controls').classList.remove('d-none');
+        this.renderControlsCard();
+        this.audioManager.fadeOutAudio(this.audioManager.audios.titleMusicIntro, 1000);
+        this.audioManager.fadeOutAudio(this.audioManager.audios.titleMusicLoop, 1000);
+        this.audioManager.audios.infoScreenMusic.currentTime = 0;
+        this.audioManager.fadeInAudio(this.audioManager.audios.infoScreenMusic, 2000);
+    }
 
+    renderControlsCard() {
+        let controlsBox = document.getElementById('controls-box');
+        controlsBox.innerHTML = template4(controls);
+    }
 
-function renderStoryCard() {
-    let storyBox = document.getElementById('story-box');
-    storyBox.innerHTML = template3(storyText);
-}
+    closeControlsOverlay() {
+        const submenuBg = this.videoManager.get("submenuBg");
+        submenuBg?.pause();
+        document.getElementById('overlay-controls').classList.add('d-none');
+        this.audioManager.fadeOutAudio(this.audioManager.audios.infoScreenMusic, 1000);
+        this.audioManager.audios.titleMusicLoop.currentTime = 0;
+        this.audioManager.fadeInAudio(this.audioManager.audios.titleMusicLoop, 2000);
+    }
 
-function renderControlsCard() {
-    let controlsBox = document.getElementById('controls-box');
-    controlsBox.innerHTML = template4();
-}
+    openCreditsOverlay() {
+        const submenuBg = this.videoManager.get("submenuBg");
+        if (!submenuBg._loaded) {
+            submenuBg._loaded = true;
+            loadVideo(submenuBg);
+        }
+        submenuBg.play();
+        const overlay = document.getElementById('overlay-credits');
+        overlay.prepend(submenuBg);
+        document.getElementById('overlay-credits').classList.remove('d-none');
+        this.renderCreditsCard();
+        this.audioManager.fadeOutAudio(this.audioManager.audios.titleMusicIntro, 1000);
+        this.audioManager.fadeOutAudio(this.audioManager.audios.titleMusicLoop, 1000);
+        this.audioManager.audios.infoScreenMusic.currentTime = 0;
+        this.audioManager.fadeInAudio(this.audioManager.audios.infoScreenMusic, 2000);
+    }
 
-function renderCreditsCard() {
-    let creditsBox = document.getElementById('credits-box');
-    creditsBox.innerHTML = template5();
+    renderCreditsCard() {
+        let creditsBox = document.getElementById('credits-box');
+        creditsBox.innerHTML = template5();
+    }
+
+    closeCreditsOverlay() {
+        const submenuBg = this.videoManager.get("submenuBg");
+        submenuBg?.pause();
+        document.getElementById('overlay-credits').classList.add('d-none');
+        this.audioManager.fadeOutAudio(this.audioManager.audios.infoScreenMusic, 1000);
+        this.audioManager.audios.titleMusicLoop.currentTime = 0;
+        this.audioManager.fadeInAudio(this.audioManager.audios.titleMusicLoop, 2000);
+    }
 }

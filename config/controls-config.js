@@ -1,4 +1,4 @@
-const controls =
+export const controls =
     [
         {
             key: 'RightArrow',

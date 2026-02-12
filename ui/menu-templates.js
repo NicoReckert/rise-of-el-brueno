@@ -20,7 +20,7 @@ export function template2(characterName, characterText) {
             </div>`
 }
 
-function template3(storyText) {
+export function template3(storyText) {
     return ` <div class="story-box">
                 <div class="story-text-box">
                     <span class="story-text">${storyText}</span>
@@ -28,7 +28,7 @@ function template3(storyText) {
             </div>`
 }
 
-function template4() {
+export function template4(controls) {
     let controlsActionHtml = "";
     let controlsKeyHtml = "";
     let controlsMobileHtml = "";
@@ -62,7 +62,7 @@ function template4() {
             </div>`
 }
 
-function template5() {
+export function template5() {
 
     return ` <div class="story-box">
                 <div class="story-text-box">               

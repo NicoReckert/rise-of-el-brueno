@@ -64,4 +64,37 @@ export class InputManager {
     listenSmallCardBox(onClick) {
         this.uiManager.dom.smallCardBox.addEventListener('click', onClick);
     }
+
+    listenCloseButton(onClick) {
+        this.uiManager.dom.closeButton.addEventListener('click', onClick);
+    }
+
+    listenCloseCharactersOverlayButton(onClick) {
+        this.uiManager.dom.closeCharactersOverlayButton.addEventListener('click', onClick);
+    }
+
+    listenMenuStoryButton(onClick) {
+        this.uiManager.dom.menuStoryButton.addEventListener('click', onClick)
+    }
+
+    listenCloseStoryOverlayButton(onClick) {
+        this.uiManager.dom.closeStoryOverlayButton.addEventListener('click', onClick);
+    }
+
+    listenMenuControlsButton(onClick) {
+        this.uiManager.dom.menuControlsButton.addEventListener('click', onClick)
+    }
+
+    listenCloseControlsOverlayButton(onClick) {
+        this.uiManager.dom.closeControlsOverlayButton.addEventListener('click', onClick);
+    }
+
+    listenMenuCreditsButton(onClick) {
+        this.uiManager.dom.menuCreditsButton.addEventListener('click', onClick)
+    }
+
+    listenCloseCreditsOverlayButton(onClick) {
+        this.uiManager.dom.closeCreditsOverlayButton.addEventListener('click', onClick);
+    }
+
 }

@@ -66,6 +66,14 @@ export class GameApp {
         this.bindWelcomeButton();
         this.bindMenuCharactersButton();
         this.bindsmallCardBox();
+        this.bindCloseButton();
+        this.bindCloseCharactersOverlayButton();
+        this.bindMenuStoryButton();
+        this.bindCloseStoryOverlayButton();
+        this.bindMenuControlsButton();
+        this.bindCloseControlsOverlayButton();
+        this.bindMenuCreditsButton();
+        this.bindCloseCreditsOverlayButton();
     }
 
     bindStartButton() {
@@ -122,10 +130,63 @@ export class GameApp {
         })
     }
 
+    bindCloseButton() {
+        this.inputManager.listenCloseButton(() => {
+            this.menuAudioAndCharacters.closeBigBox();
+        })
+    }
+
+    bindCloseCharactersOverlayButton() {
+        this.inputManager.listenCloseCharactersOverlayButton(() => {
+            this.menuAudioAndCharacters.closeCharactersOverlay();
+        })
+    }
+
+    bindMenuStoryButton() {
+        this.inputManager.listenMenuStoryButton(() => {
+            this.menuAudioAndCharacters.openStoryOverlay();
+        })
+    }
+
+    bindCloseStoryOverlayButton() {
+        this.inputManager.listenCloseStoryOverlayButton(() => {
+            this.menuAudioAndCharacters.closeStoryOverlay();
+        })
+    }
+
+    bindMenuControlsButton() {
+        this.inputManager.listenMenuControlsButton(() => {
+            this.menuAudioAndCharacters.openControlsOverlay();
+        })
+    }
+
+    bindCloseControlsOverlayButton() {
+        this.inputManager.listenCloseControlsOverlayButton(() => {
+            this.menuAudioAndCharacters.closeControlsOverlay();
+        })
+    }
+
+    bindMenuCreditsButton() {
+        this.inputManager.listenMenuCreditsButton(() => {
+            this.menuAudioAndCharacters.openCreditsOverlay();
+        })
+    }
+
+    bindCloseCreditsOverlayButton() {
+        this.inputManager.listenCloseCreditsOverlayButton(() => {
+            this.menuAudioAndCharacters.closeCreditsOverlay();
+        })
+    }
+
+
+
+
     startBackgroundAssetLoading() {
         this.loadDeferredIntoWorld();
         this.loadLazyIntoWorld();
     }
+
+
 
 
 

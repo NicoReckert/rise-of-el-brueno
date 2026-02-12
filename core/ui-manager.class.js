@@ -27,7 +27,14 @@ export class UIManager {
             levelCompleteButtonBox: document.getElementById('level-complete-button-box'),
             pauseResumeButton: document.getElementById('pause-resume-button'),
             overlayStartInitialisation: document.getElementById('overlay-start-initialisation'),
-            h1: document.getElementById('h1')
+            h1: document.getElementById('h1'),
+            menuStoryButton: document.getElementById('menu-story-button'),
+            menuControlsButton: document.getElementById('menu-controls-button'),
+            closeStoryOverlayButton: document.getElementById('close-story-overlay-button'),
+            closeControlsOverlayButton: document.getElementById('close-controls-overlay-button'),
+            menuCreditsButton: document.getElementById('menu-credits-button'),
+            closeCreditsOverlayButton: document.getElementById('close-credits-overlay-button'),
+
         };
     }
 
@@ -43,7 +50,9 @@ export class UIManager {
             introVideo: document.getElementById('intro-video'),
             body: document.body,
             menuCharactersButton: document.getElementById('menu-characters-button'),
-            smallCardBox: document.getElementById("small-card-box")
+            smallCardBox: document.getElementById('small-card-box'),
+            closeButton: document.getElementById('close-button'),
+            closeCharactersOverlayButton: document.getElementById('close-characters-overlay-button'),
         };
     }
 
