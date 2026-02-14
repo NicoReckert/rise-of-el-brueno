@@ -145,10 +145,12 @@ for (let i = 0; i < 66; i++) {
 
 export function createFarmLevel() {
     // Wolken
+    const levelWidth = 7200;
+    const CLOUD_DENSITY = 1 / 700;
     const clouds = [];
-    const cloudCount = 10;
+    const cloudCount = Math.round(levelWidth * CLOUD_DENSITY);
     for (let i = 0; i < cloudCount; i++) {
-        clouds.push(new Cloud(clouds, 100)); // minDistance 100
+        clouds.push(new Cloud(clouds, 280, levelWidth));
     }
 
     // BACKGROUND

@@ -28,11 +28,12 @@ const townSrcTown =
         './assets/img/house_nayeli.png'
 
     ]
-
+const levelWidth = 26640;
+const CLOUD_DENSITY = 1 / 700;
 const cloudArrayTown = [];
-const cloudCountTown = 10;
+const cloudCountTown = Math.round(levelWidth * CLOUD_DENSITY);
 for (let i = 0; i < cloudCountTown; i++) {
-    cloudArrayTown.push(new Cloud(cloudArrayTown, 100)); // 100px Mindestabstand
+    cloudArrayTown.push(new Cloud(cloudArrayTown, 280, levelWidth)); // 100px Mindestabstand
 }
 
 export function createTownLevel({ entityImages, allAudios }) {

@@ -74,6 +74,8 @@ export class GameApp {
         this.bindCloseControlsOverlayButton();
         this.bindMenuCreditsButton();
         this.bindCloseCreditsOverlayButton();
+
+        
     }
 
     bindStartButton() {
