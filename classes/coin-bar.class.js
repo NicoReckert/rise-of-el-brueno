@@ -10,10 +10,13 @@ export class CoinBar extends StatusBar {
      * @param {Object} entityImages - Image data containing status bar graphics.
      */
     constructor(entityImages) {
-        super();
+        const spriteSheet = entityImages?.coinBar?.statusSheet ?? null;
+        super(spriteSheet, 'coin');
         this.entityImages = entityImages;
-        this.statusImages = this.entityImages.coinBar?.status ?? [];
-        this.setPercentage(0);
+        if (!spriteSheet) {
+            this.statusImages = this.entityImages.coinBar?.status ?? [];
+        }
         this.y = 50;
+        this.setPercentage(0);
     }
 }

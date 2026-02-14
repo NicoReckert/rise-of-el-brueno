@@ -26,16 +26,18 @@ export class Cloud extends MovableObject {
   }
 
   /**
-  * Selects and applies a random cloud sprite.
+  * Selects and applies a random sprite or sprite sheet animation.
   */
   pickRandomSprite() {
-    if (this.spriteSheet && this.spriteSheet.meta && this.spriteSheet.image) {
-      const ok = this.applyStaticSheetFrame(this.spriteSheet);
-      if (ok) return;
+    const sheet = this.spriteSheet;
+    if (sheet && sheet.meta && sheet.image) {
+      const animName = sheet.anim ?? 'idle';
+      if (this.applySheetAnimFrame(sheet, animName)) {
+        return;
+      }
     }
     const cloudVariant = Math.random() < 0.5 ? '1' : '2';
     this.loadImage(`./assets/img/5_background/layers/4_clouds/${cloudVariant}.webp`);
-    this.frameSource = null;
   }
 
   /**
@@ -153,23 +155,5 @@ export class Cloud extends MovableObject {
     if (this.x <= -this.width) {
       this.respawn();
     }
-  }
-
-  /**
-  * Applies a static frame from a sprite sheet.
-  * @param {Object} sheet Sprite sheet configuration.
-  * @returns {boolean}
-  */
-  applyStaticSheetFrame(sheet) {
-    const { image, meta, anim } = sheet || {};
-    if (!image || !meta) return false;
-    const animName = anim ?? 'idle';
-    const def =
-      meta.animations?.[animName] ??
-      meta.animations?.default ??
-      null;
-    const from = def?.from ?? 0;
-    const frame = from;
-    return this.setFrameFromSheetMeta(image, meta, frame);
   }
 }

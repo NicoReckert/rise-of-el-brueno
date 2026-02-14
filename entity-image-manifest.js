@@ -151,7 +151,7 @@ export const farmEntityManifestImmediate = {
     statusSheet: {
       type: 'sheet',
       json: './assets/img/7_statusbars/1_statusbar/2_statusbar_health/green/statusbar_health_sheet.json'
-    },
+    }
   },
   clock: {
     idle: {

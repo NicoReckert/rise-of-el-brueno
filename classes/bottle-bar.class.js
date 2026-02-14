@@ -1,18 +1,20 @@
 import { StatusBar } from './status-bar.class.js';
 
 /**
- * Represents a status bar that displays a fill level or progress value.
- * @extends StatusBar
+ * Represents the bottle status bar.
  */
 export class BottleBar extends StatusBar {
     /**
-     * Creates a new status bar instance.
-     * @param {Object} entityImages - Image data containing status bar graphics.
-     */
+    * Creates a new bottle status bar instance.
+    * @param {Object} entityImages Entity image configuration.
+    */
     constructor(entityImages) {
-        super();
+        const spriteSheet = entityImages?.bottleBar?.statusSheet ?? null;
+        super(spriteSheet, 'bottle');
         this.entityImages = entityImages;
-        this.statusImages = this.entityImages.bottleBar?.status ?? [];
+        if (!spriteSheet) {
+            this.statusImages = this.entityImages.bottleBar?.status ?? [];
+        }
         this.setPercentage(0);
         this.y = 100;
     }

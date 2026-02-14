@@ -26,6 +26,23 @@ export class DrawableObject {
     }
 
     /**
+    * Applies a specific animation frame from a sprite sheet.
+    * @param {Object} spriteSheet Sprite sheet configuration.
+    * @param {string} animName Animation name.
+    * @returns {boolean}
+    */
+    applySheetAnimFrame(spriteSheet, animName) {
+        const { image, meta } = spriteSheet || {};
+        if (!image || !meta) return false;
+        const def =
+            meta.animations?.[animName] ??
+            meta.animations?.default ?? null;
+        if (!def) return false;
+        const frame = def.from ?? 0;
+        return this.setFrameFromSheetMeta(image, meta, frame);
+    }
+
+    /**
     * Sets frame source data from sprite sheet metadata.
     * @param {HTMLImageElement} image Sprite sheet image.
     * @param {Object} meta Sprite sheet metadata.
