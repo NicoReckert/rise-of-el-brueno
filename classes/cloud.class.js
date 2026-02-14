@@ -172,25 +172,4 @@ export class Cloud extends MovableObject {
     const frame = from;
     return this.setFrameFromSheetMeta(image, meta, frame);
   }
-
-  /**
-  * Sets frame source data based on sprite sheet metadata.
-  * @param {HTMLImageElement} image Sprite sheet image.
-  * @param {Object} meta Sprite sheet metadata.
-  * @param {number} frame Frame index.
-  * @returns {boolean}
-  */
-  setFrameFromSheetMeta(image, meta, frame) {
-    if (!meta.columns || !meta.frameWidth || !meta.frameHeight) return false;
-    const col = frame % meta.columns;
-    const row = Math.floor(frame / meta.columns);
-    this.img = image;
-    this.frameSource = {
-      sx: col * meta.frameWidth,
-      sy: row * meta.frameHeight,
-      sw: meta.frameWidth,
-      sh: meta.frameHeight
-    };
-    return true;
-  }
 }
