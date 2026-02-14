@@ -1,155 +1,182 @@
+/**
+ * Loads an image asynchronously.
+ * @param {string} src Image source path.
+ * @param {Function} [onProgress] Optional callback triggered after load attempt.
+ * @returns {Promise<HTMLImageElement|null>}
+ */
 function loadImage(src, onProgress) {
     return new Promise((resolve) => {
         const img = new Image();
-
         img.onload = () => {
             if (onProgress) onProgress(src);
             resolve(img);
         };
-
-        img.onerror = (e) => {
-            console.warn('[ImageLoader] Failed to load image:', src, e);
-            if (onProgress) onProgress(src);  // Fortschritt trotzdem erhöhen
-            resolve(null); // ❗ NIE reject, nur null zurück
+        img.onerror = () => {
+            if (onProgress) onProgress(src);
+            resolve(null);
         };
-
         img.src = src;
     });
 }
 
-
+/**
+ * Preloads images defined in a manifest.
+ * @param {Object} manifest Image manifest configuration.
+ * @param {Function} [onProgress] Optional progress callback.
+ * @returns {Promise<Object>}
+ */
 export async function preloadManifestImages(manifest, onProgress) {
+    return processManifestNode(manifest, onProgress);
+}
 
-    async function processNode(node) {
+/**
+ * Processes a manifest node based on its structure.
+ * @param {*} node Manifest node.
+ * @param {Function} [onProgress] Optional progress callback.
+ * @returns {Promise<*>}
+ */
+async function processManifestNode(node, onProgress) {
+    if (Array.isArray(node)) return processArrayNode(node, onProgress);
+    if (isSheetNode(node)) return processSheetNode(node, onProgress);
+    if (isSheetSequenceNode(node)) return processSheetSequenceNode(node, onProgress);
+    if (isPlainObject(node)) return processObjectNode(node, onProgress);
+    return null;
+}
 
-        // ✅ FALL 1: Array = alte Einzelbilder
-        if (Array.isArray(node)) {
-            const results = [];
-            for (const src of node) {
-                const img = await loadImage(src, onProgress);
-                if (img) {
-                    results.push(img);
-                } else {
-                    console.warn('[ImageLoader] Skipping broken image in array:', src);
-                }
-                await new Promise(r => requestIdleCallback(r, { timeout: 16 }));
-            }
-            return results; // kann auch [] sein
+/**
+ * Processes an array node of image sources.
+ * @param {Array<string>} list Image source list.
+ * @param {Function} [onProgress] Optional progress callback.
+ * @returns {Promise<Array<HTMLImageElement>>}
+ */
+async function processArrayNode(list, onProgress) {
+    const results = [];
+    for (const src of list) {
+        const img = await loadImage(src, onProgress);
+        if (img) results.push(img);
+        await new Promise(r => requestIdleCallback(r, { timeout: 16 }));
+    }
+    return results;
+}
+
+/**
+ * Processes a sprite sheet node.
+ * @param {Object} node Sprite sheet configuration.
+ * @param {Function} [onProgress] Optional progress callback.
+ * @returns {Promise<Object|null>}
+ */
+async function processSheetNode(node, onProgress) {
+    const meta = await loadJSON(node.json);
+    if (!meta) return null;
+    const imageSrc = node.json.replace(/\.json$/, '.webp');
+    const image = await loadImage(imageSrc, onProgress);
+    if (!image) return null;
+    return { type: 'sheet', meta, image, anim: node.anim ?? null };
+}
+
+/**
+ * Processes a sprite sheet sequence node.
+ * @param {Object} node Sheet sequence configuration.
+ * @param {Function} [onProgress] Optional progress callback.
+ * @returns {Promise<Object|null>}
+ */
+async function processSheetSequenceNode(node, onProgress) {
+    const sheets = [];
+    for (const entry of node.sheets) {
+        const sheet = await loadSequenceEntry(entry, onProgress);
+        if (sheet) sheets.push(sheet);
+    }
+    if (!sheets.length) return null;
+    return {
+        type: 'sheetSequence',
+        loop: node.loop !== false,
+        sheets
+    };
+}
+
+/**
+ * Loads a single sprite sheet sequence entry.
+ * @param {Object} entry Sequence entry configuration.
+ * @param {Function} [onProgress] Optional progress callback.
+ * @returns {Promise<Object|null>}
+ */
+async function loadSequenceEntry(entry, onProgress) {
+    const meta = await loadJSON(entry.json);
+    if (!meta) return null;
+    const imageSrc = entry.json.replace(/\.json$/, '.webp');
+    const image = await loadImage(imageSrc, onProgress);
+    if (!image) return null;
+    return { type: 'sheet', meta, image };
+}
+
+/**
+ * Processes an object node within a manifest.
+ * @param {Object} obj Manifest object node.
+ * @param {Function} [onProgress] Optional progress callback.
+ * @returns {Promise<Object>}
+ */
+async function processObjectNode(obj, onProgress) {
+    const result = {};
+    for (const [key, value] of Object.entries(obj)) {
+        const processed = await processManifestNode(value, onProgress);
+        if (processed !== null && processed !== undefined) {
+            result[key] = processed;
         }
+    }
+    return result;
+}
 
-        // ✅ FALL 2: Spritesheet
-        if (typeof node === "object" && node !== null && node.type === "sheet") {
+/**
+ * Checks whether a value is a plain object.
+ * @param {*} node Value to check.
+ * @returns {boolean}
+ */
+function isPlainObject(node) {
+    return typeof node === 'object' && node !== null && !Array.isArray(node);
+}
 
-            const meta = await loadJSON(node.json);
-            if (!meta) {
-                console.warn('[ImageLoader] Skipping sheet, JSON missing:', node.json);
-                return null;
-            }
+/**
+ * Checks whether a node represents a sprite sheet configuration.
+ * @param {*} node Value to check.
+ * @returns {boolean}
+ */
+function isSheetNode(node) {
+    return isPlainObject(node) && node.type === 'sheet';
+}
 
-            const imageSrc = node.json.replace(/\.json$/, '.webp');
-            const image = await loadImage(imageSrc, onProgress);
+/**
+ * Checks whether a node represents a sprite sheet sequence configuration.
+ * @param {*} node Value to check.
+ * @returns {boolean}
+ */
+function isSheetSequenceNode(node) {
+    return isPlainObject(node) && node.type === 'sheetSequence';
+}
 
-            if (!image) {
-                console.warn('[ImageLoader] Skipping sheet, image missing:', imageSrc);
-                return null;
-            }
-
-            return {
-                type: 'sheet',
-                meta,
-                image,
-                anim: node.anim ?? null
-            };
-        }
-
-        // ✅ FALL: Spritesheet-Sequenz
-        if (typeof node === "object" && node?.type === "sheetSequence") {
-            const sheets = [];
-
-            for (const entry of node.sheets) {
-                const meta = await loadJSON(entry.json);
-                if (!meta) {
-                    console.warn('[ImageLoader] Skipping sheetSequence entry, JSON missing:', entry.json);
-                    continue;
-                }
-
-                const imageSrc = entry.json.replace(/\.json$/, '.webp');
-                const image = await loadImage(imageSrc, onProgress);
-
-                if (!image) {
-                    console.warn('[ImageLoader] Skipping sheetSequence entry, image missing:', imageSrc);
-                    continue;
-                }
-
-                sheets.push({
-                    type: 'sheet',
-                    meta,
-                    image
-                });
-            }
-
-            if (!sheets.length) {
-                console.warn('[ImageLoader] sheetSequence has no valid sheets, skipping.');
-                return null;
-            }
-
-            return {
-                type: 'sheetSequence',
-                loop: node.loop !== false,
-                sheets
-            };
-        }
-
-        // ✅ FALL 3: normales Objekt (rekursiv)
-        if (typeof node === "object" && node !== null) {
-            const result = {};
-
-            for (const [key, value] of Object.entries(node)) {
-                try {
-                    const processed = await processNode(value);
-                    // ❗ Nur setzen, wenn nicht komplett unbrauchbar
-                    if (processed !== null && processed !== undefined) {
-                        result[key] = processed;
-                    } else {
-                        console.warn('[ImageLoader] Skipping key because value is null:', key);
-                    }
-                } catch (e) {
-                    console.warn('[ImageLoader] Error while processing key:', key, e);
-                    // Key einfach auslassen
-                }
-            }
-
-            return result;
-        }
-
-        // Früher: throw new Error(...)
-        console.warn('[ImageLoader] Invalid manifest node encountered, skipping:', node);
+/**
+ * Loads and parses a JSON resource.
+ * @param {string} src JSON source path.
+ * @returns {Promise<Object|null>}
+ */
+async function loadJSON(src) {
+    try {
+        const res = await fetch(src);
+        if (!res.ok) return null;
+        return await parseJSONSafe(res);
+    } catch {
         return null;
     }
-
-    return processNode(manifest);
 }
 
-
-
-function loadJSON(src) {
-    return fetch(src)
-        .then(res => {
-            if (!res.ok) {
-                console.warn('[ImageLoader] Failed to load JSON:', src, res.status);
-                return null;
-            }
-            return res.json().catch(err => {
-                console.warn('[ImageLoader] JSON parse error:', src, err);
-                return null;
-            });
-        })
-        .catch(err => {
-            console.warn('[ImageLoader] JSON fetch error:', src, err);
-            return null;
-        });
+/**
+ * Safely parses a JSON response.
+ * @param {Response} response Fetch response object.
+ * @returns {Promise<Object|null>}
+ */
+async function parseJSONSafe(response) {
+    try {
+        return await response.json();
+    } catch {
+        return null;
+    }
 }
-
-
-
-
