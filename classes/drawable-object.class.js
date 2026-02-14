@@ -1,26 +1,48 @@
 /**
- * Represents a basic drawable object with position, size, and image properties.
- * Provides image loading functionality for rendering.
- */
+* Represents a drawable object with position and rendering data.
+*/
 export class DrawableObject {
-
     /**
-     * Initializes default position, size, and image properties.
-     */
+    * Creates a new drawable object with default properties.
+    */
     constructor() {
-        this.x = 120;
-        this.y = 250;
-        this.img;
+        this.x = 0;
+        this.y = 0;
+        this.img = null;
         this.width = 100;
-        this.height = 150;
+        this.height = 100;
+        this.frameSource = null;
     }
 
     /**
-     * Loads an image from a given file path.
-     * @param {string} path - Path to the image file.
-     */
+    * Loads an image and assigns it to the object.
+    * @param {string} path Image source path.
+    */
     loadImage(path) {
-        this.img = new Image();
-        this.img.src = path;
+        const img = new Image();
+        img.src = path;
+        this.img = img;
+        this.frameSource = null;
+    }
+
+    /**
+    * Sets frame source data from sprite sheet metadata.
+    * @param {HTMLImageElement} image Sprite sheet image.
+    * @param {Object} meta Sprite sheet metadata.
+    * @param {number} frame Frame index.
+    * @returns {boolean}
+    */
+    setFrameFromSheetMeta(image, meta, frame) {
+        if (!meta || !meta.columns || !meta.frameWidth || !meta.frameHeight) return false;
+        const col = frame % meta.columns;
+        const row = Math.floor(frame / meta.columns);
+        this.img = image;
+        this.frameSource = {
+            sx: col * meta.frameWidth,
+            sy: row * meta.frameHeight,
+            sw: meta.frameWidth,
+            sh: meta.frameHeight
+        };
+        return true;
     }
 }
