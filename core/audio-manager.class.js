@@ -23,263 +23,142 @@ export class AudioManager {
         this.applyMuteToAllAudios(this.audios);
     }
 
-    fadeInAudio(audio, duration = 2000, targetVolume = 1) {
-        // Sicherheitschecks
+    clampVolume(value) {
+        return Math.max(0, Math.min(1, value));
+    }
+
+    safePlay(audio) {
+        const p = audio.play();
+        if (p && typeof p.catch === 'function') {
+            p.catch(() => { });
+        }
+    }
+
+    startVolumeFade(audio, from, to, duration, onDone) {
         if (!audio) return;
+        const token = Symbol('fade');
+        audio.__fadeToken = token;
+        const start = performance.now();
+        const step = (now) => {
+            this.stepVolumeFade(audio, token, start, from, to, duration, onDone, now);
+        };
+        requestAnimationFrame(step);
+    }
 
-        // Clamp sicherstellen: Volume darf nie <0 oder >1 sein
-        targetVolume = Math.max(0, Math.min(1, targetVolume));
+    stepVolumeFade(audio, token, start, from, to, duration, onDone, now) {
+        if (audio.__fadeToken !== token) return;
+        const t = Math.min((now - start) / duration, 1);
+        const value = from + (to - from) * t;
+        audio.volume = this.clampVolume(value);
+        if (t < 1) {
+            requestAnimationFrame((nextNow) => {
+                this.stepVolumeFade(audio, token, start, from, to, duration, onDone, nextNow);
+            });
+        } else if (onDone) {
+            onDone();
+        }
+    }
 
-        // Start bei 0
+    fadeInAudio(audio, duration = 2000, targetVolume = 1) {
+        if (!audio) return;
+        const to = this.clampVolume(targetVolume);
         audio.volume = 0;
-
-        // Play versuchen – falls blockiert, Fehler abfangen
-        const playPromise = audio.play();
-        if (playPromise !== undefined) {
-            playPromise.catch(err => console.warn("Audio play() blocked:", err));
-        }
-
-        const startTime = performance.now();
-
-        function fade(currentTime) {
-            const elapsed = currentTime - startTime;
-            const progress = Math.min(elapsed / duration, 1);
-
-            // Linear einblenden bis zur Ziel-Lautstärke
-            let newVolume = targetVolume * progress;
-            newVolume = Math.max(0, Math.min(1, newVolume)); // Sicherheit
-
-            audio.volume = newVolume;
-
-            if (progress < 1) {
-                requestAnimationFrame(fade);
-            } else {
-                audio.volume = targetVolume;
-            }
-        }
-
-        requestAnimationFrame(fade);
+        this.safePlay(audio);
+        this.startVolumeFade(audio, 0, to, duration);
     }
 
     fadeAudioTo(audio, duration = 2000, targetVolume = 1) {
-        // Sicherheitschecks
         if (!audio) return;
-
-        // Ziel-Volume sicher im Bereich 0–1 halten
-        targetVolume = Math.max(0, Math.min(1, targetVolume));
-
-        const startVolume = audio.volume;
-        const startTime = performance.now();
-
-        function fade(currentTime) {
-            const elapsed = currentTime - startTime;
-            const progress = Math.min(elapsed / duration, 1);
-
-            // Lineare Interpolation (lerp)
-            let newVolume = startVolume + (targetVolume - startVolume) * progress;
-            newVolume = Math.max(0, Math.min(1, newVolume)); // Clamp
-
-            audio.volume = newVolume;
-
-            if (progress < 1) {
-                requestAnimationFrame(fade);
-            } else {
-                audio.volume = targetVolume; // sicherstellen, dass Ziel erreicht wird
-            }
-        }
-
-        requestAnimationFrame(fade);
+        const to = this.clampVolume(targetVolume);
+        const from = typeof audio.volume === 'number' ? audio.volume : 1;
+        this.startVolumeFade(audio, from, to, duration);
     }
 
     fadeOutAudio(audio, duration = 2000) {
-        // Sicherheitschecks
         if (!audio) return;
-        if (audio.paused && audio.currentTime === 0) return; // noch nie gestartet
-
-        const startVolume = typeof audio.volume === "number" ? audio.volume : 1;
-        const startTime = performance.now();
-
-        function fade(currentTime) {
-            const elapsed = currentTime - startTime;
-            const progress = Math.min(elapsed / duration, 1);
-
-            // Neue Lautstärke berechnen und sicher clampen
-            let newVolume = startVolume * (1 - progress);
-            newVolume = Math.max(0, Math.min(1, newVolume));
-
-            audio.volume = newVolume;
-
-            if (progress < 1) {
-                requestAnimationFrame(fade);
-            } else {
-                audio.volume = 0;
-                audio.pause(); // optional: Musik am Ende stoppen
-            }
-        }
-
-        requestAnimationFrame(fade);
+        if (audio.paused && audio.currentTime === 0) return;
+        const from = typeof audio.volume === 'number' ? audio.volume : 1;
+        this.startVolumeFade(audio, from, 0, duration, () => {
+            audio.volume = 0;
+            audio.pause();
+        });
     }
 
-    resetAllAudios(
-        root,
-        {
+    resetAllAudios(collection, opts = {}) {
+        if (!collection) return;
+        const {
             pause = true,
             resetTime = true,
             resetVolume = true,
             defaultVolume = 1,
             resetLoop = true,
-            resetRate = true,
-            log = false
-        } = {}
-    ) {
-        if (!root) return;
-
-        let counter = 0;
-
-        const visit = (value, path = "root") => {
-            if (!value) return;
-
-            const looksLikeAudio =
-                typeof value === "object" &&
-                typeof value.play === "function" &&
-                typeof value.pause === "function" &&
-                "currentTime" in value;
-
-            if (looksLikeAudio) {
-                try {
-                    if (log) console.log("[resetAllAudios] audio @", path, "before:", {
-                        time: value.currentTime,
-                        volume: value.volume,
-                        loop: value.loop
-                    });
-
-                    if (pause) value.pause();
-                    if (resetTime) value.currentTime = 0;
-                    if (resetVolume) value.volume = defaultVolume;
-                    if (resetLoop) value.loop = false;
-                    if (resetRate) value.playbackRate = 1;
-
-                    if (log) console.log("[resetAllAudios] audio @", path, "after:", {
-                        time: value.currentTime,
-                        volume: value.volume,
-                        loop: value.loop
-                    });
-
-                    counter++;
-                } catch (e) {
-                    console.warn("Konnte Audio nicht resetten:", e);
-                }
-                return;
-            }
-
-            if (Array.isArray(value)) {
-                value.forEach((v, i) => visit(v, `${path}[${i}]`));
-                return;
-            }
-
-            if (typeof value === "object") {
-                Object.entries(value).forEach(([k, v]) => visit(v, `${path}.${k}`));
-            }
-        };
-
-        visit(root, "allAudios");
-        if (log) console.log(`[resetAllAudios] total audios reset: ${counter}`);
+            resetRate = true
+        } = opts;
+        const cfg = { pause, resetTime, resetVolume, defaultVolume, resetLoop, resetRate };
+        this.traverseAudioCollection(collection, audio => this.resetAudioNode(audio, cfg));
     }
 
-    pauseAllAudios(root) {
-        if (!root) return;
-
-        const visit = (value) => {
-            if (!value) return;
-
-            const looksLikeAudio =
-                typeof value === "object" &&
-                typeof value.play === "function" &&
-                typeof value.pause === "function" &&
-                "currentTime" in value;
-
-            if (looksLikeAudio) {
-                // Merken, ob es vorher gespielt hat
-                value._wasPlayingBeforePause = !value.paused;
-                if (!value.paused) value.pause();
-                return;
-            }
-
-            if (Array.isArray(value)) {
-                value.forEach(visit);
-                return;
-            }
-
-            if (typeof value === "object") {
-                Object.values(value).forEach(visit);
-            }
-        };
-
-        visit(root);
+    traverseAudioCollection(node, onAudio) {
+        if (!node) return;
+        if (this.isAudioNode(node)) return onAudio(node);
+        if (Array.isArray(node)) {
+            node.forEach(child => this.traverseAudioCollection(child, onAudio));
+            return;
+        }
+        if (typeof node === 'object') {
+            Object.values(node).forEach(child =>
+                this.traverseAudioCollection(child, onAudio)
+            );
+        }
     }
 
-    resumeAllAudios(root) {
-        if (!root) return;
-
-        const visit = (value) => {
-            if (!value) return;
-
-            const looksLikeAudio =
-                typeof value === "object" &&
-                typeof value.play === "function" &&
-                typeof value.pause === "function" &&
-                "currentTime" in value;
-
-            if (looksLikeAudio) {
-                if (value._wasPlayingBeforePause) {
-                    value.play().catch(() => { /* Autoplay-Blocker ignorieren */ });
-                }
-                value._wasPlayingBeforePause = false;
-                return;
-            }
-
-            if (Array.isArray(value)) {
-                value.forEach(visit);
-                return;
-            }
-
-            if (typeof value === "object") {
-                Object.values(value).forEach(visit);
-            }
-        };
-
-        visit(root);
+    isAudioNode(value) {
+        return (
+            typeof value === 'object' &&
+            typeof value.play === 'function' &&
+            typeof value.pause === 'function' &&
+            'currentTime' in value
+        );
     }
 
+    resetAudioNode(audio, config) {
+        const {
+            pause,
+            resetTime,
+            resetVolume,
+            defaultVolume,
+            resetLoop,
+            resetRate
+        } = config;
+        if (pause) audio.pause();
+        if (resetTime) audio.currentTime = 0;
+        if (resetVolume) audio.volume = defaultVolume;
+        if (resetLoop) audio.loop = false;
+        if (resetRate) audio.playbackRate = 1;
+    }
 
-    applyMuteToAllAudios(root) {
-        if (!root) return;
+    pauseAllAudios(collection) {
+        if (!collection) return;
+        this.traverseAudioCollection(collection, (audio) => {
+            audio._wasPlayingBeforePause = !audio.paused;
+            if (!audio.paused) audio.pause();
+        });
+    }
 
-        const visit = (value) => {
-            if (!value) return;
+    resumeAllAudios(collection) {
+        if (!collection) return;
+        this.traverseAudioCollection(collection, (audio) => {
+            if (!audio._wasPlayingBeforePause) return;
+            audio._wasPlayingBeforePause = false;
+            this.safePlay(audio);
+        });
+    }
 
-            const looksLikeAudio =
-                typeof value === "object" &&
-                typeof value.play === "function" &&
-                typeof value.pause === "function" &&
-                "currentTime" in value;
-
-            if (looksLikeAudio) {
-                value.muted = this.isMuted;   // 💡 ganz wichtig: nur muted toggeln
-                return;
-            }
-
-            if (Array.isArray(value)) {
-                value.forEach(visit);
-                return;
-            }
-
-            if (typeof value === "object") {
-                Object.values(value).forEach(visit);
-            }
-        };
-
-        visit(root);
+    applyMuteToAllAudios(collection) {
+        if (!collection) return;
+        this.traverseAudioCollection(collection, (audio) => {
+            audio.muted = this.isMuted;
+        });
     }
 
     setupTitleMusicChain() {
@@ -313,4 +192,10 @@ export class AudioManager {
         welcomeButtonClickSound.play();
     }
 
+    stopTitleMusic() {
+        const intro = this.get('titleMusicIntro');
+        const loop = this.get('titleMusicLoop');
+        intro?.pause();
+        loop?.pause();
+    }
 }

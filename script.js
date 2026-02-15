@@ -292,10 +292,10 @@ title.addEventListener("animationend", () => {
 //     buildCharacters();
 // }
 
-export function stopTitleMusic(allAudios) {
-    allAudios.titleMusic?.pause();
-    allAudios.titleMusic2?.pause();
-}
+// export function stopTitleMusic(allAudios) {
+//     allAudios.titleMusic?.pause();
+//     allAudios.titleMusic2?.pause();
+// }
 
 export function fadeInTitleMusic() {
     titleMusic2.currentTime = 0;

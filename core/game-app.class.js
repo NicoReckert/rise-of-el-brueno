@@ -75,15 +75,15 @@ export class GameApp {
         this.bindMenuCreditsButton();
         this.bindCloseCreditsOverlayButton();
 
-        
+
     }
 
     bindStartButton() {
         this.inputManager.listenStartButton(() => {
             this.world.startGame();
             this.uiManager.showGameScreen();
-            this.fullscreenManager.setFullscreen();
-            stopTitleMusic(this.audioManager.audios);
+            this.fullscreenManager.setFullscreen(this.uiManager.dom.body);
+            this.audioManager.stopTitleMusic();
         });
     }
 

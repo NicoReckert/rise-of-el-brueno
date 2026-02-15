@@ -20,8 +20,8 @@ export class MenuAudioAndCharacters {
         this.currentCharacterMusic = null;
         this.currentCharacterSpeechSound = null;
         this.titleSoundIsPlayed = false;
-        this.currentCharacterMusic = null;
-        this.currentCharacterSpeechSound = null;
+        this.storySpeechTimeout = null;
+        this.characterSpeechTimeout = null;
     }
 
     setupTitleIntro() {
@@ -68,13 +68,50 @@ export class MenuAudioAndCharacters {
         this.audioManager.fadeInAudio(character.music, 2000, 0.2);
         this.currentCharacterMusic = character.music;
         this.currentCharacterSpeechSound = character.textSpeechSound;
-        character.textSpeechSound.currentTime = 0;
-        setTimeout(() => {
-            this.audioManager.fadeInAudio(character.textSpeechSound, 200);
-        }, 2500);
-        this.currentCharacterSpeechSound.addEventListener('ended', () => {
+        this.resetCharacterSpeechState();
+        this.scheduleCharacterSpeechFadeIn();
+        this.currentCharacterSpeechSound.onended = () => {
             this.audioManager.fadeAudioTo(this.currentCharacterMusic, 2000, 1);
-        });
+        };
+    }
+
+    resetCharacterSpeechState() {
+        const speech = this.currentCharacterSpeechSound;
+        if (!speech) return;
+
+        if (this.characterSpeechTimeout) {
+            clearTimeout(this.characterSpeechTimeout);
+            this.characterSpeechTimeout = null;
+        }
+
+        speech.pause();
+        speech.currentTime = 0;
+    }
+
+    scheduleCharacterSpeechFadeIn() {
+        const speech = this.currentCharacterSpeechSound;
+        if (!speech) return;
+
+        this.characterSpeechTimeout = setTimeout(() => {
+            this.audioManager.fadeInAudio(speech, 200);
+            this.characterSpeechTimeout = null;
+        }, 2500);
+    }
+
+    stopCharacterSpeech(fadeDuration = 0) {
+        const speech = this.currentCharacterSpeechSound;
+        if (!speech) return;
+        if (this.characterSpeechTimeout) {
+            clearTimeout(this.characterSpeechTimeout);
+            this.characterSpeechTimeout = null;
+        }
+        if (fadeDuration > 0) {
+            this.audioManager.fadeOutAudio(speech, fadeDuration);
+        } else {
+            speech.pause();
+            speech.currentTime = 0;
+        }
+        speech.onended = null;
     }
 
     openBigBox() {
@@ -88,7 +125,7 @@ export class MenuAudioAndCharacters {
         document.getElementById('body').classList.remove('overflow-hidden');
         document.getElementById('overlay-characters').classList.remove('blur-effect');
         this.audioManager.fadeOutAudio(this.currentCharacterMusic, 1000);
-        this.audioManager.fadeOutAudio(this.currentCharacterSpeechSound, 1000);
+        this.stopCharacterSpeech(1000);
         this.audioManager.audios.titleMusicLoop.currentTime = 0;
         this.audioManager.audios.infoScreenMusic.currentTime = 0;
         this.audioManager.fadeInAudio(this.audioManager.audios.infoScreenMusic, 2000);
@@ -98,6 +135,7 @@ export class MenuAudioAndCharacters {
         const submenuBg = this.videoManager.get("submenuBg");
         submenuBg?.pause();
         document.getElementById('overlay-characters').classList.add('d-none');
+        this.stopCharacterSpeech(500);
         this.audioManager.fadeOutAudio(this.audioManager.audios.infoScreenMusic, 1000);
         this.audioManager.audios.titleMusicLoop.currentTime = 0;
         this.audioManager.fadeInAudio(this.audioManager.audios.titleMusicLoop, 2000);
@@ -113,20 +151,60 @@ export class MenuAudioAndCharacters {
         document.getElementById('overlay-story').classList.remove('d-none');
         const overlay = document.getElementById('overlay-story');
         overlay.prepend(submenuBg);
-
         this.renderStoryCard();
+        const infoMusic = this.audioManager.audios.infoScreenMusic;
+        const speech = this.audioManager.audios.storyTextSpeechSound;
         this.audioManager.fadeOutAudio(this.audioManager.audios.titleMusicIntro, 1000);
         this.audioManager.fadeOutAudio(this.audioManager.audios.titleMusicLoop, 1000);
-        this.audioManager.audios.infoScreenMusic.currentTime = 0;
-        this.audioManager.audios.storyTextSpeechSound.currentTime = 0;
-        this.audioManager.fadeInAudio(this.audioManager.audios.infoScreenMusic, 2000, 0.2);
-        setTimeout(() => {
-            this.audioManager.fadeInAudio(this.audioManager.audios.storyTextSpeechSound, 200);
-        }, 2500);
-        this.audioManager.audios.storyTextSpeechSound.addEventListener('ended', () => {
-            this.audioManager.fadeAudioTo(this.audioManager.audios.infoScreenMusic, 2000, 1);
-        });
+        this.resetStorySpeechState(speech);
+        infoMusic.currentTime = 0;
+        this.audioManager.fadeInAudio(infoMusic, 2000, 0.2);
+        this.scheduleStorySpeechFadeIn(speech);
+        speech.onended = () => {
+            this.audioManager.fadeAudioTo(infoMusic, 2000, 1);
+        };
     }
+
+    resetStorySpeechState(speech) {
+        if (!speech) return;
+
+        if (this.storySpeechTimeout) {
+            clearTimeout(this.storySpeechTimeout);
+            this.storySpeechTimeout = null;
+        }
+
+        speech.pause();
+        speech.currentTime = 0;
+    }
+
+    scheduleStorySpeechFadeIn(speech) {
+        if (!speech) return;
+
+        this.storySpeechTimeout = setTimeout(() => {
+            this.audioManager.fadeInAudio(speech, 200);
+            this.storySpeechTimeout = null;
+        }, 2500);
+    }
+
+    stopStorySpeech(fadeDuration = 0) {
+        const speech = this.audioManager.audios.storyTextSpeechSound;
+        if (!speech) return;
+
+        if (this.storySpeechTimeout) {
+            clearTimeout(this.storySpeechTimeout);
+            this.storySpeechTimeout = null;
+        }
+
+        if (fadeDuration > 0) {
+            this.audioManager.fadeOutAudio(speech, fadeDuration);
+        } else {
+            speech.pause();
+            speech.currentTime = 0;
+        }
+
+        speech.onended = null;
+    }
+
 
     renderStoryCard() {
         let storyBox = document.getElementById('story-box');
@@ -138,7 +216,7 @@ export class MenuAudioAndCharacters {
         submenuBg?.pause();
         document.getElementById('overlay-story').classList.add('d-none');
         this.audioManager.fadeOutAudio(this.audioManager.audios.infoScreenMusic, 1000);
-        this.audioManager.fadeOutAudio(this.audioManager.audios.storyTextSpeechSound, 1000);
+        this.stopStorySpeech(1000);
         this.audioManager.audios.titleMusicLoop.currentTime = 0;
         this.audioManager.fadeInAudio(this.audioManager.audios.titleMusicLoop, 2000);
     }
