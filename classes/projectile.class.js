@@ -57,12 +57,6 @@ export class Projectile extends MovableObject {
     setTimeout(() => this.markedForRemoval = true, this.lifetime);
   }
 
-  updateDeltaTime(timestamp) {
-    if (!this.lastUpdateTime) this.lastUpdateTime = timestamp;
-    this.deltaTime = (timestamp - this.lastUpdateTime) / 1000;
-    this.lastUpdateTime = timestamp;
-  }
-
   updateState(timestamp) {
     this.updateDeltaTime(timestamp);
 

@@ -34,6 +34,10 @@ export class UIManager {
             closeControlsOverlayButton: document.getElementById('close-controls-overlay-button'),
             menuCreditsButton: document.getElementById('menu-credits-button'),
             closeCreditsOverlayButton: document.getElementById('close-credits-overlay-button'),
+            repeatLevelButton: document.getElementById('repeat-level-button'),
+            pauseRestartButton: document.getElementById('pause-restart-button'),
+            menuLevelButton: document.getElementById('menu-level-button'),
+            pauseMenuMainButton: document.getElementById('pause-menu-main-button'),
 
         };
     }
@@ -42,6 +46,7 @@ export class UIManager {
         return {
             canvas: document.getElementById('canvas'),
             moveButtonBox: document.getElementById('move-button-box'),
+            moveButton: document.getElementById('move-button'),
             pauseToggleButton: document.getElementById('pause-toggle-button'),
             fullscreenToggleButton: document.getElementById('fullscreen-toggle-button'),
             muteToggleButton: document.getElementById('mute-toggle-button'),
@@ -70,11 +75,7 @@ export class UIManager {
         this.dom.overlayStartScreen.style.display = 'none';
         this.dom.overlayStartInitialisation.style.display = 'none';
         this.dom.canvas.style.display = 'block';
-        this.dom.moveButtonBox.classList.remove('d-none');
-        this.dom.pauseToggleButton.classList.remove('d-none');
-        this.dom.muteToggleButton.classList.remove('d-none');
-        this.dom.fullscreenToggleButton.classList.remove('d-none');
-        this.dom.moveButtonBox.classList.add('move-button-box-active');
+        this.showGameControls();
     }
 
     hideLevelCompleteButtonBox() {
@@ -120,5 +121,40 @@ export class UIManager {
         setTimeout(() => {
             this.dom.h1.classList.remove('before-animation');
         }, 800);
+    }
+
+    updateFullscreenButtonUI(isActive) {
+        const btn = this.dom.fullscreenToggleButton;
+        if (!btn) return;
+        btn.textContent = isActive ? '🡼' : '⛶';
+    }
+
+    showGameControls() {
+        this.dom.pauseToggleButton.classList.remove('d-none');
+        this.dom.muteToggleButton.classList.remove('d-none');
+        this.dom.fullscreenToggleButton.classList.remove('d-none');
+        this.setMoveButtonsActive(true);
+    }
+
+    hideGameControls() {
+        this.dom.pauseToggleButton.classList.add('d-none');
+        this.dom.muteToggleButton.classList.add('d-none');
+        this.dom.fullscreenToggleButton.classList.add('d-none');
+        this.setMoveButtonsActive(false);
+    }
+
+    setMoveButtonsActive(active) {
+        const box = this.dom.moveButtonBox;
+        if (!box) return;
+        box.classList.toggle('d-none', !active);
+        box.classList.toggle('move-button-box-active', active);
+    }
+
+    showMainMenuScreen() {
+        this.dom.canvas.style.display = 'none';
+        this.dom.overlayStartScreen.style.display = 'flex';
+        if (this.dom.overlayStartInitialisation) {
+            this.dom.overlayStartInitialisation.style.display = 'none';
+        }
     }
 }

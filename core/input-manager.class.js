@@ -9,6 +9,34 @@ export class InputManager {
     init() {
         this.listenKeyUp();
         this.listenKeyDown();
+        this.disableContextMenuOnCanvas();
+    }
+
+    initMoveButtonVisuals(container) {
+        if (!container) return;
+        const buttons = container.querySelectorAll('.move-button');
+        buttons.forEach(btn => this.bindMoveButtonVisuals(btn));
+    }
+
+    bindMoveButtonVisuals(btn) {
+        if (!btn) return;
+        const press = () => {
+            btn.classList.add('hold');
+            this.triggerPulse(btn);
+        };
+        const release = () => btn.classList.remove('hold');
+
+        btn.addEventListener('touchstart', press);
+        btn.addEventListener('mousedown', press);
+        btn.addEventListener('touchend', release);
+        btn.addEventListener('mouseup', release);
+        btn.addEventListener('mouseleave', release);
+    }
+
+    triggerPulse(button) {
+        button.classList.remove('pulse');
+        void button.offsetWidth;
+        button.classList.add('pulse');
     }
 
     listenKeyUp() {
@@ -97,4 +125,53 @@ export class InputManager {
         this.uiManager.dom.closeCreditsOverlayButton.addEventListener('click', onClick);
     }
 
+    disableContextMenuOnCanvas() {
+        const canvas = this.uiManager.dom.canvas;
+        if (!canvas) return;
+        canvas.addEventListener('contextmenu', (e) => e.preventDefault());
+    }
+
+    listenEscapeKey(onEscape) {
+        window.addEventListener('keydown', (event) => {
+            if (event.key === 'Escape') {
+                onEscape(event);
+            }
+        });
+    }
+
+    listenFullscreenToggleButton(onToggle) {
+        const btn = this.uiManager.dom.fullscreenToggleButton;
+        if (!btn) return;
+        btn.addEventListener('click', onToggle);
+    }
+
+    listenRepeatLevelButton(onClick) {
+        const btn = this.uiManager.dom.repeatLevelButton;
+        if (!btn) return;
+        btn.addEventListener('click', onClick);
+    }
+
+    listenPauseRestartButton(onClick) {
+        const btn = this.uiManager.dom.pauseRestartButton;
+        if (!btn) return;
+        btn.addEventListener('click', onClick);
+    }
+
+    listenMenuLevelButton(onClick) {
+        const btn = this.uiManager.dom.menuLevelButton;
+        if (!btn) return;
+        btn.addEventListener('click', onClick);
+    }
+
+    listenPauseMenuMainButton(onClick) {
+        const btn = this.uiManager.dom.pauseMenuMainButton;
+        if (!btn) return;
+        btn.addEventListener('click', onClick);
+    }
+
+    listenMuteToggleButton(onToggle) {
+        const btn = this.uiManager.dom.muteToggleButton;
+        if (!btn) return;
+        btn.addEventListener('click', onToggle);
+    }
 }

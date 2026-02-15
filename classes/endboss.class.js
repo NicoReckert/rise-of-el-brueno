@@ -330,25 +330,6 @@ export class Endboss extends MovableObject {
     }
 
     /**
-     * Updates delta time and calculates movement speed.
-     * @param {number} timestamp - Current time in milliseconds.
-     */
-    updateDeltaTime(timestamp) {
-        if (!this.lastUpdateTime) {
-            this.lastUpdateTime = timestamp;
-            this.deltaSeconds = 0;
-            return;
-        }
-
-        this.deltaSeconds = (timestamp - this.lastUpdateTime) / 1000;
-        this.lastUpdateTime = timestamp;
-
-        // optional für Ground-Movement
-        this.movementSpeed = this.speedX * this.deltaSeconds * 60;
-    }
-
-
-    /**
      * Handles horizontal movement based on direction flags.
      */
     handleMovement() {

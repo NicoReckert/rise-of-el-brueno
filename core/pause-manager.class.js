@@ -1,33 +1,32 @@
 export class PauseManager {
-    constructor(uiManager, audioManager, allAudios) {
-        this.ui = uiManager;
-        this.audio = audioManager;
-        this.allAudios = allAudios;
+    constructor(uiManager, audioManager) {
+        this.uiManager = uiManager;
+        this.audioManager = audioManager;
+        this.audios = this.audioManager.audios;
     }
 
     isOpen() {
-        return this.ui.isOpenPauseOverlay();
+        return this.uiManager.isOpenPauseOverlay();
     }
 
     open(world) {
         if (!world) return;
-        this.ui.showPauseOverlay();
-        this.ui.setMoveButtonsActive(false);
+        this.uiManager.showPauseOverlay();
+        this.uiManager.setMoveButtonsActive(false);
         world.pauseGame?.();
-        this.audio.pauseAllAudios(this.allAudios);
+        this.audioManager.pauseAllAudios(this.audios);
     }
 
     close(world) {
         if (!world) return;
-        this.ui.hidePauseOverlay();
-        this.ui.setMoveButtonsActive(true);
+        this.uiManager.hidePauseOverlay();
+        this.uiManager.setMoveButtonsActive(true);
         world.resumeGame?.();
-        this.audio.resumeAllAudios(this.allAudios);
+        this.audioManager.resumeAllAudios(this.audios);
     }
 
     toggle(world) {
         if (this.isOpen()) this.close(world);
         else this.open(world);
     }
-
 }

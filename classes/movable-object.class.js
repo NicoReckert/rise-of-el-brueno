@@ -2,7 +2,6 @@ import { DrawableObject } from './drawable-object.class.js';
 
 export class MovableObject extends DrawableObject {
     speedY = 0;
-    speedX;
     acceleration = 2.5;
     intervalGravity = null;
     energy = 100;
@@ -21,6 +20,11 @@ export class MovableObject extends DrawableObject {
         this.lastGravityUpdate = 0;
         this.gravityInterval = 1000 / 25;
         this.groundBottom = 370 + 300; // 670
+        this.lastUpdateTime = 0;
+        this.deltaTime = 0;
+        this.deltaSeconds = 0;
+        this.movementSpeed = 0;
+        this.speedX = this.speedX ?? 0;
 
     }
 
@@ -30,6 +34,23 @@ export class MovableObject extends DrawableObject {
             img.src = path;
             return img;
         });
+    }
+
+    updateDeltaTime(timestamp, maxDt = 0.1) {
+        if (!this.lastUpdateTime) {
+            this.lastUpdateTime = timestamp;
+            this.deltaTime = 0;
+            this.deltaSeconds = 0;
+            this.movementSpeed = 0;
+            return;
+        }
+        let dt = (timestamp - this.lastUpdateTime) / 1000;
+        this.lastUpdateTime = timestamp;
+        if (!Number.isFinite(dt) || dt < 0) dt = 0;
+        if (dt > maxDt) dt = 0;
+        this.deltaTime = dt;
+        this.deltaSeconds = dt;
+        this.movementSpeed = (this.speedX ?? 0) * dt * 60;
     }
 
     applyGravity(timestamp) {

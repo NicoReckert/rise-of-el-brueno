@@ -306,4 +306,13 @@ export class AudioManager {
         intro?.pause();
         loop?.pause();
     }
+
+    /**
+    * Fades in the looping title music.
+    */
+    fadeInTitleMusic() {
+        const loop = this.get('titleMusicLoop');
+        loop.currentTime = 0;
+        this.fadeInAudio(loop, 2000);
+    }
 }

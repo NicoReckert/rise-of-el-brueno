@@ -223,13 +223,6 @@ export class AnimatedEntity extends MovableObject {
         }
     }
 
-    updateDeltaTime(timestamp) {
-        if (!this.lastUpdateTime) this.lastUpdateTime = timestamp;
-        const deltaTime = (timestamp - this.lastUpdateTime) / 1000;
-        this.lastUpdateTime = timestamp;
-        this.movementSpeed = this.speedX * deltaTime * 60;
-    }
-
     /**
      * Handles horizontal movement based on direction flags.
      */

@@ -227,21 +227,6 @@ export class Enemy extends MovableObject {
 
     }
 
-
-
-
-    updateDeltaTime(timestamp) {
-        if (!this.lastUpdateTime) this.lastUpdateTime = timestamp;
-        this.deltaTime = (timestamp - this.lastUpdateTime) / 1000;
-        this.lastUpdateTime = timestamp;
-
-        this.movementSpeed = this.speedX * this.deltaTime * 60; // ✅
-    }
-
-
-
-
-
     moveLeft() {
         this.isFlipped = false;
         this.x -= this.movementSpeed;

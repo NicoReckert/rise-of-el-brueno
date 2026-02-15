@@ -1,4 +1,9 @@
 export class FullscreenManager {
+
+    isFullscreenActive() {
+        return !!document.fullscreenElement;
+    }
+
     setFullscreen(element) {
         if (!element) return;
         this.enterFullscreen(element);
@@ -21,6 +26,16 @@ export class FullscreenManager {
         }
     }
 
+    initFullscreenClassToggle(target = document.body, onChange) {
+        document.addEventListener("fullscreenchange", () => {
+            const active = !!document.fullscreenElement;
+            target.classList.toggle("fullscreen-active", active);
+            if (typeof onChange === 'function') {
+                onChange(active);
+            }
+        });
+    }
+
     exitFullscreen() {
         const exit =
             document.exitFullscreen ||
@@ -34,6 +49,14 @@ export class FullscreenManager {
             }
         } catch {
 
+        }
+    }
+
+    toggleFullscreen(element) {
+        if (this.isFullscreenActive()) {
+            this.exitFullscreen();
+        } else {
+            this.enterFullscreen(element);
         }
     }
 }

@@ -18,9 +18,9 @@ export class GameApp {
         this.entityImages = null;
         this.assetLoader = new AssetLoader();
         this.uiManager = new UIManager();
-        this.audioManager = new AudioManager;
+        this.audioManager = new AudioManager();
         this.fullscreenManager = new FullscreenManager();
-        this.pauseManager = new PauseManager(this.uiManager, this.audioManager, this.allAudios);
+        this.pauseManager = new PauseManager(this.uiManager, this.audioManager);
         this.keyboard = new Keyboard();
         this.inputManager = new InputManager(this.keyboard, this.uiManager);
         this.videoManager = new VideoManager();
@@ -45,6 +45,11 @@ export class GameApp {
         this.menuAudioAndCharacters.initCharacterData();
         this.restoreMutedState();
         this.uiManager.fadeOutLoadingOverlay();
+        this.fullscreenManager.initFullscreenClassToggle(
+            this.uiManager.dom.body,
+            (active) => this.uiManager.updateFullscreenButtonUI(active)
+        );
+        this.inputManager.initMoveButtonVisuals(this.uiManager.dom.moveButtonBox);
     }
 
     initWorld() {
@@ -74,12 +79,18 @@ export class GameApp {
         this.bindCloseControlsOverlayButton();
         this.bindMenuCreditsButton();
         this.bindCloseCreditsOverlayButton();
-
-
+        this.bindPauseKey();
+        this.bindFullscreenToggleButton();
+        this.bindRestartButtons();
+        this.bindReturnToMenuButtons();
+        this.bindMuteToggleButton();
     }
 
     bindStartButton() {
         this.inputManager.listenStartButton(() => {
+            if (!this.world) {
+                this.initWorld();
+            }
             this.world.startGame();
             this.uiManager.showGameScreen();
             this.fullscreenManager.setFullscreen(this.uiManager.dom.body);
@@ -111,7 +122,7 @@ export class GameApp {
     bindWelcomeButton() {
         this.inputManager.listenWelcomeButton(() => {
             this.audioManager.playClickSound()
-            this.fullscreenManager.enterFullscreen(this.uiManager.dom.body);
+            this.fullscreenManager.setFullscreen(this.uiManager.dom.body);
             this.menuVisuals.startIntro();
         });
     }
@@ -180,20 +191,44 @@ export class GameApp {
         })
     }
 
+    bindPauseKey() {
+        this.inputManager.listenEscapeKey(() => {
+            const btn = this.uiManager.dom.pauseToggleButton;
+            const pauseButtonVisible = btn && !btn.classList.contains('d-none');
+            if (!pauseButtonVisible || !this.world) return;
+            this.pauseManager.toggle(this.world);
+        });
+    }
 
+    bindFullscreenToggleButton() {
+        this.inputManager.listenFullscreenToggleButton(() => {
+            this.fullscreenManager.toggleFullscreen(this.uiManager.dom.body);
+        });
+    }
 
+    bindRestartButtons() {
+        const handler = () => this.restartGameFromCurrentLevel();
+        this.inputManager.listenRepeatLevelButton(handler);
+        this.inputManager.listenPauseRestartButton(handler);
+    }
+
+    bindReturnToMenuButtons() {
+        const handler = () => this.returnToMainMenu();
+        this.inputManager.listenMenuLevelButton(handler);
+        this.inputManager.listenPauseMenuMainButton(handler);
+    }
+
+    bindMuteToggleButton() {
+        this.inputManager.listenMuteToggleButton(() => {
+            const newMuted = !this.audioManager.isMuted;
+            this.audioManager.setMutedState(newMuted);
+        });
+    }
 
     startBackgroundAssetLoading() {
         this.loadDeferredIntoWorld();
         this.loadLazyIntoWorld();
     }
-
-
-
-
-
-
-
 
     restoreMutedState() {
         const savedMuted = localStorage.getItem("elBruenoMuted") === "1";
@@ -211,20 +246,9 @@ export class GameApp {
         }
         this.world.applyDeferredAssets(charDeferred, entityDeferred);
         if (this.audioManager.isMuted) {
-            this.audioManager.applyMuteToAllAudios();
+            this.audioManager.applyMuteToAllAudios(this.audioManager.audios);
         }
     }
-
-    // logDeferredErrors(audioRes, videoRes) {
-    //     if (audioRes.status === 'rejected') {
-    //         console.warn('[loadDeferredAssets] farmAudioManifestDeferred failed:', audioRes.reason);
-    //     }
-    //     if (videoRes.status === 'rejected') {
-    //         console.warn('[loadDeferredAssets] farmVideoManifestDeferred failed:', videoRes.reason);
-    //     } else if (videoRes.status === 'fulfilled') {
-    //         console.log('[loadDeferredAssets] videos loaded (deferred)');
-    //     }
-    // }
 
     async loadLazyIntoWorld() {
         try {
@@ -235,99 +259,55 @@ export class GameApp {
             }
             this.world.applyLazyAssets(charLazy, entityLazy);
             if (this.audioManager.isMuted) {
-                this.audioManager.applyMuteToAllAudios();
+                this.audioManager.applyMuteToAllAudios(this.audioManager.audios);
             }
         } catch (e) {
             console.warn('[loadLazyAssets] unexpected error:', e);
         }
     }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     restartGameFromCurrentLevel() {
-        // Level-Complete-Overlay und Pause-Overlay schließen
-        document.getElementById('level-complete-button-box').classList.add('d-none');
-        pauseOverlay.classList.add('d-none');
-
-        if (world) world.destroy();
-        resetAllAudios(allAudios, { log: true });
-
-        world = new World(canvas, characterImages, entityImages, allAudios);
-        if (typeof world.initRemainingSetups === "function") {
-            world.initRemainingSetups();
-        }
-        world.startGame();
-        document.getElementById('pause-toggle-button').classList.remove('d-none');
-        document.getElementById('mute-toggle-button').classList.remove('d-none');
-        document.getElementById('fullscreen-toggle-button').classList.remove('d-none');
-        document.getElementById('move-button-box').classList.add('move-button-box-active');
+        if (!this.world) return;
+        this.uiManager.hideLevelCompleteButtonBox();
+        this.uiManager.hidePauseOverlay();
+        this.uiManager.showGameControls();
+        this.audioManager.resetAllAudios(this.audioManager.audios);
+        this.world.restartLevel(this.world.currentScene);
     }
 
     returnToMainMenu() {
-        // Level-Complete-Box & Pause-Overlay schließen
-        document.getElementById('level-complete-button-box').classList.add('d-none');
-        pauseOverlay.classList.add('d-none');
-        document.getElementById('pause-toggle-button').classList.add('d-none');
-        document.getElementById('mute-toggle-button').classList.add('d-none');
-        document.getElementById('fullscreen-toggle-button').classList.add('d-none');
-        document.getElementById('move-button-box').classList.remove('move-button-box-active');
+        if (!this.world) return;
+        this.uiManager.hideLevelCompleteButtonBox();
+        this.uiManager.hidePauseOverlay();
+        this.uiManager.hideGameControls();
+        this.stopLevelCompleteMusic();
+        this.exitFullscreenIfNeeded();
+        this.resetWorldStateForMenu();
+        this.uiManager.showMainMenuScreen();
+        this.startMenuMusic();
+    }
 
+    stopLevelCompleteMusic() {
+        const music = this.world?.levelCompleteSetup?.sounds?.levelCompleteMusic;
+        if (!music) return;
+        this.audioManager.fadeOutAudio(music, 1000);
+    }
 
-        try {
-            fadeOutAudio(world.levelCompleteSetup.sounds.levelCompleteMusic, 1000);
-        } catch (e) {
-            // falls levelCompleteSetup hier noch nicht existiert → ignorieren
-        }
+    exitFullscreenIfNeeded() {
+        if (!this.fullscreenManager.isFullscreenActive()) return;
+        this.fullscreenManager.exitFullscreen();
+    }
 
-        fadeInTitleMusic();
-        document.getElementById('overlay-startscreen').style.display = 'flex';
-        document.getElementById('move-button-box').classList.add('d-none');
+    resetWorldStateForMenu() {
+        this.audioManager.resetAllAudios(this.audioManager.audios);
+        this.world.destroy();
+        this.world = null;
+    }
 
-        if (document.fullscreenElement) {
-            try {
-                document.exitFullscreen();
-            } catch (err) {
-                console.warn('Fehler beim Beenden des Fullscreens:', err);
-            }
-        }
-
-        if (world) world.destroy();
-        resetAllAudios(allAudios, { log: true });
-
-        world = new World(canvas, characterImages, entityImages, allAudios);
-        if (typeof world.initRemainingSetups === "function") {
-            world.initRemainingSetups();
-        }
+    startMenuMusic() {
+        const loop = this.audioManager.get('titleMusicLoop');
+        if (!loop) return;
+        loop.currentTime = 0;
+        this.audioManager.fadeInAudio(loop, 2000);
     }
 }

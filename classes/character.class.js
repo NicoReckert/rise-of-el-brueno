@@ -264,17 +264,6 @@ export class Character extends MovableObject {
     }
 
     /**
-    * Updates the delta time and calculates the character's movement speed.
-    * @param {number} timestamp - Current time in milliseconds.
-    */
-    updateDeltaTime(timestamp) {
-        if (!this.lastUpdateTime) this.lastUpdateTime = timestamp;
-        this.deltaTime = (timestamp - this.lastUpdateTime) / 1000;
-        this.lastUpdateTime = timestamp;
-        this.movementSpeed = this.speedX * this.deltaTime * 60;
-    }
-
-    /**
     * Handles horizontal character movement based on input states.
     */
     handleMovement() {

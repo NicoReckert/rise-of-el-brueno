@@ -137,7 +137,9 @@ export class World {
     resumeGame() {
         this.paused = false;
         this.isKeysStopp = false;
-        // kein neues requestAnimationFrame starten, der Loop läuft ja weiter
+        const now = performance.now();
+        this.lastTime = now;
+        if (this.character) this.character.lastUpdateTime = now;
     }
 
     draw(timestamp) {
@@ -148,6 +150,9 @@ export class World {
             return;
         }
         if (this.paused) {
+            if (typeof timestamp === 'number') {
+                this.lastTime = timestamp;
+            }
             this.frameId = requestAnimationFrame((timestamp) => this.draw(timestamp));
             return;
         }

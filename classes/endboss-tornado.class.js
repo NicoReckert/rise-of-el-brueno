@@ -75,12 +75,6 @@ export class EndbossTornado extends MovableObject {
         this.updateAnimation(timestamp);
     }
 
-    updateDeltaTime(timestamp) {
-        if (!this.lastUpdateTime) this.lastUpdateTime = timestamp;
-        this.deltaTime = (timestamp - this.lastUpdateTime) / 1000;  // Sekunden
-        this.lastUpdateTime = timestamp;
-    }
-
     seekTarget() {
         if (!this.target) return;
 
