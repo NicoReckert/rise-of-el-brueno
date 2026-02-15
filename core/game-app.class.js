@@ -59,7 +59,8 @@ export class GameApp {
             this.assetLoader.characterImages,
             this.assetLoader.entityImages,
             this.audioManager,
-            this.videoManager
+            this.videoManager,
+            this.inputManager
         );
     }
 

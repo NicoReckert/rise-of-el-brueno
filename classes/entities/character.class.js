@@ -296,7 +296,7 @@ export class Character extends MovableObject {
         const cameraOffset = isMobile ? 150 : 100;
         const t = 0.05 * (this.deltaTime * 60);
         this.isFlipped = false;
-        if (this.x < this.world.farmLevelSetup.farmLevel.level_end_x) {
+        if (this.x < this.world.level_end_x) {
             this.x += this.movementSpeed;
             this.world.camera_x += ((this.x - cameraOffset) - this.world.camera_x) * t;
         }
@@ -306,7 +306,7 @@ export class Character extends MovableObject {
     * Clamps the camera position within the level boundaries.
     */
     clampCamera() {
-        const maxCameraX = this.world.farmLevelSetup.farmLevel.level_end_x - 720;
+        const maxCameraX = this.world.level_end_x - 720;
         this.world.camera_x = Math.max(0, Math.min(this.world.camera_x, maxCameraX));
     }
 

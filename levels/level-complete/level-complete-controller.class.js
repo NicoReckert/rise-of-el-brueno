@@ -7,10 +7,9 @@ export class LevelCompleteController {
         this.world = setup.world;
         this.ctx = this.world.ctx;
         this.canvas = this.world.canvas;
-        this.addObject = this.world.addObject.bind(this.world);
-        this.addToWorld = this.world.addToWorld.bind(this.world);
+        this.addObject = this.world.renderer.addObject.bind(this.world.renderer);
+        this.addToWorld = this.world.renderer.addToWorld.bind(this.world.renderer);
         this.character = this.world.character;
-        this.checkPressKey = this.world.checkPressKey.bind(this.world);
         this.keyboard = this.world.keyboard;
         this.stepSoundCharacter = this.world.stepSoundCharacter.bind(this.world);
         this.landingSoundCharacter = this.world.landingSoundCharacter.bind(this.world);

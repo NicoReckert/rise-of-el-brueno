@@ -1,5 +1,5 @@
 import { buildCharacters } from "../config/character-data.js";
-import { loadVideo } from "../video-loader.js";
+import { loadVideo } from "../loader/video-loader.js";
 import { template1, template2 } from "../ui/menu-templates.js";
 import { template3 } from "../ui/menu-templates.js";
 import { storyText } from "../config/story-text.js";

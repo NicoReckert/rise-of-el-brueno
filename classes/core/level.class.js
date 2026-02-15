@@ -1,14 +1,4 @@
 export class Level {
-    enemies;
-    endboss;
-    clouds;
-    grounds;
-    towns;
-    sky;
-    coins;
-    bottles;
-    level_end_x = 6600; //6409
-
     constructor({ enemies = [], endboss = null, clouds = [], grounds = [], towns = [], sky = [], coins = [], bottles = [] }) {
         this.enemies = enemies;
         this.endboss = endboss;

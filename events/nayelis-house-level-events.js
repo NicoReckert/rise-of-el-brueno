@@ -6,7 +6,7 @@ export const nayelisHouseEvents =
                 setup.world.camera_x = 0;
                 setup.world.character.x = 300;
                 setup.world.character.level_start_x = 290;
-                setup.world.farmLevelSetup.farmLevel.level_end_x = 845;
+                setup.world.level_end_x = 845;
                 setup.characters.nayeli.updateAnimationState('idle', 1000 / 5.2);
                 setup.sounds.nayelisMusic.play();
                 setup.sounds.nayelisMusic.volume = 0.3;
@@ -36,7 +36,7 @@ export const nayelisHouseEvents =
                 // setup.world.camera_x = setup.world.character.x - 500;
                 setup.world.character.x = 400;
                 setup.world.character.level_start_x = 290;
-                setup.world.farmLevelSetup.farmLevel.level_end_x = 845;
+                setup.world.level_end_x = 845;
                 setup.world.character.isNewWeapon = true;
                 setup.world.newWeaponLevelSetup.sounds.newWeaponMusic.play();
                 setup.world.newWeaponLevelSetup.sounds.newWeaponSpeakSound.play();

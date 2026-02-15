@@ -2,7 +2,7 @@ import { LifeEnergyCharacterBar } from '../../classes/ui/life-energy-character-b
 import { AnimatedEntity } from '../../classes/entities/animated-entity.class.js';
 import { HollowHint } from '../../classes/ui/hollow-hint.class.js';
 import { stableLevel } from './stable-level.js';
-import { stableEvents } from '../../../events/stable-level-events.js';
+import { stableEvents } from '../../events/stable-level-events.js';
 
 export class StableLevelSetup {
     constructor(world) {

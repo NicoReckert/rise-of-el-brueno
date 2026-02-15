@@ -8,7 +8,7 @@ export const stableEvents =
             action: (setup) => {
                 setup.world.camera_x = 0;
                 setup.world.character.x = 380;
-                setup.world.farmLevelSetup.farmLevel.level_end_x = 720;
+                setup.world.level_end_x = 720;
                 setup.world.character.level_start_x = 360;
             }
         },

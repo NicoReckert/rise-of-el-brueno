@@ -2,6 +2,7 @@ import { PopupText } from "../classes/ui/popup-text.class.js";
 import { Enemy } from "../classes/entities/enemy.class.js";
 import { DamageText } from "../classes/ui/damage-text.class.js";
 import { AudioManager } from "../core/audio-manager.class.js";
+import { ThrowableObject } from "../classes/entities/throwable-object.class.js";
 
 const audioManager = new AudioManager();
 const fadeOutAudio = audioManager.fadeOutAudio.bind(audioManager);
@@ -17,7 +18,7 @@ export const townEvents =
 
                 setup.world.character.x = 100; // 100 //18500//23000
                 setup.world.character.level_start_x = 0;
-                setup.world.farmLevelSetup.farmLevel.level_end_x = 25000;
+                setup.world.level_end_x = 25000;
                 setup.world.camera_x = 0; //0 // 18400 //22900
                 setup.world.character.speedX = 10;
                 setup.world.character.isWalkDetermined = false;
@@ -363,12 +364,12 @@ export const townEvents =
         //             setup.characters.tadeo.isMovingRight = true;
         //             setup.characters.tadeo.updateAnimationState('walkWithStone');
         //             // setup.world.character.level_start_x = setup.characters.tadeo.x - 170;
-        //             // setup.world.farmLevelSetup.farmLevel.level_end_x = setup.characters.tadeo.x + 170;
+        //             // setup.world.level_end_x = setup.characters.tadeo.x + 170;
         //         } else {
         //             setup.characters.tadeo.isMovingRight = false;
         //             setup.characters.tadeo.updateAnimationState('idleWithStone');
         //             // setup.world.character.level_start_x = setup.characters.tadeo.x - 170;
-        //             // setup.world.farmLevelSetup.farmLevel.level_end_x = setup.characters.tadeo.x + 170;
+        //             // setup.world.level_end_x = setup.characters.tadeo.x + 170;
         //             // setup.world.townLevelController.questManager.advance(9);
         //         }
         //     }
@@ -573,34 +574,33 @@ export const townEvents =
             }
         },
 
-        // {
-        //     type: 'quest',
-        //     once: false,
-        //     action: (setup) => {
-        //         const char = setup.world.character
-        //         const now = setup.world.timestamp;
-        //         if (char.isHurt) return;
-        //         setup.townLevel.enemies.forEach(enemy => {
-        //             if (enemy.isDead) return;
-        //             const IMMUNITY_DURATION = 500; // ms
-        //             const attackImmunity = (now - setup.world.attackCommitUntil) < IMMUNITY_DURATION;
-        //             const colliding = enemy.isColliding(char);
-        //             const effectiveColliding = colliding && enemy.currentEnemy !== 'dragonSmall' && !char.isJumping && !attackImmunity && !char.isAttack && !char.isProtect && !enemy.isHurt && !enemy.isDead;
-        //             const did = char.handleEnemyTouch(enemy, effectiveColliding, now, {
-        //                 dmg: char.isProtect ? 2 : 10,
-        //                 knockX: 26,
-        //                 knockY: 16
-        //             });
-        //             if (did) {
-        //                 setup.statusBar.setPercentage(char.energy);
-        //                 setup.damageTexts.push(
-        //                     new DamageText(char.x + char.width / 2, char.y - 10, char.isProtect ? 2 : 10)
-        //                 );
-        //             }
-        //         });
-        //     }
-        // },
-
+        {
+            type: 'quest',
+            once: false,
+            action: (setup) => {
+                const char = setup.world.character
+                const now = setup.world.timestamp;
+                if (char.isHurt) return;
+                setup.townLevel.enemies.forEach(enemy => {
+                    if (enemy.isDead) return;
+                    const IMMUNITY_DURATION = 500; // ms
+                    const attackImmunity = (now - setup.world.attackCommitUntil) < IMMUNITY_DURATION;
+                    const colliding = enemy.isColliding(char);
+                    const effectiveColliding = colliding && enemy.currentEnemy !== 'dragonSmall' && !char.isJumping && !attackImmunity && !char.isAttack && !char.isProtect && !enemy.isHurt && !enemy.isDead;
+                    const did = char.handleEnemyTouch(enemy, effectiveColliding, now, {
+                        dmg: char.isProtect ? 2 : 10,
+                        knockX: 26,
+                        knockY: 16
+                    });
+                    if (did) {
+                        setup.statusBar.setPercentage(char.energy);
+                        setup.damageTexts.push(
+                            new DamageText(char.x + char.width / 2, char.y - 10, char.isProtect ? 2 : 10)
+                        );
+                    }
+                });
+            }
+        },
 
         {
             type: 'quest',
@@ -718,6 +718,356 @@ export const townEvents =
             }
         },
 
+        //new Events von Check Collision from World
 
+        // Spieler sammelt Coins ein
+        {
+            name: 'town_collect_coins',
+            type: 'quest',
+            once: false,
+            action: (setup) => {
+                const world = setup.world;
+                const char = world.character;
+                const coins = setup.townLevel.coins;
+                const bar = setup.coinBar;
 
+                for (let i = coins.length - 1; i >= 0; i--) {
+                    const coin = coins[i];
+                    if (char.isCollidingBefore(coin, 0, 0)) {
+                        coins.splice(i, 1);
+                        world.playCoinSound();
+
+                        // gleiche Logik wie vorher (effektiv +40, dann Clamp)
+                        if (bar.percentage < 100) {
+                            bar.percentage = Math.min(bar.percentage + 20, 100);
+                        }
+                        bar.setPercentage(bar.percentage);
+                    }
+                }
+            }
+        },
+
+        // Spieler sammelt Bottles ein
+        {
+            name: 'town_collect_bottles',
+            type: 'quest',
+            once: false,
+            action: (setup) => {
+                const world = setup.world;
+                const char = world.character;
+                const bottles = setup.townLevel.bottles;
+                const bar = setup.bottleBar;
+
+                for (let i = bottles.length - 1; i >= 0; i--) {
+                    const bottle = bottles[i];
+                    if (char.isCollidingBefore(bottle, 0, 0) && bar.percentage !== 100) {
+                        bottles.splice(i, 1);
+                        world.playBottleSound();
+
+                        bar.percentage = Math.min(bar.percentage + 20, 100);
+                        bar.setPercentage(bar.percentage);
+
+                        if (char.throwableBottels < 5) {
+                            char.throwableBottels += 1;
+                        }
+                    }
+                }
+            }
+        },
+
+        // Endboss sinkt nach dem Tod in den Boden
+        {
+            name: 'town_endboss_sinks',
+            type: 'quest',
+            once: false,
+            action: (setup) => {
+                const boss = setup.characters.endboss;
+                if (!boss) return;
+
+                if (boss.y >= 690 && boss.isDead && !boss.isUnderTheGround) {
+                    if (boss.intervalMoveDownAfterDead) {
+                        clearInterval(boss.intervalMoveDownAfterDead);
+                    }
+                    boss.isUnderTheGround = true;
+                }
+            }
+        },
+
+        // Logik für geworfene Flaschen
+        {
+            name: 'town_throwable_bottles',
+            type: 'quest',
+            once: false,
+            action: (setup) => {
+                const world = setup.world;
+                const char = world.character;
+                const bottles = setup.throwableObjects;
+                const enemies = setup.townLevel.enemies;
+                const boss = setup.characters.endboss;
+
+                for (let i = bottles.length - 1; i >= 0; i--) {
+                    const bottle = bottles[i];
+
+                    // 1) Animation fertig → Bottle entfernen
+                    if (!bottle.isBrokenAnimation && bottle.isBrokenAnimationDone) {
+                        bottles.splice(i, 1);
+                        char.isThrowing = false;
+                        bottle.isBrokenSound = false;
+                        continue;
+                    }
+
+                    // 2) Boden getroffen
+                    if (bottle.y + bottle.height >= 670) {
+                        if (!bottle.isBrokenSound) {
+                            world.playBottelBrokenSound();
+                            bottle.isBroken = true;
+                            bottle.isThrow = false;
+                            bottle.isGravity = false;
+                            bottle.isBrokenAnimation = true;
+                            bottle.isBrokenSound = true;
+                            bottle.isMovingLeft = false;
+                            bottle.isMovingRight = false;
+                        }
+                        if (!bottle.isBrokenAnimation) {
+                            bottles.splice(i, 1);
+                            char.isThrowing = false;
+                            bottle.isBrokenSound = false;
+                        }
+                        continue;
+                    }
+
+                    // 3) Flasche fliegt noch → Kollision mit Enemies
+                    if (!bottle.isBrokenAnimation) {
+                        for (let j = 0; j < enemies.length; j++) {
+                            const enemy = enemies[j];
+
+                            // vorher: return; → hätte alle weiteren Gegner abgebrochen
+                            if (enemy.currentEnemy === 'dragonSmall') continue;
+
+                            if (bottle.isCollidingBefore(enemy, 50, 0) && !enemy.isDead) {
+                                if (!bottle.isBrokenSound) {
+                                    world.playBottelBrokenSound();
+                                    bottle.isBrokenSound = true;
+                                    bottle.isBroken = true;
+                                    bottle.isThrow = false;
+                                    bottle.isGravity = false;
+                                    bottle.isBrokenAnimation = true;
+
+                                    enemy.isDead = true;
+                                    enemy.isMovingLeft = false;
+                                    enemy.isMovingRight = false;
+                                    world.playChickenDeathSound();
+
+                                    const removeIndex = j;
+                                    setTimeout(() => {
+                                        enemies.splice(removeIndex, 1);
+                                    }, 2000);
+                                    break;
+                                }
+                            }
+                        }
+
+                        // 4) Kollision mit Endboss
+                        if (boss && bottle.isCollidingBefore(boss, 0, 50) && !boss.isDead) {
+                            if (!bottle.isBrokenSound) {
+                                world.playBottelBrokenSound();
+                                boss.isHurt = true;
+                                boss.frameIndex = 0;
+
+                                bottle.isBrokenSound = true;
+                                bottle.isBroken = true;
+                                bottle.isThrow = false;
+                                bottle.isGravity = false;
+                                bottle.isBrokenAnimation = true;
+
+                                boss.energy -= 20;
+                                setup.statusBar2.setPercentage(boss.energy);
+                                if (boss.energy <= 0) {
+                                    boss.isDead = true;
+                                    boss.frameIndex = 0;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+
+        // Soul folgt dem Boss und steigt nach dem Tod hoch
+        {
+            name: 'town_soul_follow_and_rise',
+            type: 'quest',
+            once: false,
+            action: (setup) => {
+                const boss = setup.characters.endboss;
+                const soul = setup.characters.soul;
+                if (!boss || !soul) return;
+
+                // Solange Boss lebt → Soul "klebt" an ihm
+                if (!boss.isDead) {
+                    soul.x = boss.x + 75;
+                    soul.y = boss.y + 200;
+                    return;
+                }
+
+                // Boss ist tot → Soul steigt hoch, bis y <= 250
+                if (boss.isDead && soul.y >= 250) {
+                    soul.y -= 1.5;
+                }
+            }
+        },
+
+        // Musik-Fade + Soul-Cutscene / Meditation
+        {
+            name: 'town_soul_cutscene',
+            type: 'quest',
+            once: false,
+            action: (setup) => {
+                const world = setup.world;
+                const boss = setup.characters.endboss;
+                const soul = setup.characters.soul;
+                const sounds = setup.sounds;
+
+                if (!boss || !soul) return;
+
+                // Cutscene startet, wenn Soul oben angekommen ist
+                if (soul.y > 250 || boss.isFly) return;
+
+                // 1) Endboss-Musik ausfaden
+                if (world.volumeLevel > world.minVolumeLevel) {
+                    world.volumeLevel = Math.max(world.volumeLevel - 0.010, world.minVolumeLevel);
+                    setup.endbossMusic.volume = world.volumeLevel;
+                } else {
+                    // Soul-Sprecher nur einmal starten
+                    if (!world.isPlay) {
+                        sounds.soulSpeakSound.play();
+                        world.isPlay = true;
+                    }
+                }
+
+                // 2) Soul-Music einfaden
+                if (world.volumeLevel2 < world.minVolumeLevel2) {
+                    world.volumeLevel2 = Math.min(world.volumeLevel2 + 0.010, world.minVolumeLevel2);
+                    sounds.soulMusic.volume = world.volumeLevel2;
+                }
+                sounds.soulMusic.play();
+
+                // 3) Nach ~18s: Meditation + Soul findet Frieden
+                if (sounds.soulSpeakSound.currentTime >= 18) {
+                    const char = world.character;
+
+                    char.isMeditation = true;
+                    soul.updateAnimationState('findsPeace', 1000 / 5);
+                    boss.isFindsPeace = true;
+
+                    if (soul.y >= -500) {
+                        soul.y -= 1;
+                    }
+
+                    if (world.volumeLevel3 < world.minVolumeLevel3) {
+                        world.volumeLevel3 = Math.min(world.volumeLevel3 + 0.005, world.minVolumeLevel3);
+                        sounds.soulMusic.volume = world.volumeLevel3;
+                    }
+                }
+            }
+        },
+
+        // Nahkampf-Hit auf Endboss
+        {
+            name: 'town_melee_hits_boss',
+            type: 'quest',
+            once: false,
+            action: (setup) => {
+                const world = setup.world;
+                const char = world.character;
+                const boss = setup.characters.endboss;
+
+                if (!char || !boss) return;
+                if (!char.isAttack || char.hasHitEnemyThisAttack || boss.isDead) return;
+
+                if (char.isCollidingBeforeWithAttackHitbox(
+                    boss,
+                    0,
+                    0,
+                    char.attackHitbox
+                )) {
+                    boss.isHurt = true;
+                    boss.frameIndex = 0;
+                    boss.energy -= 5;
+                    setup.statusBar2.setPercentage(boss.energy);
+
+                    char.hasHitEnemyThisAttack = true;
+
+                    if (boss.energy <= 0) {
+                        boss.isDead = true;
+                        boss.frameIndex = 0;
+                    }
+                }
+            }
+        },
+
+        // Wurf von Flaschen mit Taste D
+        {
+            name: 'town_throw_bottle_input',
+            type: 'quest',
+            once: false,
+            action: (setup) => {
+                const world = setup.world;
+                const char = world.character;
+
+                // Cooldown wie vorher in checkThrowObjects
+                if (world.timestamp - world.lastThrowCheck < world.throwCheckDelay) return;
+
+                // Taste D muss gedrückt sein
+                if (!world.keyboard.D) return;
+
+                world.lastThrowCheck = world.timestamp;
+
+                // Kann der Charakter aktuell überhaupt werfen?
+                const canThrow =
+                    char.throwableBottels > 0 &&
+                    !char.isThrowing &&
+                    !char.isAttack &&
+                    !char.isProtect;
+
+                if (canThrow) {
+                    let bottle;
+
+                    if (!char.isFlipped) {
+                        bottle = new ThrowableObject(char.x + 35, char.y + 150);
+                        bottle.isMovingRight = true;
+                        bottle.characterIsFlipped = false;
+                    } else {
+                        bottle = new ThrowableObject(char.x - 35, char.y + 150);
+                        bottle.isMovingLeft = true;
+                        bottle.characterIsFlipped = true;
+                    }
+
+                    bottle.isThrow = true;
+                    bottle.isBroken = false;
+                    bottle.speedY = 30;
+                    bottle.isGravity = true;
+
+                    setup.throwableObjects.push(bottle);
+
+                    // Sound + UI-Update wie vorher
+                    if (world.playBottelThrowSound) world.playBottelThrowSound();
+
+                    const bar = setup.bottleBar;
+                    bar.percentage = Math.min(bar.percentage - 20, 100);
+                    bar.setPercentage(bar.percentage);
+
+                    if (char.throwableBottels > 0) {
+                        char.throwableBottels -= 1;
+                    }
+                    char.isThrowing = true;
+
+                } else if (char.throwableBottels === 0) {
+                    // Keine Flaschen mehr → leeres "Klick" Geräusch
+                    if (world.playEmptyBottelsSound) {
+                        world.playEmptyBottelsSound();
+                    }
+                }
+            }
+        },
     ];

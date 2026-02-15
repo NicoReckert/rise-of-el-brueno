@@ -1,5 +1,5 @@
-import { attachVideo, loadVideo } from "../video-loader.js";
-import { videoManifest } from "../video-manifest.js";
+import { attachVideo, loadVideo } from "../loader/video-loader.js";
+import { videoManifest } from "../manifests/video-manifest.js";
 
 /**
 * Manages menu visuals and related media controllers.

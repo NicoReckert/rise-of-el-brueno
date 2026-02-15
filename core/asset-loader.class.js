@@ -1,17 +1,17 @@
-import { preloadManifestAudio } from "../audio-loader.js";
-import { introAudioManifest } from "../audio-manifest.js";
-import { characterManifestImmediate } from "../character-image-manifest.js";
-import { farmEntityManifestImmediate } from "../entity-image-manifest.js";
-import { farmAudioManifestImmediate } from "../audio-manifest.js";
-import { preloadManifestImages } from "../image-loader.js";
-import { characterManifestDeferred } from "../character-image-manifest.js";
-import { farmEntityManifestDeferred } from "../entity-image-manifest.js";
-import { otherLevelCharacterManifestLazy } from "../character-image-manifest.js";
-import { otherLevelEntityManifestLazy } from "../entity-image-manifest.js";
-import { otherLevelAudioManifestLazy } from "../audio-manifest.js";
-import { farmAudioManifestDeferred } from "../audio-manifest.js";
-import { preloadManifestVideos } from "../video-loader.js";
-import { farmVideoManifestDeferred } from "../video-manifest.js";
+import { preloadManifestAudio } from "../loader/audio-loader.js";
+import { introAudioManifest } from "../manifests/audio-manifest.js";
+import { characterManifestImmediate } from "../manifests/character-image-manifest.js";
+import { farmEntityManifestImmediate } from "../manifests/entity-image-manifest.js";
+import { farmAudioManifestImmediate } from "../manifests/audio-manifest.js";
+import { preloadManifestImages } from "../loader/image-loader.js";
+import { characterManifestDeferred } from "../manifests/character-image-manifest.js";
+import { farmEntityManifestDeferred } from "../manifests/entity-image-manifest.js";
+import { otherLevelCharacterManifestLazy } from "../manifests/character-image-manifest.js";
+import { otherLevelEntityManifestLazy } from "../manifests/entity-image-manifest.js";
+import { otherLevelAudioManifestLazy } from "../manifests/audio-manifest.js";
+import { farmAudioManifestDeferred } from "../manifests/audio-manifest.js";
+import { preloadManifestVideos } from "../loader/video-loader.js";
+import { farmVideoManifestDeferred } from "../manifests/video-manifest.js";
 import { smartMerge } from "../utils/asset-merge.util.js";
 
 /**

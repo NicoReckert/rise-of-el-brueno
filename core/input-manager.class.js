@@ -174,4 +174,155 @@ export class InputManager {
         if (!btn) return;
         btn.addEventListener('click', onToggle);
     }
+
+
+
+
+
+    processGameInput(game, timestamp) {
+        if (game.isKeysStopp) return;
+
+        game.character.isMovingLeft = false;
+        game.character.isMovingRight = false;
+
+        this.handleHorizontalInput(game, timestamp);
+        this.handleJumpAndJetpack(game);
+        this.handleTaskWindowToggle(game);
+        this.handleCombatInput(game, timestamp);
+        this.handleDeath(game);
+    }
+
+    handleHorizontalInput(game, timestamp) {
+        const kb = this.keyboard;
+        const char = game.character;
+        const now = timestamp;
+
+        if (kb.LEFT) {
+            if (char.isProtect) char.isProtect = false;
+            const tryingToMove = char.isMovingLeft;
+
+            if (char.isAttack) {
+                if (now < game.attackCommitUntil) {
+                    char.isMovingLeft = false;
+                    return;
+                }
+                if (tryingToMove) char.isAttack = false;
+            }
+            char.isMovingLeft = true;
+        }
+
+        if (kb.RIGHT) {
+            if (char.isProtect) char.isProtect = false;
+            const tryingToMove = char.isMovingRight;
+
+            if (char.isAttack) {
+                if (now < game.attackCommitUntil) {
+                    char.isMovingRight = false;
+                    return;
+                }
+                if (tryingToMove) char.isAttack = false;
+            }
+            char.isMovingRight = true;
+        }
+    }
+
+    handleJumpAndJetpack(game) {
+        const kb = this.keyboard;
+        const char = game.character;
+
+        // normaler Jump
+        if (kb.UP && !char.isAboveGround() && !char.isFlying && !char.isJumping) {
+            if (char.isAttack || char.isProtect) {
+                char.isAttack = false;
+                char.isProtect = false;
+            }
+            char.isJumping = true;
+            char.speedY = 25;
+            game.jumpSound?.play();
+        }
+
+        // Jetpack hoch
+        if (kb.UP && char.isAboveGround() && char.isFlying) {
+            char.moveUp();
+        }
+
+        // Jetpack runter / landen
+        if (kb.DOWN && char.isAboveGround() && char.isFlying) {
+            if (char.y + 10 == 130) {
+                this.stopJetpack(game);
+            } else {
+                char.moveDown();
+            }
+        }
+
+        // Jetpack aktivieren
+        if (kb.J) {
+            char.moveFly();
+            game.backgroundMusic.pause();
+            game.backgroundMusic.currentTime = 0;
+            game.playEndbossMusic("stop");
+            game.jetPackMusic.play();
+            game.jetPackSound.play();
+        }
+    }
+
+    stopJetpack(game) {
+        const kb = this.keyboard;
+        const char = game.character;
+
+        kb.J = false;
+        char.isFlying = false;
+        game.jetPackMusic.pause();
+        game.jetPackMusic.currentTime = 0;
+        game.jetPackSound.pause();
+        game.jetPackSound.currentTime = 0;
+
+        if (game.townLevelSetup.endbossMusicIsPlayed) {
+            game.playEndbossMusic("play");
+        } else {
+            game.backgroundMusic.play();
+        }
+
+        char.y = 130;
+        char.moveStop();
+    }
+
+    handleTaskWindowToggle(game) {
+        const kb = this.keyboard;
+        if (kb.T && !game.tKeyPressed) {
+            game.taskWindow.toggle();
+            game.tKeyPressed = true;
+        }
+        if (!kb.T) {
+            game.tKeyPressed = false;
+        }
+    }
+
+    handleCombatInput(game, timestamp) {
+        const kb = this.keyboard;
+        const char = game.character;
+
+        if (kb.A && !char.isAttack && !char.isMovingLeft && !char.isMovingRight) {
+            char.isAttack = true;
+            game.attackStartTime = timestamp;
+            game.attackCommitUntil = timestamp + 180;
+            const setup = game.getCurrentSetup?.();
+            setup?.sounds?.attackSound?.play();
+        }
+
+        if (kb.S && !char.isProtect && !char.isMovingLeft && !char.isMovingRight) {
+            char.isProtect = true;
+        }
+
+        if (!kb.S && char.isProtect) {
+            char.isProtect = false;
+        }
+    }
+
+    handleDeath(game) {
+        if (game.character.isDead) {
+            game.character.animationDead();
+        }
+    }
+
 }

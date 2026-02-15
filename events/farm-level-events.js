@@ -23,7 +23,7 @@ export const farmEvents =
             action: (setup) => {
                 setup.state.comeFromStable ? setup.world.character.x = 1700 : setup.world.character.x = 1000;
                 setup.world.camera_x = setup.world.character.x - 500;
-                setup.farmLevel.level_end_x = 6409;
+                setup.world.level_end_x = 6409;
                 setup.world.character.level_start_x = 440;
                 setup.sounds.farmMusic.play();
                 setup.state.comeFromStable = false;
