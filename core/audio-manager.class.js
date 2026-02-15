@@ -1,21 +1,39 @@
 import { UIManager } from "./ui-manager.class.js";
 
+/**
+ * Manages audio playback and mute state.
+ */
 export class AudioManager {
+    /**
+    * Creates a new audio manager instance.
+    */
     constructor() {
         this.isMuted = false;
         this.uiManager = new UIManager();
         this.audios = {};
     }
 
+    /**
+    * Adds audio elements to the manager.
+    * @param {Object<string, HTMLAudioElement|HTMLAudioElement[]>} audioMap Audio elements mapped by key.
+    */
     addAudios(audioMap) {
         Object.assign(this.audios, audioMap);
     }
 
+    /**
+    * Retrieves an audio entry by name.
+    * @param {string} name Audio key.
+    * @returns {HTMLAudioElement|HTMLAudioElement[]|undefined}
+    */
     get(name) {
         return this.audios[name];
     }
 
-
+    /**
+    * Sets the global mute state and applies it to all audios.
+    * @param {boolean} muted Mute state.
+    */
     setMutedState(muted) {
         this.isMuted = muted;
         localStorage.setItem("elBruenoMuted", muted ? "1" : "0");
@@ -23,10 +41,19 @@ export class AudioManager {
         this.applyMuteToAllAudios(this.audios);
     }
 
+    /**
+    * Clamps a volume value between 0 and 1.
+    * @param {number} value Volume value.
+    * @returns {number}
+    */
     clampVolume(value) {
         return Math.max(0, Math.min(1, value));
     }
 
+    /**
+    * Plays an audio element and suppresses play errors.
+    * @param {HTMLAudioElement} audio Audio element to play.
+    */
     safePlay(audio) {
         const p = audio.play();
         if (p && typeof p.catch === 'function') {
@@ -34,6 +61,14 @@ export class AudioManager {
         }
     }
 
+    /**
+    * Starts a volume fade animation for an audio element.
+    * @param {HTMLAudioElement} audio Audio element.
+    * @param {number} from Start volume (0–1).
+    * @param {number} to Target volume (0–1).
+    * @param {number} duration Fade duration in milliseconds.
+    * @param {Function} [onDone] Optional callback invoked after fade completes.
+    */
     startVolumeFade(audio, from, to, duration, onDone) {
         if (!audio) return;
         const token = Symbol('fade');
@@ -45,6 +80,17 @@ export class AudioManager {
         requestAnimationFrame(step);
     }
 
+    /**
+   * Performs a single step of a volume fade animation.
+    * @param {HTMLAudioElement} audio Audio element.
+    * @param {symbol} token Fade token identifier.
+    * @param {number} start Start timestamp.
+    * @param {number} from Start volume (0–1).
+    * @param {number} to Target volume (0–1).
+    * @param {number} duration Fade duration in milliseconds.
+    * @param {Function} [onDone] Optional callback invoked after fade completes.
+    * @param {number} now Current timestamp.
+    */
     stepVolumeFade(audio, token, start, from, to, duration, onDone, now) {
         if (audio.__fadeToken !== token) return;
         const t = Math.min((now - start) / duration, 1);
@@ -59,6 +105,12 @@ export class AudioManager {
         }
     }
 
+    /**
+    * Fades in an audio element to a target volume.
+    * @param {HTMLAudioElement} audio Audio element.
+    * @param {number} [duration=2000] Fade duration in milliseconds.
+    * @param {number} [targetVolume=1] Target volume (0–1).
+    */
     fadeInAudio(audio, duration = 2000, targetVolume = 1) {
         if (!audio) return;
         const to = this.clampVolume(targetVolume);
@@ -67,6 +119,12 @@ export class AudioManager {
         this.startVolumeFade(audio, 0, to, duration);
     }
 
+    /**
+    * Fades an audio element to a target volume.
+    * @param {HTMLAudioElement} audio Audio element.
+    * @param {number} [duration=2000] Fade duration in milliseconds.
+    * @param {number} [targetVolume=1] Target volume (0–1).
+    */
     fadeAudioTo(audio, duration = 2000, targetVolume = 1) {
         if (!audio) return;
         const to = this.clampVolume(targetVolume);
@@ -74,6 +132,11 @@ export class AudioManager {
         this.startVolumeFade(audio, from, to, duration);
     }
 
+    /**
+    * Fades out an audio element and pauses it.
+    * @param {HTMLAudioElement} audio Audio element.
+    * @param {number} [duration=2000] Fade duration in milliseconds.
+    */
     fadeOutAudio(audio, duration = 2000) {
         if (!audio) return;
         if (audio.paused && audio.currentTime === 0) return;
@@ -84,6 +147,11 @@ export class AudioManager {
         });
     }
 
+    /**
+    * Resets a collection of audio elements with configurable options.
+    * @param {Object} collection Audio collection.
+    * @param {Object} [opts] Reset configuration options.
+    */
     resetAllAudios(collection, opts = {}) {
         if (!collection) return;
         const {
@@ -98,6 +166,11 @@ export class AudioManager {
         this.traverseAudioCollection(collection, audio => this.resetAudioNode(audio, cfg));
     }
 
+    /**
+    * Recursively traverses an audio collection and applies a callback to each audio node.
+    * @param {*} node Audio collection node.
+    * @param {Function} onAudio Callback invoked for each audio element.
+    */
     traverseAudioCollection(node, onAudio) {
         if (!node) return;
         if (this.isAudioNode(node)) return onAudio(node);
@@ -112,6 +185,11 @@ export class AudioManager {
         }
     }
 
+    /**
+    * Checks whether a value is an audio element.
+    * @param {*} value Value to check.
+    * @returns {boolean}
+    */
     isAudioNode(value) {
         return (
             typeof value === 'object' &&
@@ -121,6 +199,11 @@ export class AudioManager {
         );
     }
 
+    /**
+    * Resets a single audio element based on configuration.
+    * @param {HTMLAudioElement} audio Audio element.
+    * @param {Object} config Reset configuration.
+    */
     resetAudioNode(audio, config) {
         const {
             pause,
@@ -137,6 +220,10 @@ export class AudioManager {
         if (resetRate) audio.playbackRate = 1;
     }
 
+    /**
+    * Pauses all audio elements in a collection.
+    * @param {*} collection Audio collection.
+    */
     pauseAllAudios(collection) {
         if (!collection) return;
         this.traverseAudioCollection(collection, (audio) => {
@@ -145,6 +232,10 @@ export class AudioManager {
         });
     }
 
+    /**
+    * Resumes previously playing audio elements in a collection.
+    * @param {*} collection Audio collection.
+    */
     resumeAllAudios(collection) {
         if (!collection) return;
         this.traverseAudioCollection(collection, (audio) => {
@@ -154,6 +245,10 @@ export class AudioManager {
         });
     }
 
+    /**
+    * Applies the current mute state to all audio elements in a collection.
+    * @param {*} collection Audio collection.
+    */
     applyMuteToAllAudios(collection) {
         if (!collection) return;
         this.traverseAudioCollection(collection, (audio) => {
@@ -161,6 +256,9 @@ export class AudioManager {
         });
     }
 
+    /**
+    * Sets up automatic transition from intro title music to looping track.
+    */
     setupTitleMusicChain() {
         const titleMusicIntro = this.get('titleMusicIntro');
         const titleMusicLoop = this.get('titleMusicLoop');
@@ -172,6 +270,10 @@ export class AudioManager {
         });
     }
 
+    /**
+    * Sets up a timed cue during the title intro track.
+    * @param {Function} [callback] Optional callback triggered when the cue fires.
+    */
     setupTitleIntroCue(callback) {
         const titleMusicIntro = this.get('titleMusicIntro');
         const titleSound = this.get('titleSound');
@@ -186,12 +288,18 @@ export class AudioManager {
         titleMusicIntro.addEventListener('timeupdate', handler);
     }
 
+    /**
+    * Plays the welcome button click sound.
+    */
     playClickSound() {
         const welcomeButtonClickSound = this.get('welcomeButtonClickSound');
         welcomeButtonClickSound.currentTime = 0;
         welcomeButtonClickSound.play();
     }
 
+    /**
+    * Stops the title intro and loop music tracks.
+    */
     stopTitleMusic() {
         const intro = this.get('titleMusicIntro');
         const loop = this.get('titleMusicLoop');
