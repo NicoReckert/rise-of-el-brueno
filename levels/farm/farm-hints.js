@@ -1,4 +1,4 @@
-import { HollowHint } from "../../classes/hollow-hint.class.js";
+import { HollowHint } from "../../classes/ui/hollow-hint.class.js";
 
 export function createFarmHints(character, characters) {
   return [

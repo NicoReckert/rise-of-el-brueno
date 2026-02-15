@@ -1,4 +1,4 @@
-import { PopupText } from "../classes/popup-text.class.js";
+import { PopupText } from "../classes/ui/popup-text.class.js";
 import { farmEvents_part1 } from "./farm-events-part1.js";
 import { farmEvents_part2 } from "./farm-events-part2.js";
 import { farmEvents_part3 } from "./farm-events-part3.js";

@@ -1,4 +1,4 @@
-import { SpeechBubble } from "../../classes/speech-bubble.class.js";
+import { SpeechBubble } from "../../classes/ui/speech-bubble.class.js";
 
 export function createFarmSpeechBubbles(character, allAudios) {
     return {

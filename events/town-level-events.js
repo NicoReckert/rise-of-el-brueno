@@ -1,6 +1,6 @@
-import { PopupText } from "../classes/popup-text.class.js";
-import { Enemy } from "../classes/enemy.class.js";
-import { DamageText } from "../classes/damage-text.class.js";
+import { PopupText } from "../classes/ui/popup-text.class.js";
+import { Enemy } from "../classes/entities/enemy.class.js";
+import { DamageText } from "../classes/ui/damage-text.class.js";
 import { AudioManager } from "../core/audio-manager.class.js";
 
 const audioManager = new AudioManager();

@@ -1,9 +1,9 @@
 import { AssetLoader } from './asset-loader.class.js';
-import { World } from '../classes/world.class.js';
+import { World } from '../classes/core/world.class.js';
 import { AudioManager } from './audio-manager.class.js';
 import { UIManager } from './ui-manager.class.js';
 import { InputManager } from './input-manager.class.js';
-import { Keyboard } from '../classes/keyboard.class.js';
+import { Keyboard } from '../classes/systems/keyboard.class.js';
 import { FullscreenManager } from './fullscreen-manager.class.js';
 import { PauseManager } from './pause-manager.class.js';
 import { VideoManager } from './video-manager.class.js';
@@ -18,7 +18,7 @@ export class GameApp {
         this.entityImages = null;
         this.assetLoader = new AssetLoader();
         this.uiManager = new UIManager();
-        this.audioManager = new AudioManager();
+        this.audioManager = new AudioManager(this.uiManager);
         this.fullscreenManager = new FullscreenManager();
         this.pauseManager = new PauseManager(this.uiManager, this.audioManager);
         this.keyboard = new Keyboard();

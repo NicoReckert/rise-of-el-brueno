@@ -1,4 +1,4 @@
-import { AnimatedEntity } from "../../classes/animated-entity.class.js";
+import { AnimatedEntity } from "../../classes/entities/animated-entity.class.js";
 
 export function createFarmCutsceneActors(entityImages) {
     const actors = {

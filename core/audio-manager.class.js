@@ -1,5 +1,3 @@
-import { UIManager } from "./ui-manager.class.js";
-
 /**
  * Manages audio playback and mute state.
  */
@@ -7,9 +5,9 @@ export class AudioManager {
     /**
     * Creates a new audio manager instance.
     */
-    constructor() {
+    constructor(uiManager) {
         this.isMuted = false;
-        this.uiManager = new UIManager();
+        this.uiManager = uiManager;
         this.audios = {};
     }
 
