@@ -17,8 +17,6 @@ export class FarmLevelController {
         this.character = this.world.character;
         this.inputManager = this.world.inputManager;
         this.keyboard = this.world.keyboard;
-        this.stepSoundCharacter = this.world.stepSoundCharacter.bind(this.world);
-        this.landingSoundCharacter = this.world.landingSoundCharacter.bind(this.world);
         this.earthquake = new EarthquakeEffect(this.setup, this.ctx);
         this.renderer = new FarmRenderer(setup, this.world);
         this.dustParticle = new DustParticle(this.canvas);
@@ -90,8 +88,7 @@ export class FarmLevelController {
         this.character.updateState(timestamp);
         this.character.updateAnimation(timestamp);
         if (this.character.isJumping) this.character.applyGravity(timestamp);
-        this.stepSoundCharacter(timestamp);
-        this.landingSoundCharacter();
+        this.world.characterAudio.update(timestamp);
     }
 
     updateEntities(timestamp, collections) {

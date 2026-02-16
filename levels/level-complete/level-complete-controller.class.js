@@ -11,8 +11,6 @@ export class LevelCompleteController {
         this.addToWorld = this.world.renderer.addToWorld.bind(this.world.renderer);
         this.character = this.world.character;
         this.keyboard = this.world.keyboard;
-        this.stepSoundCharacter = this.world.stepSoundCharacter.bind(this.world);
-        this.landingSoundCharacter = this.world.landingSoundCharacter.bind(this.world);
         this.eventManager = new EventManager(this.setup);
         this.questManager = new QuestManager(this.setup, this.eventManager, this.setup.levelCompleteEvents);
         this.eventManager.questManager = this.questManager;

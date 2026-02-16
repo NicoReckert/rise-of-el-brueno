@@ -16,8 +16,6 @@ export class TownLevelController {
         this.addToWorld = this.world.renderer.addToWorld.bind(this.world.renderer);
         this.character = this.world.character;
         this.keyboard = this.world.keyboard;
-        this.stepSoundCharacter = this.world.stepSoundCharacter.bind(this.world);
-        this.landingSoundCharacter = this.world.landingSoundCharacter.bind(this.world);
         this.sandstorm = new SandstormEffect(this.canvas);
         this.sandstormNear = new SandstormEffect(this.canvas); // schneller, heller
         this.sandstormFar = new SandstormEffect(this.canvas); // langsamer, dunkler
@@ -180,8 +178,7 @@ export class TownLevelController {
         this.character.updateState(timestamp);
         this.character.updateAnimation(timestamp);
         if (this.character.isJumping) this.character.applyGravity(timestamp);
-        this.stepSoundCharacter(timestamp);
-        this.landingSoundCharacter();
+        this.world.characterAudio.update(timestamp);
         this.setup.throwableObjects?.forEach(bottle => {
             bottle.updateState(timestamp);
             bottle.updateAnimation(timestamp);

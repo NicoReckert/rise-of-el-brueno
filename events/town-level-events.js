@@ -649,7 +649,7 @@ export const townEvents =
                                 sound.currentTime = 0;
                                 sound.play();
                             },
-                            onDeathSound: () => setup.world.playChickenDeathSound()
+                            onDeathSound: () => setup.world.audioManager.playOneShot('chickenDeathSound', { volume: 0.6 })
                         });
 
                         if (hit) {
@@ -676,7 +676,7 @@ export const townEvents =
                         enemy.removeAt = setup.world.timestamp + 2000;
                         console.log(enemy.removeAt)
                         enemy.isHurt = false; // optional: kein HURT-Anim bei Tod durch Sprung
-                        setup.world.playChickenDeathSound();
+                        world.audioManager.playOneShot('chickenDeathSound', { volume: 0.6 });
                         char.bounce();
                     }
                 });
@@ -735,7 +735,7 @@ export const townEvents =
                     const coin = coins[i];
                     if (char.isCollidingBefore(coin, 0, 0)) {
                         coins.splice(i, 1);
-                        world.playCoinSound();
+                        world.audioManager.playOneShot('coinSound', { volume: 0.4 });
 
                         // gleiche Logik wie vorher (effektiv +40, dann Clamp)
                         if (bar.percentage < 100) {
@@ -762,7 +762,7 @@ export const townEvents =
                     const bottle = bottles[i];
                     if (char.isCollidingBefore(bottle, 0, 0) && bar.percentage !== 100) {
                         bottles.splice(i, 1);
-                        world.playBottleSound();
+                        world.audioManager.playOneShot('bottleClinkSound', { volume: 0.6 });
 
                         bar.percentage = Math.min(bar.percentage + 20, 100);
                         bar.setPercentage(bar.percentage);
@@ -819,7 +819,7 @@ export const townEvents =
                     // 2) Boden getroffen
                     if (bottle.y + bottle.height >= 670) {
                         if (!bottle.isBrokenSound) {
-                            world.playBottelBrokenSound();
+                            world.audioManager.playOneShot('bottleBrokenSound', { volume: 0.6 });
                             bottle.isBroken = true;
                             bottle.isThrow = false;
                             bottle.isGravity = false;
@@ -846,7 +846,7 @@ export const townEvents =
 
                             if (bottle.isCollidingBefore(enemy, 50, 0) && !enemy.isDead) {
                                 if (!bottle.isBrokenSound) {
-                                    world.playBottelBrokenSound();
+                                    world.audioManager.playOneShot('bottleBrokenSound', { volume: 0.6 });
                                     bottle.isBrokenSound = true;
                                     bottle.isBroken = true;
                                     bottle.isThrow = false;
@@ -856,7 +856,8 @@ export const townEvents =
                                     enemy.isDead = true;
                                     enemy.isMovingLeft = false;
                                     enemy.isMovingRight = false;
-                                    world.playChickenDeathSound();
+                                    world.audioManager.playOneShot('chickenDeathSound', { volume: 0.6 });
+
 
                                     const removeIndex = j;
                                     setTimeout(() => {
@@ -870,7 +871,7 @@ export const townEvents =
                         // 4) Kollision mit Endboss
                         if (boss && bottle.isCollidingBefore(boss, 0, 50) && !boss.isDead) {
                             if (!bottle.isBrokenSound) {
-                                world.playBottelBrokenSound();
+                                world.audioManager.playOneShot('bottleBrokenSound', { volume: 0.6 });
                                 boss.isHurt = true;
                                 boss.frameIndex = 0;
 
@@ -927,31 +928,17 @@ export const townEvents =
                 const boss = setup.characters.endboss;
                 const soul = setup.characters.soul;
                 const sounds = setup.sounds;
+                const audio = world.audioManager;
 
                 if (!boss || !soul) return;
 
                 // Cutscene startet, wenn Soul oben angekommen ist
                 if (soul.y > 250 || boss.isFly) return;
 
-                // 1) Endboss-Musik ausfaden
-                if (world.volumeLevel > world.minVolumeLevel) {
-                    world.volumeLevel = Math.max(world.volumeLevel - 0.010, world.minVolumeLevel);
-                    setup.endbossMusic.volume = world.volumeLevel;
-                } else {
-                    // Soul-Sprecher nur einmal starten
-                    if (!world.isPlay) {
-                        sounds.soulSpeakSound.play();
-                        world.isPlay = true;
-                    }
-                }
-
-                // 2) Soul-Music einfaden
-                if (world.volumeLevel2 < world.minVolumeLevel2) {
-                    world.volumeLevel2 = Math.min(world.volumeLevel2 + 0.010, world.minVolumeLevel2);
-                    sounds.soulMusic.volume = world.volumeLevel2;
-                }
-                sounds.soulMusic.play();
-
+                audio.fadeOutAudio(setup.endbossMusic, 3000);
+                sounds.soulMusic.loop = true;
+                audio.fadeInAudio(sounds.soulMusic, 3000, 0.1);
+                audio.safePlay(sounds.soulSpeakSound);
                 // 3) Nach ~18s: Meditation + Soul findet Frieden
                 if (sounds.soulSpeakSound.currentTime >= 18) {
                     const char = world.character;
@@ -964,10 +951,7 @@ export const townEvents =
                         soul.y -= 1;
                     }
 
-                    if (world.volumeLevel3 < world.minVolumeLevel3) {
-                        world.volumeLevel3 = Math.min(world.volumeLevel3 + 0.005, world.minVolumeLevel3);
-                        sounds.soulMusic.volume = world.volumeLevel3;
-                    }
+                    audio.fadeAudioTo(sounds.soulMusic, 8000, 1);
                 }
             }
         },
@@ -1051,7 +1035,7 @@ export const townEvents =
                     setup.throwableObjects.push(bottle);
 
                     // Sound + UI-Update wie vorher
-                    if (world.playBottelThrowSound) world.playBottelThrowSound();
+                    world.audioManager.playOneShot('bottleThrowSound', { volume: 0.6 });
 
                     const bar = setup.bottleBar;
                     bar.percentage = Math.min(bar.percentage - 20, 100);
@@ -1064,9 +1048,7 @@ export const townEvents =
 
                 } else if (char.throwableBottels === 0) {
                     // Keine Flaschen mehr → leeres "Klick" Geräusch
-                    if (world.playEmptyBottelsSound) {
-                        world.playEmptyBottelsSound();
-                    }
+                    world.audioManager.playOneShot('bottleEmptySound', { volume: 0.6 });
                 }
             }
         },

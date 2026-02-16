@@ -9,6 +9,7 @@ export class AudioManager {
         this.isMuted = false;
         this.uiManager = uiManager;
         this.audios = {};
+        this.pools = {};
     }
 
     /**
@@ -244,13 +245,19 @@ export class AudioManager {
     }
 
     /**
-    * Applies the current mute state to all audio elements in a collection.
-    * @param {*} collection Audio collection.
+    * Applies the current mute state to all audio elements.
+    * @param {Object|Array} collection Audio collection to traverse.
     */
     applyMuteToAllAudios(collection) {
-        if (!collection) return;
-        this.traverseAudioCollection(collection, (audio) => {
-            audio.muted = this.isMuted;
+        if (collection) {
+            this.traverseAudioCollection(collection, (audio) => {
+                audio.muted = this.isMuted;
+            });
+        }
+        Object.values(this.pools).forEach(pool => {
+            pool.forEach(audio => {
+                audio.muted = this.isMuted;
+            });
         });
     }
 
@@ -312,5 +319,63 @@ export class AudioManager {
         const loop = this.get('titleMusicLoop');
         loop.currentTime = 0;
         this.fadeInAudio(loop, 2000);
+    }
+
+    /**
+    * Plays a one-shot audio instance.
+    * @param {string} name Audio identifier.
+    * @param {Object} [options={}] Playback options.
+    * @returns {HTMLMediaElement|undefined} The audio instance if played.
+    */
+    playOneShot(name, options = {}) {
+        const sound = this.getOneShotInstance(name);
+        if (!sound) return;
+        this.configureOneShot(sound, options);
+        this.safePlay(sound);
+        return sound;
+    }
+
+    /**
+    * Returns an available one-shot audio instance from the pool.
+    * @param {string} name Audio identifier.
+    * @returns {HTMLMediaElement|null} Audio instance or null if not found.
+    */
+    getOneShotInstance(name) {
+        const base = this.audios[name];
+        if (!base) return null;
+        const pool = this.pools[name] ||= [];
+        let sound = pool.find(a => a.paused);
+        if (!sound) {
+            sound = base.cloneNode();
+            pool.push(sound);
+        }
+        return sound;
+    }
+
+    /**
+    * Configures a one-shot audio instance.
+    * @param {HTMLMediaElement} sound Audio element to configure.
+    * @param {Object} [options={}] Configuration options.
+    * @param {number} [options.volume=1] Playback volume.
+    * @param {boolean} [options.loop=false] Whether the audio should loop.
+    */
+    configureOneShot(sound, { volume = 1, loop = false } = {}) {
+        sound.loop = loop;
+        sound.volume = this.clampVolume(volume);
+        sound.muted = this.isMuted;
+        sound.currentTime = 0;
+    }
+
+    /**
+    * Stops all audio instances in the specified pool.
+    * @param {string} name Pool identifier.
+    */
+    stopAll(name) {
+        const pool = this.pools[name];
+        if (!pool) return;
+        pool.forEach(a => {
+            a.pause();
+            a.currentTime = 0;
+        });
     }
 }

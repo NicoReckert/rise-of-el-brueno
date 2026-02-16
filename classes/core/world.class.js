@@ -1,34 +1,48 @@
 import { IntroScreen } from '../ui/intro-screen.class.js'
 import { Character } from '../entities/character.class.js';
-import { FarmLevelSetup } from '../../levels/farm/farm-level-setup.class.js';
-import { FarmLevelController } from '../../levels/farm/farm-level-controller.class.js';
-import { StableLevelSetup } from '../../levels/stable/stable-level-setup.class.js';
-import { StableLevelController } from '../../levels/stable/stable-level-controller.class.js';
-import { TownLevelSetup } from '../../levels/town/town-level-setup.class.js';
-import { TownLevelController } from '../../levels/town/town-level-controller.class.js';
-import { NayelisHouseLevelSetup } from '../../levels/nayelis-house/nayelis-house-level-setup.class.js';
-import { NayelisHouseLevelController } from '../../levels/nayelis-house/nayelis-house-level-controller.class.js';
-import { NewWeaponLevelSetup } from '../../levels/new-weapon/new-weapon-level-setup.class.js';
-import { NewWeaponLevelController } from '../../levels/new-weapon/new-weapon-level-controller.class.js';
-import { LevelCompleteSetup } from '../../levels/level-complete/level-complete-setup.class.js';
-import { LevelCompleteController } from '../../levels/level-complete/level-complete-controller.class.js';
 import { TaskWindow } from '../ui/task-window.class.js';
-import { AudioManager } from '../../core/audio-manager.class.js';
 import { smartMerge } from '../../utils/asset-merge.util.js';
 import { WorldRenderer } from './world-renderer.class.js';
+import { CharacterAudioController } from '../systems/character-audio-controller.class.js';
+import { LevelManager } from '../systems/level-manager.class.js';
+import { WorldCleanup } from '../systems/world-cleanup.class.js';
 
+/**
+ * Represents the game world.
+ */
 export class World {
-
-    ctx;
-    canvas;
-    currentScene = 'townLevel';
-
+    /**
+    * Creates a new instance.
+    * @param {HTMLCanvasElement} canvas Rendering canvas.
+    * @param {Object} keyboard Keyboard input handler.
+    * @param {Object} characterImages Character image assets.
+    * @param {Object} entityImages Entity image assets.
+    * @param {Object} audioManager Audio manager instance.
+    * @param {Object} videoManager Video manager instance.
+    * @param {Object} inputManager Input manager instance.
+    */
     constructor(canvas, keyboard, characterImages, entityImages, audioManager, videoManager, inputManager) {
+        this.initCore(canvas, keyboard, characterImages, entityImages, audioManager, videoManager, inputManager);
+        this.initCharacterAndAudio();
+        this.initSystems();
+        this.initThrowAndCameraState();
+        this.initIntroAndPauseState();
+        this.initCombatState();
+        this.initLevelBounds();
+        this.initTasks();
+    }
 
-
-        this.audioManager = new AudioManager();
-        this.fadeOutAudio = this.audioManager.fadeOutAudio.bind(this.audioManager);
-
+    /**
+    * Initializes core properties and dependencies.
+    * @param {HTMLCanvasElement} canvas Rendering canvas.
+    * @param {Object} keyboard Keyboard input handler.
+    * @param {Object} characterImages Character image assets.
+    * @param {Object} entityImages Entity image assets.
+    * @param {Object} audioManager Audio manager instance.
+    * @param {Object} videoManager Video manager instance.
+    * @param {Object} inputManager Input manager instance.
+    */
+    initCore(canvas, keyboard, characterImages, entityImages, audioManager, videoManager, inputManager) {
         this.canvas = canvas;
         this.ctx = canvas.getContext('2d');
         this.renderer = new WorldRenderer(this.ctx);
@@ -38,103 +52,136 @@ export class World {
         this.audioManager = audioManager;
         this.videoManager = videoManager;
         this.inputManager = inputManager;
+        this.currentScene = 'farmLevel';
+    }
+
+    /**
+    * Initializes character and audio components.
+    */
+    initCharacterAndAudio() {
+        this.character = new Character(this.characterImages);
+        this.characterAudio = new CharacterAudioController(this.character, this.audioManager);
         this.allAudios = this.audioManager.audios;
         this.allVideos = this.videoManager.videos;
+    }
 
+    /**
+    * Initializes system components.
+    */
+    initSystems() {
+        this.levelManager = new LevelManager(this);
+        this.cleanup = new WorldCleanup(this);
+    }
 
-
-
+    /**
+    * Initializes throw and camera state.
+    */
+    initThrowAndCameraState() {
         this.lastThrowCheck = 0;
         this.throwCheckDelay = 120;
-
-        this.lastStepCheck = 0;
-        this.stepCheckDelay = 400;
-        this.character = new Character(this.characterImages);
-        this.footStepSound = this.allAudios.footStepSound;
-        this.jumpSound = this.allAudios.jumpSound;
-        this.landingSound = this.allAudios.landingSound;
         this.camera_x = 0;
-
         this.lastTime = performance.now();
+        this.frameId = null;
+    }
+
+    /**
+    * Initializes intro and pause state.
+    */
+    initIntroAndPauseState() {
         this.intro = new IntroScreen(this.ctx, this.canvas);
         this.chapterSound = this.allAudios.chapterSound;
         this.isChapterSoundPlayed = false;
         this.isKeysStopp = false;
-
-        this.volumeLevel = 0.6;
-        this.minVolumeLevel = 0;
-        this.volumeLevel2 = 0;
-        this.minVolumeLevel2 = 0.1;
-        this.volumeLevel3 = 0.1;
-        this.minVolumeLevel3 = 1;
-        this.isPlay = false;
         this.paused = false;
         this.isRunning = true;
-        this.frameId = null;
+    }
 
+    /**
+    * Initializes combat state.
+    */
+    initCombatState() {
         this.attackStartTime = null;
         this.attackCommitUntil = null;
+    }
 
+    /**
+    * Initializes level boundary state.
+    */
+    initLevelBounds() {
+        this.level_end_x = null;
+    }
+
+    /**
+    * Initializes task-related state.
+    */
+    initTasks() {
         this.tasks = [
             "1. Kümmere dich um Juanito",
             "2. Kümmere dich um Pollito"
         ];
         this.taskWindow = new TaskWindow(this.canvas, this.tasks);
         this.tKeyPressed = false;
-
-        this.level_end_x = null;
     }
 
+    /**
+    * Starts the game.
+    */
     startGame() {
-        this.initLevels();
+        this.levelManager.initLevels();
         this.draw();
     }
 
+    /**
+    * Starts the next level.
+    */
     startNextLevel() {
         this.currentScene = 'townLevel';
     }
 
-    initLevels() {
-        this.farmLevelSetup = new FarmLevelSetup(this);
-        this.farmLevelController = new FarmLevelController(this.farmLevelSetup);
-        this.stableLevelSetup = new StableLevelSetup(this);
-        this.stableLevelController = new StableLevelController(this.stableLevelSetup);
-        this.setWorld();
-    }
-
+    /**
+    * Applies deferred asset updates.
+    * @param {Object} charDeferred Deferred character image assets.
+    * @param {Object} entityDeferred Deferred entity image assets.
+    */
     applyDeferredAssets(charDeferred, entityDeferred) {
         if (!charDeferred && !entityDeferred) return;
-
         Object.assign(this.characterImages, charDeferred);
         smartMerge(this.entityImages, entityDeferred);
-
         this.character?.initMovementImages();
         this.character?.initEmotionImages();
         this.character?.initActionImages();
         this.character?.initSpecialImages();
     }
 
+    /**
+    * Applies lazy-loaded asset updates.
+    * @param {Object} charLazy Lazy character image assets.
+    * @param {Object} entityLazy Lazy entity image assets.
+    */
     applyLazyAssets(charLazy, entityLazy) {
         if (!charLazy && !entityLazy) return;
-
         Object.assign(this.characterImages, charLazy);
         smartMerge(this.entityImages, entityLazy);
-
         this.character?.initMovementImages();
         this.character?.initEmotionImages();
         this.character?.initActionImages();
         this.character?.initSpecialImages();
-
-        if (typeof this.initRemainingSetups === 'function') {
-            this.initRemainingSetups();
+        if (typeof this.levelManager.initRemainingSetups === 'function') {
+            this.levelManager.initRemainingSetups();
         }
     }
 
+    /**
+    * Pauses the game.
+    */
     pauseGame() {
         this.paused = true;
         this.isKeysStopp = true;
     }
 
+    /**
+    * Resumes the game.
+    */
     resumeGame() {
         this.paused = false;
         this.isKeysStopp = false;
@@ -143,349 +190,299 @@ export class World {
         if (this.character) this.character.lastUpdateTime = now;
     }
 
+    /**
+    * Renders a frame.
+    * @param {number} timestamp Frame timestamp.
+    */
     draw(timestamp) {
         this.timestamp = timestamp;
+        if (!this.handleRunningState(timestamp)) return;
+        const deltaTime = this.updateDeltaTime(timestamp);
+        const introActive = this.handleIntroPhase(deltaTime);
+        if (!introActive) {
+            this.updateCurrentScene(timestamp);
+        }
+        this.updateUI(timestamp);
+        this.scheduleNextFrame();
+    }
 
+    /**
+    * Handles running and paused state before rendering.
+    * @param {number} timestamp Frame timestamp.
+    * @returns {boolean} True if rendering should continue, otherwise false.
+    */
+    handleRunningState(timestamp) {
         if (!this.isRunning) {
             this._drawing = false;
-            return;
+            return false;
         }
         if (this.paused) {
             if (typeof timestamp === 'number') {
                 this.lastTime = timestamp;
             }
-            this.frameId = requestAnimationFrame((timestamp) => this.draw(timestamp));
-            return;
+            this.frameId = requestAnimationFrame(ts => this.draw(ts));
+            return false;
         }
-        // const deltaTime = timestamp - this.lastTime;
-        // this.lastTime = timestamp;
-        // if (!this.intro.done) {
-        //     this.intro.update(deltaTime);
-        //     this.intro.draw();
-        //     if (!this.isChapterSoundPlayed) {
-        //         this.chapterSound.play();
-        //         this.isChapterSoundPlayed = true;
-        //     }
-        switch (this.currentScene) {
-
-            case 'farmLevel':
-                this.farmLevelController.update(timestamp);
-                break;
-            case 'stableLevel':
-                this.stableLevelController.update(timestamp);
-                break;
-            case 'townLevel':
-                const deltaTime = timestamp - this.lastTime;
-                this.lastTime = timestamp;
-                if (!this.intro.done) {
-                    this.intro.update(deltaTime);
-                    this.intro.draw();
-                    if (!this.isChapterSoundPlayed) {
-                        this.chapterSound.play();
-                        this.isChapterSoundPlayed = true;
-                    }
-                } else this.townLevelController.update(timestamp);
-                break;
-            case 'nayelisHouseLevel':
-                this.nayelisHouseLevelController.update(timestamp);
-                break;
-            case 'newWeaponLevel':
-                this.newWeaponLevelController.update(timestamp);
-                break;
-            case 'levelComplete':
-                this.levelCompleteController.update(timestamp);
-                break;
-            // }
-        }
-
-        this.taskWindow.update(timestamp);
-        this.taskWindow.draw(this.ctx);
-
-        this.frameId = requestAnimationFrame((timestamp) => {
-            this.draw(timestamp);
-        });
+        return true;
     }
 
+    /**
+    * Updates and returns the delta time since the last frame.
+    * @param {number} timestamp Frame timestamp.
+    * @returns {number} Delta time in milliseconds.
+    */
+    updateDeltaTime(timestamp) {
+        const deltaTime = timestamp - this.lastTime;
+        this.lastTime = timestamp;
+        return deltaTime;
+    }
+
+    /**
+    * Handles the intro phase rendering and updates.
+    * @param {number} deltaTime Delta time in milliseconds.
+    * @returns {boolean} True if intro is active, otherwise false.
+    */
+    handleIntroPhase(deltaTime) {
+        if (this.intro?.done) return false;
+        this.intro.update(deltaTime);
+        this.intro.draw();
+        if (!this.isChapterSoundPlayed) {
+            this.chapterSound?.play();
+            this.isChapterSoundPlayed = true;
+        }
+        return true;
+    }
+
+    /**
+    * Updates the current scene.
+    * @param {number} timestamp Frame timestamp.
+    */
+    updateCurrentScene(timestamp) {
+        const controller = this.getCurrentController();
+        controller?.update(timestamp);
+    }
+
+    /**
+    * Returns the controller for the current scene.
+    * @returns {*|null} Scene controller or null if not found.
+    */
+    getCurrentController() {
+        const map = {
+            farmLevel: this.farmLevelController,
+            stableLevel: this.stableLevelController,
+            townLevel: this.townLevelController,
+            nayelisHouseLevel: this.nayelisHouseLevelController,
+            newWeaponLevel: this.newWeaponLevelController,
+            levelComplete: this.levelCompleteController
+        };
+        return map[this.currentScene] ?? null;
+    }
+
+    /**
+    * Updates and renders UI elements.
+    * @param {number} timestamp Frame timestamp.
+    */
+    updateUI(timestamp) {
+        this.taskWindow.update(timestamp);
+        this.taskWindow.draw(this.ctx);
+    }
+
+    /**
+    * Schedules the next animation frame.
+    */
+    scheduleNextFrame() {
+        this.frameId = requestAnimationFrame(ts => this.draw(ts));
+    }
+
+    /**
+    * Assigns the world reference to the character.
+    */
     setWorld() {
         this.character.world = this;
     }
 
+    /**
+    * Returns the current setup instance.
+    * @returns {*} Current setup.
+    */
     getCurrentSetup() {
-        switch (this.currentScene) {
-            case 'farmLevel':
-                return this.farmLevelSetup;
-            case 'stableLevel':
-                return this.stableLevelSetup;
-            case 'townLevel':
-                return this.townLevelSetup;
-            case 'nayelisHouseLevel':
-                return this.nayelisHouseLevelSetup;
-            case 'newWeaponLevel':
-                return this.newWeaponLevelSetup;
-            case 'levelComplete':
-                return this.levelCompleteSetup;
-            default:
-                return null;
-        }
+        return this.getSetupByScene(this.currentScene);
     }
 
-    initRemainingSetups() {
-        this.townLevelSetup = new TownLevelSetup(this);
-        this.townLevelController = new TownLevelController(this.townLevelSetup);
-        this.nayelisHouseLevelSetup = new NayelisHouseLevelSetup(this);
-        this.nayelisHouseLevelController = new NayelisHouseLevelController(this.nayelisHouseLevelSetup);
-        this.newWeaponLevelSetup = new NewWeaponLevelSetup(this);
-        this.newWeaponLevelController = new NewWeaponLevelController(this.newWeaponLevelSetup);
-        this.levelCompleteSetup = new LevelCompleteSetup(this);
-        this.levelCompleteController = new LevelCompleteController(this.levelCompleteSetup);
-    }
-
-    playCoinSound() {
-        const baseSound = this.allAudios.coinSound;
-        const sound = baseSound.cloneNode();
-        sound.volume = 0.4;
-        sound.play();
-    }
-
-    playBottleSound() {
-        const baseSound = this.allAudios.bottleClinkSound;
-        const sound = baseSound.cloneNode();
-        sound.volume = 0.6;
-        sound.play();
-    }
-
-    playChickenDeathSound() {
-        const sound = this.allAudios.chickenDeathSound;
-        sound.volume = 0.6;
-        sound.play();
-    }
-
-    playEmptyBottelsSound() {
-        const sound = this.allAudios.bottleEmptySound;
-        sound.volume = 0.6;
-        sound.play();
-    }
-
-    playBottelBrokenSound() {
-        const sound = this.allAudios.bottleBrokenSound;
-        sound.volume = 0.6;
-        sound.play();
-    }
-
-    playBottelThrowSound() {
-        const sound = this.allAudios.bottleThrowSound;
-        sound.volume = 0.6;
-        sound.play();
-    }
-
-    playEndbossMusic(state) {
-        switch (state) {
-            case "play":
-                this.townLevelSetup.endbossMusic.play();
-                break;
-
-            case "stop":
-                this.townLevelSetup.endbossMusic.pause();
-                this.townLevelSetup.endbossMusic.currentTime = 0;
-                break;
-        }
-    }
-
-    playEndbossAlarmSound() {
-        this.endbossAlarmSound = this.allAudios.endbossAlarmSound;
-        this.endbossAlarmSound.play();
-    }
-
-    stepSoundCharacter(timestamp) {
-        if (timestamp - this.lastStepCheck < this.stepCheckDelay) return;
-        this.lastStepCheck = timestamp;
-        if ((this.character.isMovingLeft || this.character.isMovingRight) && !this.character.isJumping && !this.character.isFlying) {
-            this.footStepSound.currentTime = 0;
-            this.footStepSound.play();
-        }
-    }
-
-    landingSoundCharacter() {
-        if (this.character.isLanding) {
-            this.landingSound.currentTime = 0;
-            this.landingSound.play();
-            this.character.isLanding = false;
-        }
-    }
-
-    restartLevel(levelName) {
-        this.stop();
-        this.fadeOutLevelCompleteMusic();
-        this.cleanupCharacter();
-        this.resetGlobalState();
-        this.createNewCharacter();
-        this.initLevelForRestart(levelName);
-        this.currentScene = levelName;
-        this.hideLevelCompleteUI();
-        this.startLoop();
-    }
-
-    fadeOutLevelCompleteMusic() {
-        const music = this.levelCompleteSetup?.sounds?.levelCompleteMusic;
-        if (music) this.fadeOutAudio(music);
-    }
-
-    cleanupCharacter() {
-        if (!this.character) return;
-        if (this.character.intervalJump) {
-            clearInterval(this.character.intervalJump);
-            this.character.intervalJump = null;
-        }
-        this.character = null;
-    }
-
-    resetGlobalState() {
-        this.paused = false;
-        this.isRunning = true;
-        this.isKeysStopp = false;
-        this.camera_x = 0;
-        this.lastTime = performance.now();
-    }
-
-    createNewCharacter() {
-        this.character = new Character(this.characterImages);
-        this.setWorld();
-    }
-
-    initLevelForRestart(levelName) {
+    /**
+    * Returns the setup instance for the given scene.
+    * @param {string} scene Scene identifier.
+    * @returns {*|null} Setup instance or null if not found.
+    */
+    getSetupByScene(scene) {
         const map = {
-            farmLevel: () => this.initFarmLevelRestart(),
-            stableLevel: () => this.initStableLevelRestart(),
-            townLevel: () => this.initTownLevelRestart(),
-            nayelisHouseLevel: () => this.initNayelisHouseLevelRestart(),
-            newWeaponLevel: () => this.initNewWeaponLevelRestart(),
-            levelComplete: () => this.initLevelCompleteRestart(),
+            farmLevel: this.farmLevelSetup,
+            stableLevel: this.stableLevelSetup,
+            townLevel: this.townLevelSetup,
+            nayelisHouseLevel: this.nayelisHouseLevelSetup,
+            newWeaponLevel: this.newWeaponLevelSetup,
+            levelComplete: this.levelCompleteSetup
         };
-        const initFn = map[levelName];
-        if (initFn) initFn();
+        return map[scene] ?? null;
     }
 
-    initFarmLevelRestart() {
-        this.farmLevelSetup = new FarmLevelSetup(this);
-        this.farmLevelController =
-            new FarmLevelController(this.farmLevelSetup);
+    /**
+    * Restarts the specified level.
+    * @param {string} levelName Level identifier.
+    */
+    restartLevel(levelName) {
+        this.levelManager.restartLevel(levelName);
     }
 
-    initStableLevelRestart() {
-        this.stableLevelSetup = new StableLevelSetup(this);
-        this.stableLevelController =
-            new StableLevelController(this.stableLevelSetup);
+    /**
+    * Fades out the level complete music.
+    */
+    fadeOutLevelCompleteMusic() {
+        this.levelManager.fadeOutLevelCompleteMusic();
     }
 
-    initTownLevelRestart() {
-        this.townLevelSetup = new TownLevelSetup(this);
-        this.townLevelController =
-            new TownLevelController(this.townLevelSetup);
-    }
-
-    initNayelisHouseLevelRestart() {
-        this.nayelisHouseLevelSetup =
-            new NayelisHouseLevelSetup(this);
-        this.nayelisHouseLevelController =
-            new NayelisHouseLevelController(this.nayelisHouseLevelSetup);
-    }
-
-    initNewWeaponLevelRestart() {
-        this.newWeaponLevelSetup = new NewWeaponLevelSetup(this);
-        this.newWeaponLevelController =
-            new NewWeaponLevelController(this.newWeaponLevelSetup);
-    }
-
-    initLevelCompleteRestart() {
-        this.levelCompleteSetup = new LevelCompleteSetup(this);
-        this.levelCompleteController =
-            new LevelCompleteController(this.levelCompleteSetup);
-    }
-
-    hideLevelCompleteUI() {
-        const box = document.getElementById('level-complete-button-box');
-        if (box) box.classList.add('d-none');
-    }
-
+    /**
+    * Starts the main loop.
+    */
     startLoop() {
-        this.frameId = requestAnimationFrame(ts => this.draw(ts));
+        this.levelManager.startLoop();
     }
 
+    /**
+    * Stops the main loop.
+    */
     stop() {
-        this.isRunning = false;
-        if (this.frameId) {
-            cancelAnimationFrame(this.frameId);
-            this.frameId = null;
-        }
+        this.levelManager.stop();
     }
 
+    /**
+    * Destroys the world instance.
+    */
     destroy() {
-        this.pauseAndStopLoop();
-        this.clearCanvas();
-        this.stopAllSounds();
-        this.removeAllVideos();
-        this.cleanupControllers();
-        this.cleanupSetups();
-        this.cleanupWorldRefs();
+        this.cleanup.destroy();
     }
 
+    /**
+    * Pauses and stops the main loop.
+    */
     pauseAndStopLoop() {
-        this.paused = true;
-        if (this.frameId) {
-            cancelAnimationFrame(this.frameId);
-            this.frameId = null;
-        }
+        this.cleanup.pauseAndStopLoop();
     }
 
+    /**
+    * Clears the canvas.
+    */
     clearCanvas() {
-        if (!this.ctx || !this.canvas) return;
-        this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+        this.cleanup.clearCanvas();
     }
 
+    /**
+    * Stops all active sounds.
+    */
     stopAllSounds() {
-        if (!this.audioManager || !this.audioManager.audios) return;
-        Object.values(this.audioManager.audios)
-            .forEach(sound => this.stopSound(sound));
+        this.cleanup.stopAllSounds();
     }
 
+    /**
+    * Stops a sound.
+    * @param {HTMLMediaElement} sound Audio element to stop.
+    */
     stopSound(sound) {
-        if (!sound || sound.paused) return;
-        try {
-            sound.pause();
-            sound.currentTime = 0;
-        } catch (e) { }
+        this.cleanup.stopSound(sound);
     }
 
-    moveCameraToX(targetX, {
-        tolerance = 1,
-        speed = 6,
-        snap = true,
-        clamp = true,
-        onArrive = null
-    } = {}) {
-        targetX = Number(targetX);
-        speed = Number(speed);
-        if (!Number.isFinite(this.camera_x)) this.camera_x = 0;
-        if (!Number.isFinite(targetX) || !Number.isFinite(speed)) {
-            return false;
-        }
-        let dt = Number(this.character?.deltaTime);
-        if (!Number.isFinite(dt) || dt <= 0) dt = 1 / 60;
-        dt = Math.min(dt, 0.05);
-        const d = targetX - this.camera_x;
-        if (Math.abs(d) <= tolerance) {
-            if (snap) this.camera_x = targetX;
-            if (clamp) this.clampCamera();
-            onArrive?.();
-            return true;
-        }
-        const step = speed * dt * 60;
-        const move = Math.sign(d) * Math.min(Math.abs(d), step);
-        this.camera_x += move;
-        if (clamp) this.clampCamera();
+    /**
+    * Moves the camera towards a target position.
+    * @param {number} targetX Target x-coordinate.
+    * @param {Object} [options={}] Movement options.
+    * @returns {boolean} True if the movement is finished, otherwise false.
+    */
+    moveCameraToX(targetX, options = {}) {
+        const cfg = this.prepareCameraMove(targetX, options);
+        if (!cfg) return false;
+        if (this.tryFinishCameraMove(cfg)) return true;
+        this.advanceCamera(cfg);
         return false;
     }
 
+    /**
+    * Prepares configuration for a camera movement.
+    * @param {number} targetX Target x-coordinate.
+    * @param {Object} [options={}] Movement options.
+    * @param {number} [options.tolerance=1] Distance threshold to consider arrival.
+    * @param {number} [options.speed=6] Movement speed.
+    * @param {boolean} [options.snap=true] Whether to snap to target on arrival.
+    * @param {boolean} [options.clamp=true] Whether to clamp camera within bounds.
+    * @param {?Function} [options.onArrive=null] Callback invoked on arrival.
+    * @returns {Object|null} Movement configuration or null if invalid.
+    */
+    prepareCameraMove(targetX, options = {}) {
+        const {
+            tolerance = 1,
+            speed = 6,
+            snap = true,
+            clamp = true,
+            onArrive = null
+        } = options;
+        const norm = this.normalizeCameraParams(targetX, speed);
+        if (!norm) return null;
+        const dt = this.getCameraDeltaTime();
+        return { ...norm, tolerance, snap, clamp, onArrive, dt };
+    }
+
+    /**
+    * Normalizes camera movement parameters.
+    * @param {number} targetX Target x-coordinate.
+    * @param {number} speed Movement speed.
+    * @returns {{targetX: number, speed: number}|null} Normalized parameters or null if invalid.
+    */
+    normalizeCameraParams(targetX, speed) {
+        const tx = Number(targetX);
+        const sp = Number(speed);
+        if (!Number.isFinite(this.camera_x)) this.camera_x = 0;
+        if (!Number.isFinite(tx) || !Number.isFinite(sp)) return null;
+        return { targetX: tx, speed: sp };
+    }
+
+    /**
+    * Returns the delta time used for camera movement.
+    * @returns {number} Clamped delta time value.
+    */
+    getCameraDeltaTime() {
+        let dt = Number(this.character?.deltaTime);
+        if (!Number.isFinite(dt) || dt <= 0) dt = 1 / 60;
+        return Math.min(dt, 0.05);
+    }
+
+    /**
+    * Attempts to finish the camera movement if within tolerance.
+    * @param {Object} cfg Movement configuration.
+    * @returns {boolean} True if movement is finished, otherwise false.
+    */
+    tryFinishCameraMove(cfg) {
+        const d = cfg.targetX - this.camera_x;
+        if (Math.abs(d) > cfg.tolerance) return false;
+        if (cfg.snap) this.camera_x = cfg.targetX;
+        if (cfg.clamp) this.clampCamera();
+        cfg.onArrive?.();
+        return true;
+    }
+
+    /**
+    * Advances the camera position towards the target.
+    * @param {Object} cfg Movement configuration.
+    */
+    advanceCamera(cfg) {
+        const d = cfg.targetX - this.camera_x;
+        const step = cfg.speed * cfg.dt * 60;
+        const move = Math.sign(d) * Math.min(Math.abs(d), step);
+        this.camera_x += move;
+        if (cfg.clamp) this.clampCamera();
+    }
+
+    /**
+    * Clamps the camera position within level boundaries.
+    */
     clampCamera() {
         const levelEnd = Number(this.level_end_x);
         if (!Number.isFinite(levelEnd)) return;

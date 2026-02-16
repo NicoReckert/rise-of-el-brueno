@@ -12,8 +12,6 @@ export class StableLevelController {
         this.character = this.world.character;
         this.inputManager = this.world.inputManager;
         this.keyboard = this.world.keyboard;
-        this.stepSoundCharacter = this.world.stepSoundCharacter.bind(this.world);
-        this.landingSoundCharacter = this.world.landingSoundCharacter.bind(this.world);
         this.lastCowSoundTime = 0;
         this.eventManager = new EventManager(this.setup);
         this.questManager = new QuestManager(this.setup, this.eventManager, this.setup.stableEvents);
@@ -121,8 +119,7 @@ export class StableLevelController {
         this.character.updateState(timestamp);
         this.character.updateAnimation(timestamp);
         if (this.character.isJumping) this.character.applyGravity(timestamp);
-        this.stepSoundCharacter(timestamp);
-        this.landingSoundCharacter();
+        this.world.characterAudio.update(timestamp);
     }
 
     updateEntities(timestamp) {

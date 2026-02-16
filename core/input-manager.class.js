@@ -238,7 +238,7 @@ export class InputManager {
             }
             char.isJumping = true;
             char.speedY = 25;
-            game.jumpSound?.play();
+            game.audioManager.playOneShot('jumpSound');
         }
 
         // Jetpack hoch
