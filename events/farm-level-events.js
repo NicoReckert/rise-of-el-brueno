@@ -510,7 +510,7 @@ export const farmEvents =
             action: (setup) => {
                 const world = setup.world;
                 const char = setup.world.character;
-                const camArrived = world.moveCameraToX(108, { speed: 6 });
+                const camArrived = world.camera.moveToX(108, { speed: 6 });
                 const arrivedX = char.moveToX(788, { speed: 5, faceTarget: true });
                 if (arrivedX) {
                     const arrivedY = char.moveToY(393, { speed: 1.5 });
@@ -728,7 +728,7 @@ export const farmEvents =
             step: 13,
             once: false,
             action: (setup) => {
-                const camArrived = setup.world.moveCameraToX(900, { speed: 5 });
+                const camArrived = setup.world.camera.moveToX(900, { speed: 5 });
                 if (camArrived) setup.world.farmLevelController.questManager.advance(14)
             }
         },
@@ -771,7 +771,7 @@ export const farmEvents =
                 setup.world.ctx.translate(-setup.world.farmLevelController.renderCameraX, 0);
                 setup.world.addToWorld(drone);
                 setup.world.ctx.restore();
-                const camArrived = setup.world.moveCameraToX(drone.x - 300, { speed: 10 });
+                const camArrived = setup.world.camera.moveToX(drone.x - 300, { speed: 10 });
                 if (camArrived) setup.world.farmLevelController.questManager.advance(15);
             }
         },
@@ -892,7 +892,7 @@ export const farmEvents =
             step: 18,
             once: false,
             action: (setup) => {
-                const camArrived = setup.world.moveCameraToX(800, { speed: 3 });
+                const camArrived = setup.world.camera.moveToX(800, { speed: 3 });
                 if (setup.world.camera_x <= 1000) {
                     setup.environment.house.updateAnimationState('doorOpens');
                     setup.sounds.doorOpeningSound.play();
@@ -1140,7 +1140,7 @@ export const farmEvents =
                 const char = setup.world.character;
                 const arrivedX = char.moveToX(5100, { speed: 1, faceTarget: true });
                 const targetCamX = char.x - 300;
-                setup.world.moveCameraToX(targetCamX, { speed: 1, tolerance: 3, snap: false });
+                setup.world.camera.moveToX(targetCamX, { speed: 1, tolerance: 3, snap: false });
                 if (arrivedX) setup.world.farmLevelController.questManager.advance(22);
             }
         },
