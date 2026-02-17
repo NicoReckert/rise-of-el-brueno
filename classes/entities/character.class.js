@@ -1,770 +1,57 @@
 import { MovableObject } from '../systems/movable-object.class.js';
-
 /**
- * Represents a playable or controllable character with movement, animations, and state handling.
- * Handles transitions, emotions, combat, and environmental interactions.
- * @extends MovableObject
+ * Represents the playable character.
  */
 export class Character extends MovableObject {
-    VOIDLESS_ANIMS = new Set([
-        'kneel-and-cry', 'stand-up-determined', 'kneel-and-cry-loop', 'stand-up-determined-loop',
-        'determined-rise', 'determined-rise-loop', 'caress', 'caress-loop',
-        'sit-down-and-play-guitar', 'play-guitar-and-sing', 'play-guitar',
-        'light-a-campfire', 'meditation', 'meditation-loop', 'stand-up',
-        'walk-determined', 'stand-determined', 'stand-determined-loop',
-        'walk-in-storm', 'collapse', 'collapse-loop', 'stand-up-after-collapse', 'air-hit-stun', 'air-pain-stun'
-    ]);
-    TRANSITIONABLE_ANIMS = new Set([
-        'kneel-and-cry', 'stand-up-determined', 'determined-rise',
-        'caress', 'sit-down-and-play-guitar', 'light-a-campfire', 'attack-staff', 'attack-sword',
-        'meditation', 'new-weapon', 'stand-up', 'stand-determined', 'collapse', 'stand-up-after-collapse', 'protect', 'air-hit-stun', 'hurt'
-    ]);
-
     /**
-    * Creates a character instance with animation and movement settings.
-    * @param {Object} characterImages - Image data for character animations.
+    * Creates a new character instance.
+    * @param {Object} characterImages Character image assets.
     */
     constructor(characterImages) {
         super();
         this.characterImages = characterImages;
-        this.speedX = 8;
-        this.lastFrameTime = 0;
-        this.currentAnimation = 'idle';
-        this.frameInterval = 1000 / 2.5;
-        this.frameIndex = 0;
-        this.level_start_x = 440;
-        this.yNormal = 370;
-        this.yVoidless = 487;
-        this.init();
-        this.movementSpeed;
-
-        this.isGamecharacter = true;
-        this.isHaveSword = true;
-        this.attackHitbox =
-            !this.isHaveSword ?
-                {
-                    top: 220,     // Abstand von oben
-                    left: 200,    // Abstand von links
-                    right: 8,     // Abstand von rechts
-                    bottom: 52,   // Abstand von unten
-                    active: false
-                }
-                :
-                {
-                    top: 200,     // Abstand von oben
-                    left: 200,    // Abstand von links
-                    right: 8,     // Abstand von rechts
-                    bottom: 65,   // Abstand von unten
-                    active: false
-                };
-
-        this.hasHitEnemyThisAttack = false;
-        this.isCapturedByTornado = false;
-
-        this.hurtUntil = 0;
-        this.invulnerableUntil = 0;
-        this.touchingEnemies = new Set();
-        this.sheetIndex = 0;
+        this.initVoidlessAnimations();
+        this.initTransitionableAnimations();
     }
 
     /**
-    * Initializes character properties, images, and state configurations.
+    * Initializes animations that are not affected by void state.
     */
-    init() {
-        this.setSizeAndPosition();
-        this.setOffset();
-        this.initMovementImages();
-        this.initEmotionImages();
-        this.initActionImages();
-        this.initSpecialImages();
-        this.initBasicStates();
-        this.initMovementStates();
-        this.initActionStates();
-        this.initEmotionStates();
-        this.initInteractionStates();
+    initVoidlessAnimations() {
+        this.VOIDLESS_ANIMS = new Set([
+            'kneel-and-cry', 'stand-up-determined',
+            'kneel-and-cry-loop', 'stand-up-determined-loop',
+            'determined-rise', 'determined-rise-loop',
+            'caress', 'caress-loop',
+            'sit-down-and-play-guitar', 'play-guitar-and-sing',
+            'play-guitar', 'light-a-campfire',
+            'meditation', 'meditation-loop', 'stand-up',
+            'walk-determined', 'stand-determined',
+            'stand-determined-loop', 'walk-in-storm',
+            'collapse', 'collapse-loop', 'stand-up-after-collapse',
+            'air-hit-stun', 'air-pain-stun'
+        ]);
     }
-
     /**
-    * Sets the character's size and initial position on the screen.
+    * Initializes animations that support transitions.
     */
-    setSizeAndPosition() {
-        this.height = 300; // 183 für voidless.dev sprite - 300 * 0.61
-        this.width = 130; // 158 für voidless.dev sprite - 130 * 1.216
-        this.x = 1000;
-        this.y = 370; // 487 für voidless.dev sprite - 370 * 1.9
+    initTransitionableAnimations() {
+        this.TRANSITIONABLE_ANIMS = new Set([
+            'kneel-and-cry', 'stand-up-determined',
+            'determined-rise', 'caress',
+            'sit-down-and-play-guitar', 'light-a-campfire',
+            'attack-staff', 'attack-sword',
+            'meditation', 'new-weapon',
+            'stand-up', 'stand-determined',
+            'collapse', 'stand-up-after-collapse',
+            'protect', 'air-hit-stun', 'hurt'
+        ]);
     }
 
     /**
-    * Sets the character's collision or interaction offset values.
-    */
-    setOffset() {
-        this.offset.top = 130;
-        this.offset.left = 20;
-        this.offset.right = 40;
-        this.offset.bottom = 15;
-    }
-
-    /**
-    * Initializes character movement-related image sets.
-    */
-    initMovementImages() {
-        this.idleWalkSheet = this.characterImages.idleWalkSheet ?? null;
-        this.jumpSheet = this.characterImages.jumpSheet ?? null;
-    }
-
-    /**
-    * Initializes character emotion-related image sets.
-    */
-    initEmotionImages() {
-        this.hurtDeadSheet = this.characterImages.hurtDeadSheet ?? null;
-        this.kneelCryStandUpDeterminedSheet = this.characterImages.kneelCryStandUpDeterminedSheet ?? null;
-        this.determinedRiseSheet = this.characterImages.determinedRiseSheet ?? null;
-        this.walkStandDeterminedSheet = this.characterImages.walkStandDeterminedSheet ?? null;
-        this.walkInStormCollapseSheet = this.characterImages.walkInStormCollapseSheet ?? null;
-        this.standUpAfterCollapseSheet = this.characterImages.standUpAfterCollapseSheet ?? null;
-        this.airHitPainStunSheet = this.characterImages.airHitPainStunSheet ?? null;
-    }
-
-    /**
-    * Initializes character action-related image sets.
-    */
-    initActionImages() {
-        this.attackStaffSheet = this.characterImages.attackStaffSheet ?? null;
-        this.attackSwordSheet = this.characterImages.attackSwordSheet ?? null;
-        this.jetPackImages = this.characterImages.jetPackImages ?? (this.characterImages.jetPackImages = []);
-        this.meditationSheet = this.characterImages.meditationSheet ?? null;
-        this.newWeaponStartSheet = this.characterImages.newWeaponStartSheet ?? null;
-        this.newWeaponLoopSheet = this.characterImages.newWeaponLoopSheet ?? null;
-        this.protectSheet = this.characterImages.protectSheet ?? null;
-    }
-
-    /**
-    * Initializes character special interaction and event-related image sets.
-    */
-    initSpecialImages() {
-        this.caressSheet = this.characterImages.caressSheet ?? null;
-        this.sitDownAndPlayGuitarSheet = this.characterImages.sitDownAndPlayGuitarSheet ?? null;
-        this.playGuitarAndSingSheet = this.characterImages.playGuitarAndSingSheet ?? null;
-        this.playGuitarSheet = this.characterImages.playGuitarSheet ?? null;
-        this.lightCampfireStandUpSheet = this.characterImages.lightCampfireStandUpSheet ?? null;
-    }
-
-    /**
-    * Initializes the character's basic state properties.
-    */
-    initBasicStates() {
-        this.isFlipped = false;
-        this.isMoving = false;
-        this.isGameCharacter = true;
-        this.throwableBottels = 0;
-    }
-
-    /**
-    * Initializes the character's movement state flags.
-    */
-    initMovementStates() {
-        this.isMovingLeft = false;
-        this.isMovingRight = false;
-        this.isWalk = false;
-        this.isWalkDetermined = false;
-        this.isWalkInStorm = false;
-        this.isJumping = false;
-        this.isLanding = false;
-    }
-
-    /**
-    * Initializes the character's action state flags.
-    */
-    initActionStates() {
-        this.isAttack = false;
-        this.isStandUp = false;
-        this.isStandDetermined = false;
-        this.isNewWeapon = false;
-        this.isDead = false;
-        this.isHurt = false;
-        this.isThrowing = false;
-        this.isProtect = false;
-    }
-
-    /**
-    * Initializes the character's emotion state flags.
-    */
-    initEmotionStates() {
-        this.isMeditation = false;
-        this.isKneelAndCry = false;
-        this.isStandUpAndLookDetermined = false;
-        this.isLookDeterminedAndStandUp = false;
-        this.isCollapse = false;
-        this.isStandUpAfterCollapse = false;
-        this.isAirHitStun = false;
-        this.isAirPainStun = false;
-    }
-
-    /**
-    * Initializes the character's interaction state flags.
-    */
-    initInteractionStates() {
-        this.isCaress = false;
-        this.isSitDownAndPlayGuitar = false;
-        this.isPlayGuitarAndSing = false;
-        this.isPlayGuitar = false;
-        this.isLightACampfire = false;
-    }
-
-    /**
-    * Makes the character bounce by setting upward speed.
-    */
-    bounce() {
-        this.speedY = 10;
-    }
-
-    /**
-    * Updates the character's state, movement, camera, and animation each frame.
-    * @param {number} timestamp - Current time in milliseconds.
-    */
-    updateState(timestamp) {
-        this.prevBottom = this.y + this.height - (this.offset?.bottom || 0);
-        if (this.movementLockUntil && timestamp < this.movementLockUntil) {
-            this.isMovingLeft = false;
-            this.isMovingRight = false;
-        }
-        if (this.isAirHitStun) {
-            if (timestamp - this.airHitStunStart >= this.airHitStunDuration) {
-                this.isAirHitStun = false;
-                this.isCapturedByTornado = false;
-            }
-
-            // keine Bewegung/Steuerung
-            this.isMovingLeft = false;
-            this.isMovingRight = false;
-            this.speedY = 0;
-
-            // ✅ Animation trotzdem setzen
-            this.handleCharacterAnimation();
-            return;
-        }
-        if (this.isCapturedByTornado) {
-            //   this.isMovingLeft = false;
-            //   this.isMovingRight = false;
-            this.speedY = 0;
-            return; // keine Steuerung / keine Bewegung
-        }
-        this.updateDeltaTime(timestamp);
-        if (this.knockbackVelocityX) {
-            this.x += this.knockbackVelocityX;
-            this.knockbackVelocityX *= 0.85; // Reibung
-            if (Math.abs(this.knockbackVelocityX) < 0.5) {
-                this.knockbackVelocityX = 0;
-            }
-        }
-
-        this.handleMovement();
-        this.clampCamera();
-        this.handleCharacterAnimation();
-    }
-
-    /**
-    * Handles horizontal character movement based on input states.
-    */
-    handleMovement() {
-        if (this.isMovingLeft) {
-            this.moveLeft();
-        } else if (this.isMovingRight) {
-            this.moveRight();
-        }
-    }
-
-    /**
-    * Moves the character to the left and adjusts the camera position.
-    */
-    moveLeft() {
-        const isMobile = window.innerWidth <= 900;
-        const cameraOffset = isMobile ? 920 : 1060;
-        const t = 0.05 * (this.deltaTime * 60);
-        this.isFlipped = true;
-        if (this.x > this.level_start_x) {
-            this.x -= this.movementSpeed;
-            this.world.camera_x += ((this.x - cameraOffset) - this.world.camera_x) * t;
-        }
-    }
-
-    /**
-    * Moves the character to the right and adjusts the camera position.
-    */
-    moveRight() {
-        const isMobile = window.innerWidth <= 900;
-        const cameraOffset = isMobile ? 150 : 100;
-        const t = 0.05 * (this.deltaTime * 60);
-        this.isFlipped = false;
-        if (this.x < this.world.level_end_x) {
-            this.x += this.movementSpeed;
-            this.world.camera_x += ((this.x - cameraOffset) - this.world.camera_x) * t;
-        }
-    }
-
-    /**
-    * Clamps the camera position within the level boundaries.
-    */
-    clampCamera() {
-        const maxCameraX = this.world.level_end_x - 720;
-        this.world.camera_x = Math.max(0, Math.min(this.world.camera_x, maxCameraX));
-    }
-
-    /**
-    * Handles character animation logic based on current states and actions.
-    */
-    handleCharacterAnimation() {
-        if (this.handleDeathOrJump()) return;
-        if (this.handleEmotionalAnimations()) return;
-        if (this.handleMusicAnimations()) return;
-        if (this.handleCombatAndMeditation()) return;
-        if (this.handleMovementAnimations()) return;
-        this.setAnim('idle', 2.5);
-    }
-
-    /**
-    * Handles death and jump animations.
-    * @returns {boolean} Whether an animation was handled.
-    */
-    handleDeathOrJump() {
-        if (this.isDead) return this.setAnim('dead', 6);
-        if (this.isHurt) return this.setAnim('hurt', 6);
-        if (this.isJumping) return this.setAnim('jump', 10);
-        return false;
-    }
-
-    /**
-    * Handles emotional animations such as crying, determination, or caressing.
-    * @returns {boolean} Whether an emotional animation was handled.
-    */
-    handleEmotionalAnimations() {
-        if (this.isCaress) return this.setAnim('caress', 6, 'caress-loop');
-        if (this.isKneelAndCry) return this.setAnim('kneel-and-cry', 5, 'kneel-and-cry-loop');
-        if (this.isStandUpAndLookDetermined)
-            return this.setAnim('stand-up-determined', 6, 'stand-up-determined-loop');
-        if (this.isLookDeterminedAndStandUp)
-            return this.setAnim('determined-rise', 6, 'determined-rise-loop');
-        if (this.isStandDetermined)
-            return this.setAnim('stand-determined', 5, 'stand-determined-loop');
-        if (this.isCollapse) return this.setAnim('collapse', 6, 'collapse-loop');
-        if (this.isStandUpAfterCollapse) return this.setAnim('stand-up-after-collapse', 4);
-        if (this.isAirHitStun) return this.setAnim('air-hit-stun', 5, 'air-pain-stun');
-        return false;
-    }
-
-    /**
-    * Handles music-related animations such as playing guitar or lighting a campfire.
-    * @returns {boolean} Whether a music animation was handled.
-    */
-    handleMusicAnimations() {
-        if (this.isSitDownAndPlayGuitar)
-            return this.setAnim('sit-down-and-play-guitar', 6, 'play-guitar');
-        if (this.isPlayGuitar) return this.setAnim('play-guitar', 10);
-        if (this.isPlayGuitarAndSing) return this.setAnim('play-guitar-and-sing', 10);
-        if (this.isLightACampfire)
-            return this.setAnim('light-a-campfire', 6, 'sit-down-and-play-guitar');
-        return false;
-    }
-
-    /**
-    * Handles combat and meditation animations.
-    * @returns {boolean} Whether a combat or meditation animation was handled.
-    */
-    handleCombatAndMeditation() {
-        if (this.isAttack) {
-            if (!this.isHaveSword) {
-                return this.setAnim('attack-staff', 7);
-            } else return this.setAnim('attack-sword', 6);
-        }
-        if (this.isMeditation) return this.setAnim('meditation', 6, 'meditation-loop');
-        if (this.isNewWeapon) return this.setAnim('new-weapon', 6, 'new-weapon-loop');
-        if (this.isStandUp) return this.setAnim('stand-up', 4);
-        if (this.isProtect) return this.setAnim('protect', 10, 'protect-loop');
-        return false;
-    }
-
-    /**
-    * Handles movement animations such as walking or determined walking.
-    * @returns {boolean} Whether a movement animation was handled.
-    */
-    handleMovementAnimations() {
-        if (this.isMovingLeft || this.isMovingRight || this.isWalk)
-            return this.isWalkInStorm ? this.setAnim('walk-in-storm', 5) : this.setAnim('walk', 8);
-        if (this.isWalkDetermined)
-            return this.setAnim('walk-determined', 5);
-        return false;
-    }
-
-    /**
-    * Sets a new animation with a specified frame rate.
-    * @param {string} name - The name of the animation to set.
-    * @param {number} fps - Frames per second for the animation speed.
-    * @param {string} [skipIf=null] - Optional animation name to skip if currently active.
-    * @returns {boolean} Always returns true after setting or skipping the animation.
-    */
-    setAnim(name, fps, skipIf = null) {
-        if (skipIf && this.currentAnimation === skipIf) return true;
-        this.setAnimation(name);
-        this.frameInterval = 1000 / fps;
-        return true;
-    }
-
-    /**
-    * Sets a simple animation with the given name and frame rate.
-    * @param {string} name - Animation name.
-    * @param {number} fps - Frames per second.
-    * @returns {boolean} True after setting the animation.
-    */
-    setSimpleAnim(name, fps) {
-        this.currentAnimation = name;
-        this.frameInterval = 1000 / fps;
-        return true;
-    }
-
-    /**
-    * Updates the current animation frame based on elapsed time.
-    * @param {number} timestamp - Current time in milliseconds.
-    */
-    updateAnimation(timestamp) {
-        if (!this.lastFrameTime) this.lastFrameTime = timestamp;
-        const deltaTime = timestamp - this.lastFrameTime;
-        if (deltaTime > this.frameInterval) {
-            const anim = this.getAnimationImages(this.currentAnimation);
-            if (!anim) return;
-
-            // 🔹 FALL 1: Einzelbilder (Array)
-            if (Array.isArray(anim) && anim.length > 0) {
-                this.applyNextFrame(anim);
-                this.handleDeferredSizeUpdate();
-                this.frameIndex++;
-                this.checkAnimationEnd(anim);
-            }
-
-            else if (anim.type === 'sheetSequence') {
-                const currentSheet = anim.sheets[this.sheetIndex];
-
-                this.applyNextSheetFrame(currentSheet);
-                this.frameIndex++;
-
-                const def =
-                    currentSheet.meta.animations?.[this.currentAnimation] ??
-                    currentSheet.meta.animations?.default;
-
-                const from = def?.from ?? 0;
-                const to = def?.to ?? (currentSheet.meta.frames - 1);
-                const count = to - from + 1;
-
-                if (this.frameIndex >= count) {
-                    this.frameIndex = 0;
-                    this.sheetIndex++;
-
-                    // Ende der Sequenz?
-                    if (this.sheetIndex >= anim.sheets.length) {
-                        if (anim.loop) {
-                            this.sheetIndex = 0;
-                        } else {
-                            this.animationFinished = true;
-                            this.handlePostAnimation(this.currentAnimation);
-                        }
-                    }
-                }
-            }
-
-            // 🔹 FALL 2: Spritesheet
-            else if (anim.type === 'sheet') {
-                this.applyNextSheetFrame(anim);
-                this.handleDeferredSizeUpdate();
-                this.frameIndex++;
-
-                // Animation-Ende für Sheets
-                const animName = anim.anim ?? this.currentAnimation;
-                const def =
-                    anim.meta.animations?.[animName] ??
-                    anim.meta.animations?.default;
-
-                if (def) {
-                    const from = def.from ?? 0;
-                    const to = def.to ?? (anim.meta.frames - 1);
-                    const frameCount = to - from + 1;
-
-                    if (this.frameIndex >= frameCount) {
-                        if (def.loop) {
-                            this.frameIndex = 0;
-                        } else {
-                            this.animationFinished = true;
-                            this.handleAnimationTransition(this.currentAnimation);
-                        }
-                    }
-                }
-
-
-
-            }
-            if (this.currentAnimation === 'attack-staff') {
-                // Aktiv bei jedem 6. Frame (Frame 6 → Index 6)
-                const everySixthFrame = this.frameIndex % 6 === 0 && this.frameIndex !== 0;
-                this.attackHitbox.active = everySixthFrame;
-
-                if (this.frameIndex >= 6) {
-                    this.frameIndex = 0;
-                }
-
-            } else if (this.currentAnimation === 'attack-sword') {
-                // Aktiv bei jedem 4. Frame (Frame 4 → Index 4)
-                const everyFourthFrame = this.frameIndex % 4 === 0 && this.frameIndex !== 0;
-                this.attackHitbox.active = everyFourthFrame;
-
-                if (this.frameIndex >= 4) {
-                    this.frameIndex = 0;
-                }
-
-            } else {
-                this.attackHitbox.active = false;
-            }
-
-
-
-
-
-
-
-            this.lastFrameTime = timestamp;
-        }
-    }
-
-    /**
-    * Applies the next animation frame from the given image set.
-    * @param {Array<string>} images - List of animation frame images.
-    */
-    applyNextFrame(images) {
-        this.img = images[this.frameIndex % images.length];
-        this.frameSource = null;
-    }
-
-    /**
-    * Updates the character's size and offsets after certain animations if needed.
-    */
-    handleDeferredSizeUpdate() {
-        if (!this.deferSizeUpdate) return;
-
-        const oldBottom = this.y + this.height; // ✅ Fußpunkt merken
-        const anim = this.currentAnimation;
-
-        if (this.isVoidlessAnimation(anim)) {
-            this.setCharacterSize(
-                158, 183, /* y ignored */ this.y,
-                { top: 13, left: 33, right: 55, bottom: 15 }
-            );
-        } else if (this.isLargeAnimationA(anim)) {
-            this.setCharacterSize(
-                240, 280, /* y ignored */ this.y,  //240, 280
-                { top: 110, left: 30, right: 115, bottom: 10 }
-            );
-        } else if (this.isLargeAnimationB(anim)) {
-            this.setCharacterSize(
-                270, 300, /* y ignored */ this.y,  //240, 280
-                { top: 135, left: 35, right: 175, bottom: 15 }
-            );
-
-        } else if (anim === 'protect' || anim === 'protect-loop') {
-            this.setCharacterSize(
-                158, 183, /* y ignored */ this.y,  //240, 280
-                { top: 20, left: 45, right: 40, bottom: 15 }
-            );
-        } else if (anim === 'new-weapon' || anim === 'new-weapon-loop') {
-            this.setCharacterSize(
-                300, 340, /* y ignored */ this.y,  //240, 280
-                { top: 20, left: 45, right: 40, bottom: 15 }
-            );
-
-
-
-        } else {
-            this.setCharacterSize(
-                130, 300, /* y ignored */ this.y,
-                { top: 130, left: 28, right: 40, bottom: 15 }
-            );
-        }
-
-        // ✅ nach dem Rescale: Bottom wieder herstellen (kein Down-Snap)
-        this.y = oldBottom - this.height;
-
-        // z.B. in handleDeferredSizeUpdate() oder wenn isAttack true wird:
-        if (this.currentAnimation === 'attack-staff') {
-            this.drawOffset = { x: 0, y: 0, flipX: -100 }; // Wert anpassen (-20 / -60 etc.)
-        } else if (this.currentAnimation === 'attack-sword') {
-            this.drawOffset = { x: 0, y: 0, flipX: -120 };
-        } else if (this.currentAnimation === 'protect' || this.currentAnimation === 'protect-loop') {
-            this.drawOffset = { x: -14, y: 0, flipX: 0 };
-        } else {
-            this.drawOffset = { x: 0, y: 0, flipX: 0 };
-        }
-
-
-        this.deferSizeUpdate = false;
-    }
-
-
-    /**
-    * Checks if the given animation is a voidless-type animation.
-    * @param {string} anim - Animation name.
-    * @returns {boolean} True if the animation is voidless.
-    */
-    isVoidlessAnimation(anim) {
-        return this.VOIDLESS_ANIMS.has(anim);
-    }
-
-    /**
-    * Checks if the given animation is classified as a large animation.
-    * @param {string} anim - Animation name.
-    * @returns {boolean} True if the animation is large.
-    */
-    isLargeAnimationA(anim) {
-        return ['attack-staff'].includes(anim);
-    }
-
-    isLargeAnimationB(anim) {
-        return ['attack-sword'].includes(anim);
-    }
-
-    /**
-    * Sets the character's size, vertical position, and offset values.
-    * @param {number} width - Character width.
-    * @param {number} height - Character height.
-    * @param {number} y - Vertical position on the screen.
-    * @param {Object} offset - Collision or interaction offset values.
-    */
-    setCharacterSize(width, height, y, offset) {
-        this.width = width;
-        this.height = height;
-        if (y !== undefined && y !== null) this.y = y;
-        this.offset = offset;
-    }
-
-    /**
-    * Checks if the current animation has finished and triggers transitions if applicable.
-    * @param {Array<string>} images - List of animation frame images.
-    */
-    checkAnimationEnd(images) {
-        if (this.frameIndex < images.length) return;
-        if (!this.TRANSITIONABLE_ANIMS.has(this.currentAnimation)) return;
-        this.animationFinished = true;
-        this.handleAnimationTransition(this.currentAnimation);
-    }
-
-    /**
-    * Handles transitions between animations after one finishes.
-    * @param {string} anim - The name of the completed animation.
-    */
-    handleAnimationTransition(anim) {
-        if (this.handleDeterminedTransitions(anim)) return;
-        if (this.handleEmotionalTransitions(anim)) return;
-        if (this.handleMusicTransitions(anim)) return;
-        if (this.handleCombatTransitions(anim)) return;
-    }
-
-    /**
-    * Handles animation transitions related to determined or standing-up states.
-    * @param {string} anim - The name of the completed animation.
-    * @returns {boolean} Whether a transition was applied.
-    */
-    handleDeterminedTransitions(anim) {
-        switch (anim) {
-            case 'stand-up-determined':
-                return this.setTransition('stand-up-determined-loop', 5.5);
-            case 'determined-rise':
-                return this.setTransition('determined-rise-loop', 4);
-            case 'stand-up':
-                this.isStandUp = false;
-                return true;
-            case 'stand-determined':
-                return this.setTransition('stand-determined-loop');
-        }
-        return false;
-    }
-
-    /**
-    * Handles animation transitions for emotional states such as crying or caressing.
-    * @param {string} anim - The name of the completed animation.
-    * @returns {boolean} Whether an emotional transition was applied.
-    */
-    handleEmotionalTransitions(anim) {
-        switch (anim) {
-            case 'hurt':
-                this.isHurt = false;
-                return true;
-            case 'kneel-and-cry':
-                return this.setTransition('kneel-and-cry-loop');
-            case 'caress':
-                return this.setTransition('caress-loop', 6);
-            case 'collapse':
-                return this.setTransition('collapse-loop', 5);
-            case 'stand-up-after-collapse':
-                this.isStandUpAfterCollapse = false;
-            case 'air-hit-stun':
-                return this.setTransition('air-pain-stun', 5);
-        }
-        return false;
-    }
-
-    /**
-    * Handles animation transitions related to music actions such as playing guitar or lighting a campfire.
-    * @param {string} anim - The name of the completed animation.
-    * @returns {boolean} Whether a music transition was applied.
-    */
-    handleMusicTransitions(anim) {
-        switch (anim) {
-            case 'sit-down-and-play-guitar':
-                return this.setTransition('play-guitar', 10);
-            case 'light-a-campfire':
-                this.isLightACampfire = false;
-                this.isSitDownAndPlayGuitar = true;
-                return this.setTransition('sit-down-and-play-guitar', 4);
-        }
-        return false;
-    }
-
-    /**
-    * Handles animation transitions for combat and meditation states.
-    * @param {string} anim - The name of the completed animation.
-    * @returns {boolean} Whether a combat-related transition was applied.
-    */
-    handleCombatTransitions(anim) {
-        switch (anim) {
-            case 'attack-staff':
-                this.isAttack = false;
-                this.hasHitEnemyThisAttack = false;
-                return true;
-            case 'attack-sword':
-                this.isAttack = false;
-                this.hasHitEnemyThisAttack = false;
-                return true;
-            case 'meditation':
-                return this.setTransition('meditation-loop', 4);
-            case 'new-weapon':
-                return this.setTransition('new-weapon-loop', 6);
-            case 'protect':
-                return this.setTransition('protect-loop', 6);
-        }
-        return false;
-    }
-
-    /**
-    * Transitions to a new animation, optionally adjusting its frame rate.
-    * @param {string} name - The name of the animation to transition to.
-    * @param {number} [fps=null] - Optional frames per second for the new animation.
-    * @returns {boolean} True after setting the transition.
-    */
-    setTransition(name, fps = null) {
-        this.setAnimation(name);
-        if (fps) this.frameInterval = 1000 / fps;
-        return true;
-    }
-
-    /**
-    * Retrieves the appropriate image set for the given animation state.
-    * @param {string} state - The current animation state.
-    * @returns {Array<string>} The list of images for the specified state.
+    * Returns animation images for the given state.
+    * @param {string} state Animation state identifier.
+    * @returns {*} Animation images.
     */
     getAnimationImages(state) {
         return (
@@ -779,9 +66,9 @@ export class Character extends MovableObject {
     }
 
     /**
-    * Returns the image set for the specified movement-related animation state.
-    * @param {string} state - The current movement animation state.
-    * @returns {Array<string>|null} The corresponding image set or null if not found.
+    * Returns movement-related animation images for the given state.
+    * @param {string} state Animation state identifier.
+    * @returns {*|null} Animation images or null if not found.
     */
     getMovementImages(state) {
         switch (state) {
@@ -795,9 +82,9 @@ export class Character extends MovableObject {
     }
 
     /**
-    * Returns the image set for the specified emotion-related animation state.
-    * @param {string} state - The current emotional animation state.
-    * @returns {Array<string>|null} The corresponding image set or null if not found.
+    * Returns emotion-related animation images for the given state.
+    * @param {string} state Animation state identifier.
+    * @returns {*|null} Animation images or null if not found.
     */
     getEmotionImages(state) {
         switch (state) {
@@ -815,9 +102,9 @@ export class Character extends MovableObject {
     }
 
     /**
-    * Returns the image set for the specified determined or confident animation state.
-    * @param {string} state - The current determined animation state.
-    * @returns {Array<string>|null} The corresponding image set or null if not found.
+    * Returns determined-state animation images for the given state.
+    * @param {string} state Animation state identifier.
+    * @returns {*|null} Animation images or null if not found.
     */
     getDeterminedImages(state) {
         switch (state) {
@@ -832,9 +119,9 @@ export class Character extends MovableObject {
     }
 
     /**
-    * Returns the image set for the specified music or interaction-related animation state.
-    * @param {string} state - The current music animation state.
-    * @returns {Array<string>|null} The corresponding image set or null if not found.
+    * Returns music-related animation images for the given state.
+    * @param {string} state Animation state identifier.
+    * @returns {*|null} Animation images or null if not found.
     */
     getMusicImages(state) {
         switch (state) {
@@ -849,9 +136,9 @@ export class Character extends MovableObject {
     }
 
     /**
-    * Returns the image set for the specified combat or meditation-related animation state.
-    * @param {string} state - The current combat animation state.
-    * @returns {Array<string>|null} The corresponding image set or null if not found.
+    * Returns combat-related animation images for the given state.
+    * @param {string} state Animation state identifier.
+    * @returns {*|null} Animation images or null if not found.
     */
     getCombatImages(state) {
         switch (state) {
@@ -868,9 +155,9 @@ export class Character extends MovableObject {
     }
 
     /**
-    * Returns the image set for special or default animation states.
-    * @param {string} state - The current special animation state.
-    * @returns {Array<string>|null} The corresponding image set or null if not found.
+    * Returns special-case animation images for the given state.
+    * @param {string} state Animation state identifier.
+    * @returns {*|null} Animation images or null if not found.
     */
     getSpecialImages(state) {
         switch (state) {
@@ -880,218 +167,307 @@ export class Character extends MovableObject {
     }
 
     /**
-    * Sets a new animation and resets related animation state properties.
-    * @param {string} newAnimation - The name of the new animation to set.
+    * Applies deferred size update for the current animation.
     */
-    setAnimation(newAnimation) {
-        if (this.currentAnimation !== newAnimation) {
-            this.currentAnimation = newAnimation;
-            this.frameIndex = 0;
-            this.sheetIndex = 0;
-            this.animationFinished = false;
-            this.lastFrameTime = null;
-            this.deferSizeUpdate = true;
+    handleDeferredSizeUpdate() {
+        if (!this.deferSizeUpdate) return;
+        const oldBottom = this.y + this.height;
+        const anim = this.currentAnimation;
+        this.applySizeForAnimation(anim);
+        this.restoreBottomAfterResize(oldBottom);
+        this.updateDrawOffsetForAnim(anim);
+        this.deferSizeUpdate = false;
+    }
+
+    /**
+    * Applies size configuration for the specified animation.
+    * @param {string} anim Animation state identifier.
+    */
+    applySizeForAnimation(anim) {
+        const cfg = this.getSizeConfigForAnim(anim);
+        this.setCharacterSize(cfg.width, cfg.height, this.y, cfg.offset);
+    }
+
+    /**
+    * Returns size configuration for the given animation.
+    * @param {string} anim Animation state identifier.
+    * @returns {Object} Size configuration.
+    */
+    getSizeConfigForAnim(anim) {
+        return (
+            this.getVoidlessSizeConfig(anim) ??
+            this.getLargeSizeConfig(anim) ??
+            this.getSpecialSizeConfig(anim) ??
+            this.getDefaultSizeConfig()
+        );
+    }
+
+    /**
+    * Returns size configuration for voidless animations.
+    * @param {string} anim Animation state identifier.
+    * @returns {Object|null} Size configuration or null if not applicable.
+    */
+    getVoidlessSizeConfig(anim) {
+        if (!this.isVoidlessAnimation(anim)) return null;
+        return {
+            width: 158,
+            height: 183,
+            offset: { top: 13, left: 33, right: 55, bottom: 15 }
+        };
+    }
+
+    /**
+    * Returns size configuration for large animations.
+    * @param {string} anim Animation state identifier.
+    * @returns {Object|null} Size configuration or null if not applicable.
+    */
+    getLargeSizeConfig(anim) {
+        if (this.isLargeAnimationA(anim)) {
+            return this.getLargeASizeConfig();
+        }
+        if (this.isLargeAnimationB(anim)) {
+            return this.getLargeBSizeConfig();
+        }
+        return null;
+    }
+
+    /**
+    * Returns size configuration for large animation type A.
+    * @returns {Object} Size configuration.
+    */
+    getLargeASizeConfig() {
+        return {
+            width: 240,
+            height: 280,
+            offset: { top: 110, left: 30, right: 115, bottom: 10 }
+        };
+    }
+
+    /**
+    * Returns size configuration for large animation type B.
+    * @returns {Object} Size configuration.
+    */
+    getLargeBSizeConfig() {
+        return {
+            width: 270,
+            height: 300,
+            offset: { top: 135, left: 35, right: 175, bottom: 15 }
+        };
+    }
+
+    /**
+    * Returns size configuration for special animations.
+    * @param {string} anim Animation state identifier.
+    * @returns {Object|null} Size configuration or null if not applicable.
+    */
+    getSpecialSizeConfig(anim) {
+        if (this.isProtectAnim(anim)) {
+            return this.getProtectSizeConfig();
+        }
+        if (this.isNewWeaponAnim(anim)) {
+            return this.getNewWeaponSizeConfig();
+        }
+        return null;
+    }
+
+    /**
+    * Checks whether the animation is a protect animation.
+    * @param {string} anim Animation state identifier.
+    * @returns {boolean} True if protect animation, otherwise false.
+    */
+    isProtectAnim(anim) {
+        return anim === 'protect' || anim === 'protect-loop';
+    }
+
+    /**
+    * Checks whether the animation is a new weapon animation.
+    * @param {string} anim Animation state identifier.
+    * @returns {boolean} True if new weapon animation, otherwise false.
+    */
+    isNewWeaponAnim(anim) {
+        return anim === 'new-weapon' || anim === 'new-weapon-loop';
+    }
+
+    /**
+    * Returns size configuration for protect animations.
+    * @returns {Object} Size configuration.
+    */
+    getProtectSizeConfig() {
+        return {
+            width: 158,
+            height: 183,
+            offset: { top: 20, left: 45, right: 40, bottom: 15 }
+        };
+    }
+
+    /**
+    * Returns size configuration for new weapon animations.
+    * @returns {Object} Size configuration.
+    */
+    getNewWeaponSizeConfig() {
+        return {
+            width: 300,
+            height: 340,
+            offset: { top: 20, left: 45, right: 40, bottom: 15 }
+        };
+    }
+
+    /**
+    * Returns default size configuration.
+    * @returns {Object} Size configuration.
+    */
+    getDefaultSizeConfig() {
+        return {
+            width: 130,
+            height: 300,
+            offset: { top: 130, left: 28, right: 40, bottom: 15 }
+        };
+    }
+
+    /**
+    * Restores the bottom position after resizing.
+    * @param {number} oldBottom Previous bottom position.
+    */
+    restoreBottomAfterResize(oldBottom) {
+        this.y = oldBottom - this.height;
+    }
+
+    /**
+    * Updates draw offset based on the current animation.
+    * @param {string} anim Animation state identifier.
+    */
+    updateDrawOffsetForAnim(anim) {
+        if (anim === 'attack-staff') {
+            this.drawOffset = { x: 0, y: 0, flipX: -100 };
+        } else if (anim === 'attack-sword') {
+            this.drawOffset = { x: 0, y: 0, flipX: -120 };
+        } else if (anim === 'protect' || anim === 'protect-loop') {
+            this.drawOffset = { x: -14, y: 0, flipX: 0 };
+        } else {
+            this.drawOffset = { x: 0, y: 0, flipX: 0 };
         }
     }
 
     /**
-    * Resets the character's timing variables for updates and animations.
+    * Checks whether the animation is voidless.
+    * @param {string} anim Animation state identifier.
+    * @returns {boolean} True if voidless animation, otherwise false.
     */
-    resetTimers() {
-        this.lastUpdateTime = null;
-        this.lastFrameTime = null;
+    isVoidlessAnimation(anim) {
+        return this.VOIDLESS_ANIMS.has(anim);
     }
 
-    startAirHitStun(timestamp, duration = 100000) {
-        this.isAirHitStun = true;
-        this.airHitStunStart = timestamp;
-        this.airHitStunDuration = duration;
-
-        // Input/Movement lock:
-        this.isCapturedByTornado = true;
-        this.speedY = 0;
-        this.isJumping = false;
+    /**
+    * Checks whether the animation is of large type A.
+    * @param {string} anim Animation state identifier.
+    * @returns {boolean} True if large type A animation, otherwise false.
+    */
+    isLargeAnimationA(anim) {
+        return ['attack-staff'].includes(anim);
     }
 
-    moveToX(targetX, {
-        tolerance = 3,
-        snap = true,
-        speed = 5,          // px pro Frame @60fps
-        faceTarget = true,
-        setWalkFlag = false,
-        onArrive = null
-    } = {}) {
-        const d = targetX - this.x;
-
-        if (faceTarget) this.isFlipped = d < 0;
-        if (setWalkFlag) this.isWalk = Math.abs(d) > tolerance;
-
-        if (Math.abs(d) <= tolerance) {
-            this.isWalk = false;
-            if (snap) this.x = targetX;
-            onArrive?.();
-            return true;
-        }
-
-        const step = speed * (this.deltaTime ?? 1 / 60) * 60;
-        this.x += Math.sign(d) * step;
-        return false;
+    /**
+    * Checks whether the animation is of large type B.
+    * @param {string} anim Animation state identifier.
+    * @returns {boolean} True if large type B animation, otherwise false.
+    */
+    isLargeAnimationB(anim) {
+        return ['attack-sword'].includes(anim);
     }
 
-    moveToY(targetY, {
-        tolerance = 2,
-        snap = true,
-        speed = 1.5,        // px pro Frame @60fps
-        onArrive = null
-    } = {}) {
-        const d = targetY - this.y;
-
-        if (Math.abs(d) <= tolerance) {
-            if (snap) this.y = targetY;
-            onArrive?.();
-            return true;
-        }
-
-        const step = speed * (this.deltaTime ?? 1 / 60) * 60;
-        this.y += Math.sign(d) * step;
-        return false;
+    /**
+    * Sets the character size and offset.
+    * @param {number} width Character width.
+    * @param {number} height Character height.
+    * @param {number} [y] Optional y-position.
+    * @param {Object} offset Offset configuration.
+    */
+    setCharacterSize(width, height, y, offset) {
+        this.width = width;
+        this.height = height;
+        if (y !== undefined && y !== null) this.y = y;
+        this.offset = offset;
     }
 
-    clampX(object, minX, maxX) {
-        if (object.x < minX) object.x = minX;
-        if (object.x > maxX) object.x = maxX;
+    /**
+    * Applies the next animation frame from the given images.
+    * @param {Array} images Animation frame images.
+    */
+    applyNextFrame(images) {
+        this.img = images[this.frameIndex % images.length];
+        this.frameSource = null;
     }
 
-    hit2(timestamp, dmg = 10) {
-        if (this.isDead || this.isHurt) return;
-        if (timestamp < this.invulnerableUntil) return;
-
-        // Schaden
-        this.energy = Math.max(0, this.energy - dmg);
-
-        // i-frames
-        this.invulnerableUntil = timestamp + 650;
-
-        // ❗ WENN PROTECT → KEIN HURT
-        if (this.isProtect) {
-            // Optional: kleines Block-Feedback
-            this.setAnimation('protect-loop');
-            return;
-        }
-
-        // Hurt nur wenn NICHT protect
-        if (!this.isHurt) {
-            this.isHurt = true;
-            this.hurtUntil = timestamp + 450;
-            this.setAnimation('hurt');
-        }
-    }
-
-    handleEnemyTouch(enemy, colliding, timestamp, {
-        dmg = 10,
-        knockX = 70,
-        knockY = 18,
-        lockMs = 260
-    } = {}) {
-
-
-        // --- Kontakt beendet → Reset
-        if (!colliding) {
-            this.touchingEnemies.delete(enemy);
-            return false;
-        }
-
-        // --- Noch im Kontakt → kein Dauerschaden
-        if (this.touchingEnemies.has(enemy)) return false;
-        this.touchingEnemies.add(enemy);
-
-        // i-frames / dead
-        if (this.isDead) return false;
-        if (timestamp < this.invulnerableUntil) return false;
-
-        // 🛡️ PROTECT → blockt alles
-        if (this.isProtect || this.isAttack) {
-            this.invulnerableUntil = timestamp + 250;
-            return false;
-        }
-
-        // 💥 Schaden + Hurt
-        this.hit2(timestamp, dmg);
-
-        // 🔥 KNOCKBACK-RICHTUNG
-        const dir = enemy.x < this.x ? 1 : -1;
-
-        // 👉 SOFORTIGE Distanz
-        this.x += dir * knockX;
-
-        // ⬆️ Hit-Jump
-        this.isJumping = true;
-        this.isLanding = false;
-        this.speedY = Math.max(this.speedY, knockY);
-
-        // 🧊 Bewegung kurz sperren
-        this.movementLockUntil = timestamp + lockMs;
-        this.isMovingLeft = false;
-        this.isMovingRight = false;
-        this.isAttack = false;
-        this.isProtect = false;
-
-        // Gravity sauber starten
-        this.lastGravityUpdate = timestamp;
-
-        return true;
-    }
-
-    updateAttackHitbox(weapon) {
-        switch (weapon) {
-            case 'staff':
-                this.attackHitbox =
-                {
-                    top: 220,     // Abstand von oben
-                    left: 200,    // Abstand von links
-                    right: 8,     // Abstand von rechts
-                    bottom: 52,   // Abstand von unten
-                    active: false
-                }
-                break;
-
-            case 'sword':
-                this.attackHitbox =
-                {
-                    top: 200,     // Abstand von oben
-                    left: 200,    // Abstand von links
-                    right: 8,     // Abstand von rechts
-                    bottom: 65,   // Abstand von unten
-                    active: false
-                }
-                break;
-        }
-    }
-
-    //for Spritesheets
+    /**
+    * Applies the next frame from a sprite sheet.
+    * @param {Object} sheet Sprite sheet definition.
+    */
     applyNextSheetFrame(sheet) {
-        const { image, meta, anim } = sheet;
+        const animDef = this.getSheetAnimDef(sheet);
+        const range = this.getSheetFrameRange(animDef, sheet.meta);
+        const frame = this.getSheetFrameIndex(range.from, range.count);
+        const pos = this.getSheetGridPosition(frame, sheet.meta);
+        this.setSheetFrameSource(sheet.image, sheet.meta, pos.col, pos.row);
+    }
 
-        // 🔹 Animationsdefinition aus JSON holen
-        const animName = anim ?? this.currentAnimation;
-        const animDef =
+    /**
+    * Returns the animation definition for a sprite sheet.
+    * @param {Object} sheet Sprite sheet definition.
+    * @returns {Object} Animation definition.
+    */
+    getSheetAnimDef(sheet) {
+        const meta = sheet.meta;
+        const animName = sheet.anim ?? this.currentAnimation;
+        return (
             meta.animations?.[animName] ??
-            meta.animations?.default;
+            meta.animations?.default ??
+            { from: 0, to: meta.frames - 1 }
+        );
+    }
 
-        // Fallback (sollte praktisch nie greifen)
-        const from = animDef?.from ?? 0;
-        const to = animDef?.to ?? (meta.frames - 1);
+    /**
+    * Calculates frame range information for a sprite sheet animation.
+    * @param {Object} animDef Animation definition.
+    * @param {Object} meta Sprite sheet metadata.
+    * @returns {{from: number, to: number, count: number}} Frame range data.
+    */
+    getSheetFrameRange(animDef, meta) {
+        const from = animDef.from ?? 0;
+        const to = animDef.to ?? (meta.frames - 1);
+        const count = to - from + 1;
+        return { from, to, count };
+    }
 
-        const frameCount = to - from + 1;
+    /**
+    * Calculates the current frame index for a sprite sheet animation.
+    * @param {number} from Starting frame index.
+    * @param {number} count Number of frames in the range.
+    * @returns {number} Calculated frame index.
+    */
+    getSheetFrameIndex(from, count) {
+        return from + (this.frameIndex % count);
+    }
 
-        // 🔹 absoluter Frame im Sheet
-        const frame = from + (this.frameIndex % frameCount);
-
-        // 🔹 Grid-Berechnung
+    /**
+    * Calculates the grid position for a frame in a sprite sheet.
+    * @param {number} frame Frame index.
+    * @param {Object} meta Sprite sheet metadata.
+    * @returns {{col: number, row: number}} Grid position.
+    */
+    getSheetGridPosition(frame, meta) {
         const col = frame % meta.columns;
         const row = Math.floor(frame / meta.columns);
+        return { col, row };
+    }
 
-        // 🔹 setzen für draw()
+    /**
+    * Sets the current sprite sheet frame source.
+    * @param {HTMLImageElement} image Sprite sheet image.
+    * @param {Object} meta Sprite sheet metadata.
+    * @param {number} col Column index.
+    * @param {number} row Row index.
+    */
+    setSheetFrameSource(image, meta, col, row) {
         this.img = image;
         this.frameSource = {
             sx: col * meta.frameWidth,
