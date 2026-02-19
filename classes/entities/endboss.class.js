@@ -1124,7 +1124,7 @@ export class Endboss extends MovableObject {
     }
 
     startFireBreath(setup, timestamp) {
-        setup.world.character.startAirHitStun(timestamp);
+        setup.world.character.combatCtrl.startAirHitStun(timestamp);
         this.fadeOutAudio(setup.backgroundMusic, 1000);
         this.fadeInAudio(setup.sounds.airHitStunMusic, 2000, 1.0);
         if (!setup.spiritEssenceSeq?.active && setup.world.character.isAirHitStun) {

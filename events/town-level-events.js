@@ -587,7 +587,7 @@ export const townEvents =
                     const attackImmunity = (now - setup.world.attackCommitUntil) < IMMUNITY_DURATION;
                     const colliding = enemy.isColliding(char);
                     const effectiveColliding = colliding && enemy.currentEnemy !== 'dragonSmall' && !char.isJumping && !attackImmunity && !char.isAttack && !char.isProtect && !enemy.isHurt && !enemy.isDead;
-                    const did = char.handleEnemyTouch(enemy, effectiveColliding, now, {
+                    const did = char.combatCtrl.handleEnemyTouch(enemy, effectiveColliding, now, {
                         dmg: char.isProtect ? 2 : 10,
                         knockX: 26,
                         knockY: 16
@@ -676,8 +676,8 @@ export const townEvents =
                         enemy.removeAt = setup.world.timestamp + 2000;
                         console.log(enemy.removeAt)
                         enemy.isHurt = false; // optional: kein HURT-Anim bei Tod durch Sprung
-                        world.audioManager.playOneShot('chickenDeathSound', { volume: 0.6 });
-                        char.bounce();
+                        setup.world.audioManager.playOneShot('chickenDeathSound', { volume: 0.6 });
+                        char.movementCtrl.bounce();
                     }
                 });
             }

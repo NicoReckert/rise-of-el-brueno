@@ -433,4 +433,154 @@ export class MovableObject extends DrawableObject {
             sh: meta.frameHeight
         };
     }
+
+    /**
+* Returns the sprite sheet animation definition.
+* Mirrors CharacterAnimationController.getSheetDef, aber generisch.
+* @param {Object} meta Sprite sheet metadata.
+* @param {string} animName Animation state identifier.
+* @returns {Object} Animation definition.
+*/
+    getSheetDef(meta, animName) {
+        const anims = meta.animations ?? {};
+        return anims[animName] ?? anims.default ?? {
+            from: 0,
+            to: meta.frames - 1
+        };
+    }
+
+    /**
+    * Calculates the frame count for a sprite sheet animation.
+    * Mirrors CharacterAnimationController.getFrameCount.
+    * @param {Object} def Animation definition.
+    * @param {number} totalFrames Total number of frames in the sheet.
+    * @returns {number} Frame count.
+    */
+    getFrameCount(def, totalFrames) {
+        const from = def.from ?? 0;
+        const to = def.to ?? (totalFrames - 1);
+        return to - from + 1;
+    }
+
+    /**
+    * Generic animation-stepper für Arrays, sheet und sheetSequence.
+    * DELEGIEREND – keine Character-spezifische Logik, keine Transitions.
+    *
+    * @param {*} anim - Animation source (Array | sheet | sheetSequence)
+    * @param {Object} [options={}]
+    * @param {boolean} [options.isOneShot=false]       - nicht loopen / fertig nach Ende
+    * @param {Function} [options.onFinished=null]      - Callback bei Ende
+    * @param {boolean} [options.allowLoop=true]        - Ob loopenden Anim loopen darf
+    */
+    updateAnimationFromSourceGeneric(anim, {
+        isOneShot = false,
+        onFinished = null,
+        allowLoop = true
+    } = {}) {
+        if (!anim) return;
+
+        if (Array.isArray(anim)) {
+            if (!anim.length) return;
+            this.stepArrayAnimation(anim, { isOneShot, onFinished });
+            return;
+        }
+
+        if (anim.type === 'sheetSequence') {
+            this.stepSheetSequenceAnimation(anim, { isOneShot, onFinished, allowLoop });
+            return;
+        }
+
+        if (anim.type === 'sheet') {
+            this.stepSheetAnimation(anim, { isOneShot, onFinished, allowLoop });
+        }
+    }
+
+    /**
+    * Handles animation defined as an image array.
+    * Entspricht CharacterAnimationController.handleArrayAnimation,
+    * nur ohne Transitions.
+    * @param {Array} images Animation frame images.
+    */
+    stepArrayAnimation(images, { isOneShot, onFinished }) {
+        this.applyNextFrame(images);
+        // falls Object eine deferredSizeUpdate-Logik hat (Character z.B.)
+        if (typeof this.handleDeferredSizeUpdate === 'function') {
+            this.handleDeferredSizeUpdate();
+        }
+        this.frameIndex++;
+
+        if (isOneShot && this.frameIndex >= images.length) {
+            this.animationFinished = true;
+            onFinished?.();
+        }
+    }
+
+    /**
+    * Handles animation defined as a single sprite sheet.
+    * Entspricht CharacterAnimationController.handleSheet,
+    * aber ohne Transitions – Ende wird via onFinished gemeldet.
+    * @param {Object} anim Animation definition.
+    */
+    stepSheetAnimation(anim, { isOneShot, onFinished, allowLoop }) {
+        this.applyNextSheetFrame(anim);
+        if (typeof this.handleDeferredSizeUpdate === 'function') {
+            this.handleDeferredSizeUpdate();
+        }
+        this.frameIndex++;
+
+        const name = anim.anim ?? this.currentAnimation;
+        const def = this.getSheetDef(anim.meta, name);
+        const count = this.getFrameCount(def, anim.meta.frames);
+
+        if (this.frameIndex >= count) {
+            const loopDef = def.loop !== false; // default: loop wenn nicht explizit false
+
+            if (!isOneShot && allowLoop && loopDef) {
+                this.frameIndex = 0;
+            } else {
+                this.animationFinished = true;
+                onFinished?.();
+            }
+        }
+    }
+
+    /**
+    * Handles animation defined as a sheet sequence.
+    * Entspricht CharacterAnimationController.handleSheetSequence/advanceSheetSequence,
+    * aber generisch.
+    * @param {Object} anim Animation definition (sheetSequence).
+    */
+    stepSheetSequenceAnimation(anim, { isOneShot, onFinished, allowLoop }) {
+        const sheets = anim.sheets ?? [];
+        const sheet = sheets[this.sheetIndex];
+        if (!sheet) return;
+
+        this.applyNextSheetFrame(sheet);
+        if (typeof this.handleDeferredSizeUpdate === 'function') {
+            this.handleDeferredSizeUpdate();
+        }
+        this.frameIndex++;
+
+        const def = this.getSheetDef(sheet.meta, this.currentAnimation);
+        const count = this.getFrameCount(def, sheet.meta.frames);
+
+        if (this.frameIndex >= count) {
+            this.frameIndex = 0;
+            this.sheetIndex++;
+
+            const atEnd = this.sheetIndex >= sheets.length;
+
+            if (!atEnd) return;
+
+            const loopSeq = !!anim.loop;
+
+            if (!isOneShot && allowLoop && loopSeq) {
+                this.sheetIndex = 0;
+            } else {
+                this.sheetIndex = Math.max(0, sheets.length - 1);
+                this.animationFinished = true;
+                onFinished?.();
+            }
+        }
+    }
 }

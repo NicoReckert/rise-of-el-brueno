@@ -20,14 +20,14 @@ export class WorldRenderer {
 
     /**
     * Adds a drawable object to the world.
-    * @param {*} object Object to add.
+    * @param {*} object Object to draw.
+    * @param {CanvasRenderingContext2D} [ctx=this.ctx] Rendering context.
     */
-    addToWorld(object) {
+    addToWorld(object, ctx = this.ctx) {
         if (!this.isDrawableObject(object)) return;
         const flipState = this.getFlipState(object);
         const offsets = this.getObjectOffsets(object);
         const drawOffsets = this.getDrawOffsets(object);
-        const ctx = this.ctx;
         ctx.save();
         this.applyObjectOpacity(ctx, object);
         this.drawObjectWithFlip(ctx, object, flipState, offsets, drawOffsets);
