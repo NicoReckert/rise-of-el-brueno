@@ -44,9 +44,9 @@ export class EndbossFireball extends Projectile {
         // 🎯 TREFFER (am besten deine neue isColliding nutzen, dann passt offset + flipped)
         const character = this.world?.character;
         if (character && this.isColliding(character, { x: 0, width: 0 }, { x: 50, width: 50 })) {
-            // hier lieber deine hit2 nutzen, falls du i-frames etc willst:
-            if (typeof character.hit2 === "function") character.hit2(timestamp, this.damage);
-            else if (typeof character.hit === "function") character.hit(this.damage);
+            // hier lieber deine hit nutzen, falls du i-frames etc willst:
+            if (typeof character.combatCtrl.hit === "function") character.combatCtrl.hit(timestamp, this.damage);
+            else if (typeof character.combatCtrl.hit === "function") character.combatCtrl.hit(this.damage);
             else if ("health" in character) character.health -= this.damage;
 
             this.explode();

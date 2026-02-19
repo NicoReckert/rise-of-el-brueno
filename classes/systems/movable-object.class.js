@@ -344,5 +344,93 @@ export class MovableObject extends DrawableObject {
         };
     }
 
+    /**
+    * Applies the next animation frame from the given images.
+    * @param {Array} images Animation frame images.
+    */
+    applyNextFrame(images) {
+        if (!images || !images.length) return;
+        this.img = images[this.frameIndex % images.length];
+        this.frameSource = null;
+    }
 
+    /**
+    * Applies the next frame from a sprite sheet.
+    * @param {Object} sheet Sprite sheet definition.
+    */
+    applyNextSheetFrame(sheet) {
+        if (!sheet?.meta) return;
+        const animDef = this.getSheetAnimDef(sheet);
+        const range = this.getSheetFrameRange(animDef, sheet.meta);
+        const frame = this.getSheetFrameIndex(range.from, range.count);
+        const pos = this.getSheetGridPosition(frame, sheet.meta);
+        this.setSheetFrameSource(sheet.image, sheet.meta, pos.col, pos.row);
+    }
+
+    /**
+    * Returns the animation definition for a sprite sheet.
+    * @param {Object} sheet Sprite sheet definition.
+    * @returns {Object} Animation definition.
+    */
+    getSheetAnimDef(sheet) {
+        const meta = sheet.meta;
+        const animName = sheet.anim ?? this.currentAnimation;
+        return (
+            meta.animations?.[animName] ??
+            meta.animations?.default ??
+            { from: 0, to: meta.frames - 1 }
+        );
+    }
+
+    /**
+    * Calculates frame range information for a sprite sheet animation.
+    * @param {Object} animDef Animation definition.
+    * @param {Object} meta Sprite sheet metadata.
+    * @returns {{from: number, to: number, count: number}} Frame range data.
+    */
+    getSheetFrameRange(animDef, meta) {
+        const from = animDef.from ?? 0;
+        const to = animDef.to ?? (meta.frames - 1);
+        const count = to - from + 1;
+        return { from, to, count };
+    }
+
+    /**
+    * Calculates the current frame index for a sprite sheet animation.
+    * @param {number} from Starting frame index.
+    * @param {number} count Number of frames in the range.
+    * @returns {number} Calculated frame index.
+    */
+    getSheetFrameIndex(from, count) {
+        return from + (this.frameIndex % count);
+    }
+
+    /**
+    * Calculates the grid position for a frame in a sprite sheet.
+    * @param {number} frame Frame index.
+    * @param {Object} meta Sprite sheet metadata.
+    * @returns {{col: number, row: number}} Grid position.
+    */
+    getSheetGridPosition(frame, meta) {
+        const col = frame % meta.columns;
+        const row = Math.floor(frame / meta.columns);
+        return { col, row };
+    }
+
+    /**
+    * Sets the current sprite sheet frame source.
+    * @param {HTMLImageElement} image Sprite sheet image.
+    * @param {Object} meta Sprite sheet metadata.
+    * @param {number} col Column index.
+    * @param {number} row Row index.
+    */
+    setSheetFrameSource(image, meta, col, row) {
+        this.img = image;
+        this.frameSource = {
+            sx: col * meta.frameWidth,
+            sy: row * meta.frameHeight,
+            sw: meta.frameWidth,
+            sh: meta.frameHeight
+        };
+    }
 }

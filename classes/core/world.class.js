@@ -60,8 +60,7 @@ export class World {
     * Initializes character and audio components.
     */
     initCharacterAndAudio() {
-        this.character = new Character(this.characterImages);
-        this.characterAudio = new CharacterAudioController(this.character, this.audioManager);
+        this.character = new Character(this.characterImages, this, this.audioManager);
         this.allAudios = this.audioManager.audios;
         this.allVideos = this.videoManager.videos;
     }
@@ -149,10 +148,10 @@ export class World {
         if (!charDeferred && !entityDeferred) return;
         Object.assign(this.characterImages, charDeferred);
         smartMerge(this.entityImages, entityDeferred);
-        this.character?.initMovementImages();
-        this.character?.initEmotionImages();
-        this.character?.initActionImages();
-        this.character?.initSpecialImages();
+        this.character?.config?.initMovementImages();
+        this.character?.config?.initEmotionImages();
+        this.character?.config?.initActionImages();
+        this.character?.config?.initSpecialImages();
     }
 
     /**
@@ -164,10 +163,10 @@ export class World {
         if (!charLazy && !entityLazy) return;
         Object.assign(this.characterImages, charLazy);
         smartMerge(this.entityImages, entityLazy);
-        this.character?.initMovementImages();
-        this.character?.initEmotionImages();
-        this.character?.initActionImages();
-        this.character?.initSpecialImages();
+        this.character?.config?.initMovementImages();
+        this.character?.config?.initEmotionImages();
+        this.character?.config?.initActionImages();
+        this.character?.config?.initSpecialImages();
         if (typeof this.levelManager.initRemainingSetups === 'function') {
             this.levelManager.initRemainingSetups();
         }
@@ -294,13 +293,6 @@ export class World {
     */
     scheduleNextFrame() {
         this.frameId = requestAnimationFrame(ts => this.draw(ts));
-    }
-
-    /**
-    * Assigns the world reference to the character.
-    */
-    setWorld() {
-        this.character.world = this;
     }
 
     /**

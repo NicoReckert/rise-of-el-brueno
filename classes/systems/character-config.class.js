@@ -1,10 +1,16 @@
+/**
+ * Configures character properties and assets.
+ */
 export class CharacterConfig {
-
+    /**
+    * Creates a new instance.
+    * @param {Object} character Character instance.
+    * @param {Object} characterImages Character image assets.
+    */
     constructor(character, characterImages) {
         this.char = character;
         this.images = characterImages;
     }
-
 
     /**
     * Initializes character properties, images, and state configurations.
@@ -18,9 +24,19 @@ export class CharacterConfig {
         this.initCombatConfig();
     }
 
+    /**
+    * Initializes core character values.
+    */
     initCoreValues() {
+        this.initCoreMovementValues();
+        this.initCoreStateValues();
+    }
+
+    /**
+    * Initializes core movement-related values.
+    */
+    initCoreMovementValues() {
         this.char.speedX = 8;
-        this.char.movementSpeed;
         this.char.lastFrameTime = 0;
         this.char.currentAnimation = 'idle';
         this.char.frameInterval = 1000 / 2.5;
@@ -29,6 +45,12 @@ export class CharacterConfig {
         this.char.yNormal = 370;
         this.char.yVoidless = 487;
         this.char.sheetIndex = 0;
+    }
+
+    /**
+    * Initializes core state-related values.
+    */
+    initCoreStateValues() {
         this.char.isGamecharacter = true;
         this.char.isHaveSword = true;
         this.char.hasHitEnemyThisAttack = false;
@@ -58,6 +80,9 @@ export class CharacterConfig {
         this.char.offset.bottom = 15;
     }
 
+    /**
+    * Initializes character image groups.
+    */
     initImages() {
         this.initMovementImages();
         this.initEmotionImages();
@@ -110,6 +135,9 @@ export class CharacterConfig {
         this.char.lightCampfireStandUpSheet = this.images.lightCampfireStandUpSheet ?? null;
     }
 
+    /**
+    * Initializes character state groups.
+    */
     initStates() {
         this.initBasicStates();
         this.initMovementStates();
@@ -180,8 +208,11 @@ export class CharacterConfig {
         this.char.isLightACampfire = false;
     }
 
+    /**
+    * Initializes combat configuration.
+    */
     initCombatConfig() {
-        this.char.attackHitbox = this.c.isHaveSword
+        this.char.attackHitbox = this.char.isHaveSword
             ? { top: 200, left: 200, right: 8, bottom: 65, active: false }
             : { top: 220, left: 200, right: 8, bottom: 52, active: false };
     }

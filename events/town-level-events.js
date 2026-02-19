@@ -565,7 +565,7 @@ export const townEvents =
                         const dmg = char.isProtect ? 2 : 10;
                         element.isActive = false;
                         element.explode();
-                        char.hit2(setup.world.timestamp, dmg);
+                        char.combatCtrl.hit(setup.world.timestamp, dmg);
                         setup.statusBar.setPercentage(char.energy);
                         setup.damageTexts.push(new DamageText(char.x + char.width / 2, char.y - 10, dmg));
 
@@ -617,7 +617,7 @@ export const townEvents =
                     ) {
                         if (!enemy.hasHitPlayerThisAttack && enemy.isCollidingBeforeWithAttackHitbox(char, 0, 0, enemy.attackHitbox)) {
                             const dmg = char.isProtect ? 2 : 10;
-                            char.hit2(setup.world.timestamp, dmg);
+                            char.combatCtrl.hit(setup.world.timestamp, dmg);
                             setup.statusBar.setPercentage(char.energy);
                             setup.damageTexts.push(new DamageText(char.x + char.width / 2, char.y - 10, dmg));
                             enemy.hasHitPlayerThisAttack = true;
@@ -708,7 +708,7 @@ export const townEvents =
                     ) {
                         if (!enemy.hasHitPlayerThisAttack && enemy.isCollidingBeforeWithAttackHitbox(char, 0, 0, enemy.attackHitbox)) {
                             const dmg = char.isProtect ? 2 : 10;
-                            char.hit2(setup.world.timestamp, dmg);
+                            char.combatCtrl.hit(setup.world.timestamp, dmg);
                             setup.statusBar.setPercentage(char.energy);
                             setup.damageTexts.push(new DamageText(char.x + char.width / 2, char.y - 10, dmg));
                             enemy.hasHitPlayerThisAttack = true;

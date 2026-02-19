@@ -7,9 +7,10 @@ export class CharacterMovementController {
     * @param {Object} character Character instance.
     * @param {Object} world World instance.
     */
-    constructor(character, world) {
+    constructor(character, world, animationController) {
         this.char = character;
         this.world = world;
+        this.animCtrl = animationController;
     }
 
     /**
@@ -25,8 +26,8 @@ export class CharacterMovementController {
         this.char.updateDeltaTime(timestamp);
         this.applyKnockback();
         this.handleMovement();
-        this.char.clampCamera();
-        this.char.handleCharacterAnimation();
+        this.clampCamera();
+        this.animCtrl.handleCharacterAnimation();
     }
 
     /**
@@ -55,7 +56,7 @@ export class CharacterMovementController {
         this.char.isMovingLeft = false;
         this.char.isMovingRight = false;
         this.char.speedY = 0;
-        this.char.handleCharacterAnimation();
+        this.animCtrl.handleCharacterAnimation();
         return true;
     }
 

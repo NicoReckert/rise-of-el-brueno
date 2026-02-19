@@ -34,7 +34,6 @@ export class LevelManager {
         world.farmLevelController = new FarmLevelController(world.farmLevelSetup);
         world.stableLevelSetup = new StableLevelSetup(world);
         world.stableLevelController = new StableLevelController(world.stableLevelSetup);
-        world.setWorld();
     }
 
     /**
@@ -92,7 +91,6 @@ export class LevelManager {
         const world = this.world;
         if (!world.character) return;
         world.character = null;
-        world.characterAudio = null;
     }
 
     /**
@@ -112,12 +110,7 @@ export class LevelManager {
     */
     createNewCharacter() {
         const world = this.world;
-        world.character = new Character(world.characterImages);
-        world.characterAudio = new CharacterAudioController(
-            world.character,
-            world.audioManager
-        );
-        world.setWorld();
+        world.character = new Character(world.characterImages, this.world, this.world.audioManager);
     }
 
     /**

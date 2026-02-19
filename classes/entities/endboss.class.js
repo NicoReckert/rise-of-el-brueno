@@ -1163,7 +1163,7 @@ export class Endboss extends MovableObject {
 
         if (timestamp - this.lastBreathDamageTime >= this.fireBreathTickMs) {
             if (this.fireBreathBeam.isHitting(hero)) {
-                if (typeof hero.hit === "function") hero.hit(this.fireBreathDamage);
+                if (typeof hero.combatCtrl.hit === "function") hero.combatCtrl.hit(this.fireBreathDamage);
                 else if ("energy" in hero) hero.energy -= this.fireBreathDamage;
             }
             this.lastBreathDamageTime = timestamp;
