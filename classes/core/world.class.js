@@ -3,7 +3,6 @@ import { Character } from '../entities/character.class.js';
 import { TaskWindow } from '../ui/task-window.class.js';
 import { smartMerge } from '../../utils/asset-merge.util.js';
 import { WorldRenderer } from './world-renderer.class.js';
-import { CharacterAudioController } from '../systems/character-audio-controller.class.js';
 import { LevelManager } from '../systems/level-manager.class.js';
 import { WorldCleanup } from '../systems/world-cleanup.class.js';
 import { CameraController } from '../systems/camera-controller.class.js';

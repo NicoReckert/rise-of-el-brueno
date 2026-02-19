@@ -5,7 +5,16 @@ import { CharacterCombatController } from '../systems/character-combat-controlle
 import { CharacterMovementController } from '../systems/character-movement-controller.class.js';
 import { CharacterAudioController } from '../systems/character-audio-controller.class.js';
 
+/**
+ * Represents the playable character.
+ */
 export class Character extends MovableObject {
+    /**
+    * Creates a new character instance.
+    * @param {Object} characterImages Character image assets.
+    * @param {Object} world World instance.
+    * @param {Object} audioManager Audio manager instance.
+    */
     constructor(characterImages, world, audioManager) {
         super();
         this.config = new CharacterConfig(this, characterImages);
@@ -16,42 +25,16 @@ export class Character extends MovableObject {
         this.audioCtrl = new CharacterAudioController(this, audioManager);
         this.characterImages = characterImages;
         this.world = world;
-        this.initVoidlessAnimations();
-        this.initTransitionableAnimations();
     }
 
     /**
-    * Initializes animations that are not affected by void state.
+    * Updates all character subsystems.
     */
-    initVoidlessAnimations() {
-        this.VOIDLESS_ANIMS = new Set([
-            'kneel-and-cry', 'stand-up-determined',
-            'kneel-and-cry-loop', 'stand-up-determined-loop',
-            'determined-rise', 'determined-rise-loop',
-            'caress', 'caress-loop',
-            'sit-down-and-play-guitar', 'play-guitar-and-sing',
-            'play-guitar', 'light-a-campfire',
-            'meditation', 'meditation-loop', 'stand-up',
-            'walk-determined', 'stand-determined',
-            'stand-determined-loop', 'walk-in-storm',
-            'collapse', 'collapse-loop', 'stand-up-after-collapse',
-            'air-hit-stun', 'air-pain-stun'
-        ]);
-    }
-    /**
-    * Initializes animations that support transitions.
-    */
-    initTransitionableAnimations() {
-        this.TRANSITIONABLE_ANIMS = new Set([
-            'kneel-and-cry', 'stand-up-determined',
-            'determined-rise', 'caress',
-            'sit-down-and-play-guitar', 'light-a-campfire',
-            'attack-staff', 'attack-sword',
-            'meditation', 'new-weapon',
-            'stand-up', 'stand-determined',
-            'collapse', 'stand-up-after-collapse',
-            'protect', 'air-hit-stun', 'hurt'
-        ]);
+    updateAll(timestamp) {
+        this.movementCtrl.updateState(timestamp);
+        this.animCtrl.updateAnimation(timestamp);
+        if (this.isJumping) this.applyGravity(timestamp);
+        this.audioCtrl.update(timestamp);
     }
 
     /**

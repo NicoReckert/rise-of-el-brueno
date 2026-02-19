@@ -22,6 +22,41 @@ export class CharacterConfig {
         this.initImages();
         this.initStates();
         this.initCombatConfig();
+        this.initAnimationSets();
+    }
+
+    /**
+    * Initializes animation set definitions.
+    */
+    initAnimationSets() {
+        this.initVoidlessAnimations();
+        this.initTransitionableAnimations();
+    }
+
+    /**
+    * Initializes animations that are not affected by void state.
+    */
+    initVoidlessAnimations() {
+        this.char.VOIDLESS_ANIMS = new Set([
+            'kneel-and-cry', 'stand-up-determined', 'kneel-and-cry-loop', 'stand-up-determined-loop',
+            'determined-rise', 'determined-rise-loop', 'caress', 'caress-loop',
+            'sit-down-and-play-guitar', 'play-guitar-and-sing', 'play-guitar', 'light-a-campfire',
+            'meditation', 'meditation-loop', 'stand-up', 'walk-determined', 'stand-determined',
+            'stand-determined-loop', 'walk-in-storm',
+            'collapse', 'collapse-loop', 'stand-up-after-collapse',
+            'air-hit-stun', 'air-pain-stun'
+        ]);
+    }
+    /**
+    * Initializes animations that support transitions.
+    */
+    initTransitionableAnimations() {
+        this.char.TRANSITIONABLE_ANIMS = new Set([
+            'kneel-and-cry', 'stand-up-determined', 'determined-rise', 'caress',
+            'sit-down-and-play-guitar', 'light-a-campfire', 'attack-staff', 'attack-sword',
+            'meditation', 'new-weapon', 'stand-up', 'stand-determined',
+            'collapse', 'stand-up-after-collapse', 'protect', 'air-hit-stun', 'hurt'
+        ]);
     }
 
     /**

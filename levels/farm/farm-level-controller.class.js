@@ -85,10 +85,7 @@ export class FarmLevelController {
 
     updateCharacter(timestamp) {
         this.inputManager.processGameInput(this.world, timestamp);
-        this.character.movementCtrl.updateState(timestamp);
-        this.character.animCtrl.updateAnimation(timestamp);
-        if (this.character.isJumping) this.character.applyGravity(timestamp);
-        this.world.character.audioCtrl.update(timestamp);
+        this.character.updateAll(timestamp);
     }
 
     updateEntities(timestamp, collections) {

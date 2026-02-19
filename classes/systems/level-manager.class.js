@@ -1,5 +1,4 @@
 import { Character } from '../entities/character.class.js';
-import { CharacterAudioController } from './character-audio-controller.class.js';
 import { FarmLevelSetup } from '../../levels/farm/farm-level-setup.class.js';
 import { FarmLevelController } from '../../levels/farm/farm-level-controller.class.js';
 import { StableLevelSetup } from '../../levels/stable/stable-level-setup.class.js';
