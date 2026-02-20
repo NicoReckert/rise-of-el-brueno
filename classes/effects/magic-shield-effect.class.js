@@ -1,138 +1,245 @@
+/**
+ * Represents a magic shield visual effect.
+ */
 export class MagicShieldEffect {
+    /**
+    * Creates a new instance.
+    * @param {HTMLCanvasElement} canvas Canvas element.
+    */
     constructor(canvas) {
         this.canvas = canvas;
-        this.active = false;
+        this.initEffectState();
+    }
 
+    /**
+    * Initializes the internal state of the effect.
+    */
+    initEffectState() {
+        this.active = false;
         this.radius = 230;
         this.pulse = 0;
         this.pulseSpeed = 0.03;
-
         this.ringTimer = 0;
         this.rings = [];
-
         this.particles = [];
-
-        this.lastTime = 0;          // ⬅ neu
-        this.spawnAccumulator = 0;  // ⬅ neu (für Partikel-Rate)
+        this.lastTime = 0;
+        this.spawnAccumulator = 0;
     }
 
-    /** Aktivieren */
+    /**
+    * Activates the effect and resets its state.
+    */
     start() {
         this.active = true;
         this.pulse = 0;
         this.rings = [];
         this.particles = [];
-        this.lastTime = 0;          // ⬅ wichtig: zurücksetzen
+        this.lastTime = 0;
         this.spawnAccumulator = 0;
     }
 
-    /** Deaktivieren */
+    /**
+    * Deactivates the effect and clears active elements.
+    */
     stop() {
         this.active = false;
         this.rings = [];
         this.particles = [];
     }
 
-    update(x, y, timestamp) {
+    /**
+    * Updates the effect state.
+    * @param {number} timestamp Frame timestamp.
+    */
+    update(timestamp) {
         if (!this.active) return;
+        const dt = this.computeDeltaTime(timestamp);
+        this.updatePulseAndOffset(timestamp);
+        this.maybeSpawnRing(timestamp);
+        this.updateRings(dt);
+        this.spawnNewParticles(dt);
+        this.updateParticles(dt);
+        this.updateClipJitter(timestamp);
+    }
 
-        // === Delta-Zeit in Sekunden ===
-        if (!this.lastTime) this.lastTime = timestamp;
-        const dt = (timestamp - this.lastTime) / 1000; // Sekunden
-        this.lastTime = timestamp;
-
-        // --- Pulsieren (war schon zeitbasiert) ---
-        this.pulse = Math.sin(timestamp * this.pulseSpeed) * 15;
-
-        // --- Dynamischer Radius (war auch zeitbasiert) ---
-        this.dynamicOffset =
-            Math.sin(timestamp * 0.002) * 6 +
-            Math.sin(timestamp * 0.005) * 3;
-
-        // --- Kraftwellen + Shockwave (bereits zeitbasiert) ---
-        if (timestamp - this.ringTimer > 350) {
-            this.rings.push({ radius: this.getDynamicRadius(), alpha: 0.6 });
-
-            if (this.onShockwave) this.onShockwave();
-
-            this.ringTimer = timestamp;
+    /**
+    * Computes the delta time since the last update.
+    * @param {number} timestamp Frame timestamp.
+    * @returns {number} Delta time in seconds.
+    */
+    computeDeltaTime(timestamp) {
+        if (!this.lastTime) {
+            this.lastTime = timestamp;
         }
+        const dt = (timestamp - this.lastTime) / 1000;
+        this.lastTime = timestamp;
+        return dt;
+    }
 
-        // === Geschwindigkeiten so gewählt, dass es bei ~60 FPS wie vorher aussieht ===
-        const ringRadiusSpeedPerSec = 4 * 60;   // vorher: +4 pro Frame → 4 * 60
-        const ringAlphaFadePerSec  = 0.01 * 60; // vorher: -0.01 pro Frame → 0.6 / Sek
+    /**
+    * Updates pulse and dynamic offset values.
+    * @param {number} timestamp Frame timestamp.
+    */
+    updatePulseAndOffset(timestamp) {
+        this.pulse = Math.sin(timestamp * this.pulseSpeed) * 15;
+        const slowWave = Math.sin(timestamp * 0.002) * 6;
+        const fastWave = Math.sin(timestamp * 0.005) * 3;
+        this.dynamicOffset = slowWave + fastWave;
+    }
 
-        // --- Kraftwellen expandieren (fps-unabhängig) ---
-        this.rings.forEach(r => {
-            r.radius += ringRadiusSpeedPerSec * dt;
-            r.alpha  -= ringAlphaFadePerSec  * dt;
+    /**
+    * Spawns a new ring if the interval has elapsed.
+    * @param {number} timestamp Frame timestamp.
+    */
+    maybeSpawnRing(timestamp) {
+        if (timestamp - this.ringTimer <= 350) return;
+        this.rings.push({
+            radius: this.getDynamicRadius(),
+            alpha: 0.6
         });
-        this.rings = this.rings.filter(r => r.alpha > 0);
+        if (this.onShockwave) {
+            this.onShockwave();
+        }
+        this.ringTimer = timestamp;
+    }
 
-        // === Partikel-Spawn zeitbasiert ===
-        // vorher: 3 Partikel pro Frame → bei 60 FPS ≈ 180 / Sekunde
-        const particlesPerSecond = 3 * 60;
-        this.spawnAccumulator += particlesPerSecond * dt;
+    /**
+    * Updates active rings.
+    * @param {number} dt Delta time in seconds.
+    */
+    updateRings(dt) {
+        const radiusSpeed = 4 * 60;
+        const alphaFade = 0.01 * 60;
+        this.rings.forEach(ring => {
+            ring.radius += radiusSpeed * dt;
+            ring.alpha -= alphaFade * dt;
+        });
+        this.rings = this.rings.filter(ring => ring.alpha > 0);
+    }
 
+    /**
+    * Spawns new particles based on accumulated time.
+    * @param {number} dt Delta time in seconds.
+    */
+    spawnNewParticles(dt) {
+        this.spawnAccumulator += 3 * 60 * dt;
         while (this.spawnAccumulator >= 1) {
-            // p.speed war vorher "pro Frame": 1..3
-            // → jetzt "pro Sekunde": * 60
-            const baseSpeedPerFrame = 1 + Math.random() * 2;
-            const speedPerSec = baseSpeedPerFrame * 60;
-
+            const speedPerSec = (1 + Math.random() * 2) * 60;
             this.particles.push({
                 angle: Math.random() * Math.PI * 2,
                 dist: this.getDynamicRadius(),
                 speed: speedPerSec,
                 alpha: 0.8
             });
-
             this.spawnAccumulator -= 1;
         }
+    }
 
-        // === Partikelbewegung zeitbasiert ===
-        // vorher: p.dist += p.speed (1..3 pro Frame)
-        //         p.alpha -= 0.02 pro Frame → 0.02 * 60 = 1.2 / Sekunde
-        const particleAlphaFadePerSec = 0.02 * 60;
-
-        this.particles.forEach(p => {
-            p.dist  += p.speed * dt;
-            p.alpha -= particleAlphaFadePerSec * dt;
+    /**
+    * Updates active particles.
+    * @param {number} dt Delta time in seconds.
+    */
+    updateParticles(dt) {
+        const alphaFade = 0.02 * 60;
+        this.particles.forEach(particle => {
+            particle.dist += particle.speed * dt;
+            particle.alpha -= alphaFade * dt;
         });
         this.particles = this.particles.filter(p => p.alpha > 0);
+    }
 
-        // Flimmern im Schild – bleibt exakt wie vorher
+    /**
+    * Updates clip jitter offsets.
+    * @param {number} timestamp Frame timestamp.
+    */
+    updateClipJitter(timestamp) {
         this.clipJitterX = Math.sin(timestamp * 0.004) * 4;
         this.clipJitterY = Math.cos(timestamp * 0.003) * 4;
     }
 
+    /**
+     Draws the effect.
+    * @param {CanvasRenderingContext2D} ctx Rendering context.
+    * @param {number} x X-coordinate of the effect center.
+    * @param {number} y Y-coordinate of the effect center.
+    */
     draw(ctx, x, y) {
         if (!this.active) return;
-
         ctx.save();
         ctx.globalCompositeOperation = "lighter";
+        this.drawBeam(ctx, x, y);
+        this.drawGlow(ctx, x, y);
+        this.drawRings(ctx, x, y);
+        this.drawParticles(ctx, x, y);
+        ctx.restore();
+    }
 
-        // --- Lichtstrahl vom Stein ---
+    /**
+    * Draws the beam effect.
+    * @param {CanvasRenderingContext2D} ctx Rendering context.
+    * @param {number} x X-coordinate of the effect center.
+    * @param {number} y Y-coordinate of the effect center.
+    */
+    drawBeam(ctx, x, y) {
         const gradBeam = ctx.createLinearGradient(x, y - 80, x, 0);
         gradBeam.addColorStop(0, "rgba(80,180,255,0.07)");
         gradBeam.addColorStop(1, "rgba(80,180,255,0)");
         ctx.fillStyle = gradBeam;
         ctx.fillRect(x - 25, 0, 50, y);
+    }
 
-        // --- Glow ---
+    /**
+    * Draws the glow effect.
+    * @param {CanvasRenderingContext2D} ctx Rendering context.
+    * @param {number} x X-coordinate of the effect center.
+    * @param {number} y Y-coordinate of the effect center.
+    */
+    drawGlow(ctx, x, y) {
+        const radius = this.getDynamicRadius();
+        const glow = this.createGlowGradient(ctx, x, y, radius);
+        ctx.fillStyle = glow;
+        this.fillGlowCircle(ctx, x, y, radius);
+    }
+
+    /**
+    * Creates a radial gradient for the glow.
+    * @param {CanvasRenderingContext2D} ctx Rendering context.
+    * @param {number} x X-coordinate of the gradient center.
+    * @param {number} y Y-coordinate of the gradient center.
+    * @param {number} radius Base radius value.
+    * @returns {CanvasGradient} Radial gradient instance.
+    */
+    createGlowGradient(ctx, x, y, radius) {
         const glow = ctx.createRadialGradient(
-            x, y, this.getDynamicRadius() * 0.2,
-            x, y, this.getDynamicRadius() * 1.05
+            x, y, radius * 0.2,
+            x, y, radius * 1.05
         );
         glow.addColorStop(0, "rgba(0,160,255,0.08)");
         glow.addColorStop(1, "rgba(0,160,255,0)");
+        return glow;
+    }
 
-        ctx.fillStyle = glow;
+    /**
+    * Fills the glow circle.
+    * @param {CanvasRenderingContext2D} ctx Rendering context.
+    * @param {number} x X-coordinate of the circle center.
+    * @param {number} y Y-coordinate of the circle center.
+    * @param {number} radius Base radius value.
+    */
+    fillGlowCircle(ctx, x, y, radius) {
+        const totalRadius = radius + this.pulse + this.dynamicOffset;
         ctx.beginPath();
-        ctx.arc(x, y, this.getDynamicRadius() + this.pulse + this.dynamicOffset, 0, Math.PI * 2);
+        ctx.arc(x, y, totalRadius, 0, Math.PI * 2);
         ctx.fill();
+    }
 
-        // --- Kraftwellen ---
+    /**
+    * Draws active rings.
+    * @param {CanvasRenderingContext2D} ctx Rendering context.
+    * @param {number} x X-coordinate of the effect center.
+    * @param {number} y Y-coordinate of the effect center.
+    */
+    drawRings(ctx, x, y) {
         this.rings.forEach(r => {
             ctx.strokeStyle = `rgba(120,200,255,${r.alpha * 0.4})`;
             ctx.lineWidth = 6;
@@ -140,21 +247,29 @@ export class MagicShieldEffect {
             ctx.arc(x, y, r.radius, 0, Math.PI * 2);
             ctx.stroke();
         });
+    }
 
-        // --- Partikel ---
+    /**
+    * Draws active particles.
+    * @param {CanvasRenderingContext2D} ctx Rendering context.
+    * @param {number} x X-coordinate of the effect center.
+    * @param {number} y Y-coordinate of the effect center.
+    */
+    drawParticles(ctx, x, y) {
         this.particles.forEach(p => {
             const px = x + Math.cos(p.angle) * p.dist;
             const py = y + Math.sin(p.angle) * p.dist;
-
             ctx.fillStyle = `rgba(120,200,255,${p.alpha})`;
             ctx.beginPath();
             ctx.arc(px, py, 4, 0, Math.PI * 2);
             ctx.fill();
         });
-
-        ctx.restore();
     }
 
+    /**
+    * Returns the current dynamic radius.
+    * @returns {number} Calculated radius value.
+    */
     getDynamicRadius() {
         return this.radius + this.pulse + this.dynamicOffset;
     }
