@@ -16,9 +16,9 @@ export class TownLevelController {
         this.addToWorld = this.world.renderer.addToWorld.bind(this.world.renderer);
         this.character = this.world.character;
         this.keyboard = this.world.keyboard;
-        this.sandstorm = new SandstormEffect(this.canvas);
-        this.sandstormNear = new SandstormEffect(this.canvas); // schneller, heller
-        this.sandstormFar = new SandstormEffect(this.canvas); // langsamer, dunkler
+        this.sandstorm = new SandstormEffect(this.canvas, this.setup.entityImages);
+        this.sandstormNear = new SandstormEffect(this.canvas, this.setup.entityImages); // schneller, heller
+        this.sandstormFar = new SandstormEffect(this.canvas, this.setup.entityImages); // langsamer, dunkler
 
 
         // this.sandstormFar.setAlpha(0.04);
