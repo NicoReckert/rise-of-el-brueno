@@ -498,8 +498,10 @@ export const otherLevelEntityManifestLazy = {
   },
 
   egg: {
-    idle: Array.from({ length: 1 }, _ => `./assets/img/entities/egg/idle/image_1.png`),
-    broken: Array.from({ length: 6 }, (_, i) => `./assets/img/entities/egg/broken/image_${i + 1}.png`)
+    idleBrokenSheet: {
+      type: 'sheet',
+      json: './assets/img/entities/egg/idle_and_broken/idle_and_broken_sheet.json'
+    }
   },
 
   rockyDesertPedestal: {

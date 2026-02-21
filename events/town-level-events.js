@@ -16,10 +16,10 @@ export const townEvents =
                 setup.backgroundMusic.loop = true;
                 fadeInAudio(setup.sounds.backgroundMusic, 2000, 0.6);
 
-                setup.world.character.x = 100; // 100 //18500//23000
+                setup.world.character.x = 23000; // 100 //18500//23000
                 setup.world.character.level_start_x = 0;
                 setup.world.level_end_x = 25000;
-                setup.world.camera_x = 0; //0 // 18400 //22900
+                setup.world.camera_x = 22900; //0 // 18400 //22900
                 setup.world.character.speedX = 10;
                 setup.world.character.isWalkDetermined = false;
                 setup.characters.tadeo.updateAnimationState('idle', 1000 / 5);

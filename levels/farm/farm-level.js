@@ -143,14 +143,14 @@ for (let i = 0; i < 66; i++) {
     calculationXFarm += 50;
 }
 
-export function createFarmLevel() {
+export function createFarmLevel({ entityImages }) {
     // Wolken
     const levelWidth = 7200;
     const CLOUD_DENSITY = 1 / 700;
     const clouds = [];
     const cloudCount = Math.round(levelWidth * CLOUD_DENSITY);
     for (let i = 0; i < cloudCount; i++) {
-        clouds.push(new Cloud(clouds, 280, levelWidth));
+        clouds.push(new Cloud({ existingClouds: clouds, minDistance: 280, levelWidth: levelWidth, entityImages: entityImages }));
     }
 
     // BACKGROUND
