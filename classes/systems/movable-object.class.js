@@ -583,4 +583,30 @@ export class MovableObject extends DrawableObject {
             }
         }
     }
+
+    // MovableObject
+    getFrameCountForSource(anim, animName = this.currentAnimation) {
+        if (!anim) return 0;
+
+        // Arrays
+        if (Array.isArray(anim)) return anim.length;
+
+        // Einzel-Sheet
+        if (anim.type === 'sheet') {
+            const def = this.getSheetDef(anim.meta, anim.anim ?? animName);
+            return this.getFrameCount(def, anim.meta.frames);
+        }
+
+        // SheetSequence
+        if (anim.type === 'sheetSequence') {
+            let total = 0;
+            for (const sheet of anim.sheets ?? []) {
+                const def = this.getSheetDef(sheet.meta, sheet.anim ?? animName);
+                total += this.getFrameCount(def, sheet.meta.frames);
+            }
+            return total;
+        }
+
+        return 0;
+    }
 }
