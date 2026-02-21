@@ -1,4 +1,5 @@
 export const farmEntityManifestImmediate = {
+  cloud: { variants: Array.from({ length: 2 }, (_, i) => `./assets/img/5_background/layers/4_clouds/${i + 1}.webp`) },
   cow: {
     idle: {
       type: 'sheetSequence',

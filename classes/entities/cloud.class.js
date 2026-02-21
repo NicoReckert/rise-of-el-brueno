@@ -1,43 +1,108 @@
 import { MovableObject } from '../systems/movable-object.class.js';
 
 /**
- * Represents a cloud object within the level.
+ * Represents a cloud object in the world.
  */
 export class Cloud extends MovableObject {
   /**
-  * Creates a new cloud instance.
-  * @param {Array<Object>} [existingClouds=[]] Existing clouds for distance checks.
-  * @param {number} [minDistance=200] Minimum horizontal distance to other clouds.
-  * @param {number} [levelWidth=6500] Width of the level.
-  * @param {*} [spriteSheet=null] Sprite sheet reference.
-  */
-  constructor(existingClouds = [], minDistance = 200, levelWidth = 6500, spriteSheet = null) {
+ * Creates a new instance.
+ * @param {Object} [options={}] Configuration options.
+ * @param {Array} [options.existingClouds=[]] Existing cloud instances.
+ * @param {number} [options.minDistance=200] Minimum distance between clouds.
+ * @param {number} [options.levelWidth=6500] Width of the level.
+ * @param {*} [options.spriteSheet=null] Optional sprite sheet source.
+ * @param {?Object} [options.entityImages=null] Optional image definitions.
+ */
+  constructor({ existingClouds = [], minDistance = 200, levelWidth = 6500, spriteSheet = null, entityImages = null } = {}) {
     super();
+    this.initConfig(existingClouds, minDistance, levelWidth, spriteSheet);
+    this.initImages(entityImages);
+    this.frameIndex = 0;
+    this.cloudVariantIndex = null;
+    this.randomizeSizeAndY();
+    this.pickRandomSprite();
+    this.initMovementState();
+  }
+
+  /**
+  * Initializes configuration values.
+  * @param {Array} existingClouds Existing cloud instances.
+  * @param {number} minDistance Minimum distance between clouds.
+  * @param {number} levelWidth Width of the level.
+  * @param {*} spriteSheet Sprite sheet source.
+  */
+  initConfig(existingClouds, minDistance, levelWidth, spriteSheet) {
     this.existingClouds = existingClouds;
     this.minDistance = minDistance;
     this.levelWidth = levelWidth;
     this.spriteSheet = spriteSheet;
+  }
+
+  /**
+  * Initializes cloud image resources.
+  * @param {Object} entityImages Image definitions.
+  */
+  initImages(entityImages) {
+    this.cloudImages = entityImages?.cloud?.variants || [];
     this.frameSource = null;
-    this.randomizeSizeAndY();
-    this.pickRandomSprite();
+  }
+
+  /**
+  * Initializes movement-related state.
+  */
+  initMovementState() {
     this.speed = 0.3;
     this.x = this.findInitialPosition();
     this.lastUpdateTime = null;
   }
 
   /**
-  * Selects and applies a random sprite or sprite sheet animation.
+  * Selects a random sprite for the cloud.
   */
   pickRandomSprite() {
     const sheet = this.spriteSheet;
-    if (sheet && sheet.meta && sheet.image) {
-      const animName = sheet.anim ?? 'idle';
-      if (this.applySheetAnimFrame(sheet, animName)) {
-        return;
-      }
-    }
-    const cloudVariant = Math.random() < 0.5 ? '1' : '2';
-    this.loadImage(`./assets/img/5_background/layers/4_clouds/${cloudVariant}.webp`);
+    if (this.tryPickSpriteFromSheet(sheet)) return;
+    if (this.tryPickSpriteFromImages()) return;
+    this.resetSpriteSelection();
+  }
+
+  /**
+  * Attempts to select a sprite from a sprite sheet.
+  * @param {*} sheet Sprite sheet data.
+  * @returns {boolean} True if selection was successful, otherwise false.
+  */
+  tryPickSpriteFromSheet(sheet) {
+    if (!sheet?.meta || !sheet?.image) return false;
+    const def = this.getSheetAnimDef(sheet);
+    const range = this.getSheetFrameRange(def, sheet.meta);
+    if (!range.count || range.count < 1) return false;
+    this.frameIndex = Math.floor(Math.random() * range.count);
+    this.applyNextSheetFrame(sheet);
+    this.cloudVariantIndex = null;
+    return true;
+  }
+
+  /**
+  * Attempts to select a sprite from available images.
+  * @returns {boolean} True if selection was successful, otherwise false.
+  */
+  tryPickSpriteFromImages() {
+    if (!this.cloudImages.length) return false;
+    this.cloudVariantIndex = Math.floor(
+      Math.random() * this.cloudImages.length
+    );
+    this.img = this.cloudImages[this.cloudVariantIndex];
+    this.frameSource = null;
+    return true;
+  }
+
+  /**
+  * Resets sprite selection state.
+  */
+  resetSpriteSelection() {
+    this.img = null;
+    this.frameSource = null;
+    this.cloudVariantIndex = null;
   }
 
   /**
