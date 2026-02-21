@@ -1,42 +1,54 @@
 import { MovableObject } from '../systems/movable-object.class.js';
 
 /**
- * Represents a movable object that uses a random image and has collision offsets.
- * @extends MovableObject
+ * Represents a bottle object in the world.
  */
 export class Bottle extends MovableObject {
-    isGameCharacter = true;
-    randomImage;
-
     /**
-     * Creates a new instance with randomized image and position.
-     * @param {Object} entityImages - Image data containing object graphics.
-     */
+    * Creates a new instance.
+    * @param {Object} entityImages Image definitions.
+    * @param {number} x Initial x-coordinate.
+    */
     constructor(entityImages, x) {
         super();
         this.entityImages = entityImages;
-        this.bottleImages = entityImages.bottleOnGround || [];
-        this.randomImage = this.bottleImages[Math.floor(Math.random() * this.bottleImages.length)];
-        this.img = this.randomImage;
-        // this.x = 200 + Math.random() * 1000;
-        this.x = x;
-        this.y = 583;
-        this.height = 80;
-        this.width = 80;
+        this.initBottleImage();
+        this.initBottlePosition(x);
         this.setOffset();
     }
 
     /**
-     * Sets collision or display offset values based on the selected image.
-     */
+    * Initializes bottle image selection.
+    */
+    initBottleImage() {
+        this.bottleImages = this.entityImages.bottleOnGround || [];
+        this.randomImageIndex = Math.floor(Math.random() * this.bottleImages.length);
+        this.randomImage = this.bottleImages[this.randomImageIndex];
+        this.img = this.randomImage;
+    }
+
+    /**
+    * Initializes bottle position and size.
+    * @param {number} x Initial x-coordinate.
+    */
+    initBottlePosition(x) {
+        this.x = x;
+        this.y = 583;
+        this.height = 80;
+        this.width = 80;
+    }
+    
+    /**
+    * Sets collision offset values for the bottle.
+    */
     setOffset() {
         this.offset.top = 12;
-        if (this.randomImage != "./assets/img/6_salsa_bottle/1_salsa_bottle_on_ground.webp") {
-            this.offset.left = 24;
-            this.offset.right = 25;
-        } else {
+        if (this.randomImage === 0) {
             this.offset.left = 33;
             this.offset.right = 15;
+        } else {
+            this.offset.left = 24;
+            this.offset.right = 25;
         }
         this.offset.bottom = 8;
     }
