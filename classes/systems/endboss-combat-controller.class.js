@@ -1,301 +1,267 @@
-export class EndbossCombatController {
-    constructor() {
+import { EndbossFireball } from "../effects/endboss-fireball.class.js";
+import { EndbossFireBeam } from "../effects/endboss-fire-beam.class.js";
 
+/**
+ * Controls combat behavior of an endboss.
+ */
+export class EndbossCombatController {
+    /**
+    * Creates a new instance.
+    * @param {*} endboss Reference to the endboss object.
+    */
+    constructor(endboss) {
+        this.endboss = endboss;
+        this.animCtrl = this.endboss.animCtrl;
+        this.airPhaseCtrl = this.endboss.airPhaseCtrl;
     }
 
+    /**
+    * Shoots a projectile toward the given character.
+    * @param {*} character Target character instance.
+    * @returns {void}
+    */
     shootProjectile(character) {
         const targetX = character.x + character.width * 0.5;
         const targetY = character.y + character.height * 0.35;
-
-        const direction = targetX > (this.x + this.width * 0.5);
-
+        const direction = targetX > (this.endboss.x + this.endboss.width * 0.5);
         const beakX = direction
-            ? this.x + this.width * 0.88
-            : this.x + this.width * 0.12;
-
-        const beakY = this.y + this.height * 0.20;
-
-        const fireball = new EndbossFireball(beakX, beakY, targetX, targetY, this.allAudios);
-        fireball.world = this.world; // 🔥 WICHTIG
-
-        this.world.projectiles.push(fireball);
+            ? this.endboss.x + this.endboss.width * 0.88
+            : this.endboss.x + this.endboss.width * 0.12;
+        const beakY = this.endboss.y + this.endboss.height * 0.20;
+        const fireball = new EndbossFireball(beakX, beakY, targetX, targetY, this.endboss.allAudios);
+        fireball.world = this.endboss.world;
+        this.endboss.world.projectiles.push(fireball);
     }
 
-    startFinisher(timestamp, setup) {
-        this.finisherStarted = true;
-        this.finisherState = this.FINISHER.TAKEOFF;
-        this.finisherStartTime = timestamp;
-
-        // Boss sofort in Air-Phase + Ascend
-        this.airState = this.AIR_STATE.ASCEND;
-        this.isFly = true;
-        this.isJumping = false;
-        this.speedY = 0;
-
-        this.setPhase(this.ENDBOSS_PHASE.AIR_EGGS);
-
-        // Optional: Movement/Angriffe stoppen
-        this.isMovingLeft = false;
-        this.isMovingRight = false;
-        this.isFireballAttack = false;
+    /**
+    * Starts the finisher sequence.
+    * @param {number} timestamp Frame timestamp.
+    * @returns {void}
+    */
+    startFinisher(timestamp) {
+        this.endboss.finisherStarted = true;
+        this.endboss.finisherState = this.endboss.FINISHER.TAKEOFF;
+        this.endboss.finisherStartTime = timestamp;
+        this.endboss.airState = this.endboss.AIR_STATE.ASCEND;
+        this.endboss.isFly = true;
+        this.endboss.isJumping = false;
+        this.endboss.speedY = 0;
+        this.setPhase(this.endboss.ENDBOSS_PHASE.AIR_EGGS);
+        this.endboss.isMovingLeft = false;
+        this.endboss.isMovingRight = false;
+        this.endboss.isFireballAttack = false;
     }
 
-    updateFinisher(timestamp, setup) {
-        const hero = setup.world.character;
-        const tornado = setup.world.tornado;
-
-        switch (this.finisherState) {
-
-            case this.FINISHER.TAKEOFF: {
-                // nutzt deine ASCEND-Logik
-                this.airState = this.AIR_STATE.ASCEND;
-                this.isFly = true;
-                this.updateAirEggPhase(timestamp, setup);
-
-                // sobald oben -> Ei droppen
-                if (Math.abs(this.y - this.airY) <= 0.0001) {
-                    this.finisherState = this.FINISHER.DROP_TORNADO_EGG;
-                    this.finisherEggDropped = false;
-                }
-                break;
-            }
-
-            case this.FINISHER.DROP_TORNADO_EGG: {
-                if (!this.finisherEggDropped) {
-                    setup.endbossAttack.spawnEgg(this, setup, "tornado", 0, { width: 300, height: 300, groundY: 460 });
-                    this.finisherEggDropped = true;
-                }
-                // direkt warten bis Tornado fertig
-                this.finisherState = this.FINISHER.WAIT_TORNADO_DONE;
-                break;
-            }
-
-            case this.FINISHER.WAIT_TORNADO_DONE: {
-                // ✅ warten bis Tornado fertig ist und Bruno auf Podest steht
-                // (du setzt Bruno.y am Ende von BUILD -> 165)
-                if (tornado && tornado.isFinished && hero.y === 165) {
-                    this.finisherState = this.FINISHER.MOVE_TO_FIRE_POS;
-
-                    // Boss bleibt oben im Flugmodus
-                    this.isFly = true;
-                    this.isJumping = false;
-                    this.speedY = 0;
-
-                    // optional: Boss schaut Richtung Bruno
-                    this.isFlipped = hero.x > this.x;
-
-                }
-                break;
-            }
-
-            case this.FINISHER.MOVE_TO_FIRE_POS: {
-                const hero = setup.world.character;
-
-                this.isFly = true;
-                this.isJumping = false;
-                this.speedY = 0;
-
-                // ✅ oben bleiben
-                this.y = this.airY;
-
-                // ✅ Richtung korrekt (bei dir: isFlipped = true heißt nach rechts)
-                this.isFlipped = hero.x > this.x;
-
-                const reached = this.moveToX(this.finisherFireX, 520); // px/sec
-                if (reached) {
-                    this.airState = this.AIR_STATE.DESCEND;
-                    this.setPhase(this.ENDBOSS_PHASE.AIR_EGGS);
-                    this.finisherState = this.FINISHER.BOSS_DESCEND;
-                }
-                break;
-            }
-
-
-            case this.FINISHER.BOSS_DESCEND: {
-                const hero = setup.world.character;
-
-                // Beim Descend weiter Richtung Bruno schauen:
-                this.isFlipped = hero.x > this.x;
-
-                this.updateAirEggPhase(timestamp, setup);
-
-                if (this.phase === this.ENDBOSS_PHASE.GROUND) {
-                    this.finisherState = this.FINISHER.FIRE_BREATH;
-
-                    // ✅ FireBreath starten (HOLD)
-                    this.startFireBreath(setup, timestamp);
-                }
-                break;
-            }
-
-
-            case this.FINISHER.FIRE_BREATH: {
-                const hero = setup.world.character;
-
-                // ✅ Boss bleibt stehen und schaut dauerhaft zu Bruno
-                this.isMovingLeft = false;
-                this.isMovingRight = false;
-                this.isFlipped = hero.x > this.x;
-
-                // ✅ Beam updaten (Position + Damage Tick)
-                this.updateFireBreath(setup, timestamp);
-
-                // NICHT weiter wechseln -> bleibt so lange aktiv,
-                // bis du später stopFireBreath() aufrufst oder finisherState änderst.
-                break;
-            }
-
-
-            case this.FINISHER.DONE: {
-                // optional: hier kannst du in eine neue Phase wechseln (ENRAGE/Storm etc.)
-                break;
-            }
-        }
-    }
-
-
-
+    /**
+    * Starts the fire breath attack.
+    * @param {*} setup Configuration or state setup object.
+    * @param {number} timestamp Frame timestamp.
+    * @returns {void}
+    */
     startFireBreath(setup, timestamp) {
-        setup.world.character.combatCtrl.startAirHitStun(timestamp);
-        this.fadeOutAudio(setup.backgroundMusic, 1000);
-        this.fadeInAudio(setup.sounds.airHitStunMusic, 2000, 1.0);
-        if (!setup.spiritEssenceSeq?.active && setup.world.character.isAirHitStun) {
+        const character = setup.world.character;
+        character.combatCtrl.startAirHitStun(timestamp);
+        this.applyFireBreathAudio(setup);
+        this.maybeStartSpiritEssenceSequence(setup, timestamp);
+        this.endboss.isFireBreath = true;
+        this.endboss.lastBreathDamageTime = 0;
+        this.ensureFireBreathBeam(setup);
+        this.activateFireBreathBeam();
+    }
+
+    /**
+    * Applies audio changes for the fire breath attack.
+    * @param {*} setup Configuration or state setup object.
+    * @returns {void}
+    */
+    applyFireBreathAudio(setup) {
+        this.endboss.fadeOutAudio(setup.backgroundMusic, 1000);
+        this.endboss.fadeInAudio(setup.sounds.airHitStunMusic, 2000, 1.0);
+    }
+
+    /**
+    * Starts the spirit essence sequence if conditions are met.
+    * @param {*} setup Configuration or state setup object.
+    * @param {number} timestamp Frame timestamp.
+    * @returns {void}
+    */
+    maybeStartSpiritEssenceSequence(setup, timestamp) {
+        const character = setup.world.character;
+        const seq = setup.spiritEssenceSeq;
+        if (!seq?.active && character.isAirHitStun) {
             setup.world.townLevelController.startSpiritEssenceSequence(timestamp);
-        }
-
-
-        this.isFireBreath = true;
-        this.lastBreathDamageTime = 0;
-
-        // Beam nur 1x erstellen
-        if (!this.fireBreathBeam) {
-            this.fireBreathBeam = new EndbossFireBeam(setup.entityImages, this.allAudios);
-            this.fireBreathBeam.world = setup.world;
-            setup.effects.push(this.fireBreathBeam); // oder setup.effects
-        }
-
-        // sofort syncen
-        this.fireBreathBeam.setOwner(this);
-        this.fireBreathBeam.active = true;
-        this.fireBreathBeam.updateFromOwner();
-    }
-
-    updateFireBreath(setup, timestamp) {
-        if (!this.fireBreathBeam) return;
-
-        this.fireBreathBeam.setOwner(this);
-        this.fireBreathBeam.active = true;
-        this.fireBreathBeam.updateFromOwner();
-
-        // Schaden in Ticks (nicht jeden Frame)
-        const hero = setup.world.character;
-        if (!hero) return;
-
-        if (!this.lastBreathDamageTime) this.lastBreathDamageTime = timestamp;
-
-        if (timestamp - this.lastBreathDamageTime >= this.fireBreathTickMs) {
-            if (this.fireBreathBeam.isHitting(hero)) {
-                if (typeof hero.combatCtrl.hit === "function") hero.combatCtrl.hit(this.fireBreathDamage);
-                else if ("energy" in hero) hero.energy -= this.fireBreathDamage;
-            }
-            this.lastBreathDamageTime = timestamp;
-        }
-    }
-
-    stopFireBreath() {
-        this.isFireBreath = false;
-        if (this.fireBreathBeam) this.fireBreathBeam.active = false;
-    }
-
-    setPhase(newPhase) {
-        this.phase = newPhase;
-        this.phaseStartTime = performance.now();
-
-        switch (newPhase) {
-            case this.ENDBOSS_PHASE.AIR_EGGS:
-                this.isFly = true;
-                this.isVulnerable = false;
-                this.airMinX = 22000;
-                this.airMaxX = 23600;
-                this.airY = -100;
-                this.airDir = 1;
-                this.lastAirTime = null;
-                // if (this.airState !== this.AIR_STATE.ASCEND) {
-                //     this.y = this.airY;
-                // }
-                this.speedY = 0;
-                this.isJumping = false;
-                break;
-
-            case this.ENDBOSS_PHASE.STORM:
-                this.isFly = true;
-                this.isVulnerable = false;
-                break;
-
-            case this.ENDBOSS_PHASE.GROUND:
-                this.isFly = false;
-                // this.land();
-                this.isVulnerable = true;
-                break;
-
-            case this.ENDBOSS_PHASE.ENRAGE:
-                this.isVulnerable = true;
-                this.speedX *= 1.3;
-                break;
         }
     }
 
     /**
- * Updates movement and animation state each frame.
- */
-    updateState(timestamp, setup) {
-        this.updateDeltaTime(timestamp);
-        if (!this.finisherStarted && this.energy <= this.lowEnergyThreshold) {
-            this.finisherStarted = true;
-            this.isHurt = false;
-            this.isFireballAttack = false;
-            this.isJumping = false;
-            this.speedY = 0;
-
-            // ✅ Takeoff = Flugstate aktivieren
-            this.isFly = true;
-            this.airState = this.AIR_STATE.ASCEND;
-            this.setPhase(this.ENDBOSS_PHASE.AIR_EGGS);
-        }
-
-        if (this.finisherStarted) {
-            this.updateFinisher(timestamp, setup);
-            this.handleStateAnimations();
-            return;
-        }
-
-        switch (this.phase) {
-            case this.ENDBOSS_PHASE.AIR_EGGS:
-                this.updateAirEggPhase(timestamp, setup);
-                break;
-
-            case this.ENDBOSS_PHASE.STORM:
-                this.updateStormPhase(timestamp, setup);
-                break;
-
-            case this.ENDBOSS_PHASE.GROUND:
-                this.updateGroundPhase(timestamp, setup);
-                break;
-
-            case this.ENDBOSS_PHASE.ENRAGE:
-                this.updateEnragePhase(timestamp, setup);
-                break;
-        }
-
-        if (this.phase === this.ENDBOSS_PHASE.GROUND ||
-            this.phase === this.ENDBOSS_PHASE.ENRAGE) {
-            this.handleMovement();
-        }
-
-        this.handleStateAnimations();
+    * Ensures the fire breath beam instance exists.
+    * @param {*} setup Configuration or state setup object.
+    * @returns {void}
+    */
+    ensureFireBreathBeam(setup) {
+        if (this.endboss.fireBreathBeam) return;
+        const beam = new EndbossFireBeam(setup.entityImages, this.endboss.allAudios);
+        beam.world = setup.world;
+        setup.effects.push(beam);
+        this.endboss.fireBreathBeam = beam;
     }
 
+    /**
+    * Activates the fire breath beam.
+    * @returns {void}
+    */
+    activateFireBreathBeam() {
+        const beam = this.endboss.fireBreathBeam;
+        if (!beam) return;
+        beam.setOwner(this.endboss);
+        beam.active = true;
+        beam.updateFromOwner();
+    }
 
+    /**
+    * Updates the fire breath attack.
+    * @param {*} setup Configuration or state setup object.
+    * @param {number} timestamp Frame timestamp.
+    * @returns {void}
+    */
+    updateFireBreath(setup, timestamp) {
+        const beam = this.endboss.fireBreathBeam;
+        if (!beam) return;
+        this.refreshFireBreathBeam(beam);
+        const char = setup.world.character;
+        if (!char) return;
+        this.initBreathDamageTime(timestamp);
+        this.applyBreathDamageIfDue(beam, char, timestamp);
+    }
 
+    /**
+    * Refreshes the fire breath beam state.
+    * @param {*} beam Fire breath beam instance.
+    * @returns {void}
+    */
+    refreshFireBreathBeam(beam) {
+        beam.setOwner(this.endboss);
+        beam.active = true;
+        beam.updateFromOwner();
+    }
 
+    /**
+    * Initializes the timestamp for fire breath damage.
+    * @param {number} timestamp Frame timestamp.
+    * @returns {void}
+    */
+    initBreathDamageTime(timestamp) {
+        if (!this.endboss.lastBreathDamageTime) {
+            this.endboss.lastBreathDamageTime = timestamp;
+        }
+    }
+
+    /**
+    * Applies fire breath damage if the interval has elapsed.
+    * @param {*} beam Fire breath beam instance.
+    * @param {*} char Target character instance.
+    * @param {number} timestamp Frame timestamp.
+    * @returns {void}
+    */
+    applyBreathDamageIfDue(beam, char, timestamp) {
+        const last = this.endboss.lastBreathDamageTime || timestamp;
+        const interval = this.endboss.fireBreathTickMs;
+        if (timestamp - last < interval) return;
+        if (beam.isHitting(char)) {
+            this.applyFireBreathDamage(char);
+        }
+        this.endboss.lastBreathDamageTime = timestamp;
+    }
+
+    /**
+    * Applies fire breath damage to the target character.
+    * @param {*} char Target character instance.
+    * @returns {void}
+    */
+    applyFireBreathDamage(char) {
+        const dmg = this.endboss.fireBreathDamage;
+        if (typeof char.combatCtrl.hit === "function") {
+            char.combatCtrl.hit(dmg);
+        } else if ("energy" in char) {
+            char.energy -= dmg;
+        }
+    }
+
+    /**
+    * Stops the fire breath attack.
+    * @returns {void}
+    */
+    stopFireBreath() {
+        this.endboss.isFireBreath = false;
+        if (this.endboss.fireBreathBeam) this.endboss.fireBreathBeam.active = false;
+    }
+
+    /**
+    * Sets a new phase and applies corresponding settings.
+    * @param {*} newPhase Phase identifier.
+    * @returns {void}
+    */
+    setPhase(newPhase) {
+        this.endboss.phase = newPhase;
+        this.endboss.phaseStartTime = performance.now();
+        this.applyPhaseSettings(newPhase);
+    }
+
+    /**
+    * Applies settings for the specified phase.
+    * @param {*} newPhase Phase identifier.
+    * @returns {void}
+    */
+    applyPhaseSettings(newPhase) {
+        const phase = this.endboss.ENDBOSS_PHASE;
+        switch (newPhase) {
+            case phase.AIR_EGGS: this.applyAirEggsPhase(); break;
+            case phase.STORM: this.applyStormPhase(); break;
+            case phase.GROUND: this.applyGroundPhase(); break;
+            case phase.ENRAGE: this.applyEnragePhase(); break;
+        }
+    }
+
+    /**
+    * Applies settings for the air eggs phase.
+    * @returns {void}
+    */
+    applyAirEggsPhase() {
+        this.endboss.isFly = true;
+        this.endboss.isVulnerable = false;
+        this.endboss.airMinX = 22000;
+        this.endboss.airMaxX = 23600;
+        this.endboss.airY = -100;
+        this.endboss.airDir = 1;
+        this.endboss.lastAirTime = null;
+        this.endboss.speedY = 0;
+        this.endboss.isJumping = false;
+    }
+
+    /**
+    * Applies settings for the storm phase.
+    * @returns {void}
+    */
+    applyStormPhase() {
+        this.endboss.isFly = true;
+        this.endboss.isVulnerable = false;
+    }
+
+    /**
+    * Applies settings for the ground phase.
+    * @returns {void}
+    */
+    applyGroundPhase() {
+        this.endboss.isFly = false;
+        this.endboss.isVulnerable = true;
+    }
+
+    /**
+    * Applies settings for the enrage phase.
+    * @returns {void}
+    */
+    applyEnragePhase() {
+        this.endboss.isVulnerable = true;
+        this.endboss.speedX *= 1.3;
+    }
 }

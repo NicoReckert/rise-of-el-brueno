@@ -1,25 +1,21 @@
 import { MovableObject } from '../systems/movable-object.class.js';
-import { EndbossFireball } from '../effects/endboss-fireball.class.js';
-import { EndbossFireBeam } from '../effects/endboss-fire-beam.class.js';
-import { AudioManager } from '../../core/audio-manager.class.js';
-
 import { EndbossConfig } from '../systems/endboss-config.class.js';
 import { EndbossAnimationController } from '../systems/endboss-animation-controller.class.js';
 import { EndbossCombatController } from '../systems/endboss-combat-controller.class.js';
 import { EndbossMovementController } from '../systems/endboss-movement-controller.class.js';
+import { EndbossAirPhaseController } from '../systems/endboss-air-phase-controller.class.js';
+import { EndbossGroundAttackController } from '../systems/endboss-ground-attack-controller.class.js';
 
 /**
- * Represents a complex movable object with gravity, animation, and state handling.
- * Handles movement, jumping, falling, and transitions between animation states.
- * @extends MovableObject
+ * Represents the endboss entity.
  */
 export class Endboss extends MovableObject {
-    isGameCharacter = true;
-
     /**
-     * Creates a new instance with default position, speed, and animation settings.
-     * @param {Object} entityImages - Image data containing animation frames.
-     */
+    * Creates a new endboss instance.
+    * @param {*} entityImages Entity image resources.
+    * @param {*} allAudios Audio resources.
+    * @param {*} world World instance.
+    */
     constructor(entityImages, allAudios, world) {
         super();
         this.world = world;
@@ -28,136 +24,200 @@ export class Endboss extends MovableObject {
         this.config = new EndbossConfig(this, entityImages, allAudios, world);
         this.config.initAll();
         this.animCtrl = new EndbossAnimationController(this);
-        this.combatCtrl = new EndbossCombatController(this, this.animCtrl);
-        this.movementCtrl = new EndbossMovementController(this, world);
+        this.combatCtrl = new EndbossCombatController(this);
+        this.movementCtrl = new EndbossMovementController(this);
+        this.airPhaseCtrl = new EndbossAirPhaseController(this);
+        this.groundAttackCtrl = new EndbossGroundAttackController(this);
     }
-
-    /** wie beim Character */
-    updateAll(timestamp, setup) {
-        this.updateDeltaTime(timestamp);
-        this.combatCtrl.updateState(timestamp, setup);
-        this.movementCtrl.updateState(timestamp, setup);
-        this.animCtrl.updateAnimation(timestamp);
-    }
-
 
     /**
-     * Updates movement and animation state each frame.
-     */
-    updateState(timestamp, setup) {
+    * Updates all subsystems for the current frame.
+    * @param {number} timestamp Frame timestamp.
+    * @param {*} setup Configuration or state setup object.
+    * @returns {void}
+    */
+    updateAll(timestamp, setup) {
         this.updateDeltaTime(timestamp);
-        if (!this.finisherStarted && this.energy <= this.lowEnergyThreshold) {
-            this.finisherStarted = true;
-            this.isHurt = false;
-            this.isFireballAttack = false;
-            this.isJumping = false;
-            this.speedY = 0;
-
-            // ✅ Takeoff = Flugstate aktivieren
-            this.isFly = true;
-            this.airState = this.AIR_STATE.ASCEND;
-            this.setPhase(this.ENDBOSS_PHASE.AIR_EGGS);
-        }
-
+        this.movementCtrl.updateState(timestamp, setup);
+        this.animCtrl.updateAnimation(timestamp);
         if (this.finisherStarted) {
             this.updateFinisher(timestamp, setup);
-            this.handleStateAnimations();
-            return;
-        }
-
-        switch (this.phase) {
-            case this.ENDBOSS_PHASE.AIR_EGGS:
-                this.updateAirEggPhase(timestamp, setup);
-                break;
-
-            case this.ENDBOSS_PHASE.STORM:
-                this.updateStormPhase(timestamp, setup);
-                break;
-
-            case this.ENDBOSS_PHASE.GROUND:
-                this.updateGroundPhase(timestamp, setup);
-                break;
-
-            case this.ENDBOSS_PHASE.ENRAGE:
-                this.updateEnragePhase(timestamp, setup);
-                break;
-        }
-
-        if (this.phase === this.ENDBOSS_PHASE.GROUND ||
-            this.phase === this.ENDBOSS_PHASE.ENRAGE) {
-            this.handleMovement();
-        }
-
-        this.handleStateAnimations();
-    }
-
-    updateGroundPhase(timestamp, setup) {
-        const hero = setup.world.character;
-        const dist = Math.abs(hero.x - this.x);
-
-        // 1) Sequenz starten
-        if (!this.groundFireballSequenceActive) {
-            if (dist <= 400) return;
-
-            this.groundFireballSequenceActive = true;
-            this.groundFireballShotsDone = 0;
-            this.groundShotInProgress = false;
-            this.lastSequenceShotTime = 0;
-        }
-
-        // 2) Wenn ein Schuss gestartet wurde: warten bis Animation fertig ist
-        // (dein playFireballAttackAnimation setzt isFireballAttack am Ende wieder false)
-        if (this.groundShotInProgress) {
-            if (!this.isFireballAttack) {
-                // Schuss ist komplett abgeschlossen
-                this.groundFireballShotsDone++;
-                this.groundShotInProgress = false;
-                this.lastSequenceShotTime = timestamp;
-            } else {
-                return; // noch mitten in der Attack
-            }
-        }
-
-        // 3) Fertig?
-        if (this.groundFireballShotsDone >= this.groundFireballShotsMax) {
-            this.groundFireballSequenceActive = false;
-
-            // zurück in die Air-Phase
-            this.airPointIndex = 0;
-            this.airState = this.AIR_STATE.ASCEND;
-
-            // ✅ Takeoff: sofort "Fly" aktivieren und Gravity/Jump neutralisieren
-            this.isFly = true;
-            this.isJumping = false;
-            this.speedY = 0;
-
-            this.setPhase(this.ENDBOSS_PHASE.AIR_EGGS);
-            return;
-        }
-
-        // 4) Nächsten Schuss starten, wenn Delay + Cooldown ok
-        const delayOk = (timestamp - this.lastSequenceShotTime) >= this.groundSequenceShotDelay;
-        const cooldownOk = (timestamp - this.lastFireballAttackTime) >= this.fireballCooldown;
-
-        if (!this.isFireballAttack && delayOk && cooldownOk) {
-            this.isFireballAttack = true;
-            this.hasFiredThisAttack = false;
-            this.frameIndex = 0;
-            this.lastFireballAttackTime = timestamp;
-
-            const audio = this.allAudios.fireballChargeSound.cloneNode();
-            audio.play();
-
-            this.groundShotInProgress = true; // ✅ wichtig
         }
     }
 
+    /**
+    * Updates the finisher sequence state.
+    * @param {number} timestamp Frame timestamp.
+    * @param {*} setup Configuration or state setup object.
+    * @returns {void}
+    */
+    updateFinisher(timestamp, setup) {
+        const char = setup.world.character;
+        const tornado = setup.world.tornado;
+        const state = this.finisherState;
+        if (
+            state === this.FINISHER.TAKEOFF ||
+            state === this.FINISHER.DROP_TORNADO_EGG ||
+            state === this.FINISHER.WAIT_TORNADO_DONE
+        ) {
+            this.updateFinisherEarlyStates(state, timestamp, setup, char, tornado);
+            return;
+        }
+        this.updateFinisherLateStates(state, timestamp, setup, char);
+    }
 
+    /**
+    * Updates early states of the finisher sequence.
+    * @param {*} state Current finisher state.
+    * @param {number} timestamp Frame timestamp.
+    * @param {*} setup Configuration or state setup object.
+    * @param {*} char Character instance.
+    * @param {*} tornado Tornado instance.
+    * @returns {void}
+    */
+    updateFinisherEarlyStates(state, timestamp, setup, char, tornado) {
+        if (state === this.FINISHER.TAKEOFF) {
+            this.handleFinisherTakeoff(timestamp, setup);
+            return;
+        }
+        if (state === this.FINISHER.DROP_TORNADO_EGG) {
+            this.handleFinisherDropEgg(setup);
+            return;
+        }
+        if (state === this.FINISHER.WAIT_TORNADO_DONE) {
+            this.handleFinisherWaitTornado(char, tornado);
+        }
+    }
 
+    /**
+    * Updates late states of the finisher sequence.
+    * @param {*} state Current finisher state.
+    * @param {number} timestamp Frame timestamp.
+    * @param {*} setup Configuration or state setup object.
+    * @param {*} char Character instance.
+    * @returns {void}
+    */
+    updateFinisherLateStates(state, timestamp, setup, char) {
+        if (state === this.FINISHER.MOVE_TO_FIRE_POS) {
+            this.handleFinisherMoveToFirePos(char);
+            return;
+        }
+        if (state === this.FINISHER.BOSS_DESCEND) {
+            this.handleFinisherBossDescend(timestamp, setup, char);
+            return;
+        }
+        if (state === this.FINISHER.FIRE_BREATH) {
+            this.handleFinisherFireBreath(timestamp, setup, char);
+        }
+    }
 
+    /**
+    * Handles the takeoff state of the finisher sequence.
+    * @param {number} timestamp Frame timestamp.
+    * @param {*} setup Configuration or state setup object.
+    * @returns {void}
+    */
+    handleFinisherTakeoff(timestamp, setup) {
+        this.airState = this.AIR_STATE.ASCEND;
+        this.isFly = true;
+        this.airPhaseCtrl.updateAirEggPhase(timestamp, setup);
+        const dy = this.y - this.airY;
+        if (Math.abs(dy) > 0.0001) return;
+        this.finisherState = this.FINISHER.DROP_TORNADO_EGG;
+        this.finisherEggDropped = false;
+    }
 
+    /**
+    * Handles dropping the tornado egg during the finisher sequence.
+    * @param {*} setup Configuration or state setup object.
+    * @returns {void}
+    */
+    handleFinisherDropEgg(setup) {
+        if (!this.finisherEggDropped) {
+            setup.endbossAttack.spawnEgg(
+                this,
+                setup,
+                "tornado",
+                0,
+                { width: 300, height: 300, groundY: 460 }
+            );
+            this.finisherEggDropped = true;
+        }
+        this.finisherState = this.FINISHER.WAIT_TORNADO_DONE;
+    }
 
+    /**
+    * Handles waiting for the tornado to finish during the finisher sequence.
+    * @param {*} char Character instance.
+    * @param {*} tornado Tornado instance.
+    * @returns {void}
+    */
+    handleFinisherWaitTornado(char, tornado) {
+        if (!tornado) return;
+        if (!tornado.isFinished) return;
+        if (char.y !== 165) return;
+        this.finisherState = this.FINISHER.MOVE_TO_FIRE_POS;
+        this.isFly = true;
+        this.isJumping = false;
+        this.speedY = 0;
+        this.isFlipped = char.x > this.x;
+    }
 
+    /**
+    * Handles movement to the fire position during the finisher sequence.
+    * @param {*} char Character instance.
+    * @returns {void}
+    */
+    handleFinisherMoveToFirePos(char) {
+        this.isFly = true;
+        this.isJumping = false;
+        this.speedY = 0;
+        this.y = this.airY;
+        this.isFlipped = char.x > this.x;
+        const reached = this.movementCtrl.moveToX(this.finisherFireX, 520);
+        if (!reached) return;
+        this.airState = this.AIR_STATE.DESCEND;
+        this.combatCtrl.setPhase(this.ENDBOSS_PHASE.AIR_EGGS);
+        this.finisherState = this.FINISHER.BOSS_DESCEND;
+    }
+
+    /**
+    * Handles boss descend during the finisher sequence.
+    * @param {number} timestamp Frame timestamp.
+    * @param {*} setup Configuration or state setup object.
+    * @param {*} char Character instance.
+    * @returns {void}
+    */
+    handleFinisherBossDescend(timestamp, setup, char) {
+        this.isFlipped = char.x > this.x;
+        this.airPhaseCtrl.updateAirEggPhase(timestamp, setup);
+        const groundPhase = this.ENDBOSS_PHASE.GROUND;
+        if (this.phase !== groundPhase) return;
+        this.finisherState = this.FINISHER.FIRE_BREATH;
+        this.combatCtrl.startFireBreath(setup, timestamp);
+    }
+
+    /**
+    * Handles the fire breath state during the finisher sequence.
+    * @param {number} timestamp Frame timestamp.
+    * @param {*} setup Configuration or state setup object.
+    * @param {*} char Character instance.
+    * @returns {void}
+    */
+    handleFinisherFireBreath(timestamp, setup, char) {
+        this.isMovingLeft = false;
+        this.isMovingRight = false;
+        this.isFlipped = char.x > this.x;
+        this.combatCtrl.updateFireBreath(setup, timestamp);
+    }
+
+    moveToX(targetX, speedPxPerSec) {
+        return this.movementCtrl.moveToX(targetX, speedPxPerSec);
+    }
+
+    setPhase(newPhase) {
+        this.combatCtrl.setPhase(newPhase);
+    }
 }
 
 // endbossReaction() {

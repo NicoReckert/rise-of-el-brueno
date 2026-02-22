@@ -1,23 +1,110 @@
-export class EndbossMovementController {
-    constructor() {
-
-    }
-
-    /**
- * Applies gravity by updating the vertical position over time.
- * @param {number} timestamp - Current time in milliseconds.
+/**
+ * Controls movement behavior of an endboss.
  */
-    applyGravityBoss(timestamp) {
-        if (!this.lastGravityUpdate) this.lastGravityUpdate = timestamp;
-        const deltaTime = timestamp - this.lastGravityUpdate;
-        if (deltaTime <= this.gravityInterval) return;
-        this.updateVerticalPosition();
-        this.lastGravityUpdate = timestamp;
+export class EndbossMovementController {
+    /**
+    * Creates a new instance.
+    * @param {*} endboss Reference to the endboss object.
+    */
+    constructor(endboss) {
+        this.endboss = endboss;
     }
 
     /**
-     * Updates the vertical position based on gravity and collisions.
-     */
+    * Updates the current state.
+    * @param {number} timestamp Frame timestamp.
+    * @param {*} setup Configuration or state setup object.
+    * @returns {void}
+    */
+    updateState(timestamp, setup) {
+        this.maybeStartFinisher();
+        if (this.endboss.finisherStarted) {
+            this.updateFinisherState(timestamp, setup);
+            return;
+        }
+        this.updatePhaseMovement(timestamp, setup);
+        this.handleGroundOrEnrageMovement();
+        this.endboss.animCtrl.handleStateAnimations();
+    }
+
+    /**
+    * Starts the finisher phase if conditions are met.
+    * @returns {void}
+    */
+    maybeStartFinisher() {
+        if (this.endboss.finisherStarted) return;
+        if (this.endboss.energy > this.endboss.lowEnergyThreshold) return;
+        this.endboss.finisherStarted = true;
+        this.endboss.isHurt = false;
+        this.endboss.isFireballAttack = false;
+        this.endboss.isJumping = false;
+        this.endboss.speedY = 0;
+        this.endboss.isFly = true;
+        this.endboss.airState = this.endboss.AIR_STATE.ASCEND;
+        this.endboss.combatCtrl.setPhase(this.endboss.ENDBOSS_PHASE.AIR_EGGS);
+    }
+
+    /**
+    * Updates the finisher state.
+    * @param {number} timestamp Frame timestamp.
+    * @param {*} setup Configuration or state setup object.
+    * @returns {void}
+    */
+    updateFinisherState(timestamp, setup) {
+        this.endboss.updateFinisher(timestamp, setup);
+        this.endboss.animCtrl.handleStateAnimations();
+    }
+
+    /**
+    * Updates movement logic based on the current phase.
+    * @param {number} timestamp Frame timestamp.
+    * @param {*} setup Configuration or state setup object.
+    * @returns {void}
+    */
+    updatePhaseMovement(timestamp, setup) {
+        const phase = this.endboss.phase;
+        const phases = this.endboss.ENDBOSS_PHASE;
+        if (phase === phases.AIR_EGGS) {
+            this.endboss.airPhaseCtrl.updateAirEggPhase(timestamp, setup);
+        } else if (phase === phases.STORM) {
+            // this.endboss.movementCtrl.updateStormPhase(timestamp, setup);
+        } else if (phase === phases.GROUND) {
+            this.endboss.groundAttackCtrl.updateGroundPhase(timestamp, setup);
+        } else if (phase === phases.ENRAGE) {
+            // this.endboss.movementCtrl.updateEnragePhase(timestamp, setup);
+        }
+    }
+
+    /**
+    * Handles movement when in ground or enrage phase.
+    * @returns {void}
+    */
+    handleGroundOrEnrageMovement() {
+        const phase = this.endboss.phase;
+        const phases = this.endboss.ENDBOSS_PHASE;
+        const isGround = phase === phases.GROUND;
+        const isEnrage = phase === phases.ENRAGE;
+        if (!isGround && !isEnrage) return;
+        this.endboss.movementCtrl.handleMovement();
+    }
+
+    /**
+    * Applies gravity updates based on a time interval.
+    * @param {number} timestamp Frame timestamp.
+    * @returns {void}
+    */
+    applyGravityBoss(timestamp) {
+        if (!this.endboss.lastGravityUpdate) this.endboss.lastGravityUpdate = timestamp;
+        const deltaTime = timestamp - this.endboss.lastGravityUpdate;
+        if (deltaTime <= this.endboss.gravityInterval) return;
+        this.updateVerticalPosition();
+        this.endboss.lastGravityUpdate = timestamp;
+    }
+
+    /**
+    * Updates the vertical position based on gravity state.
+    * @returns {void}
+    */
     updateVerticalPosition() {
         if (this.shouldApplyGravity()) {
             this.applyJumpPhysics();
@@ -28,275 +115,174 @@ export class EndbossMovementController {
     }
 
     /**
-     * Determines whether gravity should currently be applied.
-     * @returns {boolean} True if gravity should be applied.
-     */
+    * Determines whether gravity should be applied.
+    * @returns {boolean} True if gravity should be applied, otherwise false.
+    */
     shouldApplyGravity() {
-        if (this.isFly) return false;
-        return this.isJumping || this.y < -35 || this.speedY > 0;
+        if (this.endboss.isFly) return false;
+        return (
+            this.endboss.isJumping ||
+            this.endboss.y < -35 ||
+            this.endboss.speedY > 0
+        );
     }
 
-
     /**
-     * Applies basic jump physics.
-     */
+    * Applies vertical movement based on jump physics.
+    * @returns {void}
+    */
     applyJumpPhysics() {
-        this.y -= this.speedY;
-        this.speedY -= this.acceleration;
+        this.endboss.y -= this.endboss.speedY;
+        this.endboss.speedY -= this.endboss.acceleration;
     }
 
     /**
-     * Checks for ground collision and resets vertical movement if necessary.
-     */
+    * Checks and resolves collision with the ground.
+    * @returns {void}
+    */
     checkGroundCollision() {
-        if (this.y >= -35) {
-            this.y = -35;
-            this.speedY = 0;
-            this.isJumping = false;
+        if (this.endboss.y >= -35) {
+            this.endboss.y = -35;
+            this.endboss.speedY = 0;
+            this.endboss.isJumping = false;
         }
     }
 
     /**
-     * Resets vertical movement and jump state.
-     */
+    * Resets vertical movement state.
+    * @returns {void}
+    */
     resetVerticalMovement() {
-        this.speedY = 0;
-        this.isJumping = false;
+        this.endboss.speedY = 0;
+        this.endboss.isJumping = false;
     }
 
     /**
-     * Moves the object downward after death until it goes below the ground level.
-     * @param {number} timestamp - Current time in milliseconds.
-     */
+    * Moves the entity downward after death.
+    * @param {number} timestamp Frame timestamp.
+    * @returns {void}
+    */
     moveDownAfterDead(timestamp) {
-        if (!this.lastMoveDownTime) this.lastMoveDownTime = timestamp;
-        const deltaTime = timestamp - this.lastMoveDownTime;
+        if (!this.endboss.lastMoveDownTime) this.endboss.lastMoveDownTime = timestamp;
+        const deltaTime = timestamp - this.endboss.lastMoveDownTime;
         if (deltaTime <= 1000 / 60) return;
-        if (this.isDead && !this.isUnderTheGround) {
-            this.y += this.fallSpeed || 5;
-            if (this.y > 600) {
-                this.isUnderTheGround = true;
+        if (this.endboss.isDead && !this.endboss.isUnderTheGround) {
+            this.endboss.y += this.endboss.fallSpeed || 5;
+            if (this.endboss.y > 600) {
+                this.endboss.isUnderTheGround = true;
             }
         }
-        this.lastMoveDownTime = timestamp;
+        this.endboss.lastMoveDownTime = timestamp;
     }
 
     /**
- * Handles horizontal movement based on direction flags.
- */
+    * Handles horizontal movement based on direction flags.
+    * @returns {void}
+    */
     handleMovement() {
-        if (this.isMovingLeft) return this.moveLeft();
-        if (this.isMovingRight) return this.moveRight();
+        if (this.endboss.isMovingLeft) return this.moveLeft();
+        if (this.endboss.isMovingRight) return this.moveRight();
     }
 
     /**
-     * Moves the object to the left.
-     */
+    * Moves the entity to the left.
+    * @returns {void}
+    */
     moveLeft() {
-        this.isFlipped = false;
-        if (this.x > 0) {
-            this.x -= this.movementSpeed;
+        this.endboss.isFlipped = false;
+        if (this.endboss.x > 0) {
+            this.endboss.x -= this.endboss.movementSpeed;
         }
     }
 
     /**
-     * Moves the object to the right.
-     */
+    * Moves the entity to the right.
+    * @returns {void}
+    */
     moveRight() {
-        this.isFlipped = true;
-        this.x += this.movementSpeed;
+        this.endboss.isFlipped = true;
+        this.endboss.x += this.endboss.movementSpeed;
     }
 
+    /**
+    * Updates aerial patrol movement.
+    * @param {number} timestamp Frame timestamp.
+    * @returns {void}
+    */
     flyPatrol(timestamp) {
-        if (!this.lastAirTime) this.lastAirTime = timestamp;
-        const dt = (timestamp - this.lastAirTime) / 1000;
-        this.lastAirTime = timestamp;
-
-        const bob = this.airBobAmp
-            ? Math.sin(timestamp * this.airBobSpeed) * this.airBobAmp
-            : 0;
-
-        this.y = this.airY + bob;
-
-        this.x += this.airDir * this.airSpeed * dt;
-
-        if (this.x >= this.airMaxX) {
-            this.x = this.airMaxX;
-            this.airDir = -1;
-        } else if (this.x <= this.airMinX) {
-            this.x = this.airMinX;
-            this.airDir = 1;
-        }
-
-        this.isFlipped = this.airDir === 1;
+        const dt = this.computeAirDeltaTime(timestamp);
+        this.updateAirBobPosition(timestamp);
+        this.updateAirX(dt);
+        this.clampAirX();
+        this.endboss.isFlipped = this.endboss.airDir === 1;
     }
 
+    /**
+    * Computes the delta time for aerial movement.
+    * @param {number} timestamp Frame timestamp.
+    * @returns {number} Delta time in seconds.
+    */
+    computeAirDeltaTime(timestamp) {
+        if (!this.endboss.lastAirTime) {
+            this.endboss.lastAirTime = timestamp;
+        }
+        const dt = (timestamp - this.endboss.lastAirTime) / 1000;
+        this.endboss.lastAirTime = timestamp;
+        return dt;
+    }
+
+    /**
+    * Updates vertical bobbing position while in air.
+    * @param {number} timestamp Frame timestamp.
+    * @returns {void}
+    */
+    updateAirBobPosition(timestamp) {
+        const amp = this.endboss.airBobAmp;
+        let bob = 0;
+        if (amp) {
+            bob = Math.sin(timestamp * this.endboss.airBobSpeed) * amp;
+        }
+        this.endboss.y = this.endboss.airY + bob;
+    }
+
+    /**
+    * Updates horizontal position during aerial movement.
+    * @param {number} dt Delta time in seconds.
+    * @returns {void}
+    */
+    updateAirX(dt) {
+        this.endboss.x += this.endboss.airDir * this.endboss.airSpeed * dt;
+    }
+
+    /**
+    * Clamps horizontal air position within defined bounds.
+    * @returns {void}
+    */
+    clampAirX() {
+        const boss = this.endboss;
+        if (boss.x >= boss.airMaxX) {
+            boss.x = boss.airMaxX;
+            boss.airDir = -1;
+        } else if (boss.x <= boss.airMinX) {
+            boss.x = boss.airMinX;
+            boss.airDir = 1;
+        }
+    }
+
+    /**
+    * Moves the entity toward a target x-position.
+    * @param {number} targetX Target x-coordinate.
+    * @param {number} speedPxPerSec Movement speed in pixels per second.
+    * @returns {boolean} True if the target position is reached, otherwise false.
+    */
     moveToX(targetX, speedPxPerSec) {
-        const dx = targetX - this.x;
-        const step = speedPxPerSec * this.deltaSeconds;
+        const dx = targetX - this.endboss.x;
+        const step = speedPxPerSec * (this.endboss.deltaSeconds ?? 0);
         if (Math.abs(dx) <= step) {
-            this.x = targetX;
+            this.endboss.x = targetX;
             return true;
         }
-        this.x += Math.sign(dx) * step;
+        this.endboss.x += Math.sign(dx) * step;
         return false;
     }
-
-    updateAirEggPhase(timestamp, setup) {
-        const attack = setup.endbossAttack;
-        if (this.finisherStarted && (this.airState === this.AIR_STATE.MOVE || this.airState === this.AIR_STATE.DROP || this.airState === this.AIR_STATE.WAIT)) {
-            return;
-        }
-
-        if (this.airState !== this.AIR_STATE.DESCEND && this.airState !== this.AIR_STATE.ASCEND) {
-            this.y = this.airY;
-        }
-
-
-        // if (this.airState === this.AIR_STATE.DESCEND) {
-        //     this.isFly = false;
-        // } else {
-        //     this.isFly = true;
-        // }
-
-        this.isVulnerable = false;
-
-        switch (this.airState) {
-
-            // 1️⃣ Fliegen zur nächsten Position
-            case this.AIR_STATE.MOVE: {
-                const targetX = this.airPoints[this.airPointIndex];
-
-                if (this.x < targetX) this.airDir = 1;
-                else if (this.x > targetX) this.airDir = -1;
-
-                this.x += this.airDir * this.airSpeed * this.deltaSeconds;
-                this.isFlipped = this.airDir === 1;
-
-                if (
-                    (this.airDir === 1 && this.x >= targetX) ||
-                    (this.airDir === -1 && this.x <= targetX)
-                ) {
-                    this.x = targetX;
-                    this.airState = this.AIR_STATE.DROP;
-                    this.airDropIndex = 0;
-                    this.airLastActionTime = timestamp;
-                    this.airDropStartTime = timestamp;
-                }
-                break;
-            }
-
-            // 2️⃣ Eier droppen
-            case this.AIR_STATE.DROP: {
-                const seq = this.airDropSequence;
-                const step = seq[this.airDropIndex];
-                if (!step) {
-                    this.airState = this.AIR_STATE.WAIT;
-                    this.airLastActionTime = timestamp;
-                    return;
-                }
-
-                const elapsed = timestamp - this.airDropStartTime;
-
-                if (elapsed >= step.delay) {
-                    attack.spawnEgg(this, setup, step.type, 0);
-                    this.airDropIndex++;
-                }
-                break;
-            }
-
-
-            case this.AIR_STATE.WAIT: {
-                if (timestamp - this.airLastActionTime > 800) {
-
-                    // 🔚 letzter Air-Point erreicht?
-                    if (this.airPointIndex >= this.airPoints.length - 1) {
-                        this.airState = this.AIR_STATE.DESCEND;
-                    } else {
-                        this.airPointIndex++;
-                        this.airState = this.AIR_STATE.MOVE;
-                    }
-                }
-                break;
-            }
-
-            case this.AIR_STATE.DESCEND: {
-                const groundY = 205;
-                const descendSpeed = 300; // px pro Sekunde
-
-                const dy = groundY - this.y;                 // Ziel-Differenz
-                const step = descendSpeed * this.deltaSeconds;
-
-                // Richtung: +1 wenn groundY > y, sonst -1
-                const dir = Math.sign(dy);
-
-                // Wenn wir schon da sind (oder extrem nah)
-                if (dir === 0) {
-                    this.y = groundY;
-                } else {
-                    // Move towards ohne zu überschießen
-                    const move = Math.min(Math.abs(dy), step);
-                    this.y += dir * move;
-                }
-
-                // Flip behalten wie zuletzt
-                this.isFlipped = this.airDir === -1;
-
-                // Landen (mit Toleranz gegen Floating-Point)
-                if (Math.abs(groundY - this.y) <= 0.0001) {
-                    this.y = groundY;
-                    this.isFly = false;
-                    this.speedY = 0;
-                    this.isJumping = false;
-                    this.setPhase(this.ENDBOSS_PHASE.GROUND);
-                }
-
-                break;
-            }
-
-            case this.AIR_STATE.ASCEND: {
-                this.isFly = true;       // ✅ sofort fliegen
-                this.isJumping = false;  // ✅ kein Jump-State
-                this.speedY = 0;         // ✅ keine Rest-SpeedY
-
-                const targetY = this.airY;
-                const ascendSpeed = 300;
-                const dy = targetY - this.y;
-                const step = ascendSpeed * this.deltaSeconds;
-                const dir = Math.sign(dy);
-
-                if (dir !== 0) {
-                    const move = Math.min(Math.abs(dy), step);
-                    this.y += dir * move;
-                } else {
-                    this.y = targetY;
-                }
-
-                // Flip behalten wie zuletzt
-                this.isFlipped = this.airDir === 1;
-
-                if (Math.abs(targetY - this.y) <= 0.0001) {
-                    this.y = targetY;
-                    if (this.finisherStarted) return
-                    this.airState = this.AIR_STATE.MOVE; // ✅ weiter
-                }
-                break;
-            }
-
-
-
-
-
-
-        }
-
-        // Phase endet nach z.B. 4 Stops
-        // if (this.airPointIndex >= 4) {
-        //     this.setPhase(this.ENDBOSS_PHASE.STORM);
-        // }
-    }
-
-
-
-
 }

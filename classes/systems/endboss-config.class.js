@@ -57,7 +57,7 @@ export class EndbossConfig {
     * Initializes audio management for the endboss.
     */
     initEndbossAudio() {
-        this.endboss.audioManager = new AudioManager();
+        this.endboss.audioManager = this.endboss.world.audioManager;
         const audioManager = this.endboss.audioManager;
         this.endboss.fadeOutAudio = audioManager.fadeOutAudio.bind(audioManager);
         this.endboss.fadeInAudio = audioManager.fadeInAudio.bind(audioManager);
