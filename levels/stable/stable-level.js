@@ -20,8 +20,8 @@ export const stableLevel = new Level(
                 // new Ground(groundSrcStable[0], 0),
                 // new Ground(groundSrcStable[0], 719),
                 // new Ground(groundSrcStable[0], -719),
-                new Ground(groundSrcStable[0], 0, 0, 720, 1280),
-                new Ground(groundSrcStable[0], 1279, 0, 720, 1280),
+                new Ground(groundSrcStable[0], 0, 0, 1280, 720),
+                new Ground(groundSrcStable[0], 1278, 0, 1280, 720),
             ],
         towns:
             [

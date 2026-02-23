@@ -196,7 +196,7 @@ export function createFarmLevel({ entityImages }) {
         new Ground(groundSrcFarm[5], 5040),
         new Ground(groundSrcFarm[2], 5760),
         new Ground(groundSrcFarm[5], 6480),
-        new Ground(groundSrcFarm[6], 5033, 575, 100), // Grasfläche
+        new Ground(groundSrcFarm[6], 5033, 575, 720, 100), // Grasfläche
     ];
 
     // Extra-Boden-Kacheln
@@ -240,6 +240,3 @@ export function createFarmLevel({ entityImages }) {
         sky
     });
 }
-
-
-

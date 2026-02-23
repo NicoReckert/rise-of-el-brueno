@@ -149,7 +149,7 @@ export function createTownLevel({ entityImages, allAudios }) {
 
     let calculationX = 18676
     for (let index = 0; index < 41; index++) {
-        townLevel.grounds.foreGrounds.push(new Ground(groundSrcTown[7], calculationX, 572, 150, 300));
+        townLevel.grounds.foreGrounds.push(new Ground(groundSrcTown[7], calculationX, 572, 300, 150));
         calculationX = calculationX + 100;
     }
     return townLevel;

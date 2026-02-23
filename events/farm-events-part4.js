@@ -208,7 +208,7 @@ export const farmEvents_part4 = [
         action: (setup) => {
             if (!setup.world.taskWindow.tasks[7].done) {
                 const char = setup.world.character;
-                char.clampX(char, 2800, 3000);
+                char.movementCtrl.clampX(char, 2800, 3000);
             } else {
                 setup.world.character.isWalkDetermined = true;
                 setup.sounds.determinedMusic.play();
@@ -230,7 +230,7 @@ export const farmEvents_part4 = [
         once: false,
         action: (setup) => {
             const char = setup.world.character;
-            const arrivedX = char.moveToX(5100, { speed: 1, faceTarget: true });
+            const arrivedX = char.movementCtrl.moveToX(5100, { speed: 1, faceTarget: true });
             const targetCamX = char.x - 300;
             setup.world.camera.moveToX(targetCamX, { speed: 1, tolerance: 3, snap: false });
             if (arrivedX) setup.world.farmLevelController.questManager.advance(22);
@@ -380,7 +380,7 @@ export const farmEvents_part4 = [
         step: 22,
         action: (setup) => {
             const char = setup.world.character;
-            const arrivedX = char.moveToX(6500, { speed: 1, faceTarget: true });
+            const arrivedX = char.movementCtrl.moveToX(6500, { speed: 1, faceTarget: true });
             if (arrivedX) {
                 setup.world.isKeysStopp = false;
                 setup.world.currentScene = 'levelComplete';

@@ -2,6 +2,10 @@ import { PopupText } from "../classes/ui/popup-text.class.js";
 
 export const stableEvents =
     [
+        /**
+        * Quest event that initializes the level by setting camera,
+        * character position, and level boundaries.
+        */
         {
             type: 'quest',
             name: 'initialize',
@@ -12,6 +16,11 @@ export const stableEvents =
                 setup.world.character.level_start_x = 360;
             }
         },
+
+        /**
+        * Position-based event that changes back to the farm level,
+        * resets related events, and updates the return state.
+        */
         {
             type: 'position',
             name: 'changeLevel',
@@ -23,10 +32,14 @@ export const stableEvents =
                 setup.world.farmLevelController.eventManager.resetEventByName('initialize');
                 setup.world.farmLevelController.eventManager.resetEventByName('changeLevel');
                 setup.world.keyboard.F = false;
-                setup.world.farmLevelSetup.comeFromStable = true;
+                setup.world.farmLevelSetup.state.comeFromStable = true;
             }
         },
 
+        /**
+        * Position-based quest event that shows a hint when the character
+        * enters the defined area and hides it on leave.
+        */
         {
             type: 'position',
             area: { x: 360, width: 100 },
@@ -41,7 +54,10 @@ export const stableEvents =
             }
         },
 
-
+        /**
+        * Collision-based quest event that triggers a caress interaction with Juanito,
+        * plays audio, emits a stable event, and advances the quest.
+        */
         {
             type: 'collision',
             objectA: 'character',
@@ -64,6 +80,10 @@ export const stableEvents =
             }
         },
 
+        /**
+        * Collision-based quest event that shows a hint near Juanito
+        * while the quest step is below 8 and hides it on leave.
+        */
         {
             type: 'collision',
             objectA: 'character',
@@ -79,6 +99,10 @@ export const stableEvents =
             }
         },
 
+        /**
+        * Time-based quest event that ends the caress interaction,
+        * restores controls and audio, and resets the quest step.
+        */
         {
             type: 'time',
             delay: 2500,
@@ -94,6 +118,10 @@ export const stableEvents =
             }
         },
 
+        /**
+        * Time-based quest event that completes the first task,
+        * plays a completion sound, and shows a popup after the caress trigger.
+        */
         {
             type: 'time',
             delay: 2000,
@@ -108,6 +136,10 @@ export const stableEvents =
             }
         },
 
+        /**
+        * Collision-based quest event that triggers a caress interaction with Pollito,
+        * plays audio, emits a stable event, and advances the quest.
+        */
         {
             type: 'collision',
             objectA: 'character',
@@ -130,6 +162,10 @@ export const stableEvents =
             }
         },
 
+        /**
+        * Collision-based quest event that shows a hint near Pollito
+        * while the quest step is below 8 and hides it on leave.
+        */
         {
             type: 'collision',
             objectA: 'character',
@@ -145,6 +181,10 @@ export const stableEvents =
             }
         },
 
+        /**
+        * Time-based quest event that ends the caress interaction with Pollito,
+        * restores controls and audio, and resets the quest step.
+        */
         {
             type: 'time',
             delay: 2500,
@@ -160,6 +200,10 @@ export const stableEvents =
             }
         },
 
+        /**
+        * Time-based quest event that completes the second task,
+        * plays a completion sound, and shows a popup after the caress trigger.
+        */
         {
             type: 'time',
             delay: 2000,
@@ -174,6 +218,10 @@ export const stableEvents =
             }
         },
 
+        /**
+        * Collision-based event that shows a hint near the memory light
+        * once the quest step reaches 20 and hides it on leave.
+        */
         {
             type: 'collision',
             objectA: 'character',
@@ -188,6 +236,11 @@ export const stableEvents =
             }
         },
 
+        /**
+        * Collision-based event that completes the final task,
+        * plays audio, shows a popup, starts the video,
+        * and locks character controls when interacting with the memory light.
+        */
         {
             type: 'collision',
             objectA: 'character',
@@ -206,6 +259,10 @@ export const stableEvents =
             }
         },
 
+        /**
+        * Collision-based event that renders the memory video while playing
+        * and restores controls once playback ends.
+        */
         {
             type: 'collision',
             objectA: 'character',
@@ -223,6 +280,10 @@ export const stableEvents =
             }
         },
 
+        /**
+        * Input-based event that pauses the video when the S key is pressed
+        * during active playback.
+        */
         {
             type: 'input',
             key: 'S',
@@ -231,5 +292,4 @@ export const stableEvents =
                 setup.video.pause();
             }
         }
-
     ];

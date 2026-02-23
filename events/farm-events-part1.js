@@ -1,4 +1,5 @@
 import { PopupText } from "../classes/ui/popup-text.class.js";
+import { farmHelper } from "./farm-helper.js";
 
 export const farmEvents_part1 = [
     /**
@@ -26,7 +27,7 @@ export const farmEvents_part1 = [
         type: "quest",
         once: false,
         action: (setup) => {
-            handleStableDoorTrigger(setup);
+            farmHelper.handleStableDoorTrigger(setup);
         }
     },
 
@@ -249,7 +250,7 @@ export const farmEvents_part1 = [
         action: (setup) => {
             setup.world.ctx.save();
             setup.world.ctx.translate(-setup.world.farmLevelController.renderCameraX, 0)
-            setup.world.addToWorld(setup.environment.clock)
+            setup.world.renderer.addToWorld(setup.environment.clock)
             setup.world.ctx.restore()
         }
     },

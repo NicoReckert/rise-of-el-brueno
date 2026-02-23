@@ -122,9 +122,9 @@ export const farmHelper = {
         const world = setup.world;
         const char = world.character;
         const camArrived = world.camera.moveToX(108, { speed: 6 });
-        const arrivedX = char.moveToX(788, { speed: 5, faceTarget: true });
+        const arrivedX = char.movementCtrl.moveToX(788, { speed: 5, faceTarget: true });
         if (!arrivedX) return;
-        const arrivedY = char.moveToY(393, { speed: 1.5 });
+        const arrivedY = char.movementCtrl.moveToY(393, { speed: 1.5 });
         if (!arrivedY) return;
         if (!camArrived) return;
         farmHelper.finalizeCampfireArrival(setup, char);
@@ -195,7 +195,7 @@ export const farmHelper = {
         offscreen.width = portrait.width;
         offscreen.height = portrait.height;
         const offCtx = offscreen.getContext("2d");
-        setup.world.addToWorld({ ...portrait, x: 0, y: 0 }, offCtx);
+        setup.world.renderer.addToWorld({ ...portrait, x: 0, y: 0 }, offCtx);
         return { offscreen, offCtx };
     },
 

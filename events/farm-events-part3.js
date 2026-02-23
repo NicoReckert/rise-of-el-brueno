@@ -12,9 +12,9 @@ export const farmEvents_part3 = [
         once: false,
         action: (setup) => {
             const char = setup.world.character;
-            const arrivedX = char.moveToX(820, { speed: 5, faceTarget: true });
+            const arrivedX = char.movementCtrl.moveToX(820, { speed: 5, faceTarget: true });
             if (arrivedX) {
-                const arrivedY = char.moveToY(370, { speed: 1.5 });
+                const arrivedY = char.movementCtrl.moveToY(370, { speed: 1.5 });
                 if (arrivedY) {
                     char.yNormal = 370;
                     char.yVoidless = 487;
@@ -136,7 +136,7 @@ export const farmEvents_part3 = [
             const drone = setup.characters.drone;
             setup.world.ctx.save();
             setup.world.ctx.translate(-setup.world.farmLevelController.renderCameraX, 0);
-            setup.world.addToWorld(drone);
+            setup.world.renderer.addToWorld(drone);
             setup.world.ctx.restore();
             const camArrived = setup.world.camera.moveToX(drone.x - 300, { speed: 10 });
             if (camArrived) setup.world.farmLevelController.questManager.advance(15);
