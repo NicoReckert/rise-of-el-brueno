@@ -753,13 +753,13 @@ export class Enemy extends MovableObject {
         // 👉 NICHT mehr character.x > this.x,
         // sondern immer in Blickrichtung des Huhns
         const direction = this.isFlipped; // true = nach rechts, false = nach links
-
+        const setup = this.world.townLevelSetup;
         const offsetX = direction ? this.width - 25 : -45;
         const offsetY = this.y + this.height * 0.22; // aus dem Schnabel
 
-        const projectile = new Projectile(type, this.x + offsetX, offsetY, direction);
-        if (!this.world.projectiles) this.world.projectiles = [];
-        this.world.projectiles.push(projectile);
+        const projectile = new Projectile(this.entityImages, type, this.x + offsetX, offsetY, direction);
+        if (!setup.townLevel.projectiles) setup.townLevel.projectiles = [];
+        setup.townLevel.projectiles.push(projectile);
     }
 
     moveToTargetX(target = null, {

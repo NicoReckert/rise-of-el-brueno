@@ -6,15 +6,16 @@ import { Projectile } from '../entities/projectile.class.js';
 export class EndbossFireball extends Projectile {
     /**
     * Creates a new instance.
-    * @param {number} startX Start x position.
-    * @param {number} startY Start y position.
+    * @param {Object} entityImages Image collection for the entity.
+    * @param {number} startX Initial x position.
+    * @param {number} startY Initial y position.
     * @param {number} targetX Target x position.
     * @param {number} targetY Target y position.
-    * @param {*} allAudios Audio resources.
+    * @param {Object} allAudios Audio collection.
     */
-    constructor(startX, startY, targetX, targetY, allAudios) {
+    constructor(entityImages, startX, startY, targetX, targetY, allAudios) {
         const direction = targetX >= startX;
-        super("fireball", startX, startY, direction);
+        super(entityImages, "fireball", startX, startY, direction);
         this.initCore(allAudios);
         this.initVelocity(startX, startY, targetX, targetY);
         this.world = null;
@@ -54,7 +55,7 @@ export class EndbossFireball extends Projectile {
     updateState(timestamp) {
         if (this.markedForRemoval) return;
         this.updateDeltaTime(timestamp);
-        if (this.state === "explode") {
+        if (this.currentAnimation === "explode") {
             this.updateAnimation(timestamp);
             return;
         }
@@ -150,7 +151,7 @@ export class EndbossFireball extends Projectile {
     * Triggers the explosion state.
     */
     explode() {
-        if (this.state === "explode") return;
+        if (this.currentAnimation === "explode") return;
         if (this.allAudios?.explodeSound) {
             const audio = this.allAudios.explodeSound.cloneNode();
             audio.volume = 0.9;
@@ -159,20 +160,5 @@ export class EndbossFireball extends Projectile {
         super.explode();
         this.vx = 0;
         this.vy = 0;
-    }
-
-    /**
-    * Draws the projectile.
-    * @param {*} ctx Rendering context.
-    */
-    draw(ctx) {
-        ctx.save();
-        if (this.state !== "explode" && !this.direction) {
-            ctx.scale(-1, 1);
-            ctx.drawImage(this.img, -this.x - this.width, this.y, this.width, this.height);
-        } else {
-            ctx.drawImage(this.img, this.x, this.y, this.width, this.height);
-        }
-        ctx.restore();
     }
 }

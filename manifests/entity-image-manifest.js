@@ -486,7 +486,12 @@ export const otherLevelEntityManifestLazy = {
   },
 
   projectile: {
-    fireball: Array.from({ length: 6 }, (_, i) => `./assets/img/entities/projectile/fireball/idle/image_${i + 1}.png`)
+    fireball: {
+      idleExplodeSheet: {
+        type: 'sheet',
+        json: './assets/img/entities/projectile/fireball/idle_and_explode/idle_and_explode_sheet.json'
+      }
+    }
   },
 
   musician: {

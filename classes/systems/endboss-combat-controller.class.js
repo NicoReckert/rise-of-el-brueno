@@ -28,9 +28,9 @@ export class EndbossCombatController {
             ? this.endboss.x + this.endboss.width * 0.88
             : this.endboss.x + this.endboss.width * 0.12;
         const beakY = this.endboss.y + this.endboss.height * 0.20;
-        const fireball = new EndbossFireball(beakX, beakY, targetX, targetY, this.endboss.allAudios);
+        const fireball = new EndbossFireball(this.endboss.entityImages, beakX, beakY, targetX, targetY, this.endboss.allAudios);
         fireball.world = this.endboss.world;
-        this.endboss.world.projectiles.push(fireball);
+        this.endboss.world.townLevelSetup.townLevel.projectiles.push(fireball);
     }
 
     /**

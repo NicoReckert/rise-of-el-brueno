@@ -1,128 +1,192 @@
 import { MovableObject } from '../systems/movable-object.class.js';
 
+/**
+ * Movable projectile entity.
+ */
 export class Projectile extends MovableObject {
-  constructor(type, x, y, direction = true, maxDistance = 800) {
+  /**
+  * Creates a new instance.
+  * @param {Object} entityImages Image collection for the projectile.
+  * @param {string} type Projectile type.
+  * @param {number} x Initial x position.
+  * @param {number} y Initial y position.
+  * @param {boolean} [direction=true] Movement direction.
+  * @param {number} [maxDistance=800] Maximum travel distance.
+  */
+  constructor(entityImages, type, x, y, direction = true, maxDistance = 800) {
     super();
-    this.type = type;
-    this.direction = direction;
-    this.x = x;
-    this.y = y;
-
-    this.width = 60;
-    this.height = 60;
-
-    this.speed = 10; // px pro Frame @60fps (so wie du es bisher benutzt hast)
-    this.damage = 2;
-    this.lifetime = 4000;
-    this.isActive = true;
-    this.markedForRemoval = false;
-
-    this.startX = x;
-    this.maxDistance = maxDistance;
-
-    this.frameIndex = 0;
-    this.lastFrameTime = 0;
-    this.frameInterval = 1000 / 8;
-    this.state = "fly";
-
-    this.lastUpdateTime = 0; // ✅ für deltaTime
-
-    this.imageSets = {
-      fireball: [
-        './assets/img/entities/projectile/fireball/idle/image_1.png',
-        './assets/img/entities/projectile/fireball/idle/image_2.png',
-        './assets/img/entities/projectile/fireball/idle/image_3.png',
-        './assets/img/entities/projectile/fireball/idle/image_4.png',
-        './assets/img/entities/projectile/fireball/idle/image_5.png',
-        './assets/img/entities/projectile/fireball/idle/image_6.png'
-      ],
-      fireball_explode: [
-        './assets/img/entities/projectile/fireball/explode/image_1.png',
-        './assets/img/entities/projectile/fireball/explode/image_2.png',
-        './assets/img/entities/projectile/fireball/explode/image_3.png',
-        './assets/img/entities/projectile/fireball/explode/image_4.png',
-        './assets/img/entities/projectile/fireball/explode/image_5.png',
-        './assets/img/entities/projectile/fireball/explode/image_6.png',
-        './assets/img/entities/projectile/fireball/explode/image_7.png',
-        './assets/img/entities/projectile/fireball/explode/image_8.png',
-        './assets/img/entities/projectile/fireball/explode/image_9.png',
-        './assets/img/entities/projectile/fireball/explode/image_10.png'
-      ]
-    };
-
-    this.images = this.imageSets[type] || [];
-    this.img = new Image();
-    this.img.src = this.images[0];
-
-    setTimeout(() => this.markedForRemoval = true, this.lifetime);
+    this.entityImages = entityImages;
+    this.initProjectileCore(type, x, y, direction, maxDistance);
+    this.initProjectileStats();
+    this.initProjectileAnimation();
   }
 
+  /**
+  * Initializes the core projectile properties.
+  * @param {string} type Projectile type.
+  * @param {number} x Initial x position.
+  * @param {number} y Initial y position.
+  * @param {boolean} direction Movement direction.
+  * @param {number} maxDistance Maximum travel distance.
+  * @returns {void}
+  */
+  initProjectileCore(type, x, y, direction, maxDistance) {
+    this.type = type;
+    this.x = x;
+    this.y = y;
+    this.direction = direction;
+    this.isFlipped = !direction;
+    this.startX = x;
+    this.maxDistance = maxDistance;
+  }
+
+  /**
+  * Initializes the projectile statistics.
+  * @returns {void}
+  */
+  initProjectileStats() {
+    this.width = 60;
+    this.height = 60;
+    this.speed = 10;
+    this.damage = 2;
+    this.isActive = true;
+    this.markedForRemoval = false;
+  }
+
+  /**
+  * Initializes the projectile animation properties.
+  * @returns {void}
+  */
+  initProjectileAnimation() {
+    this.currentAnimation = 'idle';
+    this.frameInterval = 1000 / 8;
+    this.frameIndex = 0;
+    this.sheetIndex = 0;
+    this.lastFrameTime = 0;
+    this.animationFinished = false;
+    this.lastUpdateTime = 0;
+    this.idleExplodeSheet =
+      this.entityImages?.projectile?.[this.type]?.idleExplodeSheet ?? null;
+  }
+
+  /**
+  * Returns the animation images.
+  * @returns {Array|null} Animation images or null.
+  */
+  getAnimationImages() {
+    return this.idleExplodeSheet ?? null;
+  }
+
+  /**
+  * Sets the current animation state.
+  * @param {string} newState Animation state.
+  * @returns {void}
+  */
+  setAnimation(newState) {
+    if (this.currentAnimation !== newState) {
+      this.currentAnimation = newState;
+      this.frameIndex = 0;
+      this.sheetIndex = 0;
+      this.animationFinished = false;
+      this.lastFrameTime = null;
+    }
+  }
+
+  /**
+  * Updates the state based on the given timestamp.
+  * @param {number} timestamp Frame timestamp.
+  * @returns {void}
+  */
   updateState(timestamp) {
     this.updateDeltaTime(timestamp);
-
-    if (this.state === "fly") {
-      // ✅ deltaTime-bewegung (speed bleibt "pro 60fps-frame")
-      const step = this.speed * (this.deltaTime ?? 1 / 60) * 60;
-      this.x += this.direction ? step : -step;
-
-      const traveled = Math.abs(this.x - this.startX);
-      if (traveled >= this.maxDistance) {
-        // entweder direkt entfernen:
-        // this.markedForRemoval = true;
-
-        // oder schön mit Explosionsanimation:
-        this.explode();
-      }
+    if (this.currentAnimation === 'idle') {
+      this.updateMovement();
     }
-
     this.updateAnimation(timestamp);
   }
 
+  /**
+  * Updates the animation based on the given timestamp.
+  * @param {number} timestamp Frame timestamp.
+  * @returns {void}
+  */
   updateAnimation(timestamp) {
-    if (!this.lastFrameTime) this.lastFrameTime = timestamp;
-    const deltaTime = timestamp - this.lastFrameTime;
-
-    if (deltaTime <= this.frameInterval || this.images.length === 0) return;
-
-    // EXPLODE: einmal abspielen, dann entfernen
-    if (this.state === "explode") {
-      if (this.frameIndex >= this.images.length) {
-        this.markedForRemoval = true;
-        return;
-      }
-      this.loadImage(this.images[this.frameIndex]);
-      this.frameIndex++;
+    this.initLastFrameTime(timestamp);
+    if (this.shouldSkipAnimationFrame(timestamp)) return;
+    const animSource = this.getCurrentAnimationSource();
+    if (!animSource) {
       this.lastFrameTime = timestamp;
       return;
     }
-
-    // FLY: loopen
-    const idx = this.frameIndex % this.images.length;
-    this.loadImage(this.images[idx]);
-    this.frameIndex++;
+    const loop = this.currentAnimation === 'idle';
+    this.updateAnimationFromSourceGeneric(animSource, { allowLoop: loop });
+    this.handlePostAnimationState();
     this.lastFrameTime = timestamp;
   }
 
-  draw(ctx) {
-    ctx.save();
-    if (!this.direction) {
-      ctx.scale(-1, 1);
-      ctx.drawImage(this.img, -this.x - this.width, this.y, this.width, this.height);
-    } else {
-      ctx.drawImage(this.img, this.x, this.y, this.width, this.height);
+  /**
+  * Initializes the last frame timestamp if not set.
+  * @param {number} timestamp Frame timestamp.
+  * @returns {void}
+  */
+  initLastFrameTime(timestamp) {
+    if (!this.lastFrameTime) {
+      this.lastFrameTime = timestamp;
     }
-    ctx.restore();
   }
 
+  /**
+  * Checks whether the current animation frame should be skipped.
+  * @param {number} timestamp Frame timestamp.
+  * @returns {boolean} True if the frame should be skipped, otherwise false.
+  */
+  shouldSkipAnimationFrame(timestamp) {
+    const dt = timestamp - this.lastFrameTime;
+    return dt <= this.frameInterval;
+  }
+
+  /**
+  * Returns the current animation source.
+  * @returns {Array|null} Animation source or null.
+  */
+  getCurrentAnimationSource() {
+    return this.getAnimationImages(this.currentAnimation);
+  }
+
+  /**
+  * Handles state updates after the animation has finished.
+  * @returns {void}
+  */
+  handlePostAnimationState() {
+    if (this.currentAnimation !== 'explode') return;
+    if (!this.animationFinished) return;
+    this.markedForRemoval = true;
+  }
+
+  /**
+  * Updates the projectile movement and checks maximum travel distance.
+  * @returns {void}
+  */
+  updateMovement() {
+    const dt = this.deltaTime ?? 1 / 60;
+    const step = this.speed * dt * 60;
+    this.x += this.direction ? step : -step;
+    const traveled = Math.abs(this.x - this.startX);
+    if (traveled >= this.maxDistance) {
+      this.explode();
+    }
+  }
+
+  /**
+  * Triggers the explode animation and stops movement.
+  * @returns {void}
+  */
   explode() {
-    if (this.state === "explode") return;
-
-    this.state = "explode";
-    this.images = this.imageSets[`${this.type}_explode`] || [];
-    this.frameIndex = 0;
-    this.lastFrameTime = 0;
-
-    // Bewegung stoppen
+    if (this.currentAnimation === 'explode') return;
+    this.setAnimation('explode');
     this.speed = 0;
+    if (!this.getAnimationImages('explode')) {
+      this.markedForRemoval = true;
+    }
   }
 }

@@ -214,22 +214,6 @@ export const farmEvents_part2 = [
         }
     },
 
-    // {
-    //     type: 'quest',
-    //     step: 9,
-    //     once: false,
-    //     action: (setup) => {
-    //         if (setup.world.character.x <= 788 && setup.world.character.x >= 738 && setup.world.character.y <= 394 && setup.world.character.y >= 343 && setup.world.camera_x <= 108) {
-    //             setup.world.character.isFlipped = true;
-    //             setup.world.character.isWalk = false;
-    //             setup.world.character.yNormal = 393;
-    //             setup.world.character.yVoidless = 510;
-    //             setup.world.character.isLightACampfire = true;
-    //             setup.world.farmLevelController.questManager.advance(10)
-    //         }
-    //     }
-    // },
-
     /**
     * Quest event that starts the sun cycle.
     */

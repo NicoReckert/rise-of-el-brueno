@@ -52,7 +52,7 @@ export class World {
         this.audioManager = audioManager;
         this.videoManager = videoManager;
         this.inputManager = inputManager;
-        this.currentScene = 'farmLevel';
+        this.currentScene = 'townLevel';
     }
 
     /**

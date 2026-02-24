@@ -1,0 +1,21 @@
+﻿{
+    "frameHeight":  512,
+    "columns":  4,
+    "frameWidth":  512,
+    "animations": {
+    "idle": {
+      "from": 0,
+      "to": 5,
+      "fps": 8
+    },
+    "explode": {
+      "from": 6,
+      "to": 15,
+      "fps": 8,
+      "loop": false
+    }
+  },
+    "image":  "idle_and_explode_sheet.webp",
+    "frames":  16,
+    "rows":  4
+}

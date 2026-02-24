@@ -120,8 +120,6 @@ export class TownLevelSetup {
             });
         }
         this.townLevel.projectiles = [];
-        this.world.projectiles = this.townLevel.projectiles;
-        // this.world.projectiles = this.world.projectiles.filter(p => !p.markedForRemoval);
         this.popupTexts = [];
         this.panel = new ComicPanel(this.world.canvas, this.entityImages.tadeo?.stoneActivated ?? []);
         this.characters.sollita.isFlipped = false;

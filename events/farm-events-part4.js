@@ -1,9 +1,5 @@
 import { PopupText } from "../classes/ui/popup-text.class.js";
-import { AudioManager } from "../core/audio-manager.class.js";
 import { farmHelper } from "./farm-helper.js";
-
-const audioManager = new AudioManager();
-const fadeOutAudio = audioManager.fadeOutAudio.bind(audioManager);
 
 export const farmEvents_part4 = [
     /**
@@ -155,7 +151,9 @@ export const farmEvents_part4 = [
         type: 'time',
         delay: 82000,
         step: 19,
-        action: (setup) => fadeOutAudio(setup.sounds.sadMusic, 4000)
+        action: (setup) => {
+            setup.world.audioManager.fadeOutAudio(setup.sounds.sadMusic, 4000);
+        }
     },
 
     /**

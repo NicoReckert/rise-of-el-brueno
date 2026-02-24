@@ -182,8 +182,10 @@ export class TownLevelController {
             bottle.applyGravity2(timestamp);
         });
         this.setup.townLevel.projectiles.forEach(projectile => {
-            projectile.updateState(timestamp, this.world);
+            projectile.updateState(timestamp);
         });
+        this.setup.townLevel.projectiles =
+            this.setup.townLevel.projectiles.filter(p => !p.markedForRemoval);
         this.setup.effects.forEach(effect => {
             effect.updateState(timestamp);
         });

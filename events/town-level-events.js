@@ -1,12 +1,7 @@
 import { PopupText } from "../classes/ui/popup-text.class.js";
 import { Enemy } from "../classes/entities/enemy.class.js";
 import { DamageText } from "../classes/ui/damage-text.class.js";
-import { AudioManager } from "../core/audio-manager.class.js";
 import { ThrowableObject } from "../classes/entities/throwable-object.class.js";
-
-const audioManager = new AudioManager();
-const fadeOutAudio = audioManager.fadeOutAudio.bind(audioManager);
-const fadeInAudio = audioManager.fadeInAudio.bind(audioManager);
 
 export const townEvents =
     [
@@ -14,8 +9,7 @@ export const townEvents =
             type: 'quest',
             action: (setup) => {
                 setup.backgroundMusic.loop = true;
-                fadeInAudio(setup.sounds.backgroundMusic, 2000, 0.6);
-
+                setup.world.audioManager.fadeInAudio(setup.sounds.backgroundMusic, 2000, 0.6);
                 setup.world.character.x = 23000; // 100 //18500//23000
                 setup.world.character.level_start_x = 0;
                 setup.world.level_end_x = 25000;
@@ -23,8 +17,6 @@ export const townEvents =
                 setup.world.character.speedX = 10;
                 setup.world.character.isWalkDetermined = false;
                 setup.characters.tadeo.updateAnimationState('idle', 1000 / 5);
-
-                // setup.world.character.isWalkInStorm = true;
                 setup.world.character.speedX = 3; //2
             }
         },
@@ -83,7 +75,6 @@ export const townEvents =
             action: (setup, elapsed, progress) => {
                 const ctrl = setup.world.townLevelController;
                 const intensity = progress * 0.5;
-
                 ctrl.setSandstorm(intensity);
             },
             onEnd: (setup) => {
@@ -122,7 +113,6 @@ export const townEvents =
             }
         },
 
-
         {
             type: "position",
             area: { x: 4000, width: 100 },
@@ -134,7 +124,6 @@ export const townEvents =
                 setup.world.character.isMovingRight = false
                 setup.world.isKeysStopp = true;
                 setup.world.townLevelController.questManager.advance(6)
-
             }
         },
 
@@ -143,25 +132,10 @@ export const townEvents =
             area: { x: 5000, width: 100 },
             action: (setup) => {
                 setup.townLevel.enemies.push(
-                    new Enemy('chickenMutatesSmall', setup.entityImages, 120, 120, 545, 6000, setup.allAudios),
-                    new Enemy('chickenMutatesSmall', setup.entityImages, 120, 120, 545, 6100, setup.allAudios),
-                    new Enemy('chickenMutatesBig', setup.entityImages, 160, 160, 505, 6200, setup.allAudios),
-                    // new Enemy('chickenMutatesBig', images, 160, 160, 505, 2100, allAudios),
-                    // new Enemy('chickenMutatesBig', images, 160, 160, 505, 2100, allAudios),
-                    // new Enemy('chickenMutatesBig', images, 160, 160, 505, 2100, allAudios),
-                    // new Enemy('chickenMutatesBig', images, 160, 160, 505, 2100, allAudios),
-                    // new Enemy('chickenMutatesBig', images, 160, 160, 505, 2100, allAudios),
-                    // new Enemy('chickenMutatesBig', images, 160, 160, 505, 2100, allAudios),
-                    // new Enemy('chickenMutatesBig', images, 160, 160, 505, 2100, allAudios),
-                    // new Enemy('chickenMutatesBig', images, 160, 160, 505, 2100, allAudios),
-                    // new Enemy('chickenMutatesBig', images, 160, 160, 505, 2100, allAudios),
-
-
-
-                )
-                setup.townLevel.enemies.forEach(enemy => {
-                    enemy.world = setup.world;
-                });
+                    new Enemy('chickenMutatesSmall', setup.entityImages, 120, 120, 545, 6000, setup.allAudios, setup.world),
+                    new Enemy('chickenMutatesSmall', setup.entityImages, 120, 120, 545, 6100, setup.allAudios, setup.world),
+                    new Enemy('chickenMutatesBig', setup.entityImages, 160, 160, 505, 6200, setup.allAudios, setup.world),
+                );
             }
         },
 
@@ -170,25 +144,10 @@ export const townEvents =
             area: { x: 6000, width: 100 },
             action: (setup) => {
                 setup.townLevel.enemies.push(
-                    new Enemy('chickenMutatesSmall', setup.entityImages, 120, 120, 545, 7000, setup.allAudios),
-                    new Enemy('chickenMutatesSmall', setup.entityImages, 120, 120, 545, 7100, setup.allAudios),
-                    new Enemy('chickenMutatesBig', setup.entityImages, 160, 160, 505, 7200, setup.allAudios),
-                    // new Enemy('chickenMutatesBig', images, 160, 160, 505, 2100, allAudios),
-                    // new Enemy('chickenMutatesBig', images, 160, 160, 505, 2100, allAudios),
-                    // new Enemy('chickenMutatesBig', images, 160, 160, 505, 2100, allAudios),
-                    // new Enemy('chickenMutatesBig', images, 160, 160, 505, 2100, allAudios),
-                    // new Enemy('chickenMutatesBig', images, 160, 160, 505, 2100, allAudios),
-                    // new Enemy('chickenMutatesBig', images, 160, 160, 505, 2100, allAudios),
-                    // new Enemy('chickenMutatesBig', images, 160, 160, 505, 2100, allAudios),
-                    // new Enemy('chickenMutatesBig', images, 160, 160, 505, 2100, allAudios),
-                    // new Enemy('chickenMutatesBig', images, 160, 160, 505, 2100, allAudios),
-
-
-
-                )
-                setup.townLevel.enemies.forEach(enemy => {
-                    enemy.world = setup.world;
-                });
+                    new Enemy('chickenMutatesSmall', setup.entityImages, 120, 120, 545, 7000, setup.allAudios, setup.world),
+                    new Enemy('chickenMutatesSmall', setup.entityImages, 120, 120, 545, 7100, setup.allAudios, setup.world),
+                    new Enemy('chickenMutatesBig', setup.entityImages, 160, 160, 505, 7200, setup.allAudios, setup.world)
+                );
             }
         },
 
@@ -197,25 +156,10 @@ export const townEvents =
             area: { x: 7000, width: 100 },
             action: (setup) => {
                 setup.townLevel.enemies.push(
-                    new Enemy('chickenMutatesSmall', setup.entityImages, 120, 120, 545, 8000, setup.allAudios),
-                    new Enemy('chickenMutatesSmall', setup.entityImages, 120, 120, 545, 8100, setup.allAudios),
-                    new Enemy('chickenMutatesBig', setup.entityImages, 160, 160, 505, 8200, setup.allAudios),
-                    // new Enemy('chickenMutatesBig', images, 160, 160, 505, 2100, allAudios),
-                    // new Enemy('chickenMutatesBig', images, 160, 160, 505, 2100, allAudios),
-                    // new Enemy('chickenMutatesBig', images, 160, 160, 505, 2100, allAudios),
-                    // new Enemy('chickenMutatesBig', images, 160, 160, 505, 2100, allAudios),
-                    // new Enemy('chickenMutatesBig', images, 160, 160, 505, 2100, allAudios),
-                    // new Enemy('chickenMutatesBig', images, 160, 160, 505, 2100, allAudios),
-                    // new Enemy('chickenMutatesBig', images, 160, 160, 505, 2100, allAudios),
-                    // new Enemy('chickenMutatesBig', images, 160, 160, 505, 2100, allAudios),
-                    // new Enemy('chickenMutatesBig', images, 160, 160, 505, 2100, allAudios),
-
-
-
-                )
-                setup.townLevel.enemies.forEach(enemy => {
-                    enemy.world = setup.world;
-                });
+                    new Enemy('chickenMutatesSmall', setup.entityImages, 120, 120, 545, 8000, setup.allAudios, setup.world),
+                    new Enemy('chickenMutatesSmall', setup.entityImages, 120, 120, 545, 8100, setup.allAudios, setup.world),
+                    new Enemy('chickenMutatesBig', setup.entityImages, 160, 160, 505, 8200, setup.allAudios, setup.world)
+                );
             }
         },
 
@@ -224,25 +168,10 @@ export const townEvents =
             area: { x: 8000, width: 100 },
             action: (setup) => {
                 setup.townLevel.enemies.push(
-                    new Enemy('chickenMutatesSmall', setup.entityImages, 120, 120, 545, 9000, setup.allAudios),
-                    new Enemy('chickenMutatesSmall', setup.entityImages, 120, 120, 545, 9100, setup.allAudios),
-                    new Enemy('chickenMutatesBig', setup.entityImages, 160, 160, 505, 9200, setup.allAudios),
-                    // new Enemy('chickenMutatesBig', images, 160, 160, 505, 2100, allAudios),
-                    // new Enemy('chickenMutatesBig', images, 160, 160, 505, 2100, allAudios),
-                    // new Enemy('chickenMutatesBig', images, 160, 160, 505, 2100, allAudios),
-                    // new Enemy('chickenMutatesBig', images, 160, 160, 505, 2100, allAudios),
-                    // new Enemy('chickenMutatesBig', images, 160, 160, 505, 2100, allAudios),
-                    // new Enemy('chickenMutatesBig', images, 160, 160, 505, 2100, allAudios),
-                    // new Enemy('chickenMutatesBig', images, 160, 160, 505, 2100, allAudios),
-                    // new Enemy('chickenMutatesBig', images, 160, 160, 505, 2100, allAudios),
-                    // new Enemy('chickenMutatesBig', images, 160, 160, 505, 2100, allAudios),
-
-
-
-                )
-                setup.townLevel.enemies.forEach(enemy => {
-                    enemy.world = setup.world;
-                });
+                    new Enemy('chickenMutatesSmall', setup.entityImages, 120, 120, 545, 9000, setup.allAudios, setup.world),
+                    new Enemy('chickenMutatesSmall', setup.entityImages, 120, 120, 545, 9100, setup.allAudios, setup.world),
+                    new Enemy('chickenMutatesBig', setup.entityImages, 160, 160, 505, 9200, setup.allAudios, setup.world),
+                );
             }
         },
 
@@ -266,8 +195,8 @@ export const townEvents =
             delay: 2000,
             step: 6,
             action: (setup) => {
-                fadeOutAudio(setup.sounds.backgroundMusic, 1000);
-                fadeInAudio(setup.sounds.tadeosMusic, 2000, 0.6);
+                setup.world.audioManager.fadeOutAudio(setup.sounds.backgroundMusic, 1000);
+                setup.world.audioManager.fadeInAudio(setup.sounds.tadeosMusic, 2000, 0.6);
             }
         },
 
@@ -319,8 +248,8 @@ export const townEvents =
             action: (setup) => {
                 // setup.sounds.tadeoHoldStoneMusic.currentTime = 35;
                 setup.sounds.tadeoHoldStoneMusic.loop = true;
-                fadeInAudio(setup.sounds.tadeoHoldStoneMusic, 2000, 0.6);
-                fadeOutAudio(setup.sounds.tadeosMusic, 1000);
+                setup.world.audioManager.fadeInAudio(setup.sounds.tadeoHoldStoneMusic, 2000, 0.6);
+                setup.world.audioManager.fadeOutAudio(setup.sounds.tadeosMusic, 1000);
                 setup.characters.tadeo.updateAnimationState('stoneActivated', 1000 / 5.5);
                 setup.panel.activate(performance.now());
                 setup.world.townLevelController.magicShield.start();
@@ -400,15 +329,13 @@ export const townEvents =
             step: 8,
             once: false,
             action: (setup) => {
-                const hero = setup.world.character;
+                const char = setup.world.character;
                 const tadeo = setup.characters.tadeo;
                 const radius = 180;
-
                 const left = tadeo.x - radius;
                 const right = tadeo.x + radius;
-
-                if (hero.x < left) hero.x = left;
-                if (hero.x > right) hero.x = right;
+                if (char.x < left) char.x = left;
+                if (char.x > right) char.x = right;
             }
         },
 
@@ -416,7 +343,6 @@ export const townEvents =
             type: 'collision',
             objectA: 'character',
             objectB: 'musician',
-
             toleranceB: { x: -150, width: -150 },
             once: false,
             cooldown: 500,
@@ -424,16 +350,16 @@ export const townEvents =
                 if (!setup.isNearMusician) {
                     setup.isNearMusician = true;
                     setup.sounds.musicianTownMusic.currentTime = 0;
-                    fadeOutAudio(setup.sounds.backgroundMusic, 1000);
-                    fadeInAudio(setup.sounds.musicianTownMusic, 2000, 0.6);
+                    setup.world.audioManager.fadeOutAudio(setup.sounds.backgroundMusic, 1000);
+                    setup.world.audioManager.fadeInAudio(setup.sounds.musicianTownMusic, 2000, 0.6);
                 }
             },
             onLeave: (setup) => {
                 if (setup.isNearMusician) {
                     setup.isNearMusician = false;
                     setup.sounds.backgroundMusic.currentTime = 0;
-                    fadeOutAudio(setup.sounds.musicianTownMusic, 1000);
-                    fadeInAudio(setup.sounds.backgroundMusic, 2000, 0.6);
+                    setup.world.audioManager.fadeOutAudio(setup.sounds.musicianTownMusic, 1000);
+                    setup.world.audioManager.fadeInAudio(setup.sounds.backgroundMusic, 2000, 0.6);
                 }
             }
         },
@@ -449,16 +375,16 @@ export const townEvents =
                 if (!setup.isNearSollita) {
                     setup.isNearSollita = true;
                     setup.sounds.sollitasMusic.currentTime = 0;
-                    fadeOutAudio(setup.sounds.backgroundMusic, 1000);
-                    fadeInAudio(setup.sounds.sollitasMusic, 2000, 0.6);
+                    setup.world.audioManager.fadeOutAudio(setup.sounds.backgroundMusic, 1000);
+                    setup.world.audioManager.fadeInAudio(setup.sounds.sollitasMusic, 2000, 0.6);
                 }
             },
             onLeave: (setup) => {
                 if (setup.isNearSollita) {
                     setup.isNearSollita = false;
                     setup.sounds.backgroundMusic.currentTime = 0;
-                    fadeOutAudio(setup.sounds.sollitasMusic, 1000);
-                    fadeInAudio(setup.sounds.backgroundMusic, 2000, 0.6);
+                    setup.world.audioManager.fadeOutAudio(setup.sounds.sollitasMusic, 1000);
+                    setup.world.audioManager.fadeInAudio(setup.sounds.backgroundMusic, 2000, 0.6);
                 }
             }
         },
@@ -475,26 +401,18 @@ export const townEvents =
                 // setup.sounds.endbossFlappingWingsSound.loop = true;
                 // setup.sounds.endbossFlappingWingsSound.volume = 1.0;
                 setup.endbossMusic.currentTime = 0;
-                fadeOutAudio(setup.backgroundMusic, 1000);
-                fadeInAudio(setup.endbossMusic, 2000, 0.6);
-
-
+                setup.world.audioManager.fadeOutAudio(setup.sounds.backgroundMusic, 1000);
+                setup.world.audioManager.fadeInAudio(setup.sounds.endbossMusic, 2000, 0.6);
                 const audio = setup.sounds.endbossFlappingWingsSound;
                 const ctx = new AudioContext();
-
                 const source = ctx.createMediaElementSource(audio);
                 const gainNode = ctx.createGain();
-
                 gainNode.gain.value = 6.0; // 200% Lautstärke
-
                 source.connect(gainNode);
                 gainNode.connect(ctx.destination);
-
                 audio.play();
                 audio.loop = true;
                 setup.world.character.speedX = 8;
-
-
                 setup.world.townLevelController.questManager.advance(12);
 
             }
@@ -557,9 +475,9 @@ export const townEvents =
             action: (setup) => {
                 const char = setup.world.character
                 if (char.isHurt) return;
-                setup.world.projectiles.forEach(element => {
+                setup.townLevel.projectiles.forEach(element => {
                     if (!element.isActive) return;
-                    if (element.state === "explode") return;
+                    if (element.currentAnimation === "explode") return;
                     const colliding = element.isColliding(char, { x: 0, width: 0 }, { x: 50, width: 50 });
                     if (colliding) {
                         const dmg = char.isProtect ? 2 : 10;
