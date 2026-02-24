@@ -10,10 +10,10 @@ export const townEvents =
             action: (setup) => {
                 setup.backgroundMusic.loop = true;
                 setup.world.audioManager.fadeInAudio(setup.sounds.backgroundMusic, 2000, 0.6);
-                setup.world.character.x = 23000; // 100 //18500//23000
+                setup.world.character.x = 100; // 100 //18500//23000
                 setup.world.character.level_start_x = 0;
                 setup.world.level_end_x = 25000;
-                setup.world.camera_x = 22900; //0 // 18400 //22900
+                setup.world.camera_x = 0; //0 // 18400 //22900
                 setup.world.character.speedX = 10;
                 setup.world.character.isWalkDetermined = false;
                 setup.characters.tadeo.updateAnimationState('idle', 1000 / 5);
@@ -727,8 +727,7 @@ export const townEvents =
                     const bottle = bottles[i];
 
                     // 1) Animation fertig → Bottle entfernen
-                    if (!bottle.isBrokenAnimation && bottle.isBrokenAnimationDone) {
-                        bottles.splice(i, 1);
+                    if (bottle.markedForRemoval) {
                         char.isThrowing = false;
                         bottle.isBrokenSound = false;
                         continue;
@@ -738,24 +737,20 @@ export const townEvents =
                     if (bottle.y + bottle.height >= 670) {
                         if (!bottle.isBrokenSound) {
                             world.audioManager.playOneShot('bottleBrokenSound', { volume: 0.6 });
+                            bottle.isBrokenSound = true;
                             bottle.isBroken = true;
                             bottle.isThrow = false;
                             bottle.isGravity = false;
                             bottle.isBrokenAnimation = true;
-                            bottle.isBrokenSound = true;
                             bottle.isMovingLeft = false;
                             bottle.isMovingRight = false;
-                        }
-                        if (!bottle.isBrokenAnimation) {
-                            bottles.splice(i, 1);
                             char.isThrowing = false;
-                            bottle.isBrokenSound = false;
                         }
                         continue;
                     }
 
                     // 3) Flasche fliegt noch → Kollision mit Enemies
-                    if (!bottle.isBrokenAnimation) {
+                    if (!bottle.isBroken && !bottle.markedForRemoval && !bottle.isBrokenAnimation) {
                         for (let j = 0; j < enemies.length; j++) {
                             const enemy = enemies[j];
 
@@ -770,7 +765,7 @@ export const townEvents =
                                     bottle.isThrow = false;
                                     bottle.isGravity = false;
                                     bottle.isBrokenAnimation = true;
-
+                                    char.isThrowing = false;
                                     enemy.isDead = true;
                                     enemy.isMovingLeft = false;
                                     enemy.isMovingRight = false;
@@ -787,23 +782,25 @@ export const townEvents =
                         }
 
                         // 4) Kollision mit Endboss
-                        if (boss && bottle.isCollidingBefore(boss, 0, 50) && !boss.isDead) {
-                            if (!bottle.isBrokenSound) {
-                                world.audioManager.playOneShot('bottleBrokenSound', { volume: 0.6 });
-                                boss.isHurt = true;
-                                boss.frameIndex = 0;
-
-                                bottle.isBrokenSound = true;
-                                bottle.isBroken = true;
-                                bottle.isThrow = false;
-                                bottle.isGravity = false;
-                                bottle.isBrokenAnimation = true;
-
-                                boss.energy -= 20;
-                                setup.statusBar2.setPercentage(boss.energy);
-                                if (boss.energy <= 0) {
-                                    boss.isDead = true;
+                        if (!bottle.isBroken && !bottle.markedForRemoval && !bottle.isBrokenAnimation) {
+                            if (boss && bottle.isCollidingBefore(boss, 0, 50) && !boss.isDead) {
+                                if (!bottle.isBrokenSound) {
+                                    world.audioManager.playOneShot('bottleBrokenSound', { volume: 0.6 });
+                                    boss.isHurt = true;
                                     boss.frameIndex = 0;
+                                    bottle.isBrokenSound = true;
+                                    bottle.isBroken = true;
+                                    bottle.isThrow = false;
+                                    bottle.isGravity = false;
+                                    bottle.isBrokenAnimation = true;
+                                    char.isThrowing = false;
+
+                                    boss.energy -= 20;
+                                    setup.statusBar2.setPercentage(boss.energy);
+                                    if (boss.energy <= 0) {
+                                        boss.isDead = true;
+                                        boss.frameIndex = 0;
+                                    }
                                 }
                             }
                         }
@@ -936,11 +933,11 @@ export const townEvents =
                     let bottle;
 
                     if (!char.isFlipped) {
-                        bottle = new ThrowableObject(char.x + 35, char.y + 150);
+                        bottle = new ThrowableObject(setup.entityImages, char.x + 35, char.y + 150);
                         bottle.isMovingRight = true;
                         bottle.characterIsFlipped = false;
                     } else {
-                        bottle = new ThrowableObject(char.x - 35, char.y + 150);
+                        bottle = new ThrowableObject(setup.entityImages, char.x - 35, char.y + 150);
                         bottle.isMovingLeft = true;
                         bottle.characterIsFlipped = true;
                     }

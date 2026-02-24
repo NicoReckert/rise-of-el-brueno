@@ -1,10 +1,10 @@
 import { Level } from '../../classes/core/level.class.js';
 import { Ground } from '../../classes/entities/ground.class.js';
 import { Cloud } from '../../classes/entities/cloud.class.js';
-import { Town } from '../../classes/entities/town.class.js';
+import { SceneryObject } from '../../classes/entities/scenery-object.class.js';
 import { Sky } from '../../classes/entities/sky.class.js';
 
-const groundSrcFarm =
+const groundSrc =
     [
         './assets/img/5_background/layers/3_third_layer/1.webp',
         './assets/img/5_background/layers/2_second_layer/1.webp',
@@ -18,130 +18,10 @@ const groundSrcFarm =
         './assets/img/5_background/layers/ground-town3.webp'
     ]
 
-const townSrcFarm =
+const scenerySrc =
     [
         './assets/img/wooden_cart.webp',
     ]
-
-const cloudArray = [];
-const cloudCount = 10;
-for (let i = 0; i < cloudCount; i++) {
-    cloudArray.push(new Cloud(cloudArray, 100)); // 100px Mindestabstand
-}
-
-const farmLevel = new Level(
-    {
-        clouds: cloudArray,
-
-        grounds: {
-            // new Ground(groundSrcFarm[3], -719),
-            // new Ground(groundSrcFarm[4], -719),
-            // new Ground(groundSrcFarm[5], -719),
-            // new Ground(groundSrcFarm[0], 0),
-            // new Ground(groundSrcFarm[1], 0),
-            // new Ground(groundSrcFarm[2], 0),
-            // new Ground(groundSrcFarm[3], 719),
-            // new Ground(groundSrcFarm[4], 719),
-            // new Ground(groundSrcFarm[5], 719),
-            // new Ground(groundSrcFarm[0], 1438),
-            // new Ground(groundSrcFarm[1], 1438),
-            // new Ground(groundSrcFarm[2], 1438),
-            // new Ground(groundSrcFarm[3], 2157),
-            // new Ground(groundSrcFarm[4], 2157),
-            // new Ground(groundSrcFarm[5], 2157),
-            // new Ground(groundSrcFarm[0], 2876),
-            // new Ground(groundSrcFarm[1], 2876),
-            // new Ground(groundSrcFarm[2], 2876),
-            // new Ground(groundSrcFarm[3], 3595),
-            // new Ground(groundSrcFarm[4], 3595),
-            // new Ground(groundSrcFarm[5], 3595),
-            // new Ground(groundSrcFarm[0], 4314),
-            // new Ground(groundSrcFarm[1], 4314),
-            // new Ground(groundSrcFarm[2], 4314),
-            // new Ground(groundSrcFarm[3], 5033),
-            // new Ground(groundSrcFarm[4], 5033),
-            // new Ground(groundSrcFarm[5], 5033),
-            // new Ground(groundSrcFarm[6], 5033, 575, 100), //115 , 400    // 335, 100 //190, 300
-            // new Ground(groundSrcFarm[0], 5752),
-            // new Ground(groundSrcFarm[1], 5752),
-            // new Ground(groundSrcFarm[2], 5752),
-            // new Ground(groundSrcFarm[3], 6471),
-            // new Ground(groundSrcFarm[4], 6471),
-            // new Ground(groundSrcFarm[5], 6471)
-            backGrounds: [
-                new Ground(groundSrcFarm[3], -720),
-                new Ground(groundSrcFarm[0], 0),
-                new Ground(groundSrcFarm[3], 720),
-                new Ground(groundSrcFarm[0], 1440),
-                new Ground(groundSrcFarm[3], 2160),
-                new Ground(groundSrcFarm[0], 2880),
-                new Ground(groundSrcFarm[3], 3600),
-                new Ground(groundSrcFarm[0], 4320),
-                new Ground(groundSrcFarm[3], 5040),
-                new Ground(groundSrcFarm[0], 5760),
-                new Ground(groundSrcFarm[3], 6480)
-            ],
-
-            // MITTELGRUND (mittlere Bewegung)
-            midGrounds: [
-                new Ground(groundSrcFarm[4], -720),
-                new Ground(groundSrcFarm[1], 0),
-                new Ground(groundSrcFarm[4], 720),
-                new Ground(groundSrcFarm[1], 1440),
-                new Ground(groundSrcFarm[4], 2160),
-                new Ground(groundSrcFarm[1], 2880),
-                new Ground(groundSrcFarm[4], 3600),
-                new Ground(groundSrcFarm[1], 4320),
-                new Ground(groundSrcFarm[4], 5040),
-                new Ground(groundSrcFarm[1], 5760),
-                new Ground(groundSrcFarm[4], 6480)
-            ],
-
-            // VORDERGRUND (schnellste Bewegung)
-            foreGrounds: [
-                new Ground(groundSrcFarm[5], -720),
-                new Ground(groundSrcFarm[2], 0),
-                new Ground(groundSrcFarm[5], 720),
-                new Ground(groundSrcFarm[2], 1440),
-                new Ground(groundSrcFarm[5], 2160),
-                new Ground(groundSrcFarm[2], 2880),
-                new Ground(groundSrcFarm[5], 3600),
-                new Ground(groundSrcFarm[2], 4320),
-                new Ground(groundSrcFarm[5], 5040),
-                new Ground(groundSrcFarm[2], 5760),
-                new Ground(groundSrcFarm[5], 6480),
-                new Ground(groundSrcFarm[6], 5033, 575, 100), //115 , 400    // 335, 100 //190, 300
-            ]
-        },
-        towns: [
-            // new Town(townSrcFarm[0], 800, -30, 900, 900), // 800, -42, 600, 450
-            new Town(townSrcFarm[0], 1310, 408, 300, 300),
-            // new Town(townSrcFarm[2], 1600, 70, 400, 400),
-            // new Town(townSrcFarm[3], 1550, 177, 600, 600)
-
-        ],
-        sky: [
-            new Sky(-720),
-            new Sky(0),
-            new Sky(720),
-            new Sky(1440),
-            new Sky(2160),
-            new Sky(2880),
-            new Sky(3600),
-            new Sky(4320),
-            new Sky(5040),
-            new Sky(5760),
-            new Sky(6480)
-        ],
-    });
-
-let calculationXFarm = 1280;
-for (let i = 0; i < 66; i++) {
-    farmLevel.grounds.foreGrounds.push(
-        new Ground(groundSrcFarm[9], calculationXFarm, 575, 150, 150)
-    );
-    calculationXFarm += 50;
-}
 
 export function createFarmLevel({ entityImages }) {
     // Wolken
@@ -155,77 +35,77 @@ export function createFarmLevel({ entityImages }) {
 
     // BACKGROUND
     const backGrounds = [
-        new Ground(groundSrcFarm[3], -720),
-        new Ground(groundSrcFarm[0], 0),
-        new Ground(groundSrcFarm[3], 720),
-        new Ground(groundSrcFarm[0], 1440),
-        new Ground(groundSrcFarm[3], 2160),
-        new Ground(groundSrcFarm[0], 2880),
-        new Ground(groundSrcFarm[3], 3600),
-        new Ground(groundSrcFarm[0], 4320),
-        new Ground(groundSrcFarm[3], 5040),
-        new Ground(groundSrcFarm[0], 5760),
-        new Ground(groundSrcFarm[3], 6480)
+        new Ground(groundSrc[3], -720),
+        new Ground(groundSrc[0], 0),
+        new Ground(groundSrc[3], 720),
+        new Ground(groundSrc[0], 1440),
+        new Ground(groundSrc[3], 2160),
+        new Ground(groundSrc[0], 2880),
+        new Ground(groundSrc[3], 3600),
+        new Ground(groundSrc[0], 4320),
+        new Ground(groundSrc[3], 5040),
+        new Ground(groundSrc[0], 5760),
+        new Ground(groundSrc[3], 6480)
     ];
 
     // MIDGROUND
     const midGrounds = [
-        new Ground(groundSrcFarm[4], -720),
-        new Ground(groundSrcFarm[1], 0),
-        new Ground(groundSrcFarm[4], 720),
-        new Ground(groundSrcFarm[1], 1440),
-        new Ground(groundSrcFarm[4], 2160),
-        new Ground(groundSrcFarm[1], 2880),
-        new Ground(groundSrcFarm[4], 3600),
-        new Ground(groundSrcFarm[1], 4320),
-        new Ground(groundSrcFarm[4], 5040),
-        new Ground(groundSrcFarm[1], 5760),
-        new Ground(groundSrcFarm[4], 6480)
+        new Ground(groundSrc[4], -720),
+        new Ground(groundSrc[1], 0),
+        new Ground(groundSrc[4], 720),
+        new Ground(groundSrc[1], 1440),
+        new Ground(groundSrc[4], 2160),
+        new Ground(groundSrc[1], 2880),
+        new Ground(groundSrc[4], 3600),
+        new Ground(groundSrc[1], 4320),
+        new Ground(groundSrc[4], 5040),
+        new Ground(groundSrc[1], 5760),
+        new Ground(groundSrc[4], 6480)
     ];
 
     // FOREGROUND
     const foreGrounds = [
-        new Ground(groundSrcFarm[5], -720),
-        new Ground(groundSrcFarm[2], 0),
-        new Ground(groundSrcFarm[5], 720),
-        new Ground(groundSrcFarm[2], 1440),
-        new Ground(groundSrcFarm[5], 2160),
-        new Ground(groundSrcFarm[2], 2880),
-        new Ground(groundSrcFarm[5], 3600),
-        new Ground(groundSrcFarm[2], 4320),
-        new Ground(groundSrcFarm[5], 5040),
-        new Ground(groundSrcFarm[2], 5760),
-        new Ground(groundSrcFarm[5], 6480),
-        new Ground(groundSrcFarm[6], 5033, 575, 720, 100), // Grasfläche
+        new Ground(groundSrc[5], -720),
+        new Ground(groundSrc[2], 0),
+        new Ground(groundSrc[5], 720),
+        new Ground(groundSrc[2], 1440),
+        new Ground(groundSrc[5], 2160),
+        new Ground(groundSrc[2], 2880),
+        new Ground(groundSrc[5], 3600),
+        new Ground(groundSrc[2], 4320),
+        new Ground(groundSrc[5], 5040),
+        new Ground(groundSrc[2], 5760),
+        new Ground(groundSrc[5], 6480),
+        new Ground(groundSrc[6], 5033, 575, 720, 100), // Grasfläche
     ];
 
     // Extra-Boden-Kacheln
-    let calculationXFarm = 1280;
+    let calculationX = 1280;
     for (let i = 0; i < 66; i++) {
         foreGrounds.push(
-            new Ground(groundSrcFarm[9], calculationXFarm, 575, 150, 150)
+            new Ground(groundSrc[9], calculationX, 575, 150, 150)
         );
-        calculationXFarm += 50;
+        calculationX += 50;
     }
 
-    // Towns
-    const towns = [
-        new Town(townSrcFarm[0], 1310, 408, 300, 300),
+
+    const sceneryObjects = [
+        new SceneryObject(scenerySrc[0], 1310, 408, 300, 300),
     ];
 
     // Himmel
     const sky = [
-        new Sky(-720),
-        new Sky(0),
-        new Sky(720),
-        new Sky(1440),
-        new Sky(2160),
-        new Sky(2880),
-        new Sky(3600),
-        new Sky(4320),
-        new Sky(5040),
-        new Sky(5760),
-        new Sky(6480)
+        new Sky(-720, entityImages),
+        new Sky(0, entityImages),
+        new Sky(720, entityImages),
+        new Sky(1440, entityImages),
+        new Sky(2160, entityImages),
+        new Sky(2880, entityImages),
+        new Sky(3600, entityImages),
+        new Sky(4320, entityImages),
+        new Sky(5040, entityImages),
+        new Sky(5760, entityImages),
+        new Sky(6480, entityImages)
     ];
 
     // Level erstellen
@@ -236,7 +116,7 @@ export function createFarmLevel({ entityImages }) {
             midGrounds,
             foreGrounds
         },
-        towns,
+        sceneryObjects: sceneryObjects,
         sky
     });
 }

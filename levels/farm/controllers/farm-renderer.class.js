@@ -38,7 +38,7 @@ export class FarmRenderer {
         this.ctx.restore();
         this.ctx.save();
         this.ctx.translate(-cameraX * 1.0, 0);
-        this.addObject(this.setup.farmLevel.towns);
+        this.addObject(this.setup.farmLevel.sceneryObjects);
         this.ctx.restore();
     }
 
@@ -57,7 +57,7 @@ export class FarmRenderer {
         this.ctx.shadowBlur = 10;
         this.ctx.shadowOffsetX = 5;
         this.ctx.shadowOffsetY = 5;
-        this.addToWorld(this.setup.farmLevel.towns[0]);
+        this.addToWorld(this.setup.farmLevel.sceneryObjects[0]);
         this.ctx.restore();
         this.addToWorld(this.setup.environment.stable);
         if (questStep < 8) this.addToWorld(this.setup.environment.campfire);

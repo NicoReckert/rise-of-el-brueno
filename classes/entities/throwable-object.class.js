@@ -1,175 +1,233 @@
 import { MovableObject } from '../systems/movable-object.class.js';
 
+/**
+ * Throwable object that extends a movable entity.
+ */
 export class ThrowableObject extends MovableObject {
-
-    intervalThrowBottle = null;
-    intervalBrokenBottle = null;
-    intervalMoveBottle = null;
-    throwBottleCount = 0;
-    brokenBottleCount = 0;
-    isGameCharacter = true;
-    isBrokenAnimation = false;
-    isBrokenAnimationDone = false;
-    isBrokenSound = false;
-    characterIsFlipped = false
-    isMovingLeft = false;
-    isMovingRight = false;
-
-    speedY = 0;
-    acceleration = 2.5;
-
-
-    throwBottleImages = [
-        './assets/img/6_salsa_bottle/bottle_rotation/1_bottle_rotation.webp',
-        './assets/img/6_salsa_bottle/bottle_rotation/2_bottle_rotation.webp',
-        './assets/img/6_salsa_bottle/bottle_rotation/3_bottle_rotation.webp',
-        './assets/img/6_salsa_bottle/bottle_rotation/4_bottle_rotation.webp',
-    ]
-
-    brokenBottleImages = [
-        './assets/img/6_salsa_bottle/bottle_rotation/bottle_splash/1_bottle_splash.webp',
-        './assets/img/6_salsa_bottle/bottle_rotation/bottle_splash/2_bottle_splash.webp',
-        './assets/img/6_salsa_bottle/bottle_rotation/bottle_splash/3_bottle_splash.webp',
-        './assets/img/6_salsa_bottle/bottle_rotation/bottle_splash/4_bottle_splash.webp',
-        './assets/img/6_salsa_bottle/bottle_rotation/bottle_splash/5_bottle_splash.webp',
-        './assets/img/6_salsa_bottle/bottle_rotation/bottle_splash/6_bottle_splash.webp'
-    ]
-
-    constructor(x, y) {
+    /**
+    * Creates a new instance.
+    * @param {Object} entityImages Image collection.
+    * @param {number} x Horizontal position.
+    * @param {number} y Vertical position.
+    */
+    constructor(entityImages, x, y) {
         super();
+        this.initPositionAndSize(x, y);
+        this.initOffsets();
+        this.initAnimationState();
+        this.initPhysicsState();
+        this.initSheetsAndFlags(entityImages);
+    }
+
+    /**
+    * Initializes position and size.
+    * @param {number} x Horizontal position.
+    * @param {number} y Vertical position.
+    * @returns {void}
+    */
+    initPositionAndSize(x, y) {
         this.x = x;
         this.y = y;
         this.width = 80;
         this.height = 100;
-        super.loadImage('./assets/img/6_salsa_bottle/bottle_rotation/1_bottle_rotation.webp');
-        // this.throw();
+    }
+
+    /**
+    * Initializes collision offsets.
+    * @returns {void}
+    */
+    initOffsets() {
         this.offset.top = 14;
         this.offset.left = 10;
         this.offset.right = 10;
         this.offset.bottom = 11;
+    }
 
-        this.lastFrameTime = 0;
-        this.currentAnimation = 'throw';
+    /**
+    * Initializes animation state.
+    * @returns {void}
+    */
+    initAnimationState() {
+        this.currentAnimation = "throw";
         this.frameInterval = 1000 / 15;
         this.frameIndex = 0;
+        this.sheetIndex = 0;
+        this.lastFrameTime = 0;
+        this.animationFinished = false;
+    }
 
-        this.lastGravityUpdate = 0;
-        this.gravityInterval = 1000 / 10;
-
-        this.lastMovingUpdate = 0;
-        this.movingInterval = 1000 / 80;
-
+    /**
+    * Initializes physics state.
+    * @returns {void}
+    */
+    initPhysicsState() {
         this.isGravity = false;
-        this.lastAnimation = null;
         this.ignoreGroundCollision = true;
+        this.isMovingLeft = false;
+        this.isMovingRight = false;
+        this.speedY = 0;
+        this.acceleration = 2.5;
+        this.speedX = 10;
+        this.markedForRemoval = false;
     }
 
-    animationThrowBottle() {
-        if (this.intervalThrowBottle) return;
-        this.intervalThrowBottle = setInterval(() => {
-            let index = this.throwBottleCount % this.throwBottleImages.length;
-            this.img.src = this.throwBottleImages[index];
-            this.throwBottleCount++
-        }, 1000 / 15);
+    /**
+    * Initializes animation sheets and related flags.
+    * @param {Object} entityImages Image collection.
+    * @returns {void}
+    */
+    initSheetsAndFlags(entityImages) {
+        this.throwSheet =
+            entityImages?.throwableBottle?.throw ?? null;
+        this.brokenSheet =
+            entityImages?.throwableBottle?.broken ?? null;
+        this.isBrokenAnimation = false;
+        this.isBrokenSound = false;
     }
 
-    animationBrokenBottle() {
-        if (this.intervalBrokenBottle) return;
-        clearInterval(this.intervalThrowBottle);
-        this.isBrokenAnimation = true;
-        this.intervalBrokenBottle = null;
-        this.intervalBrokenBottle = setInterval(() => {
-            if (this.brokenBottleCount < 6) {
-                let index = this.brokenBottleCount % this.brokenBottleImages.length;
-                this.img.src = this.brokenBottleImages[index];
-                this.brokenBottleCount++
-            } else {
-                clearInterval(this.intervalBrokenBottle);
-                this.isBrokenAnimation = false;
-                this.isBrokenAnimationDone = true;
-            }
-        }, 1000 / 10);
-    }
-
-    // throw() {
-    //     this.isGravity = true;
-    //     this.speedY = 30;
-    // this.applyGravity();
-    // }
-
-
-    updateState(timestamp) {
-        if (!this.lastMovingUpdate) this.lastMovingUpdate = timestamp;
-
-        const deltaTime = timestamp - this.lastMovingUpdate;
-
-        if (deltaTime > this.movingInterval && !this.isBroken) {
-            if (this.isMovingLeft) {
-                this.x -= 10;
-            } else if (this.isMovingRight) {
-                this.x += 10;
-            }
-            this.lastMovingUpdate = timestamp;
+    /**
+    * Returns the animation images for the given state.
+    * @param {string} [state=this.currentAnimation] Animation state.
+    * @returns {Array|null} Animation images or null.
+    */
+    getAnimationImages(state = this.currentAnimation) {
+        if (state === 'broken') {
+            return this.brokenSheet ?? null;
         }
-
-        if (this.isThrow) {
-            this.currentAnimation = 'throw';
-            this.frameInterval = 1000 / 15;
-        } else if (this.isBroken) {
-            this.currentAnimation = 'broken';
-            this.frameInterval = 1000 / 10;
-        }
+        return this.throwSheet ?? null;
     }
 
-    getAnimationImages(state) {
-        switch (state) {
-            case 'broken': return this.brokenBottleImages;
-            case 'throw': return this.throwBottleImages;
-        }
-    }
-
-    updateAnimation(timestamp) {
-        if (!this.lastFrameTime) this.lastFrameTime = timestamp;
-
-        const deltaTime = timestamp - this.lastFrameTime;
-
-        if (this.currentAnimation !== this.lastAnimation) {
+    /**
+    * Sets the current animation state.
+    * @param {string} newState Animation state.
+    * @returns {void}
+    */
+    setAnimation(newState) {
+        if (this.currentAnimation !== newState) {
+            this.currentAnimation = newState;
             this.frameIndex = 0;
-            this.lastAnimation = this.currentAnimation;
-        }
-
-        if (deltaTime > this.frameInterval) {
-            let images = this.getAnimationImages(this.currentAnimation);
-
-            if (images && images.length > 0) {
-                const framePath = images[this.frameIndex % images.length];
-                this.loadImage(framePath);
-                this.frameIndex++;
-                this.lastFrameTime = timestamp;
-                console.log(this.frameIndex);
-            }
-
-            if (this.currentAnimation === 'broken' &&
-                this.frameIndex >= images.length) {
-                console.log('index in if: ' + this.frameIndex)
-                this.isBrokenAnimation = false;
-                this.isBrokenAnimationDone = true;
-            }
+            this.sheetIndex = 0;
+            this.animationFinished = false;
+            this.lastFrameTime = null;
         }
     }
 
-    applyGravity2(timestamp) {
+    /**
+    * Updates the state based on the given timestamp.
+    * @param {number} timestamp Frame timestamp.
+    * @returns {void}
+    */
+    updateState(timestamp) {
+        this.updateDeltaTime(timestamp);
+        const step = this.getMovementStep();
+        this.updateHorizontalPosition(step);
+        this.updateAnimationFromState();
+        this.applyGravity();
+    }
+
+    /**
+    * Calculates the movement step based on delta time.
+    * @returns {number} Movement step.
+    */
+    getMovementStep() {
+        const dt = this.deltaTime ?? 1 / 60;
+        return dt * 60;
+    }
+
+    /**
+    * Updates the horizontal position.
+    * @param {number} step Movement step.
+    * @returns {void}
+    */
+    updateHorizontalPosition(step) {
+        if (this.isBroken) return;
+        if (this.isMovingLeft) {
+            this.x -= this.speedX * step;
+        } else if (this.isMovingRight) {
+            this.x += this.speedX * step;
+        }
+    }
+
+    /**
+    * Updates the animation based on the current state.
+    * @returns {void}
+    */
+    updateAnimationFromState() {
+        if (this.isBroken) {
+            this.setAnimation("broken");
+            this.frameInterval = 1000 / 10;
+            this.isBrokenAnimation = true;
+        } else if (this.isThrow) {
+            this.setAnimation("throw");
+            this.frameInterval = 1000 / 15;
+            this.isBrokenAnimation = false;
+        }
+    }
+
+    /**
+    * Updates the animation based on the given timestamp.
+    * @param {number} timestamp Frame timestamp.
+    * @returns {void}
+    */
+    updateAnimation(timestamp) {
+        this.initLastFrameTime(timestamp);
+        if (this.shouldSkipFrame(timestamp)) return;
+        const animSource = this.getAnimationImages(this.currentAnimation);
+        if (!animSource) {
+            this.lastFrameTime = timestamp;
+            return;
+        }
+        const loop = this.currentAnimation === "throw";
+        this.updateAnimationFromSourceGeneric(animSource, { allowLoop: loop });
+        this.handleBrokenAnimationCompletion();
+        this.lastFrameTime = timestamp;
+    }
+
+    /**
+    * Initializes the last frame timestamp if not set.
+    * @param {number} timestamp Frame timestamp.
+    * @returns {void}
+    */
+    initLastFrameTime(timestamp) {
+        if (!this.lastFrameTime) {
+            this.lastFrameTime = timestamp;
+        }
+    }
+
+    /**
+    * Checks whether the current animation frame should be skipped.
+    * @param {number} timestamp Frame timestamp.
+    * @returns {boolean} True if the frame should be skipped, otherwise false.
+    */
+    shouldSkipFrame(timestamp) {
+        const dtMs = timestamp - this.lastFrameTime;
+        return dtMs <= this.frameInterval;
+    }
+
+    /**
+    * Handles completion of the broken animation.
+    * @returns {void}
+    */
+    handleBrokenAnimationCompletion() {
+        if (this.currentAnimation !== "broken") return;
+        if (!this.animationFinished) return;
+        this.isBrokenAnimation = false;
+        this.isBrokenAnimationDone = true;
+        this.markedForRemoval = true;
+    }
+
+    /**
+    * Applies gravity to the object.
+    * @returns {void}
+    */
+    applyGravity() {
         if (!this.isGravity) return;
-        if (!this.lastGravityUpdate) this.lastGravityUpdate = timestamp;
-        const deltaTime = (timestamp - this.lastGravityUpdate) / 1000;
+        const dt = this.deltaTime ?? 1 / 60;
         if (this.isAboveGround() || this.speedY > 0) {
-            this.y -= this.speedY * deltaTime * 30;
-            this.speedY -= this.acceleration * deltaTime * 30;
+            this.y -= this.speedY * dt * 30;
+            this.speedY -= this.acceleration * dt * 30;
         } else {
             this.speedY = 0;
         }
-        this.lastGravityUpdate = timestamp;
     }
-
-
 }

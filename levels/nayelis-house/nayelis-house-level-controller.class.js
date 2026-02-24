@@ -43,7 +43,7 @@ export class NayelisHouseLevelController {
     }
 
     renderBackgrounds() {
-        const house = this.setup.nayelisHouseLevel.towns[0];
+        const house = this.setup.nayelisHouseLevel.sceneryObjects[0];
         const fadeStrength = 0.05; // 5% links und rechts
 
         // === 1. Hintergrundvideo zeichnen ===

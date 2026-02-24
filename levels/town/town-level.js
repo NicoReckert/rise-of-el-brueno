@@ -1,11 +1,11 @@
 import { Level } from '../../classes/core/level.class.js';
 import { Ground } from '../../classes/entities/ground.class.js';
 import { Cloud } from '../../classes/entities/cloud.class.js';
-import { Town } from '../../classes/entities/town.class.js';
+import { SceneryObject } from '../../classes/entities/scenery-object.class.js';
 import { Sky } from '../../classes/entities/sky.class.js';
 import { Bottle } from '../../classes/entities/bottle.class.js';
 
-const groundSrcTown =
+const groundSrc =
     [
         './assets/img/5_background/layers/3_third_layer/1.webp',
         './assets/img/5_background/layers/2_second_layer/1.webp',
@@ -17,7 +17,7 @@ const groundSrcTown =
         './assets/img/5_background/layers/ground-town2.webp'
     ]
 
-const townSrcTown =
+const scenerySrc =
     [
         './assets/img/town1.webp',
         './assets/img/town2.webp',
@@ -32,10 +32,10 @@ const townSrcTown =
 export function createTownLevel({ entityImages, allAudios }) {
     const levelWidth = 26640;
     const CLOUD_DENSITY = 1 / 700;
-    const cloudArrayTown = [];
-    const cloudCountTown = Math.round(levelWidth * CLOUD_DENSITY);
-    for (let i = 0; i < cloudCountTown; i++) {
-        cloudArrayTown.push(new Cloud({ existingClouds: cloudArrayTown, minDistance: 280, levelWidth: levelWidth, entityImages: entityImages })); // 100px Mindestabstand
+    const cloudArray = [];
+    const cloudCount = Math.round(levelWidth * CLOUD_DENSITY);
+    for (let i = 0; i < cloudCount; i++) {
+        cloudArray.push(new Cloud({ existingClouds: cloudArray, minDistance: 280, levelWidth: levelWidth, entityImages: entityImages })); // 100px Mindestabstand
     }
     const townLevel = new Level(
         {
@@ -48,7 +48,7 @@ export function createTownLevel({ entityImages, allAudios }) {
                     // new Chicken('chickenMutatesBig', entityImages, 160, 160, 505, null, allAudios),
                     // new Chicken('chickenMutatesBig', entityImages, 160, 160, 505, null, allAudios)
                 ],
-            clouds: cloudArrayTown,
+            clouds: cloudArray,
 
             grounds: {
 
@@ -63,15 +63,15 @@ export function createTownLevel({ entityImages, allAudios }) {
                 foreGrounds: [
                 ]
             },
-            towns:
+            sceneryObjects:
                 [
-                    new Town(townSrcTown[6], 10000, 275, 550, 450),
-                    new Town(townSrcTown[0], 18676, 5, 1000, 800),
-                    new Town(townSrcTown[1], 19618, -105, 1000, 1000),
-                    // new Town(townSrcTown[2], 3160, 25, 800, 800),
-                    new Town(townSrcTown[3], 20523, -35, 800, 800),
-                    new Town(townSrcTown[4], 21338, -18, 800, 800),
-                    new Town(townSrcTown[5], 22038, -17, 1000, 800)
+                    new SceneryObject(scenerySrc[6], 10000, 275, 550, 450),
+                    new SceneryObject(scenerySrc[0], 18676, 5, 1000, 800),
+                    new SceneryObject(scenerySrc[1], 19618, -105, 1000, 1000),
+                    // new SceneryObject(scenerySrc[2], 3160, 25, 800, 800),
+                    new SceneryObject(scenerySrc[3], 20523, -35, 800, 800),
+                    new SceneryObject(scenerySrc[4], 21338, -18, 800, 800),
+                    new SceneryObject(scenerySrc[5], 22038, -17, 1000, 800)
                 ],
             sky:
                 [
@@ -125,31 +125,31 @@ export function createTownLevel({ entityImages, allAudios }) {
         // BACKGROUND: 3 ↔ 0
         const backFrame = i % 2 === 0 ? 3 : 0;
         townLevel.grounds.backGrounds.push(
-            new Ground(groundSrcTown[backFrame], xPos)
+            new Ground(groundSrc[backFrame], xPos)
         );
 
         // MIDGROUND: 4 ↔ 1
         const midFrame = i % 2 === 0 ? 4 : 1;
         townLevel.grounds.midGrounds.push(
-            new Ground(groundSrcTown[midFrame], xPos)
+            new Ground(groundSrc[midFrame], xPos)
         );
 
         // FOREGROUND: 5 ↔ 2
         const foreFrame = i % 2 === 0 ? 5 : 2;
         townLevel.grounds.foreGrounds.push(
-            new Ground(groundSrcTown[foreFrame], xPos)
+            new Ground(groundSrc[foreFrame], xPos)
         );
     }
 
     for (let i = 0; i < count; i++) {
         const xPos = startX + i * step;
-        townLevel.sky.push(new Sky(xPos));
+        townLevel.sky.push(new Sky(xPos, entityImages));
     }
 
 
     let calculationX = 18676
     for (let index = 0; index < 41; index++) {
-        townLevel.grounds.foreGrounds.push(new Ground(groundSrcTown[7], calculationX, 572, 300, 150));
+        townLevel.grounds.foreGrounds.push(new Ground(groundSrc[7], calculationX, 572, 300, 150));
         calculationX = calculationX + 100;
     }
     return townLevel;

@@ -1,12 +1,12 @@
 import { Level } from '../../classes/core/level.class.js';
-import { Town } from '../../classes/entities/town.class.js';
+import { SceneryObject } from '../../classes/entities/scenery-object.class.js';
 
 const groundSrcNayelisHouse =
     [
 
     ]
 
-const townSrcNayelisHouse =
+const scenerySrc =
     [
         './assets/img/house_nayeli_interior.png'
     ]
@@ -16,12 +16,12 @@ export function createNayelisHouseLevel() {
         [
 
         ]
-    const towns =
+    const sceneryObjects =
         [
-            new Town(townSrcNayelisHouse[0], 240, 325, 800, 400)
+            new SceneryObject(scenerySrc[0], 240, 325, 800, 400)
         ]
     return new Level({
         grounds,
-        towns
+        sceneryObjects
     });
 }

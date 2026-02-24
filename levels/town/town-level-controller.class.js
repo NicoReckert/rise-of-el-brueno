@@ -102,7 +102,7 @@ export class TownLevelController {
         this.ctx.restore();
         this.ctx.save();
         this.ctx.translate(-this.renderCameraX * 1.0, 0);
-        this.addObject(this.setup.townLevel.towns);
+        this.addObject(this.setup.townLevel.sceneryObjects);
         this.ctx.restore();
     }
 
@@ -179,8 +179,8 @@ export class TownLevelController {
         this.setup.throwableObjects?.forEach(bottle => {
             bottle.updateState(timestamp);
             bottle.updateAnimation(timestamp);
-            bottle.applyGravity2(timestamp);
         });
+        this.setup.throwableObjects = this.setup.throwableObjects.filter(b => !b.markedForRemoval);
         this.setup.townLevel.projectiles.forEach(projectile => {
             projectile.updateState(timestamp);
         });

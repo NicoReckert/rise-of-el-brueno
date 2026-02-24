@@ -1,4 +1,5 @@
 export const farmEntityManifestImmediate = {
+  sky: Array.from({ length: 1 }, _ => `./assets/img/5_background/layers/air.webp`),
   cloud: { variants: Array.from({ length: 2 }, (_, i) => `./assets/img/5_background/layers/4_clouds/${i + 1}.webp`) },
   cow: {
     idle: {
@@ -312,6 +313,18 @@ export const farmEntityManifestDeferred = {
 
 export const otherLevelEntityManifestLazy = {
   sandstorm: { texture: Array.from({ length: 1 }, _ => `./assets/img/sandstorm_texture.png`) },
+
+  throwableBottle: {
+    throw: {
+      type: 'sheet',
+      json: './assets/img/6_salsa_bottle/bottle_rotation/throw_sheet.json'
+    },
+    broken: {
+      type: 'sheet',
+      json: './assets/img/6_salsa_bottle/bottle_rotation/bottle_splash/broken_sheet.json'
+    }
+  },
+
   soul: {
     idle: {
       type: 'sheet',

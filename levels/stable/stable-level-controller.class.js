@@ -47,7 +47,7 @@ export class StableLevelController {
         this.ctx.save();
         this.ctx.translate(-this.renderCameraX, 0);
         this.addObject(this.setup.stableLevel.grounds);
-        this.addToWorld(this.setup.stableLevel.towns[0]);
+        this.addToWorld(this.setup.stableLevel.sceneryObjects[0]);
         this.ctx.restore();
     }
 
