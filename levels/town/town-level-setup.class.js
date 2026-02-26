@@ -76,7 +76,9 @@ export class TownLevelSetup {
             endbossFlappingWingsSound: this.allAudios.endbossFlappingWingsSound,
             fireballChargeSound: this.allAudios.fireballChargeSound,
             airHitStunMusic: this.allAudios.airHitStunMusic,
-            backgroundMusic: this.allAudios.backgroundMusic
+            backgroundMusic: this.allAudios.backgroundMusic,
+            sadMomentMusic: this.allAudios.sadMomentMusic,
+            houseFireSound: this.allAudios.houseFireSound
         };
         this.environment = {
             rockyDesertPedestal: new AnimatedEntity(this.entityImages, 'rockyDesertPedestal', 400, 400, 23300, 300),
@@ -87,7 +89,10 @@ export class TownLevelSetup {
             spiritEssence1: new AnimatedEntity(this.entityImages, "spiritEssence", 90, 90, 0, 0),
             spiritEssence2: new AnimatedEntity(this.entityImages, "spiritEssence", 90, 90, 0, 0),
             spiritEssence3: new AnimatedEntity(this.entityImages, "spiritEssence", 90, 90, 0, 0),
-            macuahuitl: new AnimatedEntity(this.entityImages, "macuahuitl", 120, 120, 23350, 180)
+            macuahuitl: new AnimatedEntity(this.entityImages, "macuahuitl", 120, 120, 23350, 180),
+            houseDestroyed: new AnimatedEntity(this.entityImages, "houseDestroyed", 900, 800, 1000, -50),
+            stableDestroyed: new AnimatedEntity(this.entityImages, "stableDestroyed", 600, 600, 1720, 200),
+            millDestroyed: new AnimatedEntity(this.entityImages, "millDestroyed", 1100, 800, 2200, -285),
         }
 
         this.environment.rockyDesertPedestal.opacity = 0;
@@ -95,6 +100,7 @@ export class TownLevelSetup {
         this.environment.macuahuitl.isFlipped = false;
         this.environment.pollitoSpirit.isFlipped = false;
         this.environment.fire.updateAnimationState('idle', 1000 / 8);
+        this.environment.houseDestroyed.updateAnimationState('idle', 1000 / 8);
         this.sounds.soulMusic.volume = 0;
         this.speechBubbles = {
             // bubbleFarm: new SpeechBubble("In den Hühnerstall gehen? {F} drücken!", this.world.character, 'info'),
@@ -125,6 +131,7 @@ export class TownLevelSetup {
         this.characters.sollita.isFlipped = false;
         this.isNearMusician = false;
         this.isNearSollita = false;
+        this.isNearDestroyedHouse = false;
 
         this.endbossFlyPhase = 0;
         this.effects = [];

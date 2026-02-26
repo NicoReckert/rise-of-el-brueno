@@ -61,6 +61,7 @@ export const farmAudioManifestDeferred = {
 }
 
 export const otherLevelAudioManifestLazy = {
+    footStepOnDestroyedHouseSound: './assets/freesound_community-soil-steps-87382 (mp3cut.net).mp3',
     soulSpeakSound: './assets/audio/soul-speak-sound.opus',
     nayelisSpeakSound: './assets/audio/nayelis-speak-sound.opus',
     newWeaponMusic: './assets/audio/new-weapon-music.opus',
@@ -88,5 +89,9 @@ export const otherLevelAudioManifestLazy = {
     explodeSound: './assets/audio/explode-sound.mp3',
     airHitStunMusic: './assets/audio/air-hit-stun-music.mp3',
     sadSoulMusic: './assets/audio/sad-soul-music.mp3',
-    backgroundMusic: './assets/audio/background-music2.mp3'
+    backgroundMusic: './assets/audio/background-music2.mp3',
+    sadMomentMusic: './assets/sad-violin-150146.mp3',
+    houseFireSound: './assets/freesound_community-roaring-house-fire-wall-fall-in-7022.mp3',
+    stableSmokeSound: './assets/freesound_community-vapeinhale-39129.mp3',
+    millScratchySound: './assets/tanweraman-scratchy-windmill-350419.mp3',
 }

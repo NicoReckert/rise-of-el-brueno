@@ -22,18 +22,126 @@ export const townEvents =
         },
 
         {
+            type: 'quest',
+            action: (setup) => {
+                setup.environment.stableDestroyed.animSeqCtrl.start([
+                    { anim: 'smokeA', fps: 10, pause: 0, audio: { name: "stableSmokeSound", volume: 1.0 } },
+                    { anim: "idle", fps: 0, pause: 3000 },
+                    { anim: 'smokeB', fps: 10, pause: 0 },
+                    { anim: "idle", fps: 0, pause: 3000 }
+                ],
+                    setup.world.townLevelController.timerManager,
+                    { loop: true, audioManager: setup.world.audioManager }
+                );
+            }
+        },
+
+        {
+            type: 'quest',
+            action: (setup) => {
+                setup.environment.millDestroyed.animSeqCtrl.start([
+                    { anim: 'forward', fps: 6.5, pause: 0, audio: { name: "millScratchySound", volume: 1.0 } },
+                    { anim: "idleB", fps: 0, pause: 5000 },
+                    { anim: 'backward', fps: 6.5, pause: 0, audio: { name: "millScratchySound", volume: 1.0 } },
+                    { anim: "idle", fps: 0, pause: 5000 },
+                ],
+                    setup.world.townLevelController.timerManager,
+                    { loop: true, audioManager: setup.world.audioManager }
+                );
+            }
+        },
+
+        {
             type: "position",
             area: { x: 200, width: 100 },
             action: (setup) => {
-                setup.townLevel.enemies.push(
-                    new Enemy('dragonSmall', setup.entityImages, 170, 170, 300, 1000, setup.allAudios),
-                )
-                setup.townLevel.enemies.forEach(enemy => {
-                    enemy.curentAnimation = 'idle';
-                    enemy.world = setup.world;
-                });
+                setup.world.audioManager.fadeOutAudio(setup.sounds.backgroundMusic, 1000);
+                setup.world.audioManager.fadeInAudio(setup.sounds.sadMomentMusic, 2000, 0.4);
             }
         },
+
+        {
+            type: "collision",
+            objectA: 'character',
+            objectB: 'stableDestroyed',
+            toleranceB: { x: -400, width: -400 },
+            once: false,
+            action: (setup) => {
+                setup.environment.stableDestroyed.audioEnabled = true;
+            },
+            onLeave: (setup) => {
+                setup.environment.stableDestroyed.audioEnabled = false;
+                setup.world.audioManager.stopAll("stableSmokeSound");
+            }
+        },
+
+        {
+            type: "collision",
+            objectA: 'character',
+            objectB: 'millDestroyed',
+            toleranceB: { x: -400, width: -400 },
+            once: false,
+            action: (setup) => {
+                setup.environment.millDestroyed.audioEnabled = true;
+            },
+            onLeave: (setup) => {
+                setup.environment.millDestroyed.audioEnabled = false;
+                setup.world.audioManager.stopAll("millScratchySound");
+            }
+        },
+
+        {
+            type: "collision",
+            objectA: 'character',
+            objectB: 'houseDestroyed',
+            toleranceB: { x: -400, width: -400 },
+            once: false,
+            action: (setup) => {
+                if (!setup.isNearDestroyedHouse) {
+                    setup.isNearDestroyedHouse = true;
+                    setup.sounds.houseFireSound.currentTime = 0;
+                    setup.sounds.houseFireSound.loop = true;
+                    setup.world.audioManager.fadeInAudio(setup.sounds.houseFireSound, 2000, 0.3);
+                }
+            },
+            onLeave: (setup) => {
+                if (setup.isNearDestroyedHouse) {
+                    setup.isNearDestroyedHouse = false;
+                    setup.world.audioManager.fadeOutAudio(setup.sounds.houseFireSound, 1000);
+                }
+            }
+        },
+
+        {
+            type: "collision",
+            objectA: 'character',
+            objectB: 'houseDestroyed',
+            toleranceB: { x: 45, width: 30 },
+            once: false,
+            action: (setup) => {
+                setup.world.character.walkOnDestroyedHouse = true;
+                setup.world.character.speedX = 2;
+            },
+            onLeave: (setup) => {
+                setup.world.character.walkOnDestroyedHouse = false;
+                setup.world.character.speedX = 3;
+            }
+        },
+
+
+        // {
+        //     type: "position",
+        //     area: { x: 200, width: 100 },
+        //     action: (setup) => {
+        //         setup.townLevel.enemies.push(
+        //             new Enemy('dragonSmall', setup.entityImages, 170, 170, 300, 1000, setup.allAudios),
+        //         )
+        //         setup.townLevel.enemies.forEach(enemy => {
+        //             enemy.curentAnimation = 'idle';
+        //             enemy.world = setup.world;
+        //         });
+        //     }
+        // },
 
         {
             type: "position",

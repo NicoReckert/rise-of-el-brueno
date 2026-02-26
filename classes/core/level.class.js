@@ -10,11 +10,11 @@ export class Level {
     * @param {Array} [params.clouds=[]] List of clouds.
     * @param {Array} [params.grounds=[]] List of grounds.
     * @param {Array} [params.sceneryObjects=[]] List of scenery objects.
-    * @param {Array} [params.sky=[]] List of sky elements.
+    * @param {*}     [params.sky=null] Sky object (procedural or image) OR array (legacy).
     * @param {Array} [params.coins=[]] List of coins.
     * @param {Array} [params.bottles=[]] List of bottles.
     */
-    constructor({ enemies = [], endboss = null, clouds = [], grounds = [], sceneryObjects = [], sky = [], coins = [], bottles = [] }) {
+    constructor({ enemies = [], endboss = null, clouds = [], grounds = [], sceneryObjects = [], sky = null, coins = [], bottles = [] }) {
         this.enemies = enemies;
         this.endboss = endboss;
         this.clouds = clouds;

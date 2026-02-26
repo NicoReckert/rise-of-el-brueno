@@ -216,6 +216,7 @@ export class CharacterConfig {
         this.char.isHurt = false;
         this.char.isThrowing = false;
         this.char.isProtect = false;
+        this.char.walkOnDestroyedHouse = false;
     }
 
     /**

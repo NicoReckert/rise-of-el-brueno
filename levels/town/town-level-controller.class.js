@@ -4,6 +4,7 @@ import { SandstormEffect } from '../../classes/effects/sandstorm-effect.class.js
 import { MagicShieldEffect } from '../../classes/effects/magic-shield-effect.class.js';
 import { EssenceTrailParticle } from '../../classes/effects/essence-trail-particle.class.js';
 import { WindParticleEffect } from '../../classes/effects/wind-particle.class.js';
+import { TimerManager } from '../../classes/systems/timer-manager.class.js';
 
 export class TownLevelController {
     constructor(setup) {
@@ -33,6 +34,7 @@ export class TownLevelController {
         this.eventManager = new EventManager(this.setup);
         this.questManager = new QuestManager(this.setup, this.eventManager, this.setup.townEvents);
         this.eventManager.questManager = this.questManager;
+        this.timerManager = new TimerManager();
         this.magicShield = new MagicShieldEffect(this.canvas);
         this.magicShield.onShockwave = () => {
             this.sandstorm.pressure = 0.4;
@@ -70,6 +72,7 @@ export class TownLevelController {
         if (Array.isArray(this.setup.damageTexts)) {
             this.setup.damageTexts = this.setup.damageTexts.filter(dt => dt?.update?.(timestamp) !== false);
         }
+        this.timerManager.update();
 
     }
 
@@ -80,10 +83,7 @@ export class TownLevelController {
     }
 
     renderBackgrounds() {
-        this.ctx.save();
-        this.ctx.translate(-this.renderCameraX * 0.2, 0);
-        this.addObject(this.setup.townLevel.sky);
-        this.ctx.restore();
+        this.addToWorld(this.setup.townLevel.sky);
         this.ctx.save();
         this.ctx.translate(-this.renderCameraX * 0.4, 0);
         this.addObject(this.setup.townLevel.clouds);
@@ -117,6 +117,9 @@ export class TownLevelController {
         this.ctx.save();
         this.ctx.translate(-this.renderCameraX, 0);
         // this.addToWorld(this.setup.environment.fire);
+        this.addToWorld(this.setup.environment.houseDestroyed);
+        this.addToWorld(this.setup.environment.stableDestroyed);
+        this.addToWorld(this.setup.environment.millDestroyed);
         this.addToWorld(this.character);
         this.setup.damageTexts.forEach(dt => dt.draw(this.ctx));
         this.addToWorld(this.setup.environment.juanitoSpirit);
@@ -155,7 +158,7 @@ export class TownLevelController {
         const sy = this.setup.characters.tadeo.y + this.setup.characters.tadeo.height * 0.2;
 
         const now = performance.now();
-        this.magicShield.update(sx, sy, now);
+        this.magicShield.update(now);
         this.magicShield.draw(this.ctx, sx, sy);
 
 

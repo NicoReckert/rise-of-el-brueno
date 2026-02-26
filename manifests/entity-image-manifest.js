@@ -1,5 +1,5 @@
 export const farmEntityManifestImmediate = {
-  sky: Array.from({ length: 1 }, _ => `./assets/img/5_background/layers/air.webp`),
+  sky: Array.from({ length: 1 }, _ => `./assets/img/5_background/layers/air.png`),
   cloud: { variants: Array.from({ length: 2 }, (_, i) => `./assets/img/5_background/layers/4_clouds/${i + 1}.webp`) },
   cow: {
     idle: {
@@ -313,6 +313,46 @@ export const farmEntityManifestDeferred = {
 
 export const otherLevelEntityManifestLazy = {
   sandstorm: { texture: Array.from({ length: 1 }, _ => `./assets/img/sandstorm_texture.png`) },
+
+  houseDestroyed: {
+    idle: {
+      type: 'sheet',
+      json: './assets/img/entities/house_destroyed/idle/idle_sheet.json'
+    }
+  },
+  stableDestroyed: {
+    idle: {
+      type: 'sheet',
+      json: './assets/img/entities/stable_destroyed/idle_and_smoke_A/idle_and_smoke_A_sheet.json'
+    },
+    smokeA: {
+      type: 'sheet',
+      json: './assets/img/entities/stable_destroyed/idle_and_smoke_A/idle_and_smoke_A_sheet.json'
+    },
+    smokeB: {
+      type: 'sheet',
+      json: './assets/img/entities/stable_destroyed/smoke_B/smoke_B_sheet.json'
+    }
+  },
+
+  millDestroyed: {
+    idle: {
+      type: 'sheet',
+      json: './assets/img/entities/mill_destroyed/idle_forward_backward/idle_forward_backward_sheet.json'
+    },
+    forward: {
+      type: 'sheet',
+      json: './assets/img/entities/mill_destroyed/idle_forward_backward/idle_forward_backward_sheet.json'
+    },
+    backward: {
+      type: 'sheet',
+      json: './assets/img/entities/mill_destroyed/idle_forward_backward/idle_forward_backward_sheet.json'
+    },
+    idleB: {
+      type: 'sheet',
+      json: './assets/img/entities/mill_destroyed/idle_forward_backward/idle_forward_backward_sheet.json'
+    }
+  },
 
   throwableBottle: {
     throw: {

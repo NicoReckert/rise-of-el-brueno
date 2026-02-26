@@ -16,10 +16,7 @@ export class FarmRenderer {
     }
 
     renderBackgrounds(cameraX) {
-        this.ctx.save();
-        this.ctx.translate(-cameraX * 0.2, 0);
-        this.addObject(this.setup.farmLevel.sky);
-        this.ctx.restore();
+        this.addToWorld(this.setup.farmLevel.sky);
         this.ctx.save();
         this.ctx.translate(-cameraX * 0.4, 0);
         this.addObject(this.setup.farmLevel.clouds);

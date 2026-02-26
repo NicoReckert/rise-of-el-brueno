@@ -74,21 +74,7 @@ export function createTownLevel({ entityImages, allAudios }) {
                     new SceneryObject(scenerySrc[5], 22038, -17, 1000, 800)
                 ],
             sky:
-                [
-                    // new Sky(-719),
-                    // new Sky(0),
-                    // new Sky(719),
-                    // new Sky(1438),
-                    // new Sky(2157),
-                    // new Sky(2876),
-                    // new Sky(3595),
-                    // new Sky(4314),
-                    // new Sky(5033),
-                    // new Sky(5752),
-                    // new Sky(6471),
-                    // new Sky(7190),
-                    // new Sky(7909)
-                ],
+                new Sky({ width: 1280, height: 720, preset: "tragicDay" }),
             coins:
                 [
                     // new Coin(entityImages),
@@ -140,12 +126,6 @@ export function createTownLevel({ entityImages, allAudios }) {
             new Ground(groundSrc[foreFrame], xPos)
         );
     }
-
-    for (let i = 0; i < count; i++) {
-        const xPos = startX + i * step;
-        townLevel.sky.push(new Sky(xPos, entityImages));
-    }
-
 
     let calculationX = 18676
     for (let index = 0; index < 41; index++) {

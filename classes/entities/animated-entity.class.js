@@ -1,5 +1,6 @@
 import { MovableObject } from '../systems/movable-object.class.js';
 import { EntityAnimationController } from '../systems/entity-animation-controller.class.js';
+import { EntityAnimationSequenceController } from '../systems/entity-animation-sequence-controller.class.js';
 
 /**
  * Represents an animated entity.
@@ -21,7 +22,7 @@ export class AnimatedEntity extends MovableObject {
     constructor(entityImages, currentEntity, height = 150, width = 150, x = 355, y = 220, offsetTop = 0, offsetLeft = 0, offsetRight = 0, offsetBottom = 0) {
         super();
         this.animCtrl = new EntityAnimationController(this);
-        this.isGamecharacter = false;
+        this.animSeqCtrl = new EntityAnimationSequenceController(this);
         this.entityImages = entityImages;
         this.currentEntity = currentEntity;
         this.initDimensions(height, width, x, y);
@@ -55,6 +56,8 @@ export class AnimatedEntity extends MovableObject {
         this.frameIndex = 0;
         this.isFlipped = true;
         this.sheetIndex = 0;
+        this.animSequence = null;
+        this.animationFinished = false;
     }
 
     /**
@@ -145,6 +148,7 @@ export class AnimatedEntity extends MovableObject {
         this.updateDeltaTime(timestamp);
         this.handleMovement();
         this.animCtrl.updateAnimation(timestamp);
+        this.animSeqCtrl.update();
     }
 
     /**
@@ -203,9 +207,11 @@ export class AnimatedEntity extends MovableObject {
     /**
     * Sets a new animation and resets related state if it differs from the current one.
     * @param {string} newAnimation Animation name.
+    * @param {boolean} [force=false] Whether to force the animation change.
+    * @returns {void}
     */
-    setAnimation(newAnimation) {
-        if (this.currentAnimation !== newAnimation) {
+    setAnimation(newAnimation, force = false) {
+        if (force || this.currentAnimation !== newAnimation) {
             this.currentAnimation = newAnimation;
             this.frameIndex = 0;
             this.sheetIndex = 0;

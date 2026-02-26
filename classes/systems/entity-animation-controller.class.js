@@ -14,14 +14,12 @@ export class EntityAnimationController {
     }
 
     /**
-    * Updates the current animation frame.
+    * Updates the animation based on the given timestamp.
     * @param {number} timestamp Frame timestamp.
+    * @returns {void}
     */
     updateAnimation(timestamp) {
-        if (this.shouldSkipFrame(timestamp)) {
-            this.entity.updateFade?.(timestamp);
-            return;
-        }
+        if (this.handleSkipOrPause(timestamp)) return;
         const finishedAnim = this.entity.currentAnimation;
         const anim = this.entity.getAnimationImages(finishedAnim);
         if (!anim) {
@@ -30,6 +28,34 @@ export class EntityAnimationController {
         }
         this.playAnimationFromSource(anim, finishedAnim);
         this.finishFrameUpdate(timestamp);
+    }
+
+    /**
+    * Handles frame skipping or paused animation state.
+    * @param {number} timestamp Frame timestamp.
+    * @returns {boolean} True if processing should stop, otherwise false.
+    */
+    handleSkipOrPause(timestamp) {
+        if (this.shouldSkipFrame(timestamp)) {
+            this.entity.updateFade?.(timestamp);
+            return true;
+        }
+        if (this.isAnimationSequencePaused()) {
+            this.finishFrameUpdate(timestamp);
+            return true;
+        }
+        return false;
+    }
+
+    /**
+    * Checks whether the animation sequence is paused.
+    * @returns {boolean} True if paused, otherwise false.
+    */
+    isAnimationSequencePaused() {
+        const seq = this.entity.animSeqCtrl;
+        if (!seq?.isActive?.()) return false;
+        if (!seq.isWaitingForPause?.()) return false;
+        return this.entity.animationFinished;
     }
 
     /**
@@ -58,10 +84,15 @@ export class EntityAnimationController {
     * Plays an animation from the provided source.
     * @param {Array<string>} anim Animation frames.
     * @param {string} finishedAnim Animation state to handle after completion.
+    * @returns {void}
     */
     playAnimationFromSource(anim, finishedAnim) {
+        const seqActive = !!this.entity.animSeqCtrl?.isActive?.();
         this.entity.updateAnimationFromSourceGeneric(anim, {
-            onFinished: () => this.transitions.handlePostAnimation(finishedAnim),
+            onFinished: () => {
+                if (seqActive) return;
+                this.transitions.handlePostAnimation(finishedAnim);
+            },
             allowLoop: true
         });
     }

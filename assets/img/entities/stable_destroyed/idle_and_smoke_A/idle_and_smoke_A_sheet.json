@@ -1,0 +1,22 @@
+﻿{
+    "frameHeight":  512,
+    "columns":  4,
+    "frameWidth":  512,
+    "animations": {
+    "idle": {
+      "from": 0,
+      "to": 0,
+      "fps": 7,
+      "loop": false	
+    },
+    "smokeA": {
+      "from": 1,
+      "to": 15,
+      "fps": 8,
+      "loop": false
+    }
+  },
+    "image":  "idle_and_smoke_A_sheet.webp",
+    "frames":  16,
+    "rows":  4
+}

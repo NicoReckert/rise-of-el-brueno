@@ -30,6 +30,11 @@ export class WorldRenderer {
         const drawOffsets = this.getDrawOffsets(object);
         ctx.save();
         this.applyObjectOpacity(ctx, object);
+        if (typeof object.draw === "function") {
+            object.draw(ctx);
+            ctx.restore();
+            return;
+        }
         this.drawObjectWithFlip(ctx, object, flipState, offsets, drawOffsets);
         ctx.restore();
     }
@@ -41,6 +46,7 @@ export class WorldRenderer {
     */
     isDrawableObject(object) {
         if (!object) return false;
+        if (typeof object.draw === "function") return true;
         if (!object.img) return false;
         return true;
     }

@@ -33,7 +33,11 @@ export class CharacterAudioController {
         const c = this.character;
         const isWalking = c.isMovingLeft || c.isMovingRight;
         if (isWalking && !c.isJumping && !c.isFlying) {
-            this.audioManager.playOneShot('footStepSound', { volume: 0.6 });
+            if (c.walkOnDestroyedHouse) {
+                this.audioManager.playOneShot('footStepOnDestroyedHouseSound', { volume: 0.6 });
+            } else {
+                this.audioManager.playOneShot('footStepSound', { volume: 0.6 });
+            }
         }
     }
 
