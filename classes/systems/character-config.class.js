@@ -44,7 +44,7 @@ export class CharacterConfig {
             'meditation', 'meditation-loop', 'stand-up', 'walk-determined', 'stand-determined',
             'stand-determined-loop', 'walk-in-storm',
             'collapse', 'collapse-loop', 'stand-up-after-collapse',
-            'air-hit-stun', 'air-pain-stun'
+            'air-hit-stun', 'air-pain-stun', 'throw'
         ]);
     }
     /**
@@ -55,7 +55,7 @@ export class CharacterConfig {
             'kneel-and-cry', 'stand-up-determined', 'determined-rise', 'caress',
             'sit-down-and-play-guitar', 'light-a-campfire', 'attack-staff', 'attack-sword',
             'meditation', 'new-weapon', 'stand-up', 'stand-determined',
-            'collapse', 'stand-up-after-collapse', 'protect', 'air-hit-stun', 'hurt'
+            'collapse', 'stand-up-after-collapse', 'protect', 'air-hit-stun', 'hurt', 'throw'
         ]);
     }
 
@@ -157,6 +157,7 @@ export class CharacterConfig {
         this.char.newWeaponStartSheet = this.images.newWeaponStartSheet ?? null;
         this.char.newWeaponLoopSheet = this.images.newWeaponLoopSheet ?? null;
         this.char.protectSheet = this.images.protectSheet ?? null;
+        this.char.throwSheet = this.images.throwSheet ?? null;
     }
 
     /**
@@ -188,7 +189,7 @@ export class CharacterConfig {
         this.char.isFlipped = false;
         this.char.isMoving = false;
         this.char.isGameCharacter = true;
-        this.char.throwableBottels = 0;
+        this.char.throwableBottels = 100;
     }
 
     /**

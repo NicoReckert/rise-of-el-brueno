@@ -355,6 +355,10 @@ export const otherLevelEntityManifestLazy = {
   },
 
   throwableBottle: {
+    hand: {
+      type: 'sheet',
+      json: './assets/img/6_salsa_bottle/bottle_rotation/bottle_hand/hand_sheet.json'
+    },
     throw: {
       type: 'sheet',
       json: './assets/img/6_salsa_bottle/bottle_rotation/throw_sheet.json'

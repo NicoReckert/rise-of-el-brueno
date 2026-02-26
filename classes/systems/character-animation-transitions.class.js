@@ -122,6 +122,7 @@ export class CharacterAnimationTransitions {
     */
     handleCombatTransitions(anim) {
         if (this.handleAttackTransitions(anim)) return true;
+        if (this.handleThrowTransition(anim)) return true;
         if (this.handleMeditationTransition(anim)) return true;
         if (this.handleNewWeaponTransition(anim)) return true;
         if (this.handleProtectTransition(anim)) return true;
@@ -139,6 +140,17 @@ export class CharacterAnimationTransitions {
         }
         this.char.isAttack = false;
         this.char.hasHitEnemyThisAttack = false;
+        return true;
+    }
+
+    /**
+    * Handles the transition after a throw animation.
+    * @param {string} anim Animation state.
+    * @returns {boolean} True if the transition was handled, otherwise false.
+    */
+    handleThrowTransition(anim) {
+        if (anim !== 'throw') return false;
+        this.char.isThrowing = false;
         return true;
     }
 

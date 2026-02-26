@@ -280,6 +280,7 @@ export class CharacterAnimationController {
                 return this.setAnim('attack-staff', 7);
             } else return this.setAnim('attack-sword', 6);
         }
+        if (this.char.isThrowing) return this.setAnim('throw', 10);
         if (this.char.isMeditation) return this.setAnim('meditation', 6, 'meditation-loop');
         if (this.char.isNewWeapon) return this.setAnim('new-weapon', 6, 'new-weapon-loop');
         if (this.char.isStandUp) return this.setAnim('stand-up', 4);

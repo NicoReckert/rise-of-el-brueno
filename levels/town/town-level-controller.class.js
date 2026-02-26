@@ -5,6 +5,7 @@ import { MagicShieldEffect } from '../../classes/effects/magic-shield-effect.cla
 import { EssenceTrailParticle } from '../../classes/effects/essence-trail-particle.class.js';
 import { WindParticleEffect } from '../../classes/effects/wind-particle.class.js';
 import { TimerManager } from '../../classes/systems/timer-manager.class.js';
+import { ThrowBottleSystem } from '../../classes/systems/throw-bottle-system.class.js';
 
 export class TownLevelController {
     constructor(setup) {
@@ -44,6 +45,13 @@ export class TownLevelController {
         this.windParticleEffect = new WindParticleEffect(this.canvas.width * 38, this.canvas.height, 1200);
         this.setup.damageTexts ||= [];
 
+
+        this.throwBottleSystem = new ThrowBottleSystem({
+            world: this.world,
+            setup: this.setup,
+            animName: 'throw',
+            releaseFrame: 4,
+        });
     }
 
     update(timestamp) {
@@ -67,7 +75,7 @@ export class TownLevelController {
         this.renderStatusBar();
         this.setup.panel.update(timestamp);
         this.setup.panel.draw(this.ctx);
-        this.windParticleEffect.update();
+        // this.windParticleEffect.update();
         this.updateSpiritEssenceSequence(timestamp);
         if (Array.isArray(this.setup.damageTexts)) {
             this.setup.damageTexts = this.setup.damageTexts.filter(dt => dt?.update?.(timestamp) !== false);
@@ -121,6 +129,7 @@ export class TownLevelController {
         this.addToWorld(this.setup.environment.stableDestroyed);
         this.addToWorld(this.setup.environment.millDestroyed);
         this.addToWorld(this.character);
+        this.addToWorld(this.throwBottleSystem.heldBottle);
         this.setup.damageTexts.forEach(dt => dt.draw(this.ctx));
         this.addToWorld(this.setup.environment.juanitoSpirit);
         this.addToWorld(this.setup.environment.pollitoSpirit);
@@ -148,7 +157,7 @@ export class TownLevelController {
         this.addToWorld(this.setup.characters.tadeo);
         this.addToWorld(this.setup.characters.sollita);
         this.addToWorld(this.setup.characters.musician);
-        this.windParticleEffect.draw(this.ctx, this.renderCameraX);
+        // this.windParticleEffect.draw(this.ctx, this.renderCameraX);
         this.ctx.restore();
         // this.sandstorm.draw(this.ctx, this.renderCameraX);
         // this.sandstormFar.draw(this.ctx, this.renderCameraX);
@@ -171,9 +180,9 @@ export class TownLevelController {
             : null;
 
 
-        this.sandstormFar.draw(this.ctx, this.renderCameraX, shieldInfo);
-        this.sandstorm.draw(this.ctx, this.renderCameraX, shieldInfo);
-        this.sandstormNear.draw(this.ctx, this.renderCameraX, shieldInfo);
+        // this.sandstormFar.draw(this.ctx, this.renderCameraX, shieldInfo);
+        // this.sandstorm.draw(this.ctx, this.renderCameraX, shieldInfo);
+        // this.sandstormNear.draw(this.ctx, this.renderCameraX, shieldInfo);
     }
 
     updateCharacter(timestamp) {
@@ -192,6 +201,7 @@ export class TownLevelController {
         this.setup.effects.forEach(effect => {
             effect.updateState(timestamp);
         });
+        this.throwBottleSystem.update();
     }
 
     updateEntities(timestamp) {

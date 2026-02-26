@@ -139,6 +139,7 @@ export class Character extends MovableObject {
             case 'new-weapon-loop': return this.newWeaponLoopSheet;
             case 'protect': return this.protectSheet;
             case 'protect-loop': return this.protectSheet;
+            case 'throw': return this.throwSheet;
         }
         return null;
     }
@@ -329,8 +330,10 @@ export class Character extends MovableObject {
         if (anim === 'attack-staff') {
             this.drawOffset = { x: 0, y: 0, flipX: -100 };
         } else if (anim === 'attack-sword') {
-            this.drawOffset = { x: 0, y: 0, flipX: -120 };
+            this.drawOffset = { x: -5, y: 0, flipX: -130 };
         } else if (anim === 'protect' || anim === 'protect-loop') {
+            this.drawOffset = { x: -14, y: 0, flipX: 0 };
+        } else if (anim === 'throw') {
             this.drawOffset = { x: -14, y: 0, flipX: 0 };
         } else {
             this.drawOffset = { x: 0, y: 0, flipX: 0 };

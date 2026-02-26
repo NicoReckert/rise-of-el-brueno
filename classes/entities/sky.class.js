@@ -51,21 +51,38 @@ export class Sky extends MovableObject {
             { stop: 0.88, color: "#D1A66F" },
             { stop: 1.00, color: "#E7C69A" },
         ],
-        tragicDay: [
-            // Kaltes, entsättigtes Blau
-            { stop: 0.00, color: "#255A6F" },
-            { stop: 0.18, color: "#3F7F97" },
-            { stop: 0.35, color: "#5F94A8" },
+        tragicDay2: [
+  // Daytime, aber kühler und leicht entsättigt
+  { stop: 0.00, color: "#2F90AC" },
+  { stop: 0.14, color: "#49A5BC" },
+  { stop: 0.30, color: "#6DBDCC" },
+  { stop: 0.40, color: "#8FD0DD" },
 
-            // Rauchiger Haze
-            { stop: 0.52, color: "#8FA6A8" },
-            { stop: 0.62, color: "#B4B0A1" },
+  // Staub/Haze (hell, nicht grau-kalt)
+  { stop: 0.52, color: "#B8DEE5" },
+  { stop: 0.60, color: "#D6D9C9" },
 
-            // Gedämpftes, tragisches Warm
-            { stop: 0.78, color: "#C9A983" },
-            { stop: 0.90, color: "#D9B792" },
-            { stop: 1.00, color: "#E6C9A8" },
-        ],
+  // Gedämpftes Warm (tragisch, aber noch Tag)
+  { stop: 0.72, color: "#E3C49B" },
+  { stop: 0.86, color: "#EED4B2" },
+  { stop: 1.00, color: "#F6E6D2" },
+],
+
+tragicDay: [
+  // Kühl, aber nicht dunkel
+  { stop: 0.00, color: "#2A7E98" },
+  { stop: 0.15, color: "#3E8FA6" },
+  { stop: 0.30, color: "#5AA4B7" },
+
+  // Staubiger Übergang (weniger hell, weniger sauber)
+  { stop: 0.45, color: "#8FB1B6" },
+  { stop: 0.55, color: "#B5B6A5" },
+
+  // Trockene, entsättigte Wärme
+  { stop: 0.70, color: "#D3BA95" },
+  { stop: 0.85, color: "#E2C8A6" },
+  { stop: 1.00, color: "#EEDCC7" },
+],
     };
 
     constructor({ x = 0, y = 0, width, height, preset = "desertDay" } = {}) {

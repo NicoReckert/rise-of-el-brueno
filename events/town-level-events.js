@@ -830,19 +830,20 @@ export const townEvents =
                 const bottles = setup.throwableObjects;
                 const enemies = setup.townLevel.enemies;
                 const boss = setup.characters.endboss;
-
                 for (let i = bottles.length - 1; i >= 0; i--) {
                     const bottle = bottles[i];
 
                     // 1) Animation fertig → Bottle entfernen
                     if (bottle.markedForRemoval) {
-                        char.isThrowing = false;
                         bottle.isBrokenSound = false;
                         continue;
                     }
-
+                    const groundBottomY = 680;
+                    const footY = bottle.y + bottle.height - (bottle.offset?.bottom ?? 0);
                     // 2) Boden getroffen
-                    if (bottle.y + bottle.height >= 670) {
+                    if (footY >= groundBottomY) {
+                        // SNAP: exakt auf Boden setzen
+                        bottle.y = groundBottomY - bottle.height + (bottle.offset?.bottom ?? 0);
                         if (!bottle.isBrokenSound) {
                             world.audioManager.playOneShot('bottleBrokenSound', { volume: 0.6 });
                             bottle.isBrokenSound = true;
@@ -852,7 +853,6 @@ export const townEvents =
                             bottle.isBrokenAnimation = true;
                             bottle.isMovingLeft = false;
                             bottle.isMovingRight = false;
-                            char.isThrowing = false;
                         }
                         continue;
                     }
@@ -873,7 +873,6 @@ export const townEvents =
                                     bottle.isThrow = false;
                                     bottle.isGravity = false;
                                     bottle.isBrokenAnimation = true;
-                                    char.isThrowing = false;
                                     enemy.isDead = true;
                                     enemy.isMovingLeft = false;
                                     enemy.isMovingRight = false;
@@ -901,7 +900,7 @@ export const townEvents =
                                     bottle.isThrow = false;
                                     bottle.isGravity = false;
                                     bottle.isBrokenAnimation = true;
-                                    char.isThrowing = false;
+
 
                                     boss.energy -= 20;
                                     setup.statusBar2.setPercentage(boss.energy);
@@ -1031,35 +1030,29 @@ export const townEvents =
                 world.lastThrowCheck = world.timestamp;
 
                 // Kann der Charakter aktuell überhaupt werfen?
+                const noMoveInput = !world.keyboard.LEFT && !world.keyboard.RIGHT;
+                const throwIsIdle =
+                    !char.isThrowing && (char.currentAnimation !== 'throw' || char.animationFinished);
                 const canThrow =
-                    char.throwableBottels > 0 &&
                     !char.isThrowing &&
+                    noMoveInput &&
+                    char.throwableBottels > 0 &&
                     !char.isAttack &&
-                    !char.isProtect;
+                    !char.isProtect &&
+                    throwIsIdle;
+
 
                 if (canThrow) {
-                    let bottle;
-
-                    if (!char.isFlipped) {
-                        bottle = new ThrowableObject(setup.entityImages, char.x + 35, char.y + 150);
-                        bottle.isMovingRight = true;
-                        bottle.characterIsFlipped = false;
-                    } else {
-                        bottle = new ThrowableObject(setup.entityImages, char.x - 35, char.y + 150);
-                        bottle.isMovingLeft = true;
-                        bottle.characterIsFlipped = true;
-                    }
-
-                    bottle.isThrow = true;
-                    bottle.isBroken = false;
-                    bottle.speedY = 30;
-                    bottle.isGravity = true;
-
-                    setup.throwableObjects.push(bottle);
-
-                    // Sound + UI-Update wie vorher
-                    world.audioManager.playOneShot('bottleThrowSound', { volume: 0.6 });
-
+                    char.isThrowing = true;
+                    char.currentAnimation = 'throw';
+                    char.frameIndex = 0;
+                    char.sheetIndex = 0;
+                    char.animationFinished = false;
+                    char.lastFrameTime = null;
+                    char.deferSizeUpdate = true;
+                    char._thrownThisAnim = false;
+                    world.throwStartTime = world.timestamp;
+                    world.throwCommitUntil = world.timestamp + 100;
                     const bar = setup.bottleBar;
                     bar.percentage = Math.min(bar.percentage - 20, 100);
                     bar.setPercentage(bar.percentage);
@@ -1067,8 +1060,6 @@ export const townEvents =
                     if (char.throwableBottels > 0) {
                         char.throwableBottels -= 1;
                     }
-                    char.isThrowing = true;
-
                 } else if (char.throwableBottels === 0) {
                     // Keine Flaschen mehr → leeres "Klick" Geräusch
                     world.audioManager.playOneShot('bottleEmptySound', { volume: 0.6 });

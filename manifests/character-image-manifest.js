@@ -61,6 +61,10 @@ export const otherLevelCharacterManifestLazy = {
         type: 'sheet',
         json: './assets/img/2_character_pepe/attack_sword/attack_sword_sheet.json'
     },
+    throwSheet: {
+        type: 'sheet',
+        json: './assets/img/2_character_pepe/throw/throw_sheet.json'
+    },
     meditationSheet: {
         type: 'sheet',
         json: './assets/img/2_character_pepe/meditation/meditation_sheet.json'
