@@ -140,6 +140,7 @@ export class Character extends MovableObject {
             case 'protect': return this.protectSheet;
             case 'protect-loop': return this.protectSheet;
             case 'throw': return this.throwSheet;
+            case 'heal': return this.healSheet;
         }
         return null;
     }
@@ -333,7 +334,7 @@ export class Character extends MovableObject {
             this.drawOffset = { x: -5, y: 0, flipX: -130 };
         } else if (anim === 'protect' || anim === 'protect-loop') {
             this.drawOffset = { x: -14, y: 0, flipX: 0 };
-        } else if (anim === 'throw') {
+        } else if (anim === 'throw' || anim === 'heal') {
             this.drawOffset = { x: -14, y: 0, flipX: 0 };
         } else {
             this.drawOffset = { x: 0, y: 0, flipX: 0 };

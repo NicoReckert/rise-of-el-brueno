@@ -69,6 +69,10 @@ export const otherLevelCharacterManifestLazy = {
         type: 'sheet',
         json: './assets/img/2_character_pepe/meditation/meditation_sheet.json'
     },
+    healSheet: {
+        type: 'sheet',
+        json: './assets/img/2_character_pepe/heal/heal_sheet.json'
+    },
     newWeaponStartSheet: {
         type: 'sheetSequence',
         sheets: [

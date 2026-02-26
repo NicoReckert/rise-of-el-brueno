@@ -78,7 +78,8 @@ export class TownLevelSetup {
             airHitStunMusic: this.allAudios.airHitStunMusic,
             backgroundMusic: this.allAudios.backgroundMusic,
             sadMomentMusic: this.allAudios.sadMomentMusic,
-            houseFireSound: this.allAudios.houseFireSound
+            houseFireSound: this.allAudios.houseFireSound,
+            healSound: this.allAudios.healSound
         };
         this.environment = {
             rockyDesertPedestal: new AnimatedEntity(this.entityImages, 'rockyDesertPedestal', 400, 400, 23300, 300),

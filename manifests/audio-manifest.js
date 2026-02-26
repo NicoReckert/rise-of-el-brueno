@@ -94,4 +94,5 @@ export const otherLevelAudioManifestLazy = {
     houseFireSound: './assets/freesound_community-roaring-house-fire-wall-fall-in-7022.mp3',
     stableSmokeSound: './assets/freesound_community-vapeinhale-39129.mp3',
     millScratchySound: './assets/tanweraman-scratchy-windmill-350419.mp3',
+    healSound: './assets/yodguard-healing-magic-6-378666.mp3',
 }

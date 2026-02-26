@@ -123,6 +123,7 @@ export class CharacterAnimationTransitions {
     handleCombatTransitions(anim) {
         if (this.handleAttackTransitions(anim)) return true;
         if (this.handleThrowTransition(anim)) return true;
+        if (this.handleHealTransition(anim)) return true;
         if (this.handleMeditationTransition(anim)) return true;
         if (this.handleNewWeaponTransition(anim)) return true;
         if (this.handleProtectTransition(anim)) return true;
@@ -151,6 +152,17 @@ export class CharacterAnimationTransitions {
     handleThrowTransition(anim) {
         if (anim !== 'throw') return false;
         this.char.isThrowing = false;
+        return true;
+    }
+
+    /**
+    * Handles the transition after a heal animation.
+    * @param {string} anim Animation state.
+    * @returns {boolean} True if the transition was handled, otherwise false.
+    */
+    handleHealTransition(anim) {
+        if (anim !== 'heal') return false;
+        this.char.isHealing = false;
         return true;
     }
 
