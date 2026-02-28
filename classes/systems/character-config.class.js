@@ -87,7 +87,7 @@ export class CharacterConfig {
     */
     initCoreStateValues() {
         this.char.isGamecharacter = true;
-        this.char.isHaveSword = true;
+        this.char.isHaveSword = false;
         this.char.hasHitEnemyThisAttack = false;
         this.char.isCapturedByTornado = false;
         this.char.hurtUntil = 0;

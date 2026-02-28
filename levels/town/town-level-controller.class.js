@@ -6,6 +6,7 @@ import { EssenceTrailParticle } from '../../classes/effects/essence-trail-partic
 import { WindParticleEffect } from '../../classes/effects/wind-particle.class.js';
 import { TimerManager } from '../../classes/systems/timer-manager.class.js';
 import { ThrowBottleSystem } from '../../classes/systems/throw-bottle-system.class.js';
+import { DarkEnergyEffect } from '../../classes/effects/dark-energy-effect.class.js';
 
 export class TownLevelController {
     constructor(setup) {
@@ -52,10 +53,23 @@ export class TownLevelController {
             animName: 'throw',
             releaseFrame: 4,
         });
+
+        this.darkEnergyEffect = new DarkEnergyEffect(this.canvas.width, this.canvas.height, 6, {
+            yMin: this.canvas.height * 0.06,
+            yMax: this.canvas.height * 0.38,
+            alphaMin: 0.12,
+            alphaMax: 0.28,
+            minWidth: 4,
+            maxWidth: 11,
+            minLen: 320,
+            maxLen: 820,
+        });
     }
 
     update(timestamp) {
         this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+        this.magicShield.update(timestamp);
+
         this.updateCamera();
         this.renderBackgrounds();
         this.renderNPCsAndCharacter();
@@ -81,6 +95,8 @@ export class TownLevelController {
             this.setup.damageTexts = this.setup.damageTexts.filter(dt => dt?.update?.(timestamp) !== false);
         }
         this.timerManager.update();
+        this.darkEnergyEffect.update(timestamp, this.renderCameraX, this.canvas.width);
+        // immer pro frame:
 
     }
 
@@ -92,10 +108,14 @@ export class TownLevelController {
 
     renderBackgrounds() {
         this.addToWorld(this.setup.townLevel.sky);
+        this.darkEnergyEffect.draw(this.ctx, this.renderCameraX);
         this.ctx.save();
         this.ctx.translate(-this.renderCameraX * 0.4, 0);
+        this.ctx.globalAlpha = 0.55;        // deutlich sichtbar
+        this.ctx.filter = "blur(1px)";
         this.addObject(this.setup.townLevel.clouds);
         this.ctx.restore();
+        this.ctx.filter = "none";
         this.ctx.save();
         this.ctx.translate(-this.renderCameraX * 0.5, 0);
         this.addObject(this.setup.townLevel.grounds.backGrounds);
@@ -134,6 +154,7 @@ export class TownLevelController {
         this.addToWorld(this.setup.environment.juanitoSpirit);
         this.addToWorld(this.setup.environment.pollitoSpirit);
         this.addToWorld(this.setup.environment.lolaSpirit);
+        this.addToWorld(this.setup.environment.nayeliSpirit);
         this.addToWorld(this.setup.environment.spiritEssence1);
         this.addToWorld(this.setup.environment.spiritEssence2);
         this.addToWorld(this.setup.environment.spiritEssence3);
@@ -166,23 +187,18 @@ export class TownLevelController {
         const sx = this.setup.characters.tadeo.x - this.renderCameraX + this.setup.characters.tadeo.width / 2;
         const sy = this.setup.characters.tadeo.y + this.setup.characters.tadeo.height * 0.2;
 
-        const now = performance.now();
-        this.magicShield.update(now);
         this.magicShield.draw(this.ctx, sx, sy);
 
-
-        const shieldInfo = this.magicShield.active
-            ? {
-                x: sx + this.magicShield.clipJitterX,
-                y: sy + this.magicShield.clipJitterY,
-                radius: this.magicShield.radius
-            }
+        // Shield "hole" info für sandstorm
+        const r = this.magicShield.radius * this.magicShield.introT;
+        const shieldInfo = (this.magicShield.active && r > 1)
+            ? { x: sx + this.magicShield.clipJitterX, y: sy + this.magicShield.clipJitterY, radius: r }
             : null;
 
 
-        // this.sandstormFar.draw(this.ctx, this.renderCameraX, shieldInfo);
-        // this.sandstorm.draw(this.ctx, this.renderCameraX, shieldInfo);
-        // this.sandstormNear.draw(this.ctx, this.renderCameraX, shieldInfo);
+        this.sandstormFar.draw(this.ctx, this.renderCameraX, shieldInfo);
+        this.sandstorm.draw(this.ctx, this.renderCameraX, shieldInfo);
+        this.sandstormNear.draw(this.ctx, this.renderCameraX, shieldInfo);
     }
 
     updateCharacter(timestamp) {
@@ -248,18 +264,30 @@ export class TownLevelController {
     }
 
     setSandstorm(t) {
-        // t = 0  → leicht
-        // t = 1  → stark
         t = Math.max(0, Math.min(1, t));
 
-        this.sandstormFar.setAlpha(0.04 + (0.15 - 0.04) * t);
-        this.sandstormFar.setSpeed(0.20 + (0.60 - 0.20) * t);
+        // Weiche Grundkurve
+        const eased = t * t * (3 - 2 * t);
 
-        this.sandstorm.setAlpha(0.10 + (0.35 - 0.10) * t);
-        this.sandstorm.setSpeed(0.50 + (1.60 - 0.50) * t);
+        // Extra Boost nur in der letzten Phase (ab 0.7 -> 1.0)
+        const boostT = Math.max(0, (t - 0.7) / 0.3); // 0..1
+        const boost = boostT * boostT * (3 - 2 * boostT);
 
-        this.sandstormNear.setAlpha(0.16 + (0.45 - 0.16) * t);
-        this.sandstormNear.setSpeed(1.20 + (4.50 - 1.20) * t);
+        // Near erst ab der Hälfte
+        const nearT = Math.max(0, (t - 0.5) * 2);
+        const nearE = nearT * nearT * (3 - 2 * nearT);
+
+        // FAR: subtil
+        this.sandstormFar.setAlpha(0.02 + (0.08 - 0.02) * eased);
+        this.sandstormFar.setSpeed(0.15 + (0.70 - 0.15) * eased + 0.30 * boost);
+
+        // MID: Hauptsturm – Speed wird am Ende sehr schnell
+        this.sandstorm.setAlpha(0.05 + (0.17 - 0.05) * eased);
+        this.sandstorm.setSpeed(0.40 + (2.10 - 0.40) * eased + 1.10 * boost);
+
+        // NEAR: Akzent – am Ende richtig schnell, Alpha bleibt kontrolliert
+        this.sandstormNear.setAlpha(0.00 + (0.20 - 0.00) * nearE);
+        this.sandstormNear.setSpeed(0.90 + (4.80 - 0.90) * nearE + 1.80 * boost);
     }
 
     startSpiritEssenceSequence(timestamp) {

@@ -94,7 +94,7 @@ export function createFarmLevel({ entityImages }) {
     ];
 
     // Himmel
-    const sky = new Sky({ width: 1280, height: 720, preset: "night" });
+    const sky = new Sky({ width: 1280, height: 720, preset: "desertDay" });
 
     // Level erstellen
     return new Level({

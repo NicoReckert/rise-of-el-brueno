@@ -95,4 +95,9 @@ export const otherLevelAudioManifestLazy = {
     stableSmokeSound: './assets/freesound_community-vapeinhale-39129.mp3',
     millScratchySound: './assets/tanweraman-scratchy-windmill-350419.mp3',
     healSound: './assets/yodguard-healing-magic-6-378666.mp3',
+    nayelisSpiritSpeakSound: './assets/ElevenLabs_2026-01-20T20_36_16_Mandy Meditation _pvc_sp100_s30_sb50_se50_b_m2(1).mp3',
+    spiritAppearsSound: './assets/soul-steal-02-43483(1).mp3',
+    nayelisSpiritSpeakSound_B: './assets/ElevenLabs_2026-02-27T20_28_31_Mandy Meditation _pvc_sp115_s30_sb50_f2-5(1).mp3',
+    tadeosSpeakSound: './assets/ElevenLabs_2026-02-27T21_01_13_Chris - Supportive and Cool_pvc_sp70_s50_sb75_f2-5.mp3',
+    shieldLoadingSound: './assets/freesound_community-energy-overload-94847.mp3',
 }

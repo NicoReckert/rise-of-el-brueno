@@ -11,6 +11,7 @@ export class TaskWindow {
         this.lastUpdateTime = null;
         this.deltaTime = 1 / 60;
         this.speed = 15;
+        this.canToggle = true;
 
         // Typografie / Layout
         this.fontSize = 20;   // etwas größer
@@ -35,17 +36,27 @@ export class TaskWindow {
         this.bgImage.onload = () => (this.bgLoaded = true);
         this.bgImage.onerror = () => (this.bgLoaded = false);
         this.bgImage.src = "./assets/img/task_window_background.webp";
-
-        // Overlay über dem Bild, um Text klarer zu machen (0 = aus, 0.2 ≈ dezent)
         this.bgOverlayAlpha = 0.30;
-
-        // initiale Höhe (wird im draw per Wrapping neu berechnet)
         const lh = this.fontSize + this.lineGap;
         this.height = this.tasks.length * lh + this.padding * 2;
     }
 
-    toggle() { this.isOpen = !this.isOpen; }
+    toggle() {
+        if (!this.canToggle) return;
+        this.isOpen = !this.isOpen;
+    }
+
+    setToggleEnabled(enabled) {
+        this.canToggle = !!enabled;
+    }
+
+    setOpen(open) {
+        if (!this.canToggle) return;
+        this.isOpen = !!open;
+    }
+
     markDone(index) { if (this.tasks[index]) this.tasks[index].done = true; }
+
     setActive(index) { this.tasks.forEach((t, i) => (t.active = i === index)); }
 
     update(timestamp) {

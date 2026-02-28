@@ -78,6 +78,7 @@ export class EventManager {
             once: true,
             lastTrigger: 0,
             lastLeave: 0,
+            armed: event.armed ?? !(event.type === "time" && event.manual === true),
             ...event
         });
     }
@@ -109,6 +110,7 @@ export class EventManager {
         element.triggered = false;
         element._ended = false;
         element._resetFlag = false;
+        element.armed = true;
     }
 
     /**
@@ -239,6 +241,7 @@ export class EventManager {
      * @returns {boolean} True if skipped.
      */
     shouldSkipEvent(e) {
+        if (e.armed === false) return true;
         if (e.triggered) return true;
         if (e.step !== undefined && this.questManager?.step !== e.step) return true;
         if (e.condition && !e.condition(this.setup)) return true;
@@ -297,18 +300,26 @@ export class EventManager {
         const elapsed = now - e.startAt;
         this.updateTimeProgress(e, elapsed);
         if (this.isWithinTime(e, elapsed) && canTrigger) this.triggerTimeAction(e, now, elapsed);
-        else if (elapsed > (e.to ?? Infinity)) this.finishOrRepeatTimeEvent(e, now);
+        else if (elapsed >= (e.to ?? Infinity)) this.finishOrRepeatTimeEvent(e, now);
     }
 
     /**
-     * Initializes time event data.
-     * @param {object} e - The event.
-     * @param {number} now - The current time.
-     */
+    * Initializes time-based event data.
+    * @param {object} e Event object.
+    * @param {number} now Current time.
+    * @returns {void}
+    */
     initTimeEvent(e, now) {
-        if (e.startAt === undefined || e._lastStep !== this.questManager?.step) {
+        if (e.startAt === undefined) {
             e.startAt = now;
-            e._lastStep = this.questManager?.step;
+        }
+        if (e.step !== undefined) {
+            if (e._lastStep === undefined) {
+                e._lastStep = this.questManager?.step;
+            } else if (e._lastStep !== this.questManager?.step) {
+                e.startAt = now;
+                e._lastStep = this.questManager?.step;
+            }
         }
         if (e._resetFlag) this.resetEvent(e, now);
     }
@@ -358,6 +369,7 @@ export class EventManager {
     finishOrRepeatTimeEvent(e, now) {
         if (!e._ended && e.onEnd) { e.onEnd(this.setup); e._ended = true; }
         if (e.repeat) this.resetEvent(e, now);
+        else if (e.manual === true) e.armed = false;
     }
 
     /**

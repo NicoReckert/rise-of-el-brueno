@@ -115,10 +115,16 @@ export class World {
     * Initializes task-related state.
     */
     initTasks() {
-        this.tasks = [
-            "1. Kümmere dich um Juanito",
-            "2. Kümmere dich um Pollito"
-        ];
+        if (this.currentScene === 'farmLevel') {
+            this.tasks = [
+                "1. Kümmere dich um Juanito",
+                "2. Kümmere dich um Pollito"
+            ];
+        } else if (this.currentScene === 'townLevel') {
+            this.tasks = [
+                "1. Erreiche die Stadt",
+            ];
+        }
         this.taskWindow = new TaskWindow(this.canvas, this.tasks);
         this.tKeyPressed = false;
     }

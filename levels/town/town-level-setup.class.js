@@ -60,7 +60,6 @@ export class TownLevelSetup {
             435
         );
 
-
         this.characters = { endboss, soul, tadeo, sollita, musician };
         this.sounds = {
             taskCompletedSound: this.allAudios.taskCompletedSound,
@@ -79,7 +78,12 @@ export class TownLevelSetup {
             backgroundMusic: this.allAudios.backgroundMusic,
             sadMomentMusic: this.allAudios.sadMomentMusic,
             houseFireSound: this.allAudios.houseFireSound,
-            healSound: this.allAudios.healSound
+            healSound: this.allAudios.healSound,
+            nayelisMusic: this.allAudios.nayelisMusic,
+            nayelisSpiritSpeakSound: this.allAudios.nayelisSpiritSpeakSound,
+            spiritAppearsSound: this.allAudios.spiritAppearsSound,
+            nayelisSpiritSpeakSound_B: this.allAudios.nayelisSpiritSpeakSound_B,
+            tadeosSpeakSound: this.allAudios.tadeosSpeakSound,
         };
         this.environment = {
             rockyDesertPedestal: new AnimatedEntity(this.entityImages, 'rockyDesertPedestal', 400, 400, 23300, 300),
@@ -87,16 +91,18 @@ export class TownLevelSetup {
             juanitoSpirit: new AnimatedEntity(this.entityImages, 'juanitoSpirit', 150, 150, 23455, 280),
             pollitoSpirit: new AnimatedEntity(this.entityImages, 'pollitoSpirit', 120, 120, 23450, 350),
             lolaSpirit: new AnimatedEntity(this.entityImages, 'lolaSpirit', 200, 200, 23295, 330),
+            nayeliSpirit: new AnimatedEntity(this.entityImages, 'nayeliSpirit', 180, 180, 6000, 485),
             spiritEssence1: new AnimatedEntity(this.entityImages, "spiritEssence", 90, 90, 0, 0),
             spiritEssence2: new AnimatedEntity(this.entityImages, "spiritEssence", 90, 90, 0, 0),
             spiritEssence3: new AnimatedEntity(this.entityImages, "spiritEssence", 90, 90, 0, 0),
             macuahuitl: new AnimatedEntity(this.entityImages, "macuahuitl", 120, 120, 23350, 180),
-            houseDestroyed: new AnimatedEntity(this.entityImages, "houseDestroyed", 900, 800, 1000, -50),
-            stableDestroyed: new AnimatedEntity(this.entityImages, "stableDestroyed", 600, 600, 1720, 200),
-            millDestroyed: new AnimatedEntity(this.entityImages, "millDestroyed", 1100, 800, 2200, -285),
+            houseDestroyed: new AnimatedEntity(this.entityImages, "houseDestroyed", 900, 800, 2000, -50),
+            stableDestroyed: new AnimatedEntity(this.entityImages, "stableDestroyed", 600, 600, 2720, 200),
+            millDestroyed: new AnimatedEntity(this.entityImages, "millDestroyed", 1100, 800, 3200, -285),
         }
 
         this.environment.rockyDesertPedestal.opacity = 0;
+        this.environment.nayeliSpirit.opacity = 0;
         this.environment.fire.isFlipped = false;
         this.environment.macuahuitl.isFlipped = false;
         this.environment.pollitoSpirit.isFlipped = false;
@@ -117,9 +123,20 @@ export class TownLevelSetup {
         this.backgroundMusic.volume = 0.6;
 
         this.speechBubbles = [
+            new SpeechBubble("Ein Bauernhof… völlig verwüstet.", this.world.character, 'speech', this.allAudios),
+            new SpeechBubble("Hier hat jemand gewütet…", this.world.character, 'speech', this.allAudios),
+            new SpeechBubble("Kratzspuren… Federn… und Blut.", this.world.character, 'speech', this.allAudios),
+            new SpeechBubble("Ich darf keine Zeit verlieren.", this.world.character, 'speech', this.allAudios),
             new SpeechBubble("Hey Brünö bist du es?", this.characters.tadeo, 'speech', this.allAudios),
             new SpeechBubble("Ja ich bin es Brünö. Wer bist du?", this.world.character, 'speech', this.allAudios),
             new SpeechBubble("Ich bin Tadeo und Nayeli hat mich geschickt um dir zu helfen", this.characters.tadeo, 'speech', this.allAudios)
+        ];
+        this.speechBubblesNayeli = [
+            new SpeechBubble("Brünö...", this.environment.nayeliSpirit, 'speech'),
+            new SpeechBubble("Du kannst jetzt nicht aufgeben.", this.environment.nayeliSpirit, 'speech'),
+            new SpeechBubble("Glaub an dich!", this.environment.nayeliSpirit, 'speech'),
+            new SpeechBubble("Du bist nicht allein!", this.environment.nayeliSpirit, 'speech'),
+            new SpeechBubble("Die Ahnen wachen über dich.", this.environment.nayeliSpirit, 'speech'),
         ];
         if (this.townLevel?.enemies) {
             this.townLevel.enemies.forEach(enemy => {

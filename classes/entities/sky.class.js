@@ -52,36 +52,69 @@ export class Sky extends MovableObject {
             { stop: 1.00, color: "#E7C69A" },
         ],
         tragicDay2: [
-  // Daytime, aber kühler und leicht entsättigt
-  { stop: 0.00, color: "#2F90AC" },
-  { stop: 0.14, color: "#49A5BC" },
-  { stop: 0.30, color: "#6DBDCC" },
-  { stop: 0.40, color: "#8FD0DD" },
+  { stop: 0.00, color: "#21363A" },
+  { stop: 0.16, color: "#2F5651" },
+  { stop: 0.34, color: "#5E7E72" },
 
-  // Staub/Haze (hell, nicht grau-kalt)
-  { stop: 0.52, color: "#B8DEE5" },
-  { stop: 0.60, color: "#D6D9C9" },
+  // “kranker” Dunst
+  { stop: 0.52, color: "#8A8F78" },
+  { stop: 0.66, color: "#A79B6D" },
 
-  // Gedämpftes Warm (tragisch, aber noch Tag)
-  { stop: 0.72, color: "#E3C49B" },
-  { stop: 0.86, color: "#EED4B2" },
-  { stop: 1.00, color: "#F6E6D2" },
+  // staubige Hitze unten
+  { stop: 0.82, color: "#C2A06F" },
+  { stop: 1.00, color: "#D1B086" },
+],
+
+tragicDay1: [
+  // Rauchdeckel (oben)
+  { stop: 0.00, color: "#1C2F38" },
+  { stop: 0.12, color: "#2D4956" },
+  { stop: 0.28, color: "#4F6A73" },
+
+  // Dunst / Asche
+  { stop: 0.48, color: "#7C8A88" },
+  { stop: 0.60, color: "#9A9A86" },
+
+  // Staubiger Horizont (Sonne blockiert)
+  { stop: 0.78, color: "#B79D70" },
+  { stop: 0.92, color: "#C9A67A" },
+  { stop: 1.00, color: "#D2AE85" },
+],
+
+tragicDay3: [
+  // oben: etwas schwerer/dunkler
+  { stop: 0.00, color: "#182A2E" },
+  { stop: 0.14, color: "#254245" },
+  { stop: 0.30, color: "#3D615C" },
+  { stop: 0.42, color: "#5E7E72" },
+
+  // “kranker” Dunst (mehr Übergang)
+  { stop: 0.56, color: "#7E8773" },
+  { stop: 0.68, color: "#A1966A" },
+
+  // staubige Hitze unten (weicher auslaufend)
+  { stop: 0.82, color: "#BE9E6F" },
+  { stop: 0.92, color: "#D1B088" },
+  { stop: 1.00, color: "#E0C3A0" },
 ],
 
 tragicDay: [
-  // Kühl, aber nicht dunkel
-  { stop: 0.00, color: "#2A7E98" },
-  { stop: 0.15, color: "#3E8FA6" },
-  { stop: 0.30, color: "#5AA4B7" },
+  // Rauchdeckel oben (mehr Bedrohung)
+  { stop: 0.00, color: "#152326" },
+  { stop: 0.10, color: "#203436" },
+  { stop: 0.24, color: "#2E4D4A" },
 
-  // Staubiger Übergang (weniger hell, weniger sauber)
-  { stop: 0.45, color: "#8FB1B6" },
-  { stop: 0.55, color: "#B5B6A5" },
+  // kalter/kranker Mittelton, aber nicht zu grün
+  { stop: 0.40, color: "#55706A" },
+  { stop: 0.54, color: "#7D8773" },
 
-  // Trockene, entsättigte Wärme
-  { stop: 0.70, color: "#D3BA95" },
-  { stop: 0.85, color: "#E2C8A6" },
-  { stop: 1.00, color: "#EEDCC7" },
+  // Staubschicht (sandig/ashy) – wichtig für Sturm-Look
+  { stop: 0.68, color: "#A89E74" },
+  { stop: 0.80, color: "#C2A16F" },
+
+  // unten heller für Lesbarkeit trotz Sturm
+  { stop: 0.92, color: "#D7B791" },
+  { stop: 1.00, color: "#E6CBA9" },
 ],
     };
 

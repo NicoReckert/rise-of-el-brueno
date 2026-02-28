@@ -391,6 +391,26 @@ export const otherLevelEntityManifestLazy = {
     }
   },
 
+  nayeliSpirit: {
+    idle: {
+      type: 'sheet',
+      json: './assets/img/entities/nayeli_spirit/idle/idle_sheet.json'
+    },
+    walk: {
+      type: 'sheet',
+      json: './assets/img/entities/nayeli_spirit/walk/walk_sheet.json'
+    },
+    speak: {
+      type: 'sheet',
+      json: './assets/img/entities/nayeli_spirit/speak/speak_sheet.json'
+    },
+    blessing: {
+      type: 'sheet',
+      json: './assets/img/entities/nayeli_spirit/blessing/blessing_sheet.json'
+    }
+  },
+
+
   macuahuitl: {
     idle: {
       type: 'sheetSequence',
