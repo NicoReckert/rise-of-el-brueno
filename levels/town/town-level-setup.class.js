@@ -138,6 +138,33 @@ export class TownLevelSetup {
             new SpeechBubble("Du bist nicht allein!", this.environment.nayeliSpirit, 'speech'),
             new SpeechBubble("Die Ahnen wachen über dich.", this.environment.nayeliSpirit, 'speech'),
         ];
+        this.speechBubblesTadeo = [
+            new SpeechBubble("Tonatiuh...", this.characters.tadeo, 'speech'),
+            new SpeechBubble("Schütze uns!", this.characters.tadeo, 'speech'),
+            new SpeechBubble("Gib uns deinen Schild!", this.characters.tadeo, 'speech'),
+        ];
+
+        this.speechBubblesTadeoAfraid = [
+            new SpeechBubble("Oh oh… bitte nicht…", this.characters.tadeo, 'speech'),
+            new SpeechBubble("Ähm… bleib bitte weg…", this.characters.tadeo, 'speech'),
+            new SpeechBubble("Nein… nein… ganz ruhig…", this.characters.tadeo, 'speech'),
+            new SpeechBubble("Das ist zu nah… viel zu nah…", this.characters.tadeo, 'speech'),
+        ];
+
+        this.speechBubblesTadeoPanic = [
+            new SpeechBubble("AAAH! Hilfe!", this.characters.tadeo, 'speech'),
+            new SpeechBubble("Weg! Weg! Weg!", this.characters.tadeo, 'speech'),
+            new SpeechBubble("Nein!! Bitte!!", this.characters.tadeo, 'speech'),
+            new SpeechBubble("HILFE!!", this.characters.tadeo, 'speech'),
+        ];
+
+        this.speechBubblesTadeoHelp = [
+            new SpeechBubble("Hier, nimm zwei! Schnell!", this.characters.tadeo, 'speech'),
+            new SpeechBubble("Ich hab noch welche… nimm die!", this.characters.tadeo, 'speech'),
+            new SpeechBubble("Nicht ohne Flaschen! Bitte!", this.characters.tadeo, 'speech'),
+        ];
+
+
         if (this.townLevel?.enemies) {
             this.townLevel.enemies.forEach(enemy => {
                 enemy.world = this.world;
@@ -162,5 +189,15 @@ export class TownLevelSetup {
         this.environment.spiritEssence2.opacity = 0;
         this.environment.spiritEssence3.opacity = 0;
         this.damageTexts = [];
+        this.isTadeoAfraid = false;
+        this.isTadeoPanic = false;
+        this._tadeoHelpGivenEmpty = false;
+        this._tadeoHelpResetArmed = false;
+        this.tadeoSpeechLockUntil = 0;
+        this.tadeoHelpUntil = 0;
+        this._tadeoPanicProjIdx = 0;
+        this._tadeoPanicNearIdx = 0;
+        this._tadeoAfraidIdx = 0;
+        this.tadeoPanicUntil = 0;
     }
 }

@@ -19,6 +19,8 @@ export class ThrowBottleSystem {
         this.animName = animName;
         this.releaseFrame = releaseFrame;
         this.speedY = speedY;
+        this.gripAx = gripAx;
+        this.gripAy = gripAy;
 
         /**
          * handKF.x / handKF.y sind jetzt bewusst im gleichen Koordinatensystem wie der Character:
@@ -204,6 +206,22 @@ export class ThrowBottleSystem {
         const sy = (char.y + dy + kf.y);
 
         const bottle = new ThrowableObject(this.world.entityImages, sx, sy);
+        bottle.isFlipped = char.isFlipped;
+        const gripAx = this.gripAx;
+        const gripAy = this.gripAy;
+        if (char.isFlipped) {
+            bottle.x = sx - (bottle.width - gripAx);
+        } else {
+            bottle.x = sx - gripAx;
+        }
+        bottle.y = sy - gripAy;
+        const chargeRaw = this.setup.pendingThrowCharge ?? 0;
+        this.setup.pendingThrowCharge = null;
+        const charge = Math.max(0, Math.min(1, chargeRaw));
+        const minX = 5;
+        const maxX = 10;
+        const minY = 18;
+        const maxY = 30;
         bottle.isThrow = true;
         bottle.isBroken = false;
         bottle.isGravity = true;
@@ -211,8 +229,24 @@ export class ThrowBottleSystem {
         bottle.isMovingRight = !char.isFlipped;
         bottle.isMovingLeft = char.isFlipped;
 
-        bottle.speedY = this.speedY;
+        const enemies = this.setup.townLevel?.enemies ?? [];
+        const charCx = char.x + char.width * 0.5;
 
+        let minD = Infinity;
+        for (const e of enemies) {
+            if (!e || e.isDead || e.isRemoved) continue;
+            const d = Math.abs((e.x + e.width * 0.5) - charCx);
+            if (d < minD) minD = d;
+        }
+        const calcX = minX + (maxX - minX) * charge;
+        const calcY = minY + (maxY - minY) * charge;
+        if (minD < 220) {
+            bottle.speedX = Math.min(calcX, 6);
+            bottle.speedY = Math.min(calcY, 22);
+        } else {
+            bottle.speedX = calcX;
+            bottle.speedY = calcY;
+        }
         this.setup.throwableObjects.push(bottle);
         this.world.audioManager.playOneShot('bottleThrowSound', { volume: 0.6 });
         char._thrownThisAnim = true;

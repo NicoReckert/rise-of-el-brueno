@@ -91,9 +91,51 @@ export class MovableObject extends DrawableObject {
         return this.groundBottom - this.height;
     }
 
-
-    // neuste Version für vent Manager
+    // neuste Version für Event Manager mit atttack hitbox
     isColliding(
+        object,
+        toleranceA = { x: 0, y: 0, width: 0, height: 0 },
+        toleranceB = { x: 0, y: 0, width: 0, height: 0 },
+        options = {}
+    ) {
+        if (!object) return false;
+
+        const ax = typeof this.getRenderX === "function" ? this.getRenderX() : this.x;
+        const bx = typeof object.getRenderX === "function" ? object.getRenderX() : object.x;
+
+        // hitbox wählen (normal offset oder override)
+        const hbA =
+            options.hitboxA ??
+            (options.useAttackHitboxA && this.attackHitbox?.active ? this.attackHitbox : null) ??
+            this.offset;
+
+        const hbB =
+            options.hitboxB ??
+            (options.useAttackHitboxB && object.attackHitbox?.active ? object.attackHitbox : null) ??
+            object.offset;
+
+        // A
+        const aLeft = this.isFlipped ? ax + hbA.right + toleranceA.x : ax + hbA.left + toleranceA.x;
+        const aRight = this.isFlipped ? ax + this.width - hbA.left - toleranceA.width : ax + this.width - hbA.right - toleranceA.width;
+        const aTop = this.y + hbA.top + toleranceA.y;
+        const aBottom = this.y + this.height - hbA.bottom - toleranceA.height;
+
+        // B
+        const bLeft = object.isFlipped ? bx + hbB.right + toleranceB.x : bx + hbB.left + toleranceB.x;
+        const bRight = object.isFlipped ? bx + object.width - hbB.left - toleranceB.width : bx + object.width - hbB.right - toleranceB.width;
+        const bTop = object.y + hbB.top + toleranceB.y;
+        const bBottom = object.y + object.height - hbB.bottom - toleranceB.height;
+
+        // Normalisieren (verhindert Flip/Offset Edgecases)
+        const aL = Math.min(aLeft, aRight), aR = Math.max(aLeft, aRight);
+        const aT = Math.min(aTop, aBottom), aB = Math.max(aTop, aBottom);
+        const bL = Math.min(bLeft, bRight), bR = Math.max(bLeft, bRight);
+        const bT = Math.min(bTop, bBottom), bB = Math.max(bTop, bBottom);
+
+        return !(aR < bL || aL > bR || aB < bT || aT > bB);
+    }
+
+    isCollidingAltEventManager(
         object,
         toleranceA = { x: 0, y: 0, width: 0, height: 0 },
         toleranceB = { x: 0, y: 0, width: 0, height: 0 }
@@ -197,23 +239,6 @@ export class MovableObject extends DrawableObject {
 
 
 
-    //letzte funktionierende Funktion
-    isCollidingBeforeBefore(object, collidingToleranceTop, collidingToleranceLeft) {
-        const a_left = this.x + this.offset.left;
-        const a_right = this.x + this.width - this.offset.right;
-        const a_top = this.y + this.offset.top;
-        const a_bottom = this.y + this.height - this.offset.bottom;
-
-        const b_left = object.x + object.offset.left;
-        const b_right = object.x + object.width - object.offset.right;
-        const b_top = object.y + object.offset.top;
-        const b_bottom = object.y + object.height - object.offset.bottom;
-
-        return a_right > b_left + collidingToleranceLeft &&
-            a_left < b_right &&
-            a_bottom > b_top + collidingToleranceTop &&
-            a_top < b_bottom;
-    }
 
     isJumpOn(object) {
         const ax = this.getRenderX ? this.getRenderX() : this.x;
@@ -280,19 +305,6 @@ export class MovableObject extends DrawableObject {
     }
 
 
-    isColliding2(object) {
-        return this.x + this.offset.left + this.width - this.offset.left - this.offset.right > object.x &&
-            this.y + this.offset.top + this.height - this.offset.top - this.offset.bottom > object.y &&
-            this.x < object.x + object.width &&
-            this.y < object.y + object.height;
-    }
-
-    isColliding3(object) {
-        return this.x + this.width > object.x &&
-            this.y + this.height > object.y &&
-            this.x < object.x + object.width &&
-            this.y < object.y + object.height;
-    }
 
     hit() {
         this.energy -= 5;

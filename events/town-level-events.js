@@ -588,8 +588,70 @@ export const townEvents =
                 setup.panel.activate(performance.now());
                 setup.world.townLevelController.magicShield.start();
                 setup.world.audioManager.playOneShot("shieldLoadingSound", 0.7);
+                setup.speechBubblesTadeo[0].start(1000);
+                setup.world.townLevelController.eventManager.emitNow("bubbleTadeoReset_0");
             }
         },
+
+        {
+            type: "time",
+            resetOn: "bubbleTadeoReset_0",
+            from: 0,
+            to: 1500,
+            manual: true,
+            step: 9,
+            once: false,
+            action: (setup) => {
+                setup.speechBubblesTadeo[0].render(
+                    setup.world.ctx,
+                    setup.world.townLevelController.renderCameraX,
+                    -40);
+            },
+            onEnd: (setup) => {
+                setup.speechBubblesTadeo[1].start(600);
+                setup.world.townLevelController.eventManager.emitNow("bubbleTadeoReset_1");
+            }
+        },
+
+        {
+            type: "time",
+            resetOn: "bubbleTadeoReset_1",
+            from: 0,
+            to: 1100,
+            manual: true,
+            step: 9,
+            once: false,
+            action: (setup) => {
+                setup.speechBubblesTadeo[1].render(
+                    setup.world.ctx,
+                    setup.world.townLevelController.renderCameraX,
+                    -40);
+            },
+            onEnd: (setup) => {
+                setup.speechBubblesTadeo[2].start(1500);
+                setup.world.townLevelController.eventManager.emitNow("bubbleTadeoReset_2");
+            }
+        },
+
+        {
+            type: "time",
+            resetOn: "bubbleTadeoReset_2",
+            from: 0,
+            to: 2000,
+            manual: true,
+            step: 9,
+            once: false,
+            action: (setup) => {
+                setup.speechBubblesTadeo[2].render(
+                    setup.world.ctx,
+                    setup.world.townLevelController.renderCameraX,
+                    -40);
+            },
+        },
+
+
+
+
 
         // {
         //     type: "time",
@@ -647,14 +709,363 @@ export const townEvents =
             once: false,
             action: (setup) => {
                 const tadeo = setup.characters.tadeo;
-                // tadeo.speedX = 2;
                 const arriveX = tadeo.moveToX(10275, { speed: 0.8 });
+                if (setup.isTadeoAfraid || setup.isTadeoPanic) {
+                    tadeo.isMovingRight = false;
+                    return;
+                }
                 if (!arriveX) setup.characters.tadeo.updateAnimationState('walkWithStone');
                 if (arriveX) setup.characters.tadeo.updateAnimationState('idleWithStone');
             },
             onLeave: (setup) => {
+                if (setup.isTadeoAfraid || setup.isTadeoPanic) return;
                 setup.characters.tadeo.isMovingRight = false;
                 setup.characters.tadeo.updateAnimationState('idleWithStone');
+            }
+        },
+
+        {
+            type: 'collision',
+            objectA: 'tadeo',
+            objectB: 'enemies',
+            toleranceA: { x: -300, width: -300 },
+            step: 10,
+            once: false,
+            action: (setup, tadeo) => {
+                const wasAfraid = !!setup.isTadeoAfraid;
+                setup.isTadeoAfraid = true;
+                if (setup.isTadeoPanic) return
+                if (!wasAfraid) {
+                    tadeo.updateAnimationState('afraid', 1000 / 6);
+                } else {
+                    tadeo.updateAnimationState('afraidLoop', 1000 / 6);
+                }
+            },
+            onLeave: (setup) => {
+                if (!setup.isTadeoPanic) {
+                    setup.characters.tadeo.updateAnimationState('standUp', 1000 / 6);
+                }
+                setup.world.townLevelController.eventManager.emitNow("afraidReset");
+            }
+        },
+
+        {
+            type: "time",
+            resetOn: "afraidReset",
+            delay: 1500,
+            manual: true,
+            step: 10,
+            once: true,
+            action: (setup) => {
+                setup.isTadeoAfraid = false;
+            }
+        },
+
+        {
+            type: 'collision',
+            objectA: 'tadeo',
+            objectB: 'enemies',
+            toleranceA: { x: -300, width: -300 },
+            once: false,
+            step: 10,
+            cooldown: 10000,
+            condition: (setup) => {
+                const now = performance.now();
+                const speechOk = now >= (setup.tadeoSpeechLockUntil ?? 0);
+                const panicGraceOk = now >= (setup.tadeoPanicUntil ?? 0);
+                return speechOk && panicGraceOk && setup.isTadeoAfraid && !setup.isTadeoPanic;
+            },
+            action: (setup) => {
+                const now = performance.now();
+                const lockUntil = now + 2200;
+                setup.tadeoSpeechLockUntil = Math.max(setup.tadeoSpeechLockUntil ?? 0, lockUntil);
+                const bubbles = setup.speechBubblesTadeoAfraid;
+                const idx = (Math.random() * bubbles.length) | 0;
+                setup._tadeoAfraidIdx = idx;
+                bubbles[idx].start();
+                setup.world.audioManager.playOneShot(`vo_tadeo_afraid_0${idx + 1}`, { volume: 0.9 });
+                setup.world.townLevelController.eventManager.emitNow("tadeoAfraidBubbleRender");
+            }
+        },
+
+        {
+            type: "time",
+            resetOn: "tadeoAfraidBubbleRender",
+            manual: true,
+            once: false,
+            from: 0,
+            to: 2600,
+            step: 10,
+            action: (setup) => {
+                const i = setup._tadeoAfraidIdx ?? 0;
+                setup.speechBubblesTadeoAfraid[i].render(
+                    setup.world.ctx,
+                    setup.world.townLevelController.renderCameraX,
+                    -40
+                );
+            }
+        },
+
+        {
+
+            type: 'collision',
+            objectA: 'tadeo',
+            objectB: 'projectiles',
+            toleranceA: { x: -300, width: -300 },
+            step: 10,
+            once: false,
+            action: (setup, tadeo) => {
+                setup.isTadeoPanic = true;
+                setup.tadeoPanicUntil = performance.now() + 1200;
+                tadeo.updateAnimationState('panic', 1000 / 6);
+            },
+            onLeave: (setup, tadeo) => {
+                tadeo.updateAnimationState('standUp', 1000 / 6);
+                setup.world.townLevelController.eventManager.emitNow("panicReset");
+            }
+        },
+
+        {
+            type: 'collision',
+            objectA: 'tadeo',
+            objectB: 'enemies',
+            toleranceA: { x: -60, width: -60 },
+            step: 10,
+            once: false,
+            action: (setup, tadeo) => {
+                setup.isTadeoPanic = true;
+                setup.tadeoPanicUntil = performance.now() + 1200;
+                tadeo.updateAnimationState('panic', 1000 / 6);
+            },
+            onLeave: (setup, tadeo) => {
+                tadeo.updateAnimationState('standUp', 1000 / 6);
+                setup.world.townLevelController.eventManager.emitNow("panicReset");
+            }
+        },
+
+        {
+            type: "time",
+            resetOn: "panicReset",
+            delay: 1500,
+            manual: true,
+            step: 10,
+            once: true,
+            action: (setup) => {
+                setup.isTadeoPanic = false;
+                setup.tadeoPanicUntil = Math.max(setup.tadeoPanicUntil ?? 0, performance.now() + 200); if (setup.isTadeoAfraid) {
+                    setup.characters.tadeo.updateAnimationState('afraidLoop', 1000 / 6);
+                }
+            }
+        },
+
+        {
+            type: 'collision',
+            objectA: 'tadeo',
+            objectB: 'projectiles',
+            toleranceA: { x: -300, width: -300 },
+            once: false,
+            step: 10,
+            cooldown: 7000,
+            condition: (setup) => {
+                const now = performance.now();
+                if (!setup.isTadeoPanic) return false;
+                if (now < (setup.tadeoSpeechLockUntil ?? 0)) return false;
+                return true;
+            },
+            action: (setup) => {
+                const now = performance.now();
+                const lockUntil = now + 2200;
+                setup.tadeoSpeechLockUntil = Math.max(setup.tadeoSpeechLockUntil ?? 0, lockUntil);
+                const bubbles = setup.speechBubblesTadeoPanic;
+                const idx = (Math.random() * bubbles.length) | 0;
+                setup._tadeoPanicProjIdx = idx;
+                bubbles[idx].start();
+                setup.world.audioManager.playOneShot(`vo_tadeo_panic_0${idx + 1}`, { volume: 1.0 });
+                setup.world.townLevelController.eventManager.emitNow("tadeoPanicProjBubbleRender");
+            }
+        },
+
+        {
+            type: 'collision',
+            objectA: 'tadeo',
+            objectB: 'enemies',
+            toleranceA: { x: -60, width: -60 },
+            once: false,
+            step: 10,
+            cooldown: 7000,
+            condition: (setup) => {
+                const now = performance.now();
+                if (!setup.isTadeoPanic) return false;
+                if (now < (setup.tadeoSpeechLockUntil ?? 0)) return false;
+                return true;
+            },
+            action: (setup) => {
+                const now = performance.now();
+                const lockUntil = now + 2200;
+                setup.tadeoSpeechLockUntil = Math.max(setup.tadeoSpeechLockUntil ?? 0, lockUntil);
+                const bubbles = setup.speechBubblesTadeoPanic;
+                const idx = (Math.random() * bubbles.length) | 0;
+                setup._tadeoPanicNearIdx = idx;
+                bubbles[idx].start();
+                setup.world.audioManager.playOneShot(`vo_tadeo_panic_0${idx + 1}`, { volume: 1.0 });
+                setup.world.townLevelController.eventManager.emitNow("tadeoPanicNearBubbleRender");
+            }
+        },
+
+        {
+            type: "time",
+            resetOn: "tadeoPanicProjBubbleRender",
+            manual: true,
+            once: false,
+            from: 0,
+            to: 2000,
+            step: 10,
+            action: (setup) => {
+                const i = setup._tadeoPanicProjIdx ?? 0;
+                setup.speechBubblesTadeoPanic[i].render(
+                    setup.world.ctx,
+                    setup.world.townLevelController.renderCameraX,
+                    -40
+                );
+            }
+        },
+
+        {
+            type: "time",
+            resetOn: "tadeoPanicNearBubbleRender",
+            manual: true,
+            once: false,
+            from: 0,
+            to: 2000,
+            step: 10,
+            action: (setup) => {
+                const i = setup._tadeoPanicNearIdx ?? 0;
+                setup.speechBubblesTadeoPanic[i].render(
+                    setup.world.ctx,
+                    setup.world.townLevelController.renderCameraX,
+                    -40
+                );
+            }
+        },
+
+        {
+            name: "tadeo_help_give_bottles",
+            type: "collision",
+            objectA: "tadeo",
+            objectB: "enemies",
+            toleranceA: { x: -600, width: -600 },
+            step: 10,
+            once: false,
+            cooldown: 1000, // klein lassen, weil wir mit Flag "pro empty phase" begrenzen
+            condition: (setup) => {
+                const char = setup.world.character;
+                const tadeo = setup.characters.tadeo;
+                if (!char || !tadeo) return false;
+
+                // pro empty phase nur einmal
+                if (setup._tadeoHelpGivenEmpty) return false;
+
+                // nur wenn wirklich empty
+                if ((char.throwableBottels ?? 0) > 0) return false;
+
+                // nicht während panic
+                if (setup.isTadeoPanic) return false;
+                const now = performance.now();
+                if (now < (setup.tadeoSpeechLockUntil ?? 0)) return false;
+
+                const list = setup.townLevel?.enemies ?? [];
+
+                // innerhalb 300 -> keine Hilfe mehr
+                const tolB0 = { x: 0, y: 0, width: 0, height: 0 };
+                const tol300 = { x: -300, width: -300 };
+                const enemyIn300 = list.some(e =>
+                    e && !e.isDead && !e.isRemoved &&
+                    tadeo.isColliding(e, tol300, tolB0)
+                );
+                if (enemyIn300) return false;
+
+                // innerhalb 600 -> ja, Hilfe
+                const tol600 = { x: -600, width: -600 };
+                const enemyIn600 = list.some(e =>
+                    e && !e.isDead && !e.isRemoved &&
+                    tadeo.isColliding(e, tol600, tolB0)
+                );
+                return enemyIn600;
+            },
+
+            action: (setup) => {
+                const now = performance.now();
+                setup.tadeoHelpUntil = Math.max(setup.tadeoHelpUntil ?? 0, now + 2000);
+                const char = setup.world.character;
+                const audio = setup.world.audioManager;
+
+                const give = 2;
+
+                // Flag setzen -> diese Empty-Phase ist erledigt
+                setup._tadeoHelpGivenEmpty = true;
+
+                // Speech lock: verhindert afraid/panic barks kurzzeitig
+                const lockUntil = now + 2200;
+                setup.tadeoSpeechLockUntil = Math.max(setup.tadeoSpeechLockUntil ?? 0, lockUntil);
+                setup.tadeoPanicUntil = Math.max(setup.tadeoPanicUntil ?? 0, lockUntil); // <-- NEU
+                // Inventar + UI-Bar
+                char.throwableBottels = (char.throwableBottels ?? 0) + give;
+
+                const bar = setup.bottleBar;
+                if (bar) {
+                    for (let i = 0; i < give; i++) {
+                        bar.percentage = Math.min((bar.percentage ?? 0) + 20, 100);
+                        bar.setPercentage(bar.percentage);
+                    }
+                }
+
+                // Sounds
+                audio.playOneShot("bottleClinkSound", { volume: 0.9 });
+                setTimeout(() => audio.playOneShot("bottleClinkSound", { volume: 0.9 }), 150);
+
+                // Bubble + VO
+                const bubbles = setup.speechBubblesTadeoHelp;
+                const idx = (Math.random() * bubbles.length) | 0;
+                setup._tadeoHelpIdx = idx;
+
+                bubbles[idx].start();
+                audio.playOneShot(`vo_tadeo_help_0${idx + 1}`, { volume: 0.95 });
+                setup.world.townLevelController.eventManager.emitNow("tadeoHelpBubbleRender");
+            }
+        },
+
+        {
+            name: "tadeo_help_reset_empty_phase",
+            type: "quest",
+            step: 10,
+            once: false,
+            action: (setup) => {
+                const c = setup.world.character;
+                if (!c) return;
+                if ((c.throwableBottels ?? 0) > 0) {
+                    setup._tadeoHelpGivenEmpty = false;
+                }
+            }
+        },
+
+        {
+            name: "tadeo_help_bubble_render",
+            type: "time",
+            resetOn: "tadeoHelpBubbleRender",
+            manual: true,
+            once: false,
+            from: 0,
+            to: 2800,
+            step: 10,
+            action: (setup) => {
+                const now = performance.now();
+                if (now > (setup.tadeoHelpUntil ?? 0)) return;
+                const i = setup._tadeoHelpIdx ?? 0;
+                setup.speechBubblesTadeoHelp[i].render(
+                    setup.world.ctx,
+                    setup.world.townLevelController.renderCameraX,
+                    -40
+                );
             }
         },
 
@@ -1102,13 +1513,8 @@ export const townEvents =
                                     enemy.isDead = true;
                                     enemy.isMovingLeft = false;
                                     enemy.isMovingRight = false;
+                                    enemy.removeAt = setup.world.timestamp + 2000;
                                     world.audioManager.playOneShot('chickenDeathSound', { volume: 0.6 });
-
-
-                                    const removeIndex = j;
-                                    setTimeout(() => {
-                                        enemies.splice(removeIndex, 1);
-                                    }, 2000);
                                     break;
                                 }
                             }
@@ -1239,57 +1645,231 @@ export const townEvents =
         },
 
         // Wurf von Flaschen mit Taste D
+        // {
+        //     name: 'town_throw_bottle_input',
+        //     type: 'quest',
+        //     once: false,
+        //     action: (setup) => {
+        //         const world = setup.world;
+        //         const char = world.character;
+
+        //         // Cooldown wie vorher in checkThrowObjects
+        //         if (world.timestamp - world.lastThrowCheck < world.throwCheckDelay) return;
+
+        //         // Taste D muss gedrückt sein
+        //         if (!world.keyboard.D) return;
+
+        //         world.lastThrowCheck = world.timestamp;
+
+        //         // Kann der Charakter aktuell überhaupt werfen?
+        //         const noMoveInput = !world.keyboard.LEFT && !world.keyboard.RIGHT;
+        //         const throwIsIdle =
+        //             !char.isThrowing && (char.currentAnimation !== 'throw' || char.animationFinished);
+        //         const canThrow =
+        //             !char.isThrowing &&
+        //             noMoveInput &&
+        //             char.throwableBottels > 0 &&
+        //             !char.isAttack &&
+        //             !char.isProtect &&
+        //             throwIsIdle;
+
+
+        //         if (canThrow) {
+        //             char.isThrowing = true;
+        //             char.currentAnimation = 'throw';
+        //             char.frameIndex = 0;
+        //             char.sheetIndex = 0;
+        //             char.animationFinished = false;
+        //             char.lastFrameTime = null;
+        //             char.deferSizeUpdate = true;
+        //             char._thrownThisAnim = false;
+        //             world.throwStartTime = world.timestamp;
+        //             world.throwCommitUntil = world.timestamp + 100;
+        //             const bar = setup.bottleBar;
+        //             bar.percentage = Math.min(bar.percentage - 20, 100);
+        //             bar.setPercentage(bar.percentage);
+
+        //             if (char.throwableBottels > 0) {
+        //                 char.throwableBottels -= 1;
+        //             }
+        //         } else if (char.throwableBottels === 0) {
+        //             // Keine Flaschen mehr → leeres "Klick" Geräusch
+        //             world.audioManager.playOneShot('bottleEmptySound', { volume: 0.6 });
+        //         }
+        //     }
+        // },
+
         {
-            name: 'town_throw_bottle_input',
-            type: 'quest',
+            name: "town_throw_bottle_hold",
+            type: "hold",
+            requireKey: "D",
+            duration: 600,
             once: false,
-            action: (setup) => {
+
+            onCancel: (setup, char, _b, progress) => {
                 const world = setup.world;
-                const char = world.character;
+                const c = world.character;
 
-                // Cooldown wie vorher in checkThrowObjects
-                if (world.timestamp - world.lastThrowCheck < world.throwCheckDelay) return;
+                // losgelassen ohne wirklich zu halten? -> ignorieren
+                if (!progress || progress < 0.08) return;
 
-                // Taste D muss gedrückt sein
-                if (!world.keyboard.D) return;
-
-                world.lastThrowCheck = world.timestamp;
-
-                // Kann der Charakter aktuell überhaupt werfen?
                 const noMoveInput = !world.keyboard.LEFT && !world.keyboard.RIGHT;
-                const throwIsIdle =
-                    !char.isThrowing && (char.currentAnimation !== 'throw' || char.animationFinished);
+                const throwIsIdle = !c.isThrowing && (c.currentAnimation !== "throw" || c.animationFinished);
+
                 const canThrow =
-                    !char.isThrowing &&
+                    !c.isThrowing &&
                     noMoveInput &&
-                    char.throwableBottels > 0 &&
-                    !char.isAttack &&
-                    !char.isProtect &&
+                    (c.throwableBottels ?? 0) > 0 &&
+                    !c.isAttack &&
+                    !c.isProtect &&
                     throwIsIdle;
 
-
-                if (canThrow) {
-                    char.isThrowing = true;
-                    char.currentAnimation = 'throw';
-                    char.frameIndex = 0;
-                    char.sheetIndex = 0;
-                    char.animationFinished = false;
-                    char.lastFrameTime = null;
-                    char.deferSizeUpdate = true;
-                    char._thrownThisAnim = false;
-                    world.throwStartTime = world.timestamp;
-                    world.throwCommitUntil = world.timestamp + 100;
-                    const bar = setup.bottleBar;
-                    bar.percentage = Math.min(bar.percentage - 20, 100);
-                    bar.setPercentage(bar.percentage);
-
-                    if (char.throwableBottels > 0) {
-                        char.throwableBottels -= 1;
+                if (!canThrow) {
+                    if ((c.throwableBottels ?? 0) === 0) {
+                        world.audioManager.playOneShot("bottleEmptySound", { volume: 0.6 });
                     }
-                } else if (char.throwableBottels === 0) {
-                    // Keine Flaschen mehr → leeres "Klick" Geräusch
-                    world.audioManager.playOneShot('bottleEmptySound', { volume: 0.6 });
+                    return;
                 }
+
+                // charge für den Spawn merken (0..1)
+                setup.pendingThrowCharge = Math.min(Math.max(progress, 0), 1);
+
+                // Throw starten
+                c.isThrowing = true;
+                c.currentAnimation = "throw";
+                c.frameIndex = 0;
+                c.sheetIndex = 0;
+                c.animationFinished = false;
+                c.lastFrameTime = null;
+                c.deferSizeUpdate = true;
+                c._thrownThisAnim = false;
+
+                // bottle bar -20
+                const bar = setup.bottleBar;
+                if (bar) {
+                    bar.percentage = Math.max((bar.percentage ?? 0) - 20, 0);
+                    bar.setPercentage(bar.percentage);
+                }
+
+                // inventar -1
+                c.throwableBottels = Math.max((c.throwableBottels ?? 0) - 1, 0);
+            }
+        },
+
+        {
+            name: "town_throw_charge_ring",
+            type: "time",
+            once: false,
+            from: 0,
+            to: Infinity,
+            action: (setup) => {
+                const c = setup.world.character;
+                const world = setup.world;
+                if (!c) return;
+                if ((c.throwableBottels ?? 0) <= 0) return;
+                if (world.keyboard.LEFT || world.keyboard.RIGHT) return;
+                const p = setup.throwHoldProgress ?? 0;
+                if (p <= 0) return;
+
+                const ctx = setup.world.ctx;
+                const camX = setup.world.townLevelController.renderCameraX;
+                const char = setup.world.character;
+                if (!char) return;
+
+                // ✅ Kopf-Anchor über Hitbox (unabhängig von Sprite-Höhe)
+                const hb = char.getHitboxRect?.();
+                const headY = hb ? hb.top : char.y;
+                const headX = hb ? hb.cx : (char.x + char.width * 0.5);
+
+                const x = (headX - camX);
+                const y = headY - 40;  // Abstand über Kopf (tunen 18–28)
+                const r = 18;
+
+                // Full-charge pulse
+                const full = p >= 1;
+                const pulse = full ? (0.85 + 0.15 * Math.sin(performance.now() / 90)) : 1;
+
+                ctx.save();
+
+                // Soft glow background
+                ctx.globalAlpha = 0.18 * pulse;
+                ctx.beginPath();
+                ctx.arc(x, y, r + 6, 0, 2 * Math.PI);
+                ctx.fillStyle = "white";
+                ctx.fill();
+
+                // Back ring
+                ctx.globalAlpha = 0.30;
+                ctx.lineWidth = 5;
+                ctx.beginPath();
+                ctx.arc(x, y, r, 0, 2 * Math.PI);
+                ctx.strokeStyle = "white";
+                ctx.stroke();
+
+                // Progress ring
+                ctx.globalAlpha = 0.95 * pulse;
+                ctx.lineWidth = 5;
+                ctx.lineCap = "round";
+                ctx.beginPath();
+                ctx.arc(x, y, r, -Math.PI / 2, -Math.PI / 2 + p * 2 * Math.PI);
+                ctx.strokeStyle = "white";
+                ctx.stroke();
+
+                // Tiny center dot
+                ctx.globalAlpha = 0.9;
+                ctx.beginPath();
+                ctx.arc(x, y, 2.2, 0, 2 * Math.PI);
+                ctx.fillStyle = "white";
+                ctx.fill();
+
+                ctx.restore();
+
+                // Optional: Full-charge tick sound (einmal)
+                if (full && !setup._throwChargeTicked) {
+                    setup._throwChargeTicked = true;
+                    setup.world.audioManager.playOneShot("chargeTickSound", { volume: 0.6 }); // optional sound
+                }
+                if (!full) {
+                    setup._throwChargeTicked = false;
+                }
+                // --- Partikel-Orbit (simple) ---
+                const t = performance.now() / 1000;
+                const n = 6;                      // Anzahl Partikel
+                const baseR = r + 10;             // Orbit-Radius
+                const wobble = 2.5;               // leichtes Wobbeln
+
+                ctx.save();
+                ctx.globalAlpha = 0.75 * pulse;
+                ctx.fillStyle = "white";
+
+                for (let i = 0; i < n; i++) {
+                    const a = (i / n) * Math.PI * 2 + t * 1.6;          // Drehgeschwindigkeit
+                    const rr = baseR + Math.sin(t * 3 + i) * wobble;     // leicht variieren
+                    const px = x + Math.cos(a) * rr;
+                    const py = y + Math.sin(a) * rr;
+
+                    const s = 1.6 + 0.8 * Math.sin(t * 4 + i * 2);      // Größenpuls
+                    ctx.beginPath();
+                    ctx.arc(px, py, Math.max(0.8, s), 0, 2 * Math.PI);
+                    ctx.fill();
+                }
+                ctx.restore();
+            }
+        },
+
+        {
+            name: "town_bottle_empty_click",
+            type: "input",
+            key: "D",
+            once: false,
+            cooldown: 250,
+            condition: (setup) => {
+                const c = setup.world.character;
+                if (!c) return false;
+                return (c.throwableBottels ?? 0) <= 0;
+            },
+            action: (setup) => {
+                setup.world.audioManager.playOneShot("bottleEmptySound", { volume: 0.6 });
             }
         },
     ];

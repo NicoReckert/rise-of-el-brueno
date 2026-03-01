@@ -11,6 +11,10 @@ export class EntityAnimationTransitions {
         stoneActivated: { skipIfCurrent: 'idleWithStone', next: 'idleWithStone' },
         broken: { next: 'idle' },
         spiritCuddle: { skipIfCurrent: 'spiritCuddleLoop', next: 'spiritCuddleLoop' },
+        tadeo: {
+            afraid: { skipIfCurrent: 'afraidLoop', next: 'afraidLoop' },
+            standUp: { skipIfCurrent: 'idleWithStone', next: 'idleWithStone' }
+        },
     };
 
     /**
@@ -27,7 +31,10 @@ export class EntityAnimationTransitions {
     * @returns {Object|null} Transition rule or null if none exists.
     */
     rule(state) {
-        return EntityAnimationTransitions.RULES[state] ?? null;
+        const id = this.entity?.currentEntity;
+        const perEntity = id ? EntityAnimationTransitions.RULES?.[id]?.[state] : null;
+        if (perEntity) return perEntity;
+        return EntityAnimationTransitions.RULES?.[state] ?? null;
     }
 
     /**
@@ -43,9 +50,14 @@ export class EntityAnimationTransitions {
     /**
     * Handles post-animation transition logic.
     * @param {string} state Completed animation state.
+    * @returns {void}
     */
     handlePostAnimation(state) {
         const r = this.rule(state);
-        if (r?.next) this.entity.setAnimation(r.next);
+        const next = r?.next;
+        if (!next) return;
+        const hasNext = !!this.entity.getAnimationImages?.(next);
+        if (!hasNext) return;
+        this.entity.setAnimation(next);
     }
 }

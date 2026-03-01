@@ -196,94 +196,25 @@ export class InputManager {
         const kb = this.keyboard;
         const char = game.character;
         const now = timestamp;
-        const THROW_CANCEL_HOLD_MS = 250;
-        if (!char.isThrowing) {
-            game.throwMoveHoldStart = null;
-            game.throwMoveHoldDir = 0;
-        }
-        if (char.isThrowing) {
-            // Commit-Phase: keine Bewegung
-            if (now < (game.throwCommitUntil ?? 0)) {
-                char.isMovingLeft = false;
-                char.isMovingRight = false;
-                game.throwMoveHoldStart = null;
-                game.throwMoveHoldDir = 0;
-                return;
-            }
-
-            const dir = kb.LEFT ? -1 : kb.RIGHT ? 1 : 0;
-
-            if (dir === 0) {
-                // keine Richtung -> Timer reset
-                game.throwMoveHoldStart = null;
-                game.throwMoveHoldDir = 0;
-
-                // während Throw keine Movement-Flags setzen (optional)
-                char.isMovingLeft = false;
-                char.isMovingRight = false;
-                // Throw läuft weiter
-                return;
-            }
-
-            // Richtung neu? -> Timer neu starten
-            if (game.throwMoveHoldDir !== dir) {
-                game.throwMoveHoldDir = dir;
-                game.throwMoveHoldStart = now;
-            }
-
-            const heldMs = now - (game.throwMoveHoldStart ?? now);
-
-            // 1) KURZER TAP: minimal bewegen, ABER Throw NICHT abbrechen und NICHT resetten
-            if (heldMs < THROW_CANCEL_HOLD_MS) {
-                // "minimal bewegen": setze Movement-Flags, aber markiere Slow-Move
-                char.isMovingLeft = dir === -1;
-                char.isMovingRight = dir === 1;
-
-                // Empfehlung: im Movement/Physics Update berücksichtigen:
-                // char.moveSpeedMultiplier = 0.25;  (oder game.throwMoveSpeedMultiplier = 0.25)
-
-
-                // Throw läuft weiter -> wichtig: NICHT char.isThrowing=false setzen
-                return;
-            }
-
-            // 2) LANGER HOLD: Throw abbrechen (nur wenn D noch gedrückt ist, wie du wolltest)
-            if (kb.D) {
-                char.isThrowing = false;
-                game.throwMoveHoldStart = null;
-                game.throwMoveHoldDir = 0;
-
-            } else {
-                // falls D nicht gedrückt: ich würde hier auch nicht canceln,
-                // oder du kannst optional trotzdem canceln – aber laut deiner Vorgabe: nur mit D.
-                return;
-            }
-        }
-
         if (kb.LEFT) {
             if (char.isProtect) char.isProtect = false;
-            const tryingToMove = char.isMovingLeft;
 
             if (char.isAttack) {
                 if (now < game.attackCommitUntil) {
                     char.isMovingLeft = false;
                     return;
                 }
-                if (tryingToMove) char.isAttack = false;
             }
             char.isMovingLeft = true;
         }
-
         if (kb.RIGHT) {
             if (char.isProtect) char.isProtect = false;
-            const tryingToMove = char.isMovingRight;
 
             if (char.isAttack) {
                 if (now < game.attackCommitUntil) {
                     char.isMovingRight = false;
                     return;
                 }
-                if (tryingToMove) char.isAttack = false;
             }
             char.isMovingRight = true;
         }

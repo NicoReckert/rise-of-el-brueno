@@ -37,8 +37,9 @@ export class SpeechBubble {
         this.lastCharCount = 0;
         this.active = true;
         this.scale = 0.9;
+        if (duration == null) duration = this.getRecommendedHoldMs();
+        this.fadeOutStart = this.startTime + duration;
         if (duration) this.fadeOutStart = this.startTime + duration;
-
         if (this.type === "info") this.displayedText = this.fullText;
     }
 
@@ -199,5 +200,12 @@ export class SpeechBubble {
         this.draw(ctx, customYOffset);
 
         ctx.restore();
+    }
+
+    getRecommendedHoldMs() {
+        if (this.type === "info") return 1200;
+        const typeMs = this.fullText.length * this.charDelay;
+        const holdMs = 450;               // “lesen” nach dem letzten Buchstaben
+        return typeMs + holdMs;
     }
 }

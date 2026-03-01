@@ -17,16 +17,18 @@ export class EventManager {
     }
 
     /**
-     * Resolves a target by name.
-     * @param {string} name - The target name.
-     * @returns {object|null} The resolved target or null.
-     */
+    * Resolves a target by name.
+    * @param {string} name Target name.
+    * @returns {object|null} Resolved target or null.
+    */
     resolveTarget(name) {
         if (!this.isValidName(name)) return null;
         for (const pool of this.getTargetPools()) {
             const target = this.findInPool(pool, name);
             if (target) return target;
         }
+        const tl = this.setup?.townLevel;
+        if (tl && Array.isArray(tl[name])) return tl[name];
         return null;
     }
 
@@ -47,7 +49,6 @@ export class EventManager {
         return [
             this.setup.world,
             this.setup.characters,
-            this.setup.characters.portraits,
             this.setup.cutsceneActors,
             this.setup.environment,
             this.setup.enemies,
@@ -75,7 +76,7 @@ export class EventManager {
     add(event) {
         this.events.push({
             triggered: false,
-            once: true,
+            once: event.once ?? true,
             lastTrigger: 0,
             lastLeave: 0,
             armed: event.armed ?? !(event.type === "time" && event.manual === true),
@@ -165,7 +166,7 @@ export class EventManager {
      */
     calculateRawBox(obj, off, t) {
         const x = this.getObjX(obj);
-        const isFlipped = !!(obj.isFlipped || obj.isNpcFlipped);
+        const isFlipped = !!(obj.isFlipped);
 
         const left = isFlipped ? x + off.right + t.x : x + off.left + t.x;
         const right = isFlipped
@@ -491,23 +492,91 @@ export class EventManager {
      * @param {object} b - The second object.
      */
     handleCollisionEvent(e, now, canTrigger, a, b) {
-        if (!a || !b || typeof a.isColliding !== "function") return;
+        if (!a || typeof a.isColliding !== "function") return;
         const tolA = this.getDefaultTolerance(e.toleranceA);
         const tolB = this.getDefaultTolerance(e.toleranceB);
-        const hit = a.isColliding(b, tolA, tolB);
         const key = !e.requireKey || this.setup.world.keyboard[e.requireKey];
+        const collOpts = {
+            useAttackHitboxA: !!e.useAttackHitboxA,
+            useAttackHitboxB: !!e.useAttackHitboxB,
+            hitboxA: e.hitboxA ?? null,
+            hitboxB: e.hitboxB ?? null,
+        };
+        if (Array.isArray(b)) {
+            let hitObj = null;
+            for (const item of b) {
+                if (!item) continue;
+                if (a.isColliding(item, tolA, tolB, collOpts)) { hitObj = item; break; }
+            }
+            const hit = !!hitObj;
+            if (hit && key && canTrigger) {
+                e.action?.(this.setup, a, hitObj);
+                e.lastTrigger = now;
+                e._wasHit = true;
+                if (e.once) e.triggered = true;
+            } else if (!hit && e._wasHit) {
+                if (e.onLeave && now - (e.lastLeave ?? 0) >= (e.cooldown || 0)) {
+                    e.onLeave(this.setup, a, null);
+                    e.lastLeave = now;
+                }
+                e._wasHit = false;
+            }
+            if (this.debug) {
+                const ctx = this.setup.world.ctx;
+                ctx.save();
+                const dbgA = collOpts.useAttackHitboxA && a.attackHitbox?.active
+                    ? this.makeHitboxDebugProxy(a, a.attackHitbox)
+                    : (collOpts.hitboxA ? this.makeHitboxDebugProxy(a, collOpts.hitboxA) : a);
+                const boxA = this._getBox(dbgA, tolA);
+                this._drawBox(ctx, boxA, hit ? this.debugColors.active : this.debugColors.hitA);
+
+                for (const item of b) {
+                    if (!item) continue;
+                    const h = a.isColliding(item, tolA, tolB, collOpts);
+
+                    const dbgB = collOpts.useAttackHitboxB && item.attackHitbox?.active
+                        ? this.makeHitboxDebugProxy(item, item.attackHitbox)
+                        : (collOpts.hitboxB ? this.makeHitboxDebugProxy(item, collOpts.hitboxB) : item);
+
+                    const boxB = this._getBox(dbgB, tolB);
+                    this._drawBox(ctx, boxB, h ? this.debugColors.active : this.debugColors.hitB);
+                }
+                ctx.restore();
+            }
+            return;
+        }
+        if (!b) return;
+        const hit = a.isColliding(b, tolA, tolB, collOpts);
         if (hit && key && canTrigger) this.triggerCollision(e, now, a, b);
         else if (!hit) this.triggerCollisionLeave(e, now, a, b);
-        if (this.debug) this.drawCollisionDebug(a, b, tolA, tolB, hit);
+        if (this.debug) {
+            const dbgA = collOpts.useAttackHitboxA && a.attackHitbox?.active
+                ? this.makeHitboxDebugProxy(a, a.attackHitbox)
+                : (collOpts.hitboxA ? this.makeHitboxDebugProxy(a, collOpts.hitboxA) : a);
+            const dbgB = collOpts.useAttackHitboxB && b.attackHitbox?.active
+                ? this.makeHitboxDebugProxy(b, b.attackHitbox)
+                : (collOpts.hitboxB ? this.makeHitboxDebugProxy(b, collOpts.hitboxB) : b);
+            this.drawCollisionDebug(dbgA, dbgB, tolA, tolB, hit);
+        }
     }
 
+    makeHitboxDebugProxy(obj, hitbox) {
+        if (!obj || !hitbox) return obj;
+        return {
+            ...obj,
+            offset: hitbox,
+            getRenderX: obj.getRenderX?.bind(obj) || (() => obj.x),
+        };
+    }
+
+
     /**
-     * Executes collision action.
-     * @param {object} e - The event.
-     * @param {number} now - The current time.
-     * @param {object} a - The first object.
-     * @param {object} b - The second object.
-     */
+    * Executes collision action.
+    * @param {object} e - The event.
+    * @param {number} now - The current time.
+    * @param {object} a - The first object.
+    * @param {object} b - The second object.
+    */
     triggerCollision(e, now, a, b) {
         e.action?.(this.setup, a, b);
         e.lastTrigger = now;
@@ -515,16 +584,18 @@ export class EventManager {
     }
 
     /**
-     * Handles collision leave.
-     * @param {object} e - The event.
-     * @param {number} now - The current time.
-     * @param {object} a - The first object.
-     * @param {object} b - The second object.
-     */
+    * Handles collision leave.
+    * @param {object} e Event object.
+    * @param {number} now Current time.
+    * @param {object} a First object.
+    * @param {object} b Second object.
+    * @returns {void}
+    */
     triggerCollisionLeave(e, now, a, b) {
-        if (e.onLeave && now - (e.lastTrigger ?? 0) >= (e.cooldown || 0)) {
+        if (!e.onLeave) return;
+        if (!e.cooldown || now - (e.lastLeave ?? 0) >= e.cooldown) {
             e.onLeave(this.setup, a, b);
-            e.lastTrigger = now;
+            e.lastLeave = now;
         }
     }
 
@@ -546,23 +617,36 @@ export class EventManager {
         ctx.restore();
     }
 
-    /**
-     * Handles hold events.
-     * @param {object} e - The event.
-     * @param {number} now - The current time.
-     * @param {boolean} canTrigger - Whether it can trigger.
-     * @param {object} a - First object.
-     * @param {object} b - Second object.
-     */
     handleHoldEvent(e, now, canTrigger, a, b) {
-        if (!a || !b || typeof a.isColliding !== "function") return;
+        if (!a) return;
+        const keyDown = !e.requireKey || this.setup.world.keyboard[e.requireKey];
+        if (!b) {
+            if (keyDown) this.updateHoldProgress(e, now, canTrigger, a, null);
+            else this.cancelHold(e, a, null);
+            return;
+        }
+        if (typeof a.isColliding !== "function") return;
         const tolA = this.getDefaultTolerance(e.toleranceA);
         const tolB = this.getDefaultTolerance(e.toleranceB);
-        const hit = a.isColliding(b, tolA, tolB);
-        const key = !e.requireKey || this.setup.world.keyboard[e.requireKey];
-        if (hit && key) this.updateHoldProgress(e, now, canTrigger, a, b);
+        const collOpts = {
+            useAttackHitboxA: !!e.useAttackHitboxA,
+            useAttackHitboxB: !!e.useAttackHitboxB,
+            hitboxA: e.hitboxA ?? null,
+            hitboxB: e.hitboxB ?? null,
+        };
+        const hit = a.isColliding(b, tolA, tolB, collOpts);
+        if (hit && keyDown) this.updateHoldProgress(e, now, canTrigger, a, b);
         else this.cancelHold(e, a, b);
-        if (this.debug) this.drawHoldDebug(e, a, b, tolA, tolB, hit);
+        if (this.debug) {
+            const dbgA = collOpts.useAttackHitboxA && a.attackHitbox?.active
+                ? this.makeHitboxDebugProxy(a, a.attackHitbox)
+                : (collOpts.hitboxA ? this.makeHitboxDebugProxy(a, collOpts.hitboxA) : a);
+
+            const dbgB = collOpts.useAttackHitboxB && b.attackHitbox?.active
+                ? this.makeHitboxDebugProxy(b, b.attackHitbox)
+                : (collOpts.hitboxB ? this.makeHitboxDebugProxy(b, collOpts.hitboxB) : b);
+            this.drawHoldDebug(e, dbgA, dbgB, tolA, tolB, hit);
+        }
     }
 
     /**
@@ -575,9 +659,29 @@ export class EventManager {
      */
     updateHoldProgress(e, now, canTrigger, a, b) {
         if (!e.holdStart) e.holdStart = now;
+        if (e.name === "town_throw_bottle_hold") {
+            const world = this.setup.world;
+            const kb = world?.keyboard;
+            const c = world?.character;
+
+            if (!c || (c.throwableBottels ?? 0) <= 0) {
+                this.cancelHold(e, a, b);
+                return;
+            }
+            if (kb?.LEFT || kb?.RIGHT) {
+                this.cancelHold(e, a, b);
+                return;
+            }
+        }
         const elapsed = now - e.holdStart;
-        e.progress = Math.min(elapsed / e.duration, 1);
-        if (elapsed >= e.duration && canTrigger) {
+        const dur = Math.max(1, e.duration ?? 1);
+        e.progress = Math.min(elapsed / dur, 1);
+
+        if (e.name === "town_throw_bottle_hold") {
+            this.setup.throwHoldProgress = e.progress;
+        }
+        if (elapsed >= dur && canTrigger && !e._holdFired) {
+            e._holdFired = true;
             e.action?.(this.setup, a, b);
             e.lastTrigger = now;
             if (e.once) e.triggered = true;
@@ -585,15 +689,23 @@ export class EventManager {
     }
 
     /**
-     * Cancels a hold event.
-     * @param {object} e - The event.
-     * @param {object} a - First object.
-     * @param {object} b - Second object.
-     */
+    * Cancels a hold event.
+    * @param {object} e Event object.
+    * @param {object} a First object.
+    * @param {object} b Second object.
+    * @returns {void}
+    */
     cancelHold(e, a, b) {
-        if (e.progress > 0 && e.onCancel) e.onCancel(this.setup, a, b);
+        const p = e.progress ?? 0;
+        if (p > 0 && e.onCancel) e.onCancel(this.setup, a, b, p);
         e.holdStart = null;
         e.progress = 0;
+        e._holdFired = false;
+        e._moveHoldStart = null;
+        e._moveHoldDir = 0;
+        if (e.name === "town_throw_bottle_hold") {
+            this.setup.throwHoldProgress = 0;
+        }
     }
 
     /**
@@ -651,14 +763,7 @@ export class EventManager {
 
     getObjX(obj) {
         if (!obj) return 0;
-        // bevorzugt: zentrale Methode am Objekt
-        if (typeof obj.getCollisionX === "function") return obj.getCollisionX();
-        if (typeof obj.getBaseX === "function") return obj.getBaseX();
-
-        // fallback: drawOffset berücksichtigen
-        const d = obj.drawOffset || { x: 0, flipX: 0 };
-        const isFlipped = !!(obj.isFlipped || obj.isNpcFlipped);
-        return obj.x + (d.x || 0) + (isFlipped ? (d.flipX || 0) : 0);
+        if (typeof obj.getRenderX === "function") return obj.getRenderX();
+        return obj.x ?? 0;
     }
-
 }

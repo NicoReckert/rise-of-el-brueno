@@ -35,7 +35,7 @@ export class StableLevelController {
         this.handleHint();
         this.handlePopup();
         this.eventManager.update();
-        // this.eventManager.debug = true;
+        this.eventManager.debug = true;
     }
 
     updateCamera() {

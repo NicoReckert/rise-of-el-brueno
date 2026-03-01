@@ -98,6 +98,17 @@ export const otherLevelAudioManifestLazy = {
     nayelisSpiritSpeakSound: './assets/ElevenLabs_2026-01-20T20_36_16_Mandy Meditation _pvc_sp100_s30_sb50_se50_b_m2(1).mp3',
     spiritAppearsSound: './assets/soul-steal-02-43483(1).mp3',
     nayelisSpiritSpeakSound_B: './assets/ElevenLabs_2026-02-27T20_28_31_Mandy Meditation _pvc_sp115_s30_sb50_f2-5(1).mp3',
-    tadeosSpeakSound: './assets/ElevenLabs_2026-02-27T21_01_13_Chris - Supportive and Cool_pvc_sp70_s50_sb75_f2-5.mp3',
+    tadeosSpeakSound: './assets/ElevenLabs_2026-02-28T06_03_14_Chris - Supportive and Cool_pvc_sp70_s50_sb75_f2-5(1).mp3',
     shieldLoadingSound: './assets/freesound_community-energy-overload-94847.mp3',
+    vo_tadeo_afraid_01: './assets/audio/tadeo_afraid_01.mp3',
+    vo_tadeo_afraid_02: './assets/audio/tadeo_afraid_02.mp3',
+    vo_tadeo_afraid_03: './assets/audio/tadeo_afraid_03.mp3',
+    vo_tadeo_afraid_04: './assets/audio/tadeo_afraid_04.mp3',
+    vo_tadeo_panic_01: './assets/audio/tadeo_panic_01.mp3',
+    vo_tadeo_panic_02: './assets/audio/tadeo_panic_02.mp3',
+    vo_tadeo_panic_03: './assets/audio/tadeo_panic_03.mp3',
+    vo_tadeo_panic_04: './assets/audio/tadeo_panic_04.mp3',
+    vo_tadeo_help_01: './assets/audio/tadeo_help_01.mp3',
+    vo_tadeo_help_02: './assets/audio/tadeo_help_02.mp3',
+    vo_tadeo_help_03: './assets/audio/tadeo_help_03.mp3'
 }

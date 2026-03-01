@@ -559,6 +559,22 @@ export const otherLevelEntityManifestLazy = {
         { json: './assets/img/entities/tadeo/stone_activated/stone_activated_sheet_02.json' },
         { json: './assets/img/entities/tadeo/stone_activated/stone_activated_sheet_03.json' }
       ]
+    },
+    afraid: {
+      type: 'sheet',
+      json: './assets/img/entities/tadeo/afraid/afraid_sheet.json'
+    },
+    afraidLoop: {
+      type: 'sheet',
+      json: './assets/img/entities/tadeo/afraid/afraid_sheet.json'
+    },
+    standUp: {
+      type: 'sheet',
+      json: './assets/img/entities/tadeo/stand_up/stand_up_sheet.json'
+    },
+    panic: {
+      type: 'sheet',
+      json: './assets/img/entities/tadeo/panic/panic_sheet.json'
     }
   },
 

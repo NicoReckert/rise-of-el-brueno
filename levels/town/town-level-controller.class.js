@@ -7,6 +7,7 @@ import { WindParticleEffect } from '../../classes/effects/wind-particle.class.js
 import { TimerManager } from '../../classes/systems/timer-manager.class.js';
 import { ThrowBottleSystem } from '../../classes/systems/throw-bottle-system.class.js';
 import { DarkEnergyEffect } from '../../classes/effects/dark-energy-effect.class.js';
+import { StormHazard } from '../../classes/effects/storm-hazard.class.js';
 
 export class TownLevelController {
     constructor(setup) {
@@ -34,6 +35,7 @@ export class TownLevelController {
         this.setSandstorm(this.sandstormIntensity);
 
         this.eventManager = new EventManager(this.setup);
+        this.eventManager.debug = true;
         this.questManager = new QuestManager(this.setup, this.eventManager, this.setup.townEvents);
         this.eventManager.questManager = this.questManager;
         this.timerManager = new TimerManager();
@@ -85,7 +87,6 @@ export class TownLevelController {
         this.sandstormNear.update();
         this.sandstormFar.update();
         this.eventManager.update();
-        this.eventManager.debug = true;
         this.renderStatusBar();
         this.setup.panel.update(timestamp);
         this.setup.panel.draw(this.ctx);
@@ -148,6 +149,8 @@ export class TownLevelController {
         this.addToWorld(this.setup.environment.houseDestroyed);
         this.addToWorld(this.setup.environment.stableDestroyed);
         this.addToWorld(this.setup.environment.millDestroyed);
+        this.addToWorld(this.setup.characters.tadeo);
+
         this.addToWorld(this.character);
         this.addToWorld(this.throwBottleSystem.heldBottle);
         this.setup.damageTexts.forEach(dt => dt.draw(this.ctx));
@@ -175,7 +178,6 @@ export class TownLevelController {
 
             this.addToWorld(this.setup.characters.endboss);
         }
-        this.addToWorld(this.setup.characters.tadeo);
         this.addToWorld(this.setup.characters.sollita);
         this.addToWorld(this.setup.characters.musician);
         // this.windParticleEffect.draw(this.ctx, this.renderCameraX);
@@ -466,6 +468,37 @@ export class TownLevelController {
         if (seq.index >= seq.essences.length && seq.reveals.every(r => !r)) {
             seq.active = false;
         }
+    }
+
+    // TownLevelController class body
+    spawnVulture() {
+        const camX = this.renderCameraX ?? 0;
+        const c = this.world.character;
+
+        const anim = this.setup.entityImages.vulture?.fly; // anpassen an deinen Manifest-Key
+        if (!anim || !c) return;
+
+        this.setup.effects.push(new StormHazard(this.setup, {
+            kind: "vulture",
+            anim,
+            animName: "fly",
+            fps: 10,
+            x: camX + this.canvas.width + 200,
+            y: c.y + c.height * 0.15,
+            width: 260,
+            height: 180,
+            offset: { top: 70, left: 95, right: 95, bottom: 70 },
+            speedX: -18,
+            telegraphMs: 650,
+            activeMs: 350,
+            lifeMs: 1600,
+            bobAmp: 3,
+            bobSpeed: 0.006,
+            drawShadow: true,
+            onHit: (setup, character) => {
+                character.hurtUntil = performance.now() + 350;
+            }
+        }));
     }
 
 }
