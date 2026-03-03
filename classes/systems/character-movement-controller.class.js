@@ -101,8 +101,9 @@ export class CharacterMovementController {
         const cameraOffset = isMobile ? 920 : 1060;
         const t = 0.05 * (this.char.deltaTime * 60);
         this.char.isFlipped = true;
+        const speed = this.getEffectiveMoveSpeed();
         if (this.char.x > this.char.level_start_x) {
-            this.char.x -= this.char.movementSpeed;
+            this.char.x -= speed;
             this.world.camera_x += ((this.char.x - cameraOffset) - this.world.camera_x) * t;
         }
     }
@@ -115,8 +116,9 @@ export class CharacterMovementController {
         const cameraOffset = isMobile ? 150 : 100;
         const t = 0.05 * (this.char.deltaTime * 60);
         this.char.isFlipped = false;
+        const speed = this.getEffectiveMoveSpeed();
         if (this.char.x < this.world.level_end_x) {
-            this.char.x += this.char.movementSpeed;
+            this.char.x += speed;
             this.world.camera_x += ((this.char.x - cameraOffset) - this.world.camera_x) * t;
         }
     }
@@ -270,5 +272,21 @@ export class CharacterMovementController {
     clampX(object, minX, maxX) {
         if (object.x < minX) object.x = minX;
         if (object.x > maxX) object.x = maxX;
+    }
+
+    /**
+    * Returns the effective movement speed based on the current state.
+    * @returns {number} Effective movement speed.
+    */
+    getEffectiveMoveSpeed() {
+        const duckMoving =
+            this.char.duckState === 'loop' &&
+            (this.char.isMovingLeft || this.char.isMovingRight);
+        if (duckMoving) {
+            const duckSpeedX = this.char.duckSpeedX ?? 3.2;
+            const dt60 = (this.char.deltaTime ?? 1 / 60) * 60;
+            return duckSpeedX * dt60;
+        }
+        return this.char.movementSpeed;
     }
 }

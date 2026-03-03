@@ -657,5 +657,12 @@ export const otherLevelEntityManifestLazy = {
 
   spiritEssence: {
     idle: Array.from({ length: 8 }, (_, i) => `./assets/img/entities/spirit-essence/idle/image_${i + 1}.png`)
+  },
+
+  tumbleweed: {
+    roll: {
+      type: 'sheet',
+      json: './assets/img/entities/tumbleweed/roll/roll_sheet.json'
+    }
   }
 }

@@ -54,7 +54,7 @@ export class CharacterConfig {
         this.char.TRANSITIONABLE_ANIMS = new Set([
             'kneel-and-cry', 'stand-up-determined', 'determined-rise', 'caress',
             'sit-down-and-play-guitar', 'light-a-campfire', 'attack-staff', 'attack-sword',
-            'meditation', 'new-weapon', 'stand-up', 'stand-determined',
+            'meditation', 'new-weapon', 'stand-up', 'stand-determined', 'duck-enter', 'duck-exit',
             'collapse', 'stand-up-after-collapse', 'protect', 'air-hit-stun', 'hurt', 'throw', 'heal'
         ]);
     }
@@ -71,7 +71,7 @@ export class CharacterConfig {
     * Initializes core movement-related values.
     */
     initCoreMovementValues() {
-        this.char.speedX = 8;
+        this.char.speedX = 6;
         this.char.lastFrameTime = 0;
         this.char.currentAnimation = 'idle';
         this.char.frameInterval = 1000 / 2.5;
@@ -131,6 +131,8 @@ export class CharacterConfig {
     initMovementImages() {
         this.char.idleWalkSheet = this.images.idleWalkSheet ?? null;
         this.char.jumpSheet = this.images.jumpSheet ?? null;
+        this.char.duckSheet = this.images.duckSheet ?? null;
+        this.char.duckWalkSheet = this.images.duckWalkSheet ?? null;
     }
 
     /**
@@ -202,7 +204,9 @@ export class CharacterConfig {
         this.char.isWalkDetermined = false;
         this.char.isWalkInStorm = false;
         this.char.isJumping = false;
+        this.char.duckState = null;
         this.char.isLanding = false;
+        this.char.duckSpeedX = 2.0;
     }
 
     /**

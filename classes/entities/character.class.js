@@ -63,6 +63,10 @@ export class Character extends MovableObject {
         switch (state) {
             case 'walk': return this.idleWalkSheet;
             case 'jump': return this.jumpSheet;
+            case 'duck-enter': return this.duckSheet;
+            case 'duck-loop': return this.duckSheet;
+            case 'duck-exit': return this.duckSheet;
+            case 'duck-walk': return this.duckWalkSheet;
             case 'stand-up': return this.lightCampfireStandUpSheet;
             case 'walk-determined': return this.walkStandDeterminedSheet;
             case 'walk-in-storm': return this.walkInStormCollapseSheet;
@@ -258,6 +262,9 @@ export class Character extends MovableObject {
         if (this.isNewWeaponAnim(anim)) {
             return this.getNewWeaponSizeConfig();
         }
+        if (this.isDuckAnim(anim)) {
+            return this.getDuckSizeConfig();
+        }
         return null;
     }
 
@@ -277,6 +284,15 @@ export class Character extends MovableObject {
     */
     isNewWeaponAnim(anim) {
         return anim === 'new-weapon' || anim === 'new-weapon-loop';
+    }
+
+    /**
+    * Checks whether the animation is a duck animation.
+    * @param {string} anim Animation state identifier.
+    * @returns {boolean} True if duck animation, otherwise false.
+    */
+    isDuckAnim(anim) {
+        return anim === 'duck-enter' || anim === 'duck-loop' || anim === 'duck-exit' || anim === 'duck-walk';
     }
 
     /**
@@ -300,6 +316,18 @@ export class Character extends MovableObject {
             width: 300,
             height: 340,
             offset: { top: 20, left: 45, right: 40, bottom: 15 }
+        };
+    }
+
+    /**
+    * Returns size configuration for duck animations.
+    * @returns {Object} Size configuration.
+    */
+    getDuckSizeConfig() {
+        return {
+            width: 158,
+            height: 183,
+            offset: { top: 53, left: 42, right: 50, bottom: 12 }
         };
     }
 
@@ -334,7 +362,7 @@ export class Character extends MovableObject {
             this.drawOffset = { x: -5, y: 0, flipX: -130 };
         } else if (anim === 'protect' || anim === 'protect-loop') {
             this.drawOffset = { x: -14, y: 0, flipX: 0 };
-        } else if (anim === 'throw' || anim === 'heal') {
+        } else if (anim === 'throw' || anim === 'heal' || anim === 'duck-enter' || anim === 'duck-loop' || anim === 'duck-exit' || anim === 'duck-walk') {
             this.drawOffset = { x: -14, y: 0, flipX: 0 };
         } else {
             this.drawOffset = { x: 0, y: 0, flipX: 0 };

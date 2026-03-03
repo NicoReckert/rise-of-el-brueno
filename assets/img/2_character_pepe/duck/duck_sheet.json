@@ -1,0 +1,27 @@
+﻿{
+    "frameHeight":  512,
+    "columns":  4,
+    "frameWidth":  512,
+    "animations": {
+    "duck-enter": {
+      "from": 0,
+      "to": 4,
+      "fps": 3,
+      "loop": false
+    },
+    "duck-loop": {
+      "from": 5,
+      "to": 19,
+      "fps": 7
+    },
+    "duck-exit": {
+      "from": 20,
+      "to": 25,
+      "fps": 7,
+      "loop": false
+    }
+  },
+    "image":  "duck_sheet.webp",
+    "frames":  26,
+    "rows":  7
+}

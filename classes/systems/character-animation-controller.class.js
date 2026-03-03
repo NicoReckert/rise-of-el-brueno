@@ -294,6 +294,12 @@ export class CharacterAnimationController {
     * @returns {boolean} True if an animation was applied, otherwise false.
     */
     handleMovementAnimations() {
+        if (this.char.duckState === 'enter') return this.setAnim('duck-enter', 16);
+        if (this.char.duckState === 'loop') {
+            const moving = this.char.isMovingLeft || this.char.isMovingRight;
+            return moving ? this.setAnim('duck-walk', 8) : this.setAnim('duck-loop', 6);
+        }
+        if (this.char.duckState === 'exit') return this.setAnim('duck-exit', 16);
         if (this.char.isMovingLeft || this.char.isMovingRight || this.char.isWalk)
             return this.char.isWalkInStorm ? this.setAnim('walk-in-storm', 5) : this.setAnim('walk', 8);
         if (this.char.isWalkDetermined)

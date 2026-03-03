@@ -181,10 +181,14 @@ export class InputManager {
 
     processGameInput(game, timestamp) {
         if (game.isKeysStopp) return;
-
+        this.handleDuck(game);
         game.character.isMovingLeft = false;
         game.character.isMovingRight = false;
-
+        if (this.duckIsBlocking(game.character)) {
+            this.handleTaskWindowToggle(game);
+            this.handleDeath(game);
+            return;
+        }
         this.handleHorizontalInput(game, timestamp);
         this.handleJumpAndJetpack(game);
         this.handleTaskWindowToggle(game);
@@ -319,4 +323,44 @@ export class InputManager {
         }
     }
 
+
+    handleDuck(game) {
+        const kb = this.keyboard;
+        const char = game.character;
+        const canDuck =
+            !char.isAboveGround() &&
+            !char.isFlying &&
+            !char.isJumping &&
+            !char.isAttack &&
+            !char.isProtect;
+        if (kb.DOWN && canDuck) {
+            if (!char.duckState) {
+                char.duckState = 'enter';
+                char.frameIndex = 0;
+                char.sheetIndex = 0;
+                char.animationFinished = false;
+                char.lastFrameTime = null;
+            }
+            return;
+        }
+        if (!kb.DOWN && this.duckIsActive(char)) {
+            this.startDuckExit(char);
+        }
+    }
+    duckIsActive(char) {
+        return char.duckState === 'enter' || char.duckState === 'loop';
+    }
+
+    duckIsBlocking(char) {
+        return char.duckState === 'enter' || char.duckState === 'exit';
+    }
+
+    startDuckExit(char) {
+        if (!this.duckIsActive(char)) return;
+        char.duckState = 'exit';
+        char.frameIndex = 0;
+        char.sheetIndex = 0;
+        char.animationFinished = false;
+        char.lastFrameTime = null;
+    }
 }

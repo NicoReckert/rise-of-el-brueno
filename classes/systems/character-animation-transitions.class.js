@@ -17,12 +17,30 @@ export class CharacterAnimationTransitions {
     * @param {string} anim Animation state identifier.
     */
     handleAnimationTransition(anim) {
+        if (this.handleDuckTransitions(anim)) return;
         if (this.handleDeterminedTransitions(anim)) return;
         if (this.handleEmotionalTransitions(anim)) return;
         if (this.handleMusicTransitions(anim)) return;
         if (this.handleCombatTransitions(anim)) return;
     }
 
+    /**
+    * Handles duck-related animation transitions.
+    * @param {string} anim Animation state.
+    * @returns {boolean} True if handled, otherwise false.
+    */
+    handleDuckTransitions(anim) {
+        if (anim === 'duck-enter') {
+            if (this.char.duckState === 'enter') this.char.duckState = 'loop';
+            return this.setTransition('duck-loop', 6);
+        }
+        if (anim === 'duck-exit') {
+            this.char.duckState = null;
+            return true;
+        }
+
+        return false;
+    }
     /**
     * Handles determined-related animation transitions.
     * @param {string} anim Animation state identifier.

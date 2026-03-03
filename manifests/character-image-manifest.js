@@ -15,6 +15,15 @@ export const characterManifestImmediate = {
         type: 'sheet',
         json: './assets/img/2_character_pepe/caress/caress_sheet.json'
     },
+    duckSheet: {
+        type: 'sheet',
+        json: './assets/img/2_character_pepe/duck/duck_sheet.json'
+    },
+    duckWalkSheet: {
+        type: 'sheet',
+        json: './assets/img/2_character_pepe/duck_walk/duck_walk_sheet.json'
+    }
+
 }
 
 export const characterManifestDeferred = {

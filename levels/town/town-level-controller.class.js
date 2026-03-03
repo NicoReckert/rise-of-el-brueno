@@ -7,7 +7,7 @@ import { WindParticleEffect } from '../../classes/effects/wind-particle.class.js
 import { TimerManager } from '../../classes/systems/timer-manager.class.js';
 import { ThrowBottleSystem } from '../../classes/systems/throw-bottle-system.class.js';
 import { DarkEnergyEffect } from '../../classes/effects/dark-energy-effect.class.js';
-import { StormHazard } from '../../classes/effects/storm-hazard.class.js';
+import { StormHazardSystem } from '../../classes/systems/storm-hazard-system.class.js';
 
 export class TownLevelController {
     constructor(setup) {
@@ -33,7 +33,6 @@ export class TownLevelController {
         // this.sandstormNear.setSpeed(1.2);
         this.sandstormIntensity = 0;
         this.setSandstorm(this.sandstormIntensity);
-
         this.eventManager = new EventManager(this.setup);
         this.eventManager.debug = true;
         this.questManager = new QuestManager(this.setup, this.eventManager, this.setup.townEvents);
@@ -47,15 +46,12 @@ export class TownLevelController {
         };
         this.windParticleEffect = new WindParticleEffect(this.canvas.width * 38, this.canvas.height, 1200);
         this.setup.damageTexts ||= [];
-
-
         this.throwBottleSystem = new ThrowBottleSystem({
             world: this.world,
             setup: this.setup,
             animName: 'throw',
             releaseFrame: 4,
         });
-
         this.darkEnergyEffect = new DarkEnergyEffect(this.canvas.width, this.canvas.height, 6, {
             yMin: this.canvas.height * 0.06,
             yMax: this.canvas.height * 0.38,
@@ -66,6 +62,11 @@ export class TownLevelController {
             minLen: 320,
             maxLen: 820,
         });
+        this.stormHazards = new StormHazardSystem({
+            world: this.world,
+            setup: this.setup,
+            canvas: this.canvas
+        });
     }
 
     update(timestamp) {
@@ -73,6 +74,7 @@ export class TownLevelController {
         this.magicShield.update(timestamp);
 
         this.updateCamera();
+
         this.renderBackgrounds();
         this.renderNPCsAndCharacter();
         this.updateCharacter(timestamp);
@@ -98,6 +100,7 @@ export class TownLevelController {
         this.timerManager.update();
         this.darkEnergyEffect.update(timestamp, this.renderCameraX, this.canvas.width);
         // immer pro frame:
+        this.stormHazards.update(timestamp);
 
     }
 
@@ -216,10 +219,13 @@ export class TownLevelController {
         });
         this.setup.townLevel.projectiles =
             this.setup.townLevel.projectiles.filter(p => !p.markedForRemoval);
-        this.setup.effects.forEach(effect => {
-            effect.updateState(timestamp);
-        });
+        // this.setup.effects.forEach(effect => {
+        //     effect.updateState(timestamp);
+        // });
         this.throwBottleSystem.update();
+
+        this.setup.effects.forEach(e => e.updateState(timestamp));
+        this.setup.effects = this.setup.effects.filter(e => !e.markedForRemoval);
     }
 
     updateEntities(timestamp) {
@@ -469,36 +475,4 @@ export class TownLevelController {
             seq.active = false;
         }
     }
-
-    // TownLevelController class body
-    spawnVulture() {
-        const camX = this.renderCameraX ?? 0;
-        const c = this.world.character;
-
-        const anim = this.setup.entityImages.vulture?.fly; // anpassen an deinen Manifest-Key
-        if (!anim || !c) return;
-
-        this.setup.effects.push(new StormHazard(this.setup, {
-            kind: "vulture",
-            anim,
-            animName: "fly",
-            fps: 10,
-            x: camX + this.canvas.width + 200,
-            y: c.y + c.height * 0.15,
-            width: 260,
-            height: 180,
-            offset: { top: 70, left: 95, right: 95, bottom: 70 },
-            speedX: -18,
-            telegraphMs: 650,
-            activeMs: 350,
-            lifeMs: 1600,
-            bobAmp: 3,
-            bobSpeed: 0.006,
-            drawShadow: true,
-            onHit: (setup, character) => {
-                character.hurtUntil = performance.now() + 350;
-            }
-        }));
-    }
-
 }
