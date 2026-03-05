@@ -660,9 +660,44 @@ export const otherLevelEntityManifestLazy = {
   },
 
   tumbleweed: {
-    roll: {
+    idle: {
       type: 'sheet',
-      json: './assets/img/entities/tumbleweed/roll/roll_sheet.json'
+      json: './assets/img/entities/tumbleweed/idle/idle_sheet.json'
+    }
+  },
+
+  eagle: {
+    idle: {
+      type: 'sheet',
+      json: './assets/img/entities/eagle/idle/idle_sheet.json'
+    }
+  },
+
+  woodenPlank: {
+    idle: {
+      type: 'sheet',
+      json: './assets/img/entities/wooden_plank/idle/idle_sheet.json'
+    }
+  },
+
+  coat: {
+    idle: {
+      type: 'sheet',
+      json: './assets/img/entities/coat/idle/idle_sheet.json'
+    }
+  },
+
+  sandTornado: {
+    idle: {
+      type: 'sheet',
+      json: './assets/img/entities/sand_tornado/idle/idle_sheet.json'
+    }
+  },
+
+  featherSwirl: {
+    idle: {
+      type: 'sheet',
+      json: './assets/img/entities/feather_swirl/idle/idle_sheet.json'
     }
   }
 }

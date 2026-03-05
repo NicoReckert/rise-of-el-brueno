@@ -1,66 +1,170 @@
 // classes/systems/storm-hazard-system.class.js
-import { TumbleweedHazard } from '../effects/tumbleweed-hazard.class.js';
-import { VultureHazard } from '../effects/vulture-hazard.class.js'; // falls noch nicht vorhanden: Skeleton erstellen
+// einfache Difficulty-Profile für das Storm-Hazard-System
+const DIFFICULTY_PROFILES = {
+    normal: {
+        minDelay: 1100,
+        maxDelay: 1800,
+        maxActiveHazards: 4,
+        laneWeights: { LOW: 0.45, MID: 0.35, HIGH: 0.20 },
+        multiSpawnChance: 0,
+    },
+    hard: {
+        // deutlich dichter, aber noch nicht unfair
+        minDelay: 600,
+        maxDelay: 1000,
+        maxActiveHazards: 6,
+        laneWeights: { LOW: 0.58, MID: 0.27, HIGH: 0.15 },
+        multiSpawnChance: 0.35,
+    },
+};
 
-/**
- * Spawner/Director für Storm-Hazards.
- * - hält alle Spawn-Logik + Lane/Speed-Random
- * - spawnt Subklassen (keine riesigen cfg Blöcke hier!)
- */
+import { StormHazard } from '../effects/storm-hazard.class.js';
+
 export class StormHazardSystem {
     constructor({ world, setup, canvas }) {
         this.world = world;
         this.setup = setup;
         this.canvas = canvas;
 
-        this.enabled = true;
+        this.enabled = false;
 
-        // spawn timing
-        this.nextSpawnAt = 0;
-        this.minDelay = 900;
-        this.maxDelay = 1600;
+        // speed range (negativ = von rechts nach links) – bleibt global
+        this.speedMin = -6;   // langsamste
+        this.speedMax = -14;  // schnellste
 
-        // speed range (negativ = von rechts nach links)
-        this.speedMin = -5; // -10
-        this.speedMax = -10; // -22
+        // Standard-Einstellungen (werden gleich vom Profil überschrieben)
+        this.minDelay = 1100;
+        this.maxDelay = 1800;
+        this.maxActiveHazards = 4;
 
-        // lanes (relativ zu Character top/height)
+        // Lane-Gewichte (werden auch vom Profil gesetzt)
+        this.laneWeights = { LOW: 0.45, MID: 0.35, HIGH: 0.20 };
+
+        // direkt mit "normal" starten
+        this.difficulty = 'normal';
+        this.applyDifficultyProfile(DIFFICULTY_PROFILES[this.difficulty]);
+
+        // interne Lane-Typen des Systems
         this.lanes = {
-            HIGH: 0.18, // eher "über Kopf"
-            MID: 0.40,  // duck-line
-            LOW: 0.78,  // jump-line (bodennah)
+            LOW: 'jump',  // bodennah -> springen
+            MID: 'duck',  // mittel -> ducken
+            HIGH: 'safe', // hoch -> safe
         };
 
-        // hazard pool = Funktionen (sauberer als Strings + if/else)
+        // Pool der Hazard-Typen – kann man jederzeit erweitern
         this.pool = [
-            (ctx) => this.spawnTumbleweed(ctx),
-            (ctx) => this.spawnVulture(ctx),
+            (ctx) => this.spawnHazard('tumbleweed', ctx),
+            (ctx) => this.spawnHazard('sandTornado', ctx),
+            (ctx) => this.spawnHazard('featherSwirl', ctx),
+            (ctx) => this.spawnHazard('eagle', ctx),
+            (ctx) => this.spawnHazard('woodenPlank', ctx),
+            (ctx) => this.spawnHazard('coat', ctx)
         ];
+
+        this.lastLaneKey = null;
+        this.lastSpawnAt = 0;
+
+        this.lastDangerLane = null;
+        this.dangerLockUntil = 0;
+        this.dangerLockMs = 1100;
+
+        this.nextSpawnAt = 0;
+        this.multiSpawnChance = 0;
+    }
+
+    /**
+ * Von außen aufrufbar, z.B. aus deinem Positions-Event:
+ * world.stormHazardSystem.setDifficulty('hard');
+ */
+    setDifficulty(name) {
+        const profile = DIFFICULTY_PROFILES[name];
+        if (!profile) {
+            console.warn('[StormHazardSystem] Unknown difficulty:', name);
+            return;
+        }
+        this.difficulty = name;
+        this.applyDifficultyProfile(profile);
+    }
+
+    applyDifficultyProfile(profile) {
+        if (!profile) return;
+
+        this.minDelay = profile.minDelay ?? this.minDelay;
+        this.maxDelay = profile.maxDelay ?? this.maxDelay;
+        this.maxActiveHazards = profile.maxActiveHazards ?? this.maxActiveHazards;
+        this.multiSpawnChance = profile.multiSpawnChance ?? this.multiSpawnChance;
+
+        // Lane-Gewichte übernehmen (für pickLaneKey)
+        if (profile.laneWeights) {
+            this.laneWeights = {
+                LOW: profile.laneWeights.LOW ?? this.laneWeights.LOW,
+                MID: profile.laneWeights.MID ?? this.laneWeights.MID,
+                HIGH: profile.laneWeights.HIGH ?? this.laneWeights.HIGH,
+            };
+        }
     }
 
     update(timestamp) {
         if (!this.enabled) return;
 
-        if (!this.nextSpawnAt) this.scheduleNext(timestamp);
+        // zu viele aktive Hazards? kurz Pause
+        const active = this.setup.effects.filter(
+            (e) => e instanceof StormHazard && !e.markedForRemoval
+        );
+        if (active.length >= this.maxActiveHazards) return;
+
+        if (!this.nextSpawnAt) {
+            this.scheduleNext(timestamp);
+        }
         if (timestamp < this.nextSpawnAt) return;
 
-        const ctx = this.buildSpawnContext();
+        const ctx = this.buildSpawnContext(timestamp);
+
+        // SAFETY: falls Lane durch Lock oder Randbedingungen ungültig
+        if (!ctx.laneKey) {
+            this.scheduleNext(timestamp);
+            return;
+        }
+
         this.spawnRandom(ctx);
+
+        if (this.multiSpawnChance > 0 && Math.random() < this.multiSpawnChance) {
+            // zweite Lane wählen – darf gerne anders sein als die erste
+            const laneKey2 = this.pickLaneKey(timestamp);
+
+            // einfache Safety: nicht exakt gleiche Lane + Typ-Kombination erzwingen
+            if (laneKey2 && laneKey2 !== ctx.laneKey) {
+                const ctx2 = {
+                    ...ctx,
+                    laneKey: laneKey2,
+                    // leicht nach hinten versetzt, damit man noch reagieren kann
+                    x: ctx.x + 140,
+                };
+                this.spawnRandom(ctx2);
+            }
+        }
+
+        if (ctx.laneKey === 'LOW' || ctx.laneKey === 'MID') {
+            this.lastDangerLane = ctx.laneKey;
+            this.dangerLockUntil = timestamp + this.dangerLockMs;
+        }
+
+        this.lastLaneKey = ctx.laneKey;
+        this.lastSpawnAt = timestamp;
 
         this.scheduleNext(timestamp);
     }
 
-    buildSpawnContext() {
+    buildSpawnContext(now) {
         const camX = this.world.townLevelController?.renderCameraX ?? 0;
         const cw = this.canvas?.width ?? 1280;
 
-        const laneKey = this.pickLaneKey();
-        const y = this.computeLaneY(laneKey);
+        const laneKey = this.pickLaneKey(now);
 
-        const speedX = this.rand(this.speedMax, this.speedMin); // negatives
-        const x = camX + cw + 220;
+        const speedX = this.rand(this.speedMin, this.speedMax);
+        const x = camX + cw + this.getSpawnLeadPx(Math.abs(speedX), laneKey);
 
-        return { x, y, speedX, laneKey };
+        return { x, speedX, laneKey };
     }
 
     scheduleNext(now) {
@@ -74,47 +178,83 @@ export class StormHazardSystem {
         fn?.(ctx);
     }
 
-    pickLaneKey() {
-        // erstmal simple weights, später pro hazard unterscheiden:
-        const r = Math.random();
-        if (r < 0.45) return 'LOW';
-        if (r < 0.80) return 'MID';
-        return 'HIGH';
-    }
-
-    computeLaneY(laneKey) {
-        const c = this.world.character;
-        const hb = c?.getHitboxRect?.();
-        const ground = hb ? hb.bottom : (c.y + c.height);
-
-        switch (laneKey) {
-            case "LOW": return ground - 160;   // bodennah → muss springen
-            case "MID": return ground - 320;  // mittig → muss ducken
-            case "HIGH": return ground - 380;  // hoch → einfach laufen
-            default: return ground - 160;
+    /**
+     * Spawnt einen Hazard-Typ über das generische StormHazard-System.
+     * type: 'tumbleweed' | 'sandTornado' | 'featherSwirl' | 'eagle' | 'woodenPlank'
+     */
+    spawnHazard(type, { x, speedX, laneKey }) {
+        // Eagle nie LOW
+        if (type === 'eagle' && laneKey === 'LOW') {
+            return;
         }
+
+        // FeatherSwirl nie LOW
+        if (type === 'featherSwirl' && laneKey === 'LOW') {
+            return;
+        }
+
+        // Tumbleweed NUR LOW (Jump-Hazard)
+        if (type === 'tumbleweed' && laneKey !== 'LOW') {
+            return;
+        }
+
+        // Coat nur MID (duck) oder HIGH (safe), nie LOW (jump)
+        if (type === 'coat' && laneKey === 'LOW') {
+            return;
+        }
+
+        // LaneKey -> konkrete Lane
+        let lane = 'safe';
+        if (laneKey === 'LOW') lane = 'jump';
+        else if (laneKey === 'MID') lane = 'duck';
+
+        StormHazard.spawn(this.setup, type, { x, speedX, lane });
     }
-    spawnTumbleweed({ x, y, speedX, laneKey }) {
-        // laneMapping: LOW=jump, MID=duck, HIGH=safe (oder was du willst)
-        const lane =
-            laneKey === 'LOW' ? 'jump' :
-                laneKey === 'MID' ? 'duck' :
-                    'safe';
 
-        return TumbleweedHazard.spawn(this.setup, { x, y, speedX, lane });
+    pickLaneKey(now) {
+        const locked = now < (this.dangerLockUntil ?? 0);
+        const last = this.lastDangerLane;
+
+        const weights = this.laneWeights || { LOW: 0.45, MID: 0.35, HIGH: 0.20 };
+        const pLow = weights.LOW;
+        const pMidCum = pLow + weights.MID; // kumuliert (LOW + MID)
+
+        const roll = () => {
+            const r = Math.random();
+            if (r < pLow) return 'LOW';
+            if (r < pMidCum) return 'MID';
+            return 'HIGH';
+        };
+
+        if (locked && (last === 'LOW' || last === 'MID')) {
+            // keine direkt wechselnden "LOW -> MID" oder "MID -> LOW" Kombos
+            for (let i = 0; i < 6; i++) {
+                const k = roll();
+                if (k === 'HIGH') return 'HIGH';
+                if (last === 'LOW' && k === 'LOW') return 'LOW';
+                if (last === 'MID' && k === 'MID') return 'MID';
+            }
+            return 'HIGH';
+        }
+
+        return roll();
     }
 
-    spawnVulture({ x, y, speedX, laneKey }) {
-        // meistens MID/HIGH sinnvoll
-        const lane =
-            laneKey === 'LOW' ? 'duck' :
-                laneKey === 'MID' ? 'duck' :
-                    'safe';
+    // Lead abhängig von Lane (mehr Zeit für gefährliche Lanes)
+    getSpawnLeadPx(speedAbs, laneKey) {
+        let reactionMs = 520; // Basis
+        if (laneKey === 'LOW' || laneKey === 'MID') {
+            // mehr Reaktionszeit für echte Gefahren
+            reactionMs += 200;
+        }
 
-        return VultureHazard.spawn(this.setup, { x, y, speedX, lane });
+        const frames = reactionMs / (1000 / 60);
+        const lead = speedAbs * frames;
+        return Math.max(260, lead);
     }
 
-    rand(a, b) {
-        return a + Math.random() * (b - a);
+    // einfache Random-Hilfe, funktioniert auch mit "verkehrten" min/max
+    rand(min, max) {
+        return min + Math.random() * (max - min);
     }
 }

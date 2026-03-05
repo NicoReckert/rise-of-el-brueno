@@ -10,7 +10,7 @@
                                        "fps":  12
                                    }
                    },
-    "image":  "roll_sheet.webp",
+    "image":  "idle_sheet.webp",
     "frames":  10,
     "rows":  3
 }

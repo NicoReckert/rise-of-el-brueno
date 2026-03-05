@@ -257,7 +257,7 @@ export const townEvents =
 
         {
             type: "position",
-            area: { x: 3500, width: 100 },
+            area: { x: 4000, width: 100 },
             step: 1,
             action: (setup) => {
                 setup.world.townLevelController.questManager.advance(2)
@@ -284,7 +284,7 @@ export const townEvents =
 
         {
             type: "position",
-            area: { x: 4500, width: 100 },
+            area: { x: 5000, width: 100 },
             step: 3,
             action: (setup) => {
                 setup.world.townLevelController.questManager.advance(4)
@@ -305,50 +305,76 @@ export const townEvents =
             onEnd: (setup) => {
                 const ctrl = setup.world.townLevelController;
                 ctrl.setSandstorm(1.0);
-                setup.world.character.isWalkInStorm = true;
-                setup.world.character.speedX = 2; //2
+                // setup.world.character.isWalkInStorm = true;
+                setup.world.character.speedX = 5; //2
                 ctrl.questManager.advance(5);
             }
         },
 
         {
             type: "position",
-            area: { x: 5500, width: 100 },
+            area: { x: 6000, width: 100 },
             step: 5,
             action: (setup) => {
+                setup.world.townLevelController.stormHazards.enabled = true;
+                setup.world.audioManager.fadeOutAudio(setup.sounds.sadMomentMusic, 1000);
+                setup.sounds.stormHazardMusic.loop = true;
+                setup.world.audioManager.fadeInAudio(setup.sounds.stormHazardMusic, 2000, 0.8);
+                setup.world.townLevelController.questManager.advance(6)
+            }
+        },
+
+        {
+            type: "position",
+            area: { x: 10500, width: 100 },
+            step: 6,
+            action: (setup) => {
+                setup.world.townLevelController.stormHazards.setDifficulty('hard');
+                setup.world.audioManager.fadeOutAudio(setup.sounds.stormHazardMusic, 1000);
+                setup.sounds.finalStormHazardMusic.loop = true;
+                setup.world.audioManager.fadeInAudio(setup.sounds.finalStormHazardMusic, 1000, 0.8);
+            }
+        },
+
+        {
+            type: "position",
+            area: { x: 15000, width: 100 },
+            step: 6,
+            action: (setup) => {
+                setup.world.townLevelController.stormHazards.enabled = false;
                 setup.characters.tadeo.updateAnimationState('walk');
                 setup.world.character.isCollapse = true;
                 setup.world.character.isMovingLeft = false
                 setup.world.character.isMovingRight = false
                 setup.world.isKeysStopp = true;
                 setup.environment.nayeliSpirit.fadeIn(setup.world.timestamp, 2000);
-                setup.world.audioManager.fadeOutAudio(setup.sounds.sadMomentMusic, 1000);
+                setup.world.audioManager.fadeOutAudio(setup.sounds.stormHazardMusic, 1000);
                 setup.sounds.nayelisMusic.loop = true;
                 setup.world.audioManager.fadeInAudio(setup.sounds.nayelisMusic, 2000, 0.3);
                 setup.sounds.spiritAppearsSound.play();
                 setup.environment.nayeliSpirit.updateAnimationState('walk', 1000 / 10);
-                setup.world.townLevelController.questManager.advance(6)
-            }
-        },
-
-        {
-            type: "quest",
-            step: 6,
-            once: false,
-            action: (setup) => {
-                const nayeliSpirit = setup.environment.nayeliSpirit;
-                const arriveX = nayeliSpirit.moveToX(5550, { speed: 0.8 });
-                if (arriveX) {
-                    setup.environment.nayeliSpirit.updateAnimationState('idle', 1000 / 8);
-                    setup.sounds.nayelisSpiritSpeakSound.play();
-                    setup.world.townLevelController.questManager.advance(7);
-                }
+                setup.world.townLevelController.questManager.advance(7)
             }
         },
 
         {
             type: "quest",
             step: 7,
+            once: false,
+            action: (setup) => {
+                const nayeliSpirit = setup.environment.nayeliSpirit;
+                const arriveX = nayeliSpirit.moveToX(15050, { speed: 0.8 });
+                if (arriveX) {
+                    setup.environment.nayeliSpirit.updateAnimationState('idle', 1000 / 8);
+                    setup.sounds.nayelisSpiritSpeakSound.play();
+                    setup.world.townLevelController.questManager.advance(8);
+                }
+            }
+        },
+
+        {
+            type: "quest",
+            step: 8,
             action: (setup) => {
                 setup.speechBubblesNayeli[0].start(1000);
                 setup.world.townLevelController.eventManager.emitNow("bubbleNayeliReset_0");
@@ -361,7 +387,7 @@ export const townEvents =
             from: 0,
             to: 1500,
             manual: true,
-            step: 7,
+            step: 8,
             once: false,
             action: (setup) => {
                 setup.speechBubblesNayeli[0].render(
@@ -381,7 +407,7 @@ export const townEvents =
             from: 0,
             to: 2500,
             manual: true,
-            step: 7,
+            step: 8,
             once: false,
             action: (setup) => {
                 setup.speechBubblesNayeli[1].render(
@@ -401,7 +427,7 @@ export const townEvents =
             from: 0,
             to: 3000,
             manual: true,
-            step: 7,
+            step: 8,
             once: false,
             action: (setup) => {
                 setup.speechBubblesNayeli[2].render(
@@ -422,7 +448,7 @@ export const townEvents =
             from: 0,
             to: 2000,
             manual: true,
-            step: 7,
+            step: 8,
             once: false,
             action: (setup) => {
                 setup.speechBubblesNayeli[3].render(
@@ -442,7 +468,7 @@ export const townEvents =
             from: 0,
             to: 2500,
             manual: true,
-            step: 7,
+            step: 8,
             once: false,
             action: (setup) => {
                 setup.speechBubblesNayeli[4].render(
@@ -454,71 +480,69 @@ export const townEvents =
                 setup.environment.nayeliSpirit.updateAnimationState('blessing', 1000 / 6);
                 setup.sounds.spiritAppearsSound.play();
                 setup.environment.nayeliSpirit.fadeOut(setup.world.timestamp, 1600);
-                setup.world.townLevelController.questManager.advance(8);
+                setup.world.townLevelController.questManager.advance(9);
             }
         },
 
-
-
         {
             type: "position",
-            area: { x: 6500, width: 100 },
+            area: { x: 16000, width: 100 },
             action: (setup) => {
                 setup.townLevel.enemies.push(
-                    new Enemy('chickenMutatesSmall', setup.entityImages, 120, 120, 545, 7500, setup.allAudios, setup.world),
-                    new Enemy('chickenMutatesSmall', setup.entityImages, 120, 120, 545, 7600, setup.allAudios, setup.world),
-                    new Enemy('chickenMutatesBig', setup.entityImages, 160, 160, 505, 7700, setup.allAudios, setup.world),
+                    new Enemy('chickenMutatesSmall', setup.entityImages, 120, 120, 545, 17000, setup.allAudios, setup.world),
+                    new Enemy('chickenMutatesSmall', setup.entityImages, 120, 120, 545, 17100, setup.allAudios, setup.world),
+                    new Enemy('chickenMutatesBig', setup.entityImages, 160, 160, 505, 17200, setup.allAudios, setup.world),
                 );
             }
         },
 
         {
             type: "position",
-            area: { x: 7500, width: 100 },
+            area: { x: 17000, width: 100 },
             action: (setup) => {
                 setup.townLevel.enemies.push(
-                    new Enemy('chickenMutatesSmall', setup.entityImages, 120, 120, 545, 8500, setup.allAudios, setup.world),
-                    new Enemy('chickenMutatesSmall', setup.entityImages, 120, 120, 545, 8600, setup.allAudios, setup.world),
-                    new Enemy('chickenMutatesBig', setup.entityImages, 160, 160, 505, 8700, setup.allAudios, setup.world)
+                    new Enemy('chickenMutatesSmall', setup.entityImages, 120, 120, 545, 18000, setup.allAudios, setup.world),
+                    new Enemy('chickenMutatesSmall', setup.entityImages, 120, 120, 545, 18100, setup.allAudios, setup.world),
+                    new Enemy('chickenMutatesBig', setup.entityImages, 160, 160, 505, 18200, setup.allAudios, setup.world)
                 );
             }
         },
 
         {
             type: "position",
-            area: { x: 8500, width: 100 },
+            area: { x: 18000, width: 100 },
             action: (setup) => {
                 setup.townLevel.enemies.push(
-                    new Enemy('chickenMutatesSmall', setup.entityImages, 120, 120, 545, 9500, setup.allAudios, setup.world),
-                    new Enemy('chickenMutatesSmall', setup.entityImages, 120, 120, 545, 9600, setup.allAudios, setup.world),
-                    new Enemy('chickenMutatesBig', setup.entityImages, 160, 160, 505, 9700, setup.allAudios, setup.world)
+                    new Enemy('chickenMutatesSmall', setup.entityImages, 120, 120, 545, 19000, setup.allAudios, setup.world),
+                    new Enemy('chickenMutatesSmall', setup.entityImages, 120, 120, 545, 19100, setup.allAudios, setup.world),
+                    new Enemy('chickenMutatesBig', setup.entityImages, 160, 160, 505, 19200, setup.allAudios, setup.world)
                 );
             }
         },
 
         {
             type: "position",
-            area: { x: 9500, width: 100 },
+            area: { x: 19000, width: 100 },
             action: (setup) => {
                 setup.townLevel.enemies.push(
-                    new Enemy('chickenMutatesSmall', setup.entityImages, 120, 120, 545, 10500, setup.allAudios, setup.world),
-                    new Enemy('chickenMutatesSmall', setup.entityImages, 120, 120, 545, 10600, setup.allAudios, setup.world),
-                    new Enemy('chickenMutatesBig', setup.entityImages, 160, 160, 505, 10700, setup.allAudios, setup.world),
+                    new Enemy('chickenMutatesSmall', setup.entityImages, 120, 120, 545, 20000, setup.allAudios, setup.world),
+                    new Enemy('chickenMutatesSmall', setup.entityImages, 120, 120, 545, 20100, setup.allAudios, setup.world),
+                    new Enemy('chickenMutatesBig', setup.entityImages, 160, 160, 505, 20200, setup.allAudios, setup.world),
                 );
             }
         },
 
         {
             type: "quest",
-            step: 8,
+            step: 9,
             once: false,
             action: (setup) => {
                 const tadeo = setup.characters.tadeo;
-                const arriveX = tadeo.moveToX(5520, { speed: 5 });
+                const arriveX = tadeo.moveToX(15020, { speed: 5 });
                 if (arriveX) {
                     setup.characters.tadeo.updateAnimationState('idle');
                     // setup.speechBubbles[0].start(4500);
-                    setup.world.townLevelController.questManager.advance(9);
+                    setup.world.townLevelController.questManager.advance(10);
                 }
             }
         },
@@ -526,7 +550,7 @@ export const townEvents =
         {
             type: "time",
             delay: 2000,
-            step: 8,
+            step: 9,
             action: (setup) => {
                 setup.world.audioManager.fadeOutAudio(setup.sounds.nayelisMusic, 1000);
                 setup.world.audioManager.fadeInAudio(setup.sounds.tadeosMusic, 2000, 0.6);
@@ -577,7 +601,7 @@ export const townEvents =
         {
             type: "time",
             delay: 3000,
-            step: 9,
+            step: 10,
             action: (setup) => {
                 // setup.sounds.tadeoHoldStoneMusic.currentTime = 35;
                 setup.sounds.tadeoHoldStoneMusic.loop = true;
@@ -599,7 +623,7 @@ export const townEvents =
             from: 0,
             to: 1500,
             manual: true,
-            step: 9,
+            step: 10,
             once: false,
             action: (setup) => {
                 setup.speechBubblesTadeo[0].render(
@@ -619,7 +643,7 @@ export const townEvents =
             from: 0,
             to: 1100,
             manual: true,
-            step: 9,
+            step: 10,
             once: false,
             action: (setup) => {
                 setup.speechBubblesTadeo[1].render(
@@ -639,7 +663,7 @@ export const townEvents =
             from: 0,
             to: 2000,
             manual: true,
-            step: 9,
+            step: 10,
             once: false,
             action: (setup) => {
                 setup.speechBubblesTadeo[2].render(
@@ -665,7 +689,7 @@ export const townEvents =
         {
             type: "time",
             delay: 13000,
-            step: 9,
+            step: 10,
             action: (setup) => {
                 setup.world.character.isCollapse = false;
                 setup.world.isKeysStopp = false;
@@ -675,7 +699,7 @@ export const townEvents =
                 setup.characters.tadeo.updateAnimationState('walkWithStone');
                 // setup.characters.tadeo.speedX = 0.5;
                 setup.characters.tadeo.isFlipped = false;
-                setup.world.townLevelController.questManager.advance(10);
+                setup.world.townLevelController.questManager.advance(11);
             }
         },
 
@@ -705,11 +729,11 @@ export const townEvents =
             objectA: 'character',
             objectB: 'tadeo',
             toleranceB: { x: -50, width: -50 },
-            step: 10,
+            step: 11,
             once: false,
             action: (setup) => {
                 const tadeo = setup.characters.tadeo;
-                const arriveX = tadeo.moveToX(10275, { speed: 0.8 });
+                const arriveX = tadeo.moveToX(17775, { speed: 0.8 });
                 if (setup.isTadeoAfraid || setup.isTadeoPanic) {
                     tadeo.isMovingRight = false;
                     return;
@@ -729,7 +753,7 @@ export const townEvents =
             objectA: 'tadeo',
             objectB: 'enemies',
             toleranceA: { x: -300, width: -300 },
-            step: 10,
+            step: 11,
             once: false,
             action: (setup, tadeo) => {
                 const wasAfraid = !!setup.isTadeoAfraid;
@@ -754,7 +778,7 @@ export const townEvents =
             resetOn: "afraidReset",
             delay: 1500,
             manual: true,
-            step: 10,
+            step: 11,
             once: true,
             action: (setup) => {
                 setup.isTadeoAfraid = false;
@@ -767,7 +791,7 @@ export const townEvents =
             objectB: 'enemies',
             toleranceA: { x: -300, width: -300 },
             once: false,
-            step: 10,
+            step: 11,
             cooldown: 10000,
             condition: (setup) => {
                 const now = performance.now();
@@ -795,7 +819,7 @@ export const townEvents =
             once: false,
             from: 0,
             to: 2600,
-            step: 10,
+            step: 11,
             action: (setup) => {
                 const i = setup._tadeoAfraidIdx ?? 0;
                 setup.speechBubblesTadeoAfraid[i].render(
@@ -812,7 +836,7 @@ export const townEvents =
             objectA: 'tadeo',
             objectB: 'projectiles',
             toleranceA: { x: -300, width: -300 },
-            step: 10,
+            step: 11,
             once: false,
             action: (setup, tadeo) => {
                 setup.isTadeoPanic = true;
@@ -830,7 +854,7 @@ export const townEvents =
             objectA: 'tadeo',
             objectB: 'enemies',
             toleranceA: { x: -60, width: -60 },
-            step: 10,
+            step: 11,
             once: false,
             action: (setup, tadeo) => {
                 setup.isTadeoPanic = true;
@@ -848,7 +872,7 @@ export const townEvents =
             resetOn: "panicReset",
             delay: 1500,
             manual: true,
-            step: 10,
+            step: 11,
             once: true,
             action: (setup) => {
                 setup.isTadeoPanic = false;
@@ -864,7 +888,7 @@ export const townEvents =
             objectB: 'projectiles',
             toleranceA: { x: -300, width: -300 },
             once: false,
-            step: 10,
+            step: 11,
             cooldown: 7000,
             condition: (setup) => {
                 const now = performance.now();
@@ -891,7 +915,7 @@ export const townEvents =
             objectB: 'enemies',
             toleranceA: { x: -60, width: -60 },
             once: false,
-            step: 10,
+            step: 11,
             cooldown: 7000,
             condition: (setup) => {
                 const now = performance.now();
@@ -919,7 +943,7 @@ export const townEvents =
             once: false,
             from: 0,
             to: 2000,
-            step: 10,
+            step: 11,
             action: (setup) => {
                 const i = setup._tadeoPanicProjIdx ?? 0;
                 setup.speechBubblesTadeoPanic[i].render(
@@ -937,7 +961,7 @@ export const townEvents =
             once: false,
             from: 0,
             to: 2000,
-            step: 10,
+            step: 11,
             action: (setup) => {
                 const i = setup._tadeoPanicNearIdx ?? 0;
                 setup.speechBubblesTadeoPanic[i].render(
@@ -954,7 +978,7 @@ export const townEvents =
             objectA: "tadeo",
             objectB: "enemies",
             toleranceA: { x: -600, width: -600 },
-            step: 10,
+            step: 11,
             once: false,
             cooldown: 1000, // klein lassen, weil wir mit Flag "pro empty phase" begrenzen
             condition: (setup) => {
@@ -1037,7 +1061,7 @@ export const townEvents =
         {
             name: "tadeo_help_reset_empty_phase",
             type: "quest",
-            step: 10,
+            step: 11,
             once: false,
             action: (setup) => {
                 const c = setup.world.character;
@@ -1056,7 +1080,7 @@ export const townEvents =
             once: false,
             from: 0,
             to: 2800,
-            step: 10,
+            step: 11,
             action: (setup) => {
                 const now = performance.now();
                 if (now > (setup.tadeoHelpUntil ?? 0)) return;
@@ -1071,7 +1095,7 @@ export const townEvents =
 
         {
             type: 'quest',
-            step: 10,
+            step: 11,
             once: false,
             action: (setup) => {
                 const char = setup.world.character;

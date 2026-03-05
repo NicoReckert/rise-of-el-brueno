@@ -40,7 +40,7 @@ export class TownLevelSetup {
             'tadeo',
             150,
             150,
-            8000, //1500
+            17500, //1500
             515
         );
         const sollita = new AnimatedEntity(
@@ -84,6 +84,8 @@ export class TownLevelSetup {
             spiritAppearsSound: this.allAudios.spiritAppearsSound,
             nayelisSpiritSpeakSound_B: this.allAudios.nayelisSpiritSpeakSound_B,
             tadeosSpeakSound: this.allAudios.tadeosSpeakSound,
+            stormHazardMusic: this.allAudios.stormHazardMusic,
+            finalStormHazardMusic: this.allAudios.finalStormHazardMusic,
         };
         this.environment = {
             rockyDesertPedestal: new AnimatedEntity(this.entityImages, 'rockyDesertPedestal', 400, 400, 23300, 300),
@@ -91,7 +93,7 @@ export class TownLevelSetup {
             juanitoSpirit: new AnimatedEntity(this.entityImages, 'juanitoSpirit', 150, 150, 23455, 280),
             pollitoSpirit: new AnimatedEntity(this.entityImages, 'pollitoSpirit', 120, 120, 23450, 350),
             lolaSpirit: new AnimatedEntity(this.entityImages, 'lolaSpirit', 200, 200, 23295, 330),
-            nayeliSpirit: new AnimatedEntity(this.entityImages, 'nayeliSpirit', 180, 180, 6000, 485),
+            nayeliSpirit: new AnimatedEntity(this.entityImages, 'nayeliSpirit', 180, 180, 15500, 485),
             spiritEssence1: new AnimatedEntity(this.entityImages, "spiritEssence", 90, 90, 0, 0),
             spiritEssence2: new AnimatedEntity(this.entityImages, "spiritEssence", 90, 90, 0, 0),
             spiritEssence3: new AnimatedEntity(this.entityImages, "spiritEssence", 90, 90, 0, 0),

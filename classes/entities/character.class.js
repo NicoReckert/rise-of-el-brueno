@@ -339,7 +339,7 @@ export class Character extends MovableObject {
         return {
             width: 130,
             height: 300,
-            offset: { top: 130, left: 28, right: 40, bottom: 15 }
+            offset: { top: 150, left: 28, right: 40, bottom: 15 }
         };
     }
 

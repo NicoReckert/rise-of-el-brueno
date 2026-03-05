@@ -110,5 +110,7 @@ export const otherLevelAudioManifestLazy = {
     vo_tadeo_panic_04: './assets/audio/tadeo_panic_04.mp3',
     vo_tadeo_help_01: './assets/audio/tadeo_help_01.mp3',
     vo_tadeo_help_02: './assets/audio/tadeo_help_02.mp3',
-    vo_tadeo_help_03: './assets/audio/tadeo_help_03.mp3'
+    vo_tadeo_help_03: './assets/audio/tadeo_help_03.mp3',
+    stormHazardMusic: './assets/audio/storm-hazard-music.mp3',
+    finalStormHazardMusic: './assets/audio/final-storm-hazard-music.mp3'
 }

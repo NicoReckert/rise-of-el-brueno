@@ -1,9 +1,15 @@
+// classes/effects/storm-hazard.class.js
 import { MovableObject } from '../systems/movable-object.class.js';
+import { ImpactEffect } from './impact-effect.class.js';
+import { HAZARD_DEFS } from '../../config/hazard-config.js';
 
 export class StormHazard extends MovableObject {
     constructor(setup, cfg = {}) {
         super();
         this.setup = setup;
+
+        this.type = cfg.type ?? 'hazard';
+        this.def = cfg.def ?? null;
 
         this.kind = cfg.kind ?? 'hazard';
         this.anim = cfg.anim;
@@ -36,31 +42,88 @@ export class StormHazard extends MovableObject {
         this.markedForRemoval = false;
     }
 
+    // Zentrale Spawn-Funktion für ALLE Hazard-Typen
+    static spawn(setup, type, { x, y, lane = 'safe', speedX, seed } = {}) {
+        const def = HAZARD_DEFS[type];
+        if (!def) {
+            console.warn('[StormHazard] Unknown type:', type);
+            return null;
+        }
+
+        if (def.allowedLanes && !def.allowedLanes.includes(lane)) {
+            // auf definierte Standard-Lane oder erste erlaubte Lane zurückfallen
+            lane = def.defaultLane ?? def.allowedLanes[0] ?? 'safe';
+        }
+
+        const world = setup.world;
+        const camX = world.townLevelController?.renderCameraX ?? 0;
+        const canvasW = world.canvas?.width ?? 1280;
+
+        const size = def.size;
+        const anim = def.getAnim(setup.entityImages);
+        const finalSpeedX = speedX ?? (def.laneSpeed ? def.laneSpeed(lane) : -10);
+        const finalX = x ?? (camX + canvasW + (def.spawnOffsetX ?? 240));
+        const finalY = y ?? (def.laneY ? def.laneY(setup, lane, size) : (world.character?.y ?? 0));
+
+        let lifeMs = def.timing?.lifeMs ?? 4000;
+        if (typeof def.lifeFromTravel === 'function') {
+            lifeMs = def.lifeFromTravel({ canvasW, speedX: finalSpeedX });
+        }
+
+        const telegraphMs = def.timing?.telegraphMs ?? 0;
+        const activeMs = def.timing?.activeMs ?? 9999;
+
+        const hazard = new StormHazard(setup, {
+            type,
+            def,
+            kind: def.kind ?? type,
+            anim,
+            animName: 'idle',
+            fps: def.fps ?? 12,
+
+            x: finalX,
+            y: finalY,
+            width: size.width,
+            height: size.height,
+            speedX: finalSpeedX,
+
+            telegraphMs,
+            activeMs,
+            lifeMs,
+
+            offset: { ...(def.offset ?? {}) },
+
+            seed,
+        });
+
+        setup.effects.push(hazard);
+        return hazard;
+    }
+
     updateState(timestamp) {
         if (this.markedForRemoval) return;
+
         this.updateDeltaTime(timestamp);
 
-        // movement
         const dt60 = (this.deltaTime ?? 1 / 60) * 60;
         this.x += (this.speedX ?? 0) * dt60;
 
-        // lifetime
         if (timestamp >= this.dieAt) {
             this.markedForRemoval = true;
             return;
         }
 
-        // animation
         this.updateAnimation(timestamp);
 
-        // collision only in active window
         if (timestamp < this.activeFrom || timestamp > this.activeUntil) return;
 
         const char = this.setup?.world?.character;
         if (!char) return;
 
-        // duck/jump logic kannst du hier optional berücksichtigen (z.B. je nach lane)
-        if (this.isColliding(char, { x: 0, y: 0, width: 0, height: 0 }, { x: 0, y: 0, width: 0, height: 0 })) {
+        if (this.isColliding(char,
+            { x: 0, y: 0, width: 0, height: 0 },
+            { x: 0, y: 0, width: 0, height: 0 }
+        )) {
             this.onHitCharacter(char, this.setup, timestamp);
         }
     }
@@ -73,14 +136,42 @@ export class StormHazard extends MovableObject {
 
         this.updateAnimationFromSourceGeneric(this.anim, {
             isOneShot: false,
-            allowLoop: true
+            allowLoop: true,
         });
 
         this.lastFrameTime = timestamp;
     }
 
-    // default: einfach weg
     onHitCharacter(character, setup, now) {
+        const def = this.def;
+        const hit = def?.hit;
+        if (!hit) {
+            this.markedForRemoval = true;
+            return;
+        }
+
+        const hurtMs = hit.hurtMs ?? 300;
+        character.hurtUntil = Math.max(character.hurtUntil ?? 0, now + hurtMs);
+
+        const knock = hit.knockback ?? 0;
+        character.knockbackVelocityX = (this.speedX < 0 ? -1 : 1) * knock;
+
+        const impactAnim = hit.getImpactAnim?.(setup.entityImages);
+        if (impactAnim) {
+            const cx = (this.getRenderX?.() ?? this.x) + this.width * 0.5;
+            const factorY = hit.impactOffsetFactorY ?? 0.5;
+            const cy = this.y + this.height * factorY;
+
+            const size = hit.impactSize ?? { width: 220, height: 220 };
+
+            setup.effects.push(new ImpactEffect(
+                impactAnim,
+                cx - size.width / 2,
+                cy - size.height / 2,
+                { fps: hit.impactFps ?? 18, width: size.width, height: size.height }
+            ));
+        }
+
         this.markedForRemoval = true;
     }
 }

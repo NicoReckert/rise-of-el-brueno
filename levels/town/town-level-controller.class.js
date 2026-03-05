@@ -149,6 +149,7 @@ export class TownLevelController {
         this.ctx.save();
         this.ctx.translate(-this.renderCameraX, 0);
         // this.addToWorld(this.setup.environment.fire);
+
         this.addToWorld(this.setup.environment.houseDestroyed);
         this.addToWorld(this.setup.environment.stableDestroyed);
         this.addToWorld(this.setup.environment.millDestroyed);
