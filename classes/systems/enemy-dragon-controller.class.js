@@ -20,9 +20,9 @@ export class EnemyDragonController {
         this.enemy.isMovingLeft = false;
         this.enemy.isMovingRight = false;
         if (this.enemy.isDead || this.enemy.isHurt) return;
-        const distInfo = this.getDragonDistanceInfo(char);
-        this.resetDragonApproachBase();
-        this.resetDragonIfTooFar(distInfo.distX);
+        const distInfo = this.enemy.dragonAttackCtrl.getDragonDistanceInfo(char);
+        this.enemy.dragonAttackCtrl.resetDragonApproachBase();
+        this.enemy.dragonAttackCtrl.resetDragonIfTooFar(distInfo.distX);
         this.updateDragonStateMachine(timestamp, char, distInfo);
     }
 
@@ -39,7 +39,7 @@ export class EnemyDragonController {
         else if (s === 'approach') this.handleDragonApproach(timestamp, char, distInfo);
         else if (s === 'dive_start') this.handleDragonDiveStart(timestamp, char);
         else if (s === 'dive_fast') this.handleDragonDiveFast();
-        else if (s === 'retreat') this.dragonRetreat();
+        else if (s === 'retreat') this.enemy.dragonMovementCtrl.dragonRetreat();
         else this.updateDragonStateDiveAndExit(s, timestamp, char);
     }
 
@@ -51,9 +51,9 @@ export class EnemyDragonController {
     * @returns {void}
     */
     updateDragonStateDiveAndExit(state, timestamp, char) {
-        if (state === 'dive_up_shallow') this.handleDragonDiveUpAngle(30);
-        else if (state === 'dive_up_medium') this.handleDragonDiveUpAngle(50);
-        else if (state === 'dive_up_steep') this.handleDragonDiveUpAngle(70);
+        if (state === 'dive_up_shallow') this.enemy.dragonMovementCtrl.handleDragonDiveUpAngle(30);
+        else if (state === 'dive_up_medium') this.enemy.dragonMovementCtrl.handleDragonDiveUpAngle(50);
+        else if (state === 'dive_up_steep') this.enemy.dragonMovementCtrl.handleDragonDiveUpAngle(70);
         else if (state === 'air_exit') this.handleDragonAirExit(timestamp);
         else if (state === 'approach_low') this.handleDragonApproachLow(timestamp, char);
     }
@@ -65,7 +65,7 @@ export class EnemyDragonController {
     * @returns {void}
     */
     handleDragonIdle(char, distX) {
-        this.dragonIdleFollow(char, distX);
+        this.enemy.dragonMovementCtrl.dragonIdleFollow(char);
         if (distX > this.enemy.approachDistance) return;
         this.enemy.airState = 'approach';
         this.enemy.approachBaseY = null;
@@ -79,20 +79,19 @@ export class EnemyDragonController {
     * @returns {void}
     */
     handleDragonApproach(timestamp, char, distInfo) {
-        this.dragonApproach(char);
+        this.enemy.dragonMovementCtrl.dragonApproach(char);
         if (distInfo.distX > this.enemy.attackDistance) return;
-        if (!this.canDragonAttack(timestamp)) return;
-        this.startDragonDiveSetup(timestamp, char);
+        if (!this.enemy.dragonAttackCtrl.canDragonAttack(timestamp)) return;
+        this.enemy.dragonAttackCtrl.startDragonDiveSetup(timestamp, char);
     }
 
     /**
     * Handles the dragon dive start phase.
     * @param {number} timestamp Frame timestamp.
-    * @param {object} char Character object.
     * @returns {void}
     */
-    handleDragonDiveStart(timestamp, char) {
-        this.dragonDive(char, timestamp);
+    handleDragonDiveStart(timestamp) {
+        this.enemy.dragonMovementCtrl.dragonDive();
         const elapsed = timestamp - this.enemy.diveStartTime;
         if (elapsed < this.enemy.diveStartDuration) return;
         this.enemy.airState = 'dive_fast';
@@ -109,8 +108,8 @@ export class EnemyDragonController {
         const dy = this.enemy.diveTargetY - eBox.cy;
         const dist = Math.hypot(dx, dy) || 1;
         const step = this.enemy.diveSpeed * dt;
-        if (dist <= step) this.finishDragonDiveFast(dx, dy, step, dist);
-        else this.stepDragonDiveFast(dx, dy, dist, step);
+        if (dist <= step) this.enemy.dragonMovementCtrl.finishDragonDiveFast(dx, dy, step, dist);
+        else this.enemy.dragonMovementCtrl.stepDragonDiveFast(dx, dy, dist, step);
     }
 
     /**
@@ -137,8 +136,10 @@ export class EnemyDragonController {
         const dt = this.enemy.deltaTime ?? 1 / 60;
         if (this.enemy.planeY != null) this.enemy.y = this.enemy.planeY;
         this.enemy.x += this.enemy.entryDir * this.enemy.lowApproachSpeed * dt;
-        const info = this.getDragonApproachLowInfo(char);
-        if (this.shouldDragonBite(timestamp, info)) this.startDragonBite(timestamp, char);
+        const info = this.enemy.dragonAttackCtrl.getDragonApproachLowInfo(char);
+        if (this.enemy.dragonAttackCtrl.shouldDragonBite(timestamp, info)) {
+            this.enemy.dragonAttackCtrl.startDragonBite(timestamp, char);
+        }
         this.handleDragonPostDiveTransition(char, info);
     }
 
@@ -155,7 +156,9 @@ export class EnemyDragonController {
             ? eBox.cx >= this.enemy.postDiveX
             : eBox.cx <= this.enemy.postDiveX;
         if (!passedPost || this.enemy.isAttack) return;
-        const angle = this.enemy.pendingDiveUpAngle || this.chooseDiveUpAngle(char);
+        const angle =
+            this.enemy.pendingDiveUpAngle ||
+            this.enemy.dragonAttackCtrl.chooseDiveUpAngle(char);
         this.enemy.pendingDiveUpAngle = null;
         this.enemy.airState = `dive_up_${angle}`;
     }

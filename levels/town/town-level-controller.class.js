@@ -238,9 +238,7 @@ export class TownLevelController {
             .forEach(c => c.updateState(timestamp));
 
         this.setup.townLevel.enemies.forEach(enemy => {
-            enemy.updateState(timestamp, this.setup);
-            enemy.updateAnimation(timestamp);
-            // enemy.applyGravity3(timestamp);
+            enemy.updateState(timestamp);
         });
     }
 

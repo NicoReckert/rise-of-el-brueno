@@ -18,7 +18,7 @@ export class EnemyDragonMovementController {
     dragonApproach(char) {
         const { pBox, eBox } = this.getDragonBoxes(char);
         const targetX = pBox.cx - (eBox.right - eBox.left) * 0.5;
-        this.enemy.moveToX(targetX, {
+        this.enemy.movementCtrl.moveToX(targetX, {
             speed: this.enemy.flySpeed,
             snap: false,
             faceTarget: !this.enemy.lockDirection,
@@ -82,7 +82,7 @@ export class EnemyDragonMovementController {
         const dx = pBox.cx - eBox.cx;
         if (Math.abs(dx) <= desiredDistX) return;
         const targetX = pBox.cx - (eBox.right - eBox.left) * 0.5;
-        this.enemy.moveToX(targetX, {
+        this.enemy.movementCtrl.moveToX(targetX, {
             speed: this.enemy.flySpeed * 0.5,
             snap: false,
             faceTarget: !this.enemy.lockDirection,

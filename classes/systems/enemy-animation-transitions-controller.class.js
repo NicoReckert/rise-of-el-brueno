@@ -91,6 +91,7 @@ export class EnemyAnimationTransitionsController {
     handleAnimationEnd(anim, frameCount, timestamp) {
         this.handleHurtAnimationEnd(anim, frameCount);
         this.handleDragonImpactAnimationEnd(anim, frameCount, timestamp);
+        this.handleDragonAttackAnimationEnd(anim, frameCount);
     }
 
     /**
@@ -191,5 +192,38 @@ export class EnemyAnimationTransitionsController {
         this.enemy.frameIndex = 0;
         this.enemy.sheetIndex = 0;
         this.enemy.animationFinished = false;
+    }
+
+    /**
+    * Handles the end of the dragon attack animation.
+    * @param {*} anim Animation source.
+    * @param {number} frameCount Number of animation frames.
+    * @returns {void}
+    */
+    handleDragonAttackAnimationEnd(anim, frameCount) {
+        if (this.enemy.currentEnemy !== 'dragonSmall') return;
+        if (this.enemy.currentAnimation !== 'attack') return;
+        if (!this.enemy.isAttack) return;
+        if (anim?.type === 'sheetSequence') {
+            if (!this.enemy.animationFinished) return;
+            this.finishDragonAttackAnimation();
+            return;
+        }
+        if (!frameCount) return;
+        if (this.enemy.frameIndex < frameCount) return;
+        this.finishDragonAttackAnimation();
+    }
+
+    /**
+    * Finishes the dragon attack animation.
+    * @returns {void}
+    */
+    finishDragonAttackAnimation() {
+        this.enemy.attackHitbox.active = false;
+        this.enemy.isAttack = false;
+        this.enemy.frameIndex = 0;
+        this.enemy.sheetIndex = 0;
+        this.enemy.animationFinished = false;
+        this.enemy.hasHitPlayerThisAttack = false;
     }
 }

@@ -1325,7 +1325,7 @@ export const townEvents =
                     if (enemy.isDead || enemy.isRemoved) return;
 
                     if (char.isCollidingBeforeWithAttackHitbox(enemy, 25, 0, char.attackHitbox)) {
-                        const hit = enemy.receiveHit(setup.world.timestamp, {
+                        const hit = enemy.combatCtrl.receiveHit(setup.world.timestamp, {
                             dmg: 1,
                             attackerFlipped: char.isFlipped,
                             knockX: 12,

@@ -1,4 +1,4 @@
-import { Projectile } from './projectile.class.js';
+import { Projectile } from "../entities/projectile.class.js";
 
 /**
 * Controls combat behavior for an enemy.
@@ -174,7 +174,7 @@ export class EnemyCombatController {
     */
     handleHurtHit(onHurtSound) {
         this.enemy.isHurt = true;
-        this.enemy.setAnimation('hurt');
+        this.enemy.animCtrl.setAnimation('hurt');
         this.enemy.frameIndex = 0;
         this.enemy.lastFrameTime = 0;
         onHurtSound?.();

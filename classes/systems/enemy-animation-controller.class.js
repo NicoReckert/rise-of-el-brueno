@@ -50,7 +50,7 @@ export class EnemyAnimationController {
         const isDragonSmall = this.enemy.currentEnemy === 'dragonSmall';
         if (this.enemy.isDead) {
             if (isDragonSmall) this.handleDragonDeathAnimation();
-            else this.playDeathAnimation();
+            else this.enemy.animTransitionsCtrl.playDeathAnimation();
             return;
         }
         if (isDragonSmall) this.handleDragonAnimation();
@@ -149,8 +149,8 @@ export class EnemyAnimationController {
             anim,
             this.enemy.currentAnimation
         );
-        this.handleAttackLogic(prevFrame, frameCount);
-        this.handleAnimationEnd(anim, frameCount, timestamp);
+        this.enemy.animAttackCtrl.handleAttackLogic(prevFrame, frameCount);
+        this.enemy.animTransitionsCtrl.handleAnimationEnd(anim, frameCount, timestamp);
         this.enemy.lastFrameTime = timestamp;
     }
 

@@ -305,7 +305,6 @@ export class EnemyMovementController {
     updateDeadState(timestamp) {
         if (!this.enemy.isDead) return;
         this.updateDragonSmallDeathFall();
-        this.enemy.animCtrl.handleAnimation();
         if (this.enemy.removeAt && timestamp >= this.enemy.removeAt) {
             this.enemy.isRemoved = true;
         }

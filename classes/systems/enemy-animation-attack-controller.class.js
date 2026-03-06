@@ -71,7 +71,7 @@ export class EnemyAnimationAttackController {
         const e = this.enemy;
         const audio = e.allAudios.fireballShotSound.cloneNode();
         audio.play();
-        e.shootProjectile("fireball", e.world.character);
+        e.combatCtrl.shootProjectile("fireball");
         e.hasFiredThisAttack = true;
     }
 
@@ -106,18 +106,12 @@ export class EnemyAnimationAttackController {
     /**
     * Handles dragon attack logic during the animation.
     * @param {number} prevFrame Previous frame index.
-    * @param {number} frameCount Number of animation frames.
     * @returns {void}
     */
-    handleDragonAttack(prevFrame, frameCount) {
+    handleDragonAttack(prevFrame) {
         if (this.enemy.currentAnimation !== 'attack') return;
         if (this.enemy.currentEnemy !== 'dragonSmall') return;
         const biteFrame = 1;
         this.enemy.attackHitbox.active = prevFrame === biteFrame;
-        if (this.enemy.frameIndex < frameCount) return;
-        this.enemy.attackHitbox.active = false;
-        this.enemy.isAttack = false;
-        this.enemy.frameIndex = 0;
-        this.enemy.hasHitPlayerThisAttack = false;
     }
 }

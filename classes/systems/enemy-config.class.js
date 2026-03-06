@@ -7,15 +7,23 @@ export class EnemyConfig {
     * @param {object} enemy Enemy instance.
     * @param {string} currentEnemy Enemy identifier.
     * @param {object} entityImages Image collection.
+    * @param {number} [width=120] Enemy width.
+    * @param {number} [height=120] Enemy height.
     * @param {?number} [x=null] Horizontal position.
     * @param {number} [y=545] Vertical position.
+    * @param {object} allAudios Audio collection.
+    * @param {object} world World reference.
     */
-    constructor(enemy, currentEnemy, entityImages, x = null, y = 545) {
+    constructor(enemy, currentEnemy, entityImages, width = 120, height = 120, x = null, y = 545, allAudios, world) {
         this.enemy = enemy;
         this.currentEnemy = currentEnemy;
         this.entityImages = entityImages;
+        this.width = width;
+        this.height = height;
         this.x = x;
         this.y = y;
+        this.allAudios = allAudios;
+        this.world = world;
     }
 
     /**
@@ -64,7 +72,7 @@ export class EnemyConfig {
     * @returns {void}
     */
     initAnimationState() {
-        this.enemy.setAnimation('walk');
+        this.enemy.animCtrl.setAnimation('walk');
         this.enemy.lastFrameTime = 0;
         this.enemy.sheetIndex = 0;
         this.enemy.animationFinished = false;
@@ -200,7 +208,7 @@ export class EnemyConfig {
         if (isSmallDragon) {
             return this.getSmallDragonHitbox();
         }
-        return this.getDefaulHitbox();
+        return this.getDefaultHitbox();
     }
 
     /**
