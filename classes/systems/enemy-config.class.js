@@ -1,127 +1,296 @@
+/**
+ * Configuration object for an enemy instance.
+ */
 export class EnemyConfig {
-    constructor() {
-        this.lastFrameTime = 0;
-        this.sheetIndex = 0;
-        this.animationFinished = false;
-        this.frameInterval = 1000 / 8;
-        this.frameIndex = 0;
-        this.isMovingLeft = true;
-        this.isDead = false;
-        this.isHurt = false;
-        this.isAttack = false;
-        this.health = 3;
-        this.speedX = 0.6;
-        this.knockbackActive = false;
-        this.acceleration = 1.5;
-        this.spawnY = (this.currentEnemy === 'dragonSmall') ? 200 : y;
-        this.attackOnCooldown = false;
-        this.attackCooldownMs = 900;
-        this.lastAttackTime = 0;
-        this.meleeRange = 64
-        this.rangedRange = 320;
-        this.hurtUntil = 0;
-        this.removeAt = 0;
-        this.isRemoved = false;
-        this.knockFriction = 0.85;
-        this.knockStopThreshold = 0.5;
-        this.hasHitPlayerThisAttack = false;
-
-
-        this.attackHitbox = currentEnemy !== 'dragonSmall'
-            ? {
-                top: 45,
-                left: 20,
-                right: 120,
-                bottom: 45,
-                active: false
-            }
-            :
-            this.attackHitbox = {
-                top: 68,
-                left: 5,
-                right: 135,
-                bottom: 52,
-                active: false
-            };
-
-
-
-        //dragon
-        this.airState = 'idle';
-        this.attackDistance = 220;
-        this.approachDistance = 500;
-        this.retreatHeight = 140;
-        this.flySpeed = 60;
-        this.diveSpeed = 180;
-        this.diveStartTime = 0;
-        this.diveStartDuration = 250;
-        this.diveUpAngle = null;
-        this.exitDir = 1;
-        this.lockDirection = false;
-        this.approachBaseY = null;
-        this.planeY = null;
-        this.preDiveX = null;
-        this.postDiveX = null;
-        this.hasAttackedThisDive = false;
-        this.lowApproachSpeed = this.flySpeed * 2.5;
-        this.deathPhase = null;
-        this.deathFallSpeed = 350;
-        this.deathGroundY = 525;
-        this.hasBeenHitThisDive = false;
-
+    /**
+    * Creates a new instance.
+    * @param {object} enemy Enemy instance.
+    * @param {string} currentEnemy Enemy identifier.
+    * @param {object} entityImages Image collection.
+    * @param {?number} [x=null] Horizontal position.
+    * @param {number} [y=545] Vertical position.
+    */
+    constructor(enemy, currentEnemy, entityImages, x = null, y = 545) {
+        this.enemy = enemy;
+        this.currentEnemy = currentEnemy;
+        this.entityImages = entityImages;
+        this.x = x;
+        this.y = y;
     }
 
-
     /**
-     * Initializes image sets, size, and offset configuration.
-     */
-    init(currentEnemy) {
-        this.idle = this.entityImages[currentEnemy]?.idle ?? [];
-        this.walk = this.entityImages[currentEnemy]?.walk ?? [];
-        this.hurt = this.entityImages[currentEnemy]?.hurt ?? [];
-        this.dead = this.entityImages[currentEnemy]?.dead ?? [];
-        this.attack = this.entityImages[currentEnemy]?.attack ?? [];
-        this.airApproach = this.entityImages[currentEnemy]?.airApproach ?? [];
-        this.diveStart = this.entityImages[currentEnemy]?.diveStart ?? [];
-        this.diveFast = this.entityImages[currentEnemy]?.diveFast ?? [];
-        this.diveUpShallow = this.entityImages[currentEnemy]?.diveUpShallow ?? [];
-        this.diveUpMedium = this.entityImages[currentEnemy]?.diveUpMedium ?? [];
-        this.diveUpSteep = this.entityImages[currentEnemy]?.diveUpSteep ?? [];
-        this.fallDown = this.entityImages[currentEnemy]?.fallDown ?? [];
-        this.impact = this.entityImages[currentEnemy]?.impact ?? [];
-        if (this.x == null) this.setSizeAndPosition();
+    * Initializes all enemy configuration state.
+    * @returns {void}
+    */
+    initAll() {
+        this.initAnimationState();
+        this.initCoreState();
+        this.initCombatState();
+        this.initMovementState();
+        this.initDragonState();
+        this.initAttackHitbox();
+        this.initImages();
+        if (this.enemy.x == null) this.setSizeAndPosition();
         this.setOffset();
     }
 
     /**
-     * Sets the object's initial size and random position.
-     */
-    setSizeAndPosition() {
-        this.x = 12000 + Math.random() * 2000; // 600
-        // this.y = 545;
-        // this.height = 120;
-        // this.width = 120;
+    * Initializes enemy animation state.
+    * @returns {void}
+    */
+    initAnimationState() {
+        this.enemy.lastFrameTime = 0;
+        this.enemy.sheetIndex = 0;
+        this.enemy.animationFinished = false;
+        this.enemy.frameInterval = 1000 / 8;
+        this.enemy.frameIndex = 0;
     }
 
     /**
-     * Sets collision or interaction offset values.
-     */
-    setOffset() {
-        if (this.currentEnemy === 'chickenMutatesSmall') {
-            this.offset.top = 25;
-            this.offset.left = 25;
-            this.offset.right = 35;
-            this.offset.bottom = 10;
-        } else if (this.currentEnemy === 'chickenMutatesBig') {
-            this.offset.top = 35;
-            this.offset.left = 20;
-            this.offset.right = 60;
-            this.offset.bottom = 10;
-        } else {
-            this.offset.top = 60;
-            this.offset.left = 10;
-            this.offset.right = 10;
-            this.offset.bottom = 45;
+    * Initializes core enemy state.
+    * @returns {void}
+    */
+    initCoreState() {
+        this.enemy.isMovingLeft = true;
+        this.enemy.isDead = false;
+        this.enemy.isHurt = false;
+        this.enemy.isAttack = false;
+        this.enemy.health = 3;
+        this.enemy.spawnY = this.currentEnemy === 'dragonSmall' ? 200 : this.y;
+        this.enemy.hurtUntil = 0;
+        this.enemy.removeAt = 0;
+        this.enemy.isRemoved = false;
+    }
+
+    /**
+    * Initializes combat state.
+    * @returns {void}
+    */
+    initCombatState() {
+        this.enemy.attackOnCooldown = false;
+        this.enemy.attackCooldownMs = 900;
+        this.enemy.lastAttackTime = 0;
+        this.enemy.meleeRange = 64;
+        this.enemy.rangedRange = 320;
+        this.enemy.hasHitPlayerThisAttack = false;
+    }
+
+    /**
+    * Initializes movement state.
+    * @returns {void}
+    */
+    initMovementState() {
+        this.enemy.speedX = 0.6;
+        this.enemy.knockbackActive = false;
+        this.enemy.acceleration = 1.5;
+        this.enemy.knockFriction = 0.85;
+        this.enemy.knockStopThreshold = 0.5;
+    }
+
+    /**
+    * Initializes dragon-specific state.
+    * @returns {void}
+    */
+    initDragonState() {
+        this.initDragonMovementConfig();
+        this.initDragonDiveState();
+        this.initDragonFlightPlaneState();
+        this.initDragonAttackFlags();
+        this.initDragonDeathState();
+    }
+
+    /**
+    * Initializes dragon movement configuration.
+    * @returns {void}
+    */
+    initDragonMovementConfig() {
+        this.enemy.airState = 'idle';
+        this.enemy.attackDistance = 220;
+        this.enemy.approachDistance = 500;
+        this.enemy.retreatHeight = 140;
+        this.enemy.flySpeed = 60;
+    }
+
+    /**
+    * Initializes dragon dive state.
+    * @returns {void}
+    */
+    initDragonDiveState() {
+        this.enemy.diveSpeed = 180;
+        this.enemy.diveStartTime = 0;
+        this.enemy.diveStartDuration = 250;
+        this.enemy.diveUpAngle = null;
+        this.enemy.exitDir = 1;
+        this.enemy.lockDirection = false;
+    }
+
+    /**
+    * Initializes dragon flight plane state.
+    * @returns {void}
+    */
+    initDragonFlightPlaneState() {
+        this.enemy.approachBaseY = null;
+        this.enemy.planeY = null;
+        this.enemy.preDiveX = null;
+        this.enemy.postDiveX = null;
+    }
+
+    /**
+    * Initializes dragon attack flags.
+    * @returns {void}
+    */
+    initDragonAttackFlags() {
+        this.enemy.hasAttackedThisDive = false;
+        this.enemy.lowApproachSpeed = this.enemy.flySpeed * 2.5;
+        this.enemy.hasBeenHitThisDive = false;
+    }
+
+    /**
+    * Initializes dragon death state.
+    * @returns {void}
+    */
+    initDragonDeathState() {
+        this.enemy.deathPhase = null;
+        this.enemy.deathFallSpeed = 350;
+        this.enemy.deathGroundY = 525;
+    }
+
+    /**
+    * Initializes the attack hitbox.
+    * @returns {void}
+    */
+    initAttackHitbox() {
+        this.enemy.attackHitbox = this.getAttackHitboxConfig();
+    }
+
+    /**
+    * Returns the attack hitbox configuration.
+    * @returns {object} Attack hitbox configuration.
+    */
+    getAttackHitboxConfig() {
+        const isSmallDragon = this.currentEnemy === "dragonSmall";
+        if (isSmallDragon) {
+            return this.getSmallDragonHitbox();
         }
+        return this.getDefaulHitbox();
+    }
+
+    /**
+    * Returns the default attack hitbox configuration.
+    * @returns {object} Default attack hitbox configuration.
+    */
+    getDefaultHitbox() {
+        return {
+            top: 45,
+            left: 20,
+            right: 120,
+            bottom: 45,
+            active: false
+        };
+    }
+
+    /**
+    * Returns the small dragon attack hitbox configuration.
+    * @returns {object} Small dragon attack hitbox configuration.
+    */
+    getSmallDragonHitbox() {
+        return {
+            top: 68,
+            left: 5,
+            right: 135,
+            bottom: 52,
+            active: false
+        };
+    }
+
+    /**
+    * Initializes enemy image sources.
+    * @returns {void}
+    */
+    initImages() {
+        const src = this.entityImages[this.currentEnemy] ?? {};
+        this.initBaseImages(src);
+        this.initDiveImages(src);
+        this.initDeathImages(src);
+    }
+
+    /**
+    * Initializes base enemy image sets.
+    * @param {object} src Image source collection.
+    * @returns {void}
+    */
+    initBaseImages(src) {
+        this.enemy.idle = src.idle ?? [];
+        this.enemy.walk = src.walk ?? [];
+        this.enemy.hurt = src.hurt ?? [];
+        this.enemy.dead = src.dead ?? [];
+        this.enemy.attack = src.attack ?? [];
+        this.enemy.airApproach = src.airApproach ?? [];
+    }
+
+    /**
+    * Initializes dive-related image sets.
+    * @param {object} src Image source collection.
+    * @returns {void}
+    */
+    initDiveImages(src) {
+        this.enemy.diveStart = src.diveStart ?? [];
+        this.enemy.diveFast = src.diveFast ?? [];
+        this.enemy.diveUpShallow = src.diveUpShallow ?? [];
+        this.enemy.diveUpMedium = src.diveUpMedium ?? [];
+        this.enemy.diveUpSteep = src.diveUpSteep ?? [];
+    }
+
+    /**
+    * Initializes death-related image sets.
+    * @param {object} src Image source collection.
+    * @returns {void}
+    */
+    initDeathImages(src) {
+        this.enemy.fallDown = src.fallDown ?? [];
+        this.enemy.impact = src.impact ?? [];
+    }
+
+    /**
+    * Sets the enemy size and initial position.
+    * @returns {void}
+    */
+    setSizeAndPosition() {
+        this.enemy.x = 12000 + Math.random() * 2000;
+    }
+
+    /**
+    * Sets the collision offset configuration.
+    * @returns {void}
+    */
+    setOffset() {
+        const offsetConfig = this.getOffsetConfig();
+        this.applyOffset(offsetConfig);
+    }
+
+    /**
+    * Returns the collision offset configuration.
+    * @returns {object} Collision offset configuration.
+    */
+    getOffsetConfig() {
+        if (this.currentEnemy === "chickenMutatesSmall") {
+            return { top: 25, left: 25, right: 35, bottom: 10 };
+        }
+        if (this.currentEnemy === "chickenMutatesBig") {
+            return { top: 35, left: 20, right: 60, bottom: 10 };
+        }
+        return { top: 60, left: 10, right: 10, bottom: 45 };
+    }
+
+    /**
+    * Applies the collision offset configuration.
+    * @param {object} offsetConfig Collision offset configuration.
+    * @returns {void}
+    */
+    applyOffset(offsetConfig) {
+        this.enemy.offset.top = offsetConfig.top;
+        this.enemy.offset.left = offsetConfig.left;
+        this.enemy.offset.right = offsetConfig.right;
+        this.enemy.offset.bottom = offsetConfig.bottom;
     }
 }
