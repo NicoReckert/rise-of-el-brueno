@@ -296,4 +296,64 @@ export class EnemyMovementController {
         this.enemy.isMovingLeft = false;
         this.enemy.isMovingRight = false;
     }
+
+    /**
+    * Updates the dead state of the enemy.
+    * @param {number} timestamp Frame timestamp.
+    * @returns {void}
+    */
+    updateDeadState(timestamp) {
+        if (!this.enemy.isDead) return;
+        this.updateDragonSmallDeathFall();
+        this.enemy.animCtrl.handleAnimation();
+        if (this.enemy.removeAt && timestamp >= this.enemy.removeAt) {
+            this.enemy.isRemoved = true;
+        }
+    }
+
+    /**
+    * Updates the dragon small death fall state.
+    * @returns {void}
+    */
+    updateDragonSmallDeathFall() {
+        if (this.enemy.currentEnemy !== "dragonSmall") return;
+        if (this.enemy.deathPhase !== "fall") return;
+        const dt = this.enemy.deltaTime ?? 1 / 60;
+        this.enemy.y += this.enemy.deathFallSpeed * dt;
+        if (this.enemy.y < this.enemy.deathGroundY) return;
+        this.enemy.y = this.enemy.deathGroundY;
+        this.enemy.deathPhase = "impact";
+        this.enemy.frameIndex = 0;
+        this.enemy.lastFrameTime = 0;
+    }
+
+    /**
+    * Updates knockback movement or handles normal movement.
+    * @returns {void}
+    */
+    updateKnockbackMovement() {
+        if (this.enemy.knockbackActive) {
+            const dt60 = (this.enemy.deltaTime ?? 1 / 60) * 60;
+            this.enemy.x += (this.enemy.speedXKnock || 0) * dt60;
+            this.enemy.speedXKnock *= Math.pow(this.enemy.knockFriction, dt60);
+            if (Math.abs(this.enemy.speedXKnock) < this.enemy.knockStopThreshold) {
+                this.enemy.speedXKnock = 0;
+                this.enemy.knockbackActive = false;
+            }
+            return;
+        }
+        this.handleMovement();
+    }
+
+    /**
+    * Snaps the enemy back to its spawn Y position when not affected by gravity or knockback.
+    * @returns {void}
+    */
+    snapBackToSpawnY() {
+        if (this.enemy.isGravity || this.enemy.knockbackActive) return;
+        const diff = this.enemy.y - this.enemy.spawnY;
+        if (Math.abs(diff) > 0.5) {
+            this.enemy.y = this.enemy.spawnY;
+        }
+    }
 }
