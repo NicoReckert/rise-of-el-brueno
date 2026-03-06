@@ -1,4 +1,9 @@
 import { MovableObject } from '../systems/movable-object.class.js'
+import { EnemyAnimationController } from '../systems/enemy-animation-controller.class.js';
+import { EnemyMovementController } from '../systems/enemy-movement-controller.class.js';
+import { EnemyCombatController } from '../systems/enemy-combat-controller.class.js';
+import { EnemyGroundController } from '../systems/enemy-ground-controller.class.js';
+import { EnemyDragonController } from '../systems/enemy-dragon-controller.class.js';
 
 /**
  * Represents a movable non-player character with simple movement and animation behavior.
@@ -14,18 +19,12 @@ export class Enemy extends MovableObject {
      */
     constructor(currentEnemy, entityImages, width = 120, height = 120, y = 545, x = null, allAudios, world) {
         super();
-        this.world = world;
-        this.currentEnemy = currentEnemy;
-        this.entityImages = entityImages;
-        this.allAudios = allAudios;
-        this.setAnimation('walk')
-        this.y = this.spawnY;
-        this.x = x;
-        this.height = height;
-        this.width = width;
-        this.init(this.currentEnemy);
-        this.movementSpeed = 0;
-        this.lastUpdateTime = 0;
+        this.config.initAll();
+        this.animCtrl = new EnemyAnimationController(this);
+        this.movementCtrl = new EnemyMovementController(this);
+        this.combatCtrl = new EnemyCombatController(this);
+        this.dragonCtrl = new EnemyDragonController(this);
+        this.groundCtrl = new EnemyGroundController(this);
     }
 
     updateState(timestamp) {

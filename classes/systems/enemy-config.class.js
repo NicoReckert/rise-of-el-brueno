@@ -23,10 +23,12 @@ export class EnemyConfig {
     * @returns {void}
     */
     initAll() {
+        this.initBaseReferences();
+        this.initDimensions();
         this.initAnimationState();
         this.initCoreState();
-        this.initCombatState();
         this.initMovementState();
+        this.initCombatState();
         this.initDragonState();
         this.initAttackHitbox();
         this.initImages();
@@ -35,10 +37,34 @@ export class EnemyConfig {
     }
 
     /**
+    * Initializes enemy dimensions and position.
+    * @returns {void}
+    */
+    initDimensions() {
+        this.enemy.width = this.width;
+        this.enemy.height = this.height;
+        this.enemy.x = this.x;
+        this.enemy.spawnY = this.currentEnemy === 'dragonSmall' ? 200 : this.y;
+        this.enemy.y = this.enemy.spawnY;
+    }
+
+    /**
+    * Initializes base enemy references.
+    * @returns {void}
+    */
+    initBaseReferences() {
+        this.enemy.world = this.world;
+        this.enemy.currentEnemy = this.currentEnemy;
+        this.enemy.entityImages = this.entityImages;
+        this.enemy.allAudios = this.allAudios;
+    }
+
+    /**
     * Initializes enemy animation state.
     * @returns {void}
     */
     initAnimationState() {
+        this.enemy.setAnimation('walk');
         this.enemy.lastFrameTime = 0;
         this.enemy.sheetIndex = 0;
         this.enemy.animationFinished = false;
@@ -55,8 +81,6 @@ export class EnemyConfig {
         this.enemy.isDead = false;
         this.enemy.isHurt = false;
         this.enemy.isAttack = false;
-        this.enemy.health = 3;
-        this.enemy.spawnY = this.currentEnemy === 'dragonSmall' ? 200 : this.y;
         this.enemy.hurtUntil = 0;
         this.enemy.removeAt = 0;
         this.enemy.isRemoved = false;
@@ -67,12 +91,14 @@ export class EnemyConfig {
     * @returns {void}
     */
     initCombatState() {
+        this.enemy.health = 3;
         this.enemy.attackOnCooldown = false;
         this.enemy.attackCooldownMs = 900;
         this.enemy.lastAttackTime = 0;
         this.enemy.meleeRange = 64;
         this.enemy.rangedRange = 320;
         this.enemy.hasHitPlayerThisAttack = false;
+        this.enemy.hasFiredThisAttack = false;
     }
 
     /**
@@ -80,9 +106,11 @@ export class EnemyConfig {
     * @returns {void}
     */
     initMovementState() {
+        this.enemy.movementSpeed = 0;
+        this.enemy.lastUpdateTime = 0;
         this.enemy.speedX = 0.6;
-        this.enemy.knockbackActive = false;
         this.enemy.acceleration = 1.5;
+        this.enemy.knockbackActive = false;
         this.enemy.knockFriction = 0.85;
         this.enemy.knockStopThreshold = 0.5;
     }
