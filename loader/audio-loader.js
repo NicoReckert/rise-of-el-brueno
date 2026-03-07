@@ -6,10 +6,10 @@ const audioCache = new Map();
  * @returns {Promise<HTMLAudioElement|null>}
  */
 export function loadAudio(src) {
-  if (audioCache.has(src)) {
-    return Promise.resolve(audioCache.get(src));
-  }
-  return createAndLoadAudio(src);
+  if (audioCache.has(src)) return audioCache.get(src);
+  const promise = createAndLoadAudio(src);
+  audioCache.set(src, promise);
+  return promise;
 }
 
 /**
@@ -20,10 +20,7 @@ export function loadAudio(src) {
 function createAndLoadAudio(src) {
   return new Promise((resolve) => {
     const audio = createAudioElement(src);
-    audio.oncanplay = () => handleAudioReady(src, audio, resolve);
-    audio.onerror = () => {
-      resolve(null);
-    };
+    setupAudioHandlers(audio, src, resolve);
     audio.load();
   });
 }
@@ -42,14 +39,41 @@ function createAudioElement(src) {
 }
 
 /**
- * Caches a loaded audio element and resolves the promise.
+ * Sets up ready and error handlers for an audio element.
+ * @param {HTMLAudioElement} audio Audio element.
  * @param {string} src Audio source path.
+ * @param {Function} resolve Promise resolve function.
+ */
+function setupAudioHandlers(audio, src, resolve) {
+  audio.oncanplay = () => {
+    audio.oncanplay = null;
+    audio.onerror = null;
+    handleAudioReady(audio, resolve);
+  };
+  audio.onerror = () => {
+    audio.oncanplay = null;
+    audio.onerror = null;
+    handleAudioError(src, resolve);
+  };
+}
+
+/**
+ * Resolves a loaded audio element.
  * @param {HTMLAudioElement} audio Loaded audio element.
  * @param {Function} resolve Promise resolve function.
  */
-function handleAudioReady(src, audio, resolve) {
-  audioCache.set(src, audio);
+function handleAudioReady(audio, resolve) {
   resolve(audio);
+}
+
+/**
+ * Handles audio load failure by clearing the cache entry.
+ * @param {string} src Audio source path.
+ * @param {Function} resolve Promise resolve function.
+ */
+function handleAudioError(src, resolve) {
+  audioCache.delete(src);
+  resolve(null);
 }
 
 /**
@@ -96,9 +120,12 @@ async function loadManifestEntry(key, paths, onFileLoaded) {
  * @returns {Promise<HTMLAudioElement|null>}
  */
 async function loadSingleAudio(src, onFileLoaded) {
-  const audio = await loadAudio(src);
-  if (typeof onFileLoaded === "function") {
-    onFileLoaded();
+  try {
+    const audio = await loadAudio(src);
+    if (typeof onFileLoaded === "function") onFileLoaded();
+    return audio;
+  } catch {
+    if (typeof onFileLoaded === "function") onFileLoaded();
+    return null;
   }
-  return audio;
 }

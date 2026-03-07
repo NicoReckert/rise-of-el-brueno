@@ -110,9 +110,9 @@ async function processArrayNode(list, onProgress) {
  * @param {{list:Array<string>, onProgress:Function, results:Array, nextIndex:number}} state Worker state object.
  */
 async function workerLoop(state) {
-    while (true) {
-        const currentIndex = getNextIndex(state);
-        if (currentIndex === null) break;
+    for (let currentIndex = getNextIndex(state);
+        currentIndex !== null;
+        currentIndex = getNextIndex(state)) {
         try {
             state.results[currentIndex] = await loadImage(
                 state.list[currentIndex],

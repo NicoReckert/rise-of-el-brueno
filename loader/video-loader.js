@@ -1,3 +1,5 @@
+const videoCache = new Map();
+
 /**
  * Attaches a video element to a container and returns it mapped by key.
  * @param {string} key Video identifier key.
@@ -68,9 +70,12 @@ function ensureVideoElement(video, reject) {
  * @returns {boolean}
  */
 function ensureAlreadyLoaded(video, resolve) {
-    if (video.src) {
+    if (video.readyState >= 2) {
         resolve(video);
         return true;
+    }
+    if (video.src || video.querySelector("source")) {
+        return false;
     }
     return false;
 }
@@ -105,11 +110,14 @@ function initAndLoadVideo(video, src, resolve, reject) {
 }
 
 /**
- * Appends a source element to the video.
+ * Appends a source element to the video if not already present.
  * @param {HTMLVideoElement} video Video element.
  * @param {string} src Video source path.
  */
 function prepareVideoSource(video, src) {
+    const existing = video.querySelector(`source[src="${src}"]`);
+    if (existing) return;
+    video.innerHTML = "";
     const source = document.createElement("source");
     source.src = src;
     source.type = "video/mp4";
@@ -171,10 +179,9 @@ function removeVideoListeners(video, onReady, onError) {
  */
 export async function preloadManifestVideos(manifest, onFileLoaded) {
     const entries = Object.entries(manifest);
-    const cache = {};
     const results = await Promise.all(
         entries.map(([key, src]) =>
-            loadVideoManifestEntry(key, src, cache, onFileLoaded)
+            loadVideoManifestEntry(key, src, onFileLoaded)
         )
     );
     return Object.fromEntries(results);
@@ -184,29 +191,13 @@ export async function preloadManifestVideos(manifest, onFileLoaded) {
  * Loads a single video manifest entry.
  * @param {string} key Manifest entry key.
  * @param {string} src Video source path.
- * @param {Object} cache Video cache object.
  * @param {Function} [onFileLoaded] Optional callback triggered after load.
- * @returns {Promise<[string, HTMLVideoElement]>}
+ * @returns {Promise<[string, HTMLVideoElement|null]>}
  */
-async function loadVideoManifestEntry(key, src, cache, onFileLoaded) {
-    const video = getOrCreateVideo(cache, key, src);
-    await loadVideo(video);
+async function loadVideoManifestEntry(key, src, onFileLoaded) {
+    const video = await loadCachedVideo(src);
     if (typeof onFileLoaded === "function") onFileLoaded();
     return [key, video];
-}
-
-/**
- * Retrieves a cached video or creates a new one.
- * @param {Object} cache Video cache object.
- * @param {string} key Manifest entry key.
- * @param {string} src Video source path.
- * @returns {HTMLVideoElement}
- */
-function getOrCreateVideo(cache, key, src) {
-    if (cache[key]) return cache[key];
-    const video = createPreconfiguredVideo(src);
-    cache[key] = video;
-    return video;
 }
 
 /**
@@ -221,4 +212,33 @@ function createPreconfiguredVideo(src) {
     video.muted = false;
     video.dataset.src = src;
     return video;
+}
+
+/**
+ * Loads a video with caching.
+ * @param {string} src Video source URL.
+ * @returns {Promise<HTMLVideoElement>} Loaded video element.
+ */
+function loadCachedVideo(src) {
+    if (videoCache.has(src)) return videoCache.get(src);
+    const promise = createAndLoadCachedVideo(src);
+    videoCache.set(src, promise);
+    return promise;
+}
+
+/**
+ * Creates and loads a cached video element.
+ * @param {string} src Video source URL.
+ * @returns {Promise<HTMLVideoElement|null>} Loaded video or null on failure.
+ */
+function createAndLoadCachedVideo(src) {
+    return new Promise((resolve) => {
+        const video = createPreconfiguredVideo(src);
+        loadVideo(video)
+            .then(resolve)
+            .catch(() => {
+                videoCache.delete(src);
+                resolve(null);
+            });
+    });
 }
