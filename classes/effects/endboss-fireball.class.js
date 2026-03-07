@@ -5,14 +5,14 @@ import { Projectile } from '../entities/projectile.class.js';
  */
 export class EndbossFireball extends Projectile {
     /**
-    * Creates a new instance.
-    * @param {Object} entityImages Image collection for the entity.
-    * @param {number} startX Initial x position.
-    * @param {number} startY Initial y position.
-    * @param {number} targetX Target x position.
-    * @param {number} targetY Target y position.
-    * @param {Object} allAudios Audio collection.
-    */
+     * Creates a new instance.
+     * @param {Object} entityImages Image collection for the entity.
+     * @param {number} startX Initial x position.
+     * @param {number} startY Initial y position.
+     * @param {number} targetX Target x position.
+     * @param {number} targetY Target y position.
+     * @param {Object} allAudios Audio collection.
+     */
     constructor(entityImages, startX, startY, targetX, targetY, allAudios) {
         const direction = targetX >= startX;
         super(entityImages, "fireball", startX, startY, direction);
@@ -22,9 +22,9 @@ export class EndbossFireball extends Projectile {
     }
 
     /**
-    * Initializes core properties.
-    * @param {*} allAudios Audio resources.
-    */
+     * Initializes core properties.
+     * @param {*} allAudios Audio resources.
+     */
     initCore(allAudios) {
         this.allAudios = allAudios;
         this.width = 180;
@@ -33,12 +33,12 @@ export class EndbossFireball extends Projectile {
     }
 
     /**
-    * Initializes velocity towards a target position.
-    * @param {number} startX Start x position.
-    * @param {number} startY Start y position.
-    * @param {number} targetX Target x position.
-    * @param {number} targetY Target y position.
-    */
+     * Initializes velocity towards a target position.
+     * @param {number} startX Start x position.
+     * @param {number} startY Start y position.
+     * @param {number} targetX Target x position.
+     * @param {number} targetY Target y position.
+     */
     initVelocity(startX, startY, targetX, targetY) {
         const speed = 14;
         const dx = targetX - startX;
@@ -49,9 +49,9 @@ export class EndbossFireball extends Projectile {
     }
 
     /**
-    * Updates the fireball state.
-    * @param {number} timestamp Current frame timestamp.
-    */
+     * Updates the fireball state.
+     * @param {number} timestamp Current frame timestamp.
+     */
     updateState(timestamp) {
         if (this.markedForRemoval) return;
         this.updateDeltaTime(timestamp);
@@ -68,9 +68,9 @@ export class EndbossFireball extends Projectile {
     }
 
     /**
-    * Calculates the movement step factor.
-    * @returns {number} Movement step multiplier.
-    */
+     * Calculates the movement step factor.
+     * @returns {number} Movement step multiplier.
+     */
     getMovementStep() {
         const defaultDt = 1 / 60;
         const dt = this.deltaTime ?? defaultDt;
@@ -78,26 +78,26 @@ export class EndbossFireball extends Projectile {
     }
 
     /**
-    * Updates the projectile position.
-    * @param {number} step Movement step multiplier.
-    */
+     * Updates the projectile position.
+     * @param {number} step Movement step multiplier.
+     */
     updatePosition(step) {
         this.x += this.vx * step;
         this.y += this.vy * step;
     }
 
     /**
-    * Updates the projectile direction.
-    */
+     * Updates the projectile direction.
+     */
     updateDirection() {
         this.direction = this.vx >= 0;
     }
 
     /**
-    * Handles collision with the character.
-    * @param {number} timestamp Current frame timestamp.
-    * @returns {boolean} True if a collision occurred, otherwise false.
-    */
+     * Handles collision with the character.
+     * @param {number} timestamp Current frame timestamp.
+     * @returns {boolean} True if a collision occurred, otherwise false.
+     */
     handleCharacterCollision(timestamp) {
         const character = this.world?.character;
         if (!character) return false;
@@ -108,10 +108,10 @@ export class EndbossFireball extends Projectile {
     }
 
     /**
-    * Checks whether the projectile hits the character.
-    * @param {*} character Character reference.
-    * @returns {boolean} True if hit, otherwise false.
-    */
+     * Checks whether the projectile hits the character.
+     * @param {*} character Character reference.
+     * @returns {boolean} True if hit, otherwise false.
+     */
     isCharacterHit(character) {
         const baseOffset = { x: 0, width: 0 };
         const extendedOffset = { x: 50, width: 50 };
@@ -119,10 +119,10 @@ export class EndbossFireball extends Projectile {
     }
 
     /**
-    * Applies damage to the character.
-    * @param {*} character Character reference.
-    * @param {number} timestamp Current frame timestamp.
-    */
+     * Applies damage to the character.
+     * @param {*} character Character reference.
+     * @param {number} timestamp Current frame timestamp.
+     */
     applyCharacterHitDamage(character, timestamp) {
         const ctrl = character.combatCtrl;
         if (typeof ctrl.hit === "function") {
@@ -135,9 +135,9 @@ export class EndbossFireball extends Projectile {
     }
 
     /**
-    * Handles collision with the ground.
-    * @returns {boolean} True if a collision occurred, otherwise false.
-    */
+     * Handles collision with the ground.
+     * @returns {boolean} True if a collision occurred, otherwise false.
+     */
     handleGroundCollision() {
         const defaultGroundY = 700;
         const groundY = this.world?.groundY ?? defaultGroundY;
@@ -148,8 +148,8 @@ export class EndbossFireball extends Projectile {
     }
 
     /**
-    * Triggers the explosion state.
-    */
+     * Triggers the explosion state.
+     */
     explode() {
         if (this.currentAnimation === "explode") return;
         if (this.allAudios?.explodeSound) {

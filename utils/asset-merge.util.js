@@ -1,9 +1,9 @@
 /**
-* Merges source object properties into target.
-* @param {Object} target Target object.
-* @param {Object} source Source object.
-* @returns {Object}
-*/
+ * Merges source object properties into target.
+ * @param {Object} target Target object.
+ * @param {Object} source Source object.
+ * @returns {Object}
+ */
 export function smartMerge(target, source) {
     if (!source || typeof source !== "object") return target || {};
     if (!target || typeof target !== "object") target = {};
@@ -14,11 +14,11 @@ export function smartMerge(target, source) {
 }
 
 /**
-* Merges a single entry into the target object.
-* @param {Object} target Target object.
-* @param {string} key Entry key.
-* @param {*} value Entry value.
-*/
+ * Merges a single entry into the target object.
+ * @param {Object} target Target object.
+ * @param {string} key Entry key.
+ * @param {*} value Entry value.
+ */
 function mergeEntry(target, key, value) {
     const isSheet =
         value &&
@@ -33,11 +33,11 @@ function mergeEntry(target, key, value) {
 }
 
 /**
-* Merges a non-sheet value into the target object.
-* @param {Object} target Target object.
-* @param {string} key Entry key.
-* @param {*} value Entry value.
-*/
+ * Merges a non-sheet value into the target object.
+ * @param {Object} target Target object.
+ * @param {string} key Entry key.
+ * @param {*} value Entry value.
+ */
 function mergeNonSheet(target, key, value) {
     const isObject =
         value &&

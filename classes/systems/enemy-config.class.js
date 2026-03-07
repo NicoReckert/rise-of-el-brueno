@@ -3,17 +3,17 @@
  */
 export class EnemyConfig {
     /**
-    * Creates a new instance.
-    * @param {object} enemy Enemy instance.
-    * @param {string} currentEnemy Enemy identifier.
-    * @param {object} entityImages Image collection.
-    * @param {number} [width=120] Enemy width.
-    * @param {number} [height=120] Enemy height.
-    * @param {?number} [x=null] Horizontal position.
-    * @param {number} [y=545] Vertical position.
-    * @param {object} allAudios Audio collection.
-    * @param {object} world World reference.
-    */
+     * Creates a new instance.
+     * @param {object} enemy Enemy instance.
+     * @param {string} currentEnemy Enemy identifier.
+     * @param {object} entityImages Image collection.
+     * @param {number} [width=120] Enemy width.
+     * @param {number} [height=120] Enemy height.
+     * @param {?number} [x=null] Horizontal position.
+     * @param {number} [y=545] Vertical position.
+     * @param {object} allAudios Audio collection.
+     * @param {object} world World reference.
+     */
     constructor(enemy, currentEnemy, entityImages, width = 120, height = 120, x = null, y = 545, allAudios, world) {
         this.enemy = enemy;
         this.currentEnemy = currentEnemy;
@@ -27,9 +27,9 @@ export class EnemyConfig {
     }
 
     /**
-    * Initializes all enemy configuration state.
-    * @returns {void}
-    */
+     * Initializes all enemy configuration state.
+     * @returns {void}
+     */
     initAll() {
         this.initBaseReferences();
         this.initDimensions();
@@ -45,9 +45,9 @@ export class EnemyConfig {
     }
 
     /**
-    * Initializes enemy dimensions and position.
-    * @returns {void}
-    */
+     * Initializes enemy dimensions and position.
+     * @returns {void}
+     */
     initDimensions() {
         this.enemy.width = this.width;
         this.enemy.height = this.height;
@@ -57,9 +57,9 @@ export class EnemyConfig {
     }
 
     /**
-    * Initializes base enemy references.
-    * @returns {void}
-    */
+     * Initializes base enemy references.
+     * @returns {void}
+     */
     initBaseReferences() {
         this.enemy.world = this.world;
         this.enemy.currentEnemy = this.currentEnemy;
@@ -68,9 +68,9 @@ export class EnemyConfig {
     }
 
     /**
-    * Initializes enemy animation state.
-    * @returns {void}
-    */
+     * Initializes enemy animation state.
+     * @returns {void}
+     */
     initAnimationState() {
         this.enemy.animCtrl.setAnimation('walk');
         this.enemy.lastFrameTime = 0;
@@ -81,9 +81,9 @@ export class EnemyConfig {
     }
 
     /**
-    * Initializes core enemy state.
-    * @returns {void}
-    */
+     * Initializes core enemy state.
+     * @returns {void}
+     */
     initCoreState() {
         this.enemy.isMovingLeft = true;
         this.enemy.isDead = false;
@@ -95,9 +95,9 @@ export class EnemyConfig {
     }
 
     /**
-    * Initializes combat state.
-    * @returns {void}
-    */
+     * Initializes combat state.
+     * @returns {void}
+     */
     initCombatState() {
         this.enemy.health = 3;
         this.enemy.attackOnCooldown = false;
@@ -110,9 +110,9 @@ export class EnemyConfig {
     }
 
     /**
-    * Initializes movement state.
-    * @returns {void}
-    */
+     * Initializes movement state.
+     * @returns {void}
+     */
     initMovementState() {
         this.enemy.movementSpeed = 0;
         this.enemy.lastUpdateTime = 0;
@@ -124,9 +124,9 @@ export class EnemyConfig {
     }
 
     /**
-    * Initializes dragon-specific state.
-    * @returns {void}
-    */
+     * Initializes dragon-specific state.
+     * @returns {void}
+     */
     initDragonState() {
         this.initDragonMovementConfig();
         this.initDragonDiveState();
@@ -136,9 +136,9 @@ export class EnemyConfig {
     }
 
     /**
-    * Initializes dragon movement configuration.
-    * @returns {void}
-    */
+     * Initializes dragon movement configuration.
+     * @returns {void}
+     */
     initDragonMovementConfig() {
         this.enemy.airState = 'idle';
         this.enemy.attackDistance = 220;
@@ -148,9 +148,9 @@ export class EnemyConfig {
     }
 
     /**
-    * Initializes dragon dive state.
-    * @returns {void}
-    */
+     * Initializes dragon dive state.
+     * @returns {void}
+     */
     initDragonDiveState() {
         this.enemy.diveSpeed = 180;
         this.enemy.diveStartTime = 0;
@@ -161,9 +161,9 @@ export class EnemyConfig {
     }
 
     /**
-    * Initializes dragon flight plane state.
-    * @returns {void}
-    */
+     * Initializes dragon flight plane state.
+     * @returns {void}
+     */
     initDragonFlightPlaneState() {
         this.enemy.approachBaseY = null;
         this.enemy.planeY = null;
@@ -172,9 +172,9 @@ export class EnemyConfig {
     }
 
     /**
-    * Initializes dragon attack flags.
-    * @returns {void}
-    */
+     * Initializes dragon attack flags.
+     * @returns {void}
+     */
     initDragonAttackFlags() {
         this.enemy.hasAttackedThisDive = false;
         this.enemy.lowApproachSpeed = this.enemy.flySpeed * 2.5;
@@ -182,9 +182,9 @@ export class EnemyConfig {
     }
 
     /**
-    * Initializes dragon death state.
-    * @returns {void}
-    */
+     * Initializes dragon death state.
+     * @returns {void}
+     */
     initDragonDeathState() {
         this.enemy.deathPhase = null;
         this.enemy.deathFallSpeed = 350;
@@ -192,17 +192,17 @@ export class EnemyConfig {
     }
 
     /**
-    * Initializes the attack hitbox.
-    * @returns {void}
-    */
+     * Initializes the attack hitbox.
+     * @returns {void}
+     */
     initAttackHitbox() {
         this.enemy.attackHitbox = this.getAttackHitboxConfig();
     }
 
     /**
-    * Returns the attack hitbox configuration.
-    * @returns {object} Attack hitbox configuration.
-    */
+     * Returns the attack hitbox configuration.
+     * @returns {object} Attack hitbox configuration.
+     */
     getAttackHitboxConfig() {
         const isSmallDragon = this.currentEnemy === "dragonSmall";
         if (isSmallDragon) {
@@ -212,9 +212,9 @@ export class EnemyConfig {
     }
 
     /**
-    * Returns the default attack hitbox configuration.
-    * @returns {object} Default attack hitbox configuration.
-    */
+     * Returns the default attack hitbox configuration.
+     * @returns {object} Default attack hitbox configuration.
+     */
     getDefaultHitbox() {
         return {
             top: 45,
@@ -226,9 +226,9 @@ export class EnemyConfig {
     }
 
     /**
-    * Returns the small dragon attack hitbox configuration.
-    * @returns {object} Small dragon attack hitbox configuration.
-    */
+     * Returns the small dragon attack hitbox configuration.
+     * @returns {object} Small dragon attack hitbox configuration.
+     */
     getSmallDragonHitbox() {
         return {
             top: 68,
@@ -240,9 +240,9 @@ export class EnemyConfig {
     }
 
     /**
-    * Initializes enemy image sources.
-    * @returns {void}
-    */
+     * Initializes enemy image sources.
+     * @returns {void}
+     */
     initImages() {
         const src = this.entityImages[this.currentEnemy] ?? {};
         this.initBaseImages(src);
@@ -251,10 +251,10 @@ export class EnemyConfig {
     }
 
     /**
-    * Initializes base enemy image sets.
-    * @param {object} src Image source collection.
-    * @returns {void}
-    */
+     * Initializes base enemy image sets.
+     * @param {object} src Image source collection.
+     * @returns {void}
+     */
     initBaseImages(src) {
         this.enemy.idle = src.idle ?? [];
         this.enemy.walk = src.walk ?? [];
@@ -265,10 +265,10 @@ export class EnemyConfig {
     }
 
     /**
-    * Initializes dive-related image sets.
-    * @param {object} src Image source collection.
-    * @returns {void}
-    */
+     * Initializes dive-related image sets.
+     * @param {object} src Image source collection.
+     * @returns {void}
+     */
     initDiveImages(src) {
         this.enemy.diveStart = src.diveStart ?? [];
         this.enemy.diveFast = src.diveFast ?? [];
@@ -278,36 +278,36 @@ export class EnemyConfig {
     }
 
     /**
-    * Initializes death-related image sets.
-    * @param {object} src Image source collection.
-    * @returns {void}
-    */
+     * Initializes death-related image sets.
+     * @param {object} src Image source collection.
+     * @returns {void}
+     */
     initDeathImages(src) {
         this.enemy.fallDown = src.fallDown ?? [];
         this.enemy.impact = src.impact ?? [];
     }
 
     /**
-    * Sets the enemy size and initial position.
-    * @returns {void}
-    */
+     * Sets the enemy size and initial position.
+     * @returns {void}
+     */
     setSizeAndPosition() {
         this.enemy.x = 12000 + Math.random() * 2000;
     }
 
     /**
-    * Sets the collision offset configuration.
-    * @returns {void}
-    */
+     * Sets the collision offset configuration.
+     * @returns {void}
+     */
     setOffset() {
         const offsetConfig = this.getOffsetConfig();
         this.applyOffset(offsetConfig);
     }
 
     /**
-    * Returns the collision offset configuration.
-    * @returns {object} Collision offset configuration.
-    */
+     * Returns the collision offset configuration.
+     * @returns {object} Collision offset configuration.
+     */
     getOffsetConfig() {
         if (this.currentEnemy === "chickenMutatesSmall") {
             return { top: 25, left: 25, right: 35, bottom: 10 };
@@ -319,10 +319,10 @@ export class EnemyConfig {
     }
 
     /**
-    * Applies the collision offset configuration.
-    * @param {object} offsetConfig Collision offset configuration.
-    * @returns {void}
-    */
+     * Applies the collision offset configuration.
+     * @param {object} offsetConfig Collision offset configuration.
+     * @returns {void}
+     */
     applyOffset(offsetConfig) {
         this.enemy.offset.top = offsetConfig.top;
         this.enemy.offset.left = offsetConfig.left;

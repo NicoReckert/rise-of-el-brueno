@@ -2,9 +2,9 @@ import { PopupText } from "../classes/ui/popup-text.class.js";
 
 export const farmEvents_part3 = [
     /**
-    * Time-based quest event that moves the character to the house entrance
-    * and advances the quest once the target position is reached.
-    */
+     * Time-based quest event that moves the character to the house entrance
+     * and advances the quest once the target position is reached.
+     */
     {
         type: 'time',
         delay: 4300,
@@ -27,9 +27,9 @@ export const farmEvents_part3 = [
     },
 
     /**
-    * Position-based quest event that shows a hint when the character
-    * enters the defined area and hides it on leave.
-    */
+     * Position-based quest event that shows a hint when the character
+     * enters the defined area and hides it on leave.
+     */
     {
         type: 'position',
         area: { x: 1170, width: 100 },
@@ -45,10 +45,10 @@ export const farmEvents_part3 = [
     },
 
     /**
-    * Position-based quest event that closes the house door,
-    * completes the task, plays sounds, shows a popup,
-    * and advances the quest when the F key is pressed.
-    */
+     * Position-based quest event that closes the house door,
+     * completes the task, plays sounds, shows a popup,
+     * and advances the quest when the F key is pressed.
+     */
     {
         type: 'position',
         objectA: 'character',
@@ -72,9 +72,9 @@ export const farmEvents_part3 = [
     },
 
     /**
-    * Quest event that moves the camera to a target position
-    * and advances the quest once the movement is complete.
-    */
+     * Quest event that moves the camera to a target position
+     * and advances the quest once the movement is complete.
+     */
     {
         type: 'quest',
         step: 13,
@@ -86,8 +86,8 @@ export const farmEvents_part3 = [
     },
 
     /**
-    * Time-based quest event that plays a yawning sound after a delay.
-    */
+     * Time-based quest event that plays a yawning sound after a delay.
+     */
     {
         type: 'time',
         delay: 3000,
@@ -98,8 +98,8 @@ export const farmEvents_part3 = [
     },
 
     /**
-    * Time-based quest event that plays a snoring sound after a delay.
-    */
+     * Time-based quest event that plays a snoring sound after a delay.
+     */
     {
         type: 'time',
         delay: 10000,
@@ -110,9 +110,9 @@ export const farmEvents_part3 = [
     },
 
     /**
-    * Time-based quest event that starts an earthquake effect
-    * and plays the corresponding sound after a delay.
-    */
+     * Time-based quest event that starts an earthquake effect
+     * and plays the corresponding sound after a delay.
+     */
     {
         type: 'time',
         delay: 15000,
@@ -124,9 +124,9 @@ export const farmEvents_part3 = [
     },
 
     /**
-    * Time-based quest event that renders the drone, moves the camera toward it,
-    * and advances the quest once the camera reaches the target.
-    */
+     * Time-based quest event that renders the drone, moves the camera toward it,
+     * and advances the quest once the camera reaches the target.
+     */
     {
         type: 'time',
         delay: 22000,
@@ -144,9 +144,9 @@ export const farmEvents_part3 = [
     },
 
     /**
-    * Quest event that moves the drone to a target position,
-    * smoothly follows it with the camera, and advances the quest on arrival.
-    */
+     * Quest event that moves the drone to a target position,
+     * smoothly follows it with the camera, and advances the quest on arrival.
+     */
     {
         type: 'quest',
         step: 15,
@@ -161,9 +161,9 @@ export const farmEvents_part3 = [
     },
 
     /**
-    * Quest event that switches background audio,
-    * pauses farm music, and starts drone and night ambience sounds.
-    */
+     * Quest event that switches background audio,
+     * pauses farm music, and starts drone and night ambience sounds.
+     */
     {
         type: 'quest',
         step: 15,
@@ -178,9 +178,9 @@ export const farmEvents_part3 = [
     },
 
     /**
-    * Time-based quest event that switches drone audio and
-    * starts controlled and trance animations after a delay.
-    */
+     * Time-based quest event that switches drone audio and
+     * starts controlled and trance animations after a delay.
+     */
     {
         type: 'time',
         delay: 4000,
@@ -197,9 +197,9 @@ export const farmEvents_part3 = [
     },
 
     /**
-    * Time-based quest event that moves trance actors to a target position
-    * and advances the quest once the cow reaches it.
-    */
+     * Time-based quest event that moves trance actors to a target position
+     * and advances the quest once the cow reaches it.
+     */
     {
         type: 'time',
         delay: 4000,
@@ -216,9 +216,9 @@ export const farmEvents_part3 = [
     },
 
     /**
-    * Quest event that switches drone audio back
-    * and sets the drone to idle animation.
-    */
+     * Quest event that switches drone audio back
+     * and sets the drone to idle animation.
+     */
     {
         type: 'quest',
         step: 17,
@@ -230,9 +230,9 @@ export const farmEvents_part3 = [
     },
 
     /**
-    * Quest event that moves the drone to a target position
-    * and advances the quest once it arrives.
-    */
+     * Quest event that moves the drone to a target position
+     * and advances the quest once it arrives.
+     */
     {
         type: 'quest',
         step: 17,
@@ -245,9 +245,9 @@ export const farmEvents_part3 = [
     },
 
     /**
-    * Quest event that gradually lowers drone and ambience audio volumes
-    * until the minimum level is reached.
-    */
+     * Quest event that gradually lowers drone and ambience audio volumes
+     * until the minimum level is reached.
+     */
     {
         type: 'quest',
         step: 18,
@@ -263,9 +263,9 @@ export const farmEvents_part3 = [
     },
 
     /**
-    * Time-based quest event that ends the night state
-    * and starts sad music after a delay.
-    */
+     * Time-based quest event that ends the night state
+     * and starts sad music after a delay.
+     */
     {
         type: 'time',
         delay: 3000,
@@ -277,8 +277,8 @@ export const farmEvents_part3 = [
     },
 
     /**
-    * Time-based quest event that pauses drone and ambience sounds after a delay.
-    */
+     * Time-based quest event that pauses drone and ambience sounds after a delay.
+     */
     {
         type: 'time',
         delay: 7000,
@@ -291,9 +291,9 @@ export const farmEvents_part3 = [
     },
 
     /**
-    * Time-based quest event that moves the camera,
-    * opens the house door with sound, and advances the quest on arrival.
-    */
+     * Time-based quest event that moves the camera,
+     * opens the house door with sound, and advances the quest on arrival.
+     */
     {
         type: 'time',
         delay: 7000,
@@ -311,9 +311,9 @@ export const farmEvents_part3 = [
     },
 
     /**
-    * Time-based quest event that closes the house door
-    * and plays the corresponding sound after a delay.
-    */
+     * Time-based quest event that closes the house door
+     * and plays the corresponding sound after a delay.
+     */
     {
         type: 'time',
         delay: 2000,
@@ -325,9 +325,9 @@ export const farmEvents_part3 = [
     },
 
     /**
-    * Time-range event that starts, updates, and renders
-    * the third farm speech bubble during the specified interval.
-    */
+     * Time-range event that starts, updates, and renders
+     * the third farm speech bubble during the specified interval.
+     */
     {
         type: 'time',
         from: 4000,
@@ -347,9 +347,9 @@ export const farmEvents_part3 = [
     },
 
     /**
-    * Time-range event that starts, updates, and renders
-    * the fourth farm speech bubble during the specified interval.
-    */
+     * Time-range event that starts, updates, and renders
+     * the fourth farm speech bubble during the specified interval.
+     */
     {
         type: 'time',
         from: 9000,
@@ -369,9 +369,9 @@ export const farmEvents_part3 = [
     },
 
     /**
-    * Time-range event that starts, updates, and renders
-    * the fifth farm speech bubble during the specified interval.
-    */
+     * Time-range event that starts, updates, and renders
+     * the fifth farm speech bubble during the specified interval.
+     */
     {
         type: 'time',
         from: 14000,

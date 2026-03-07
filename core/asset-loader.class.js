@@ -20,8 +20,8 @@ import { smartMerge } from "../utils/asset-merge.util.js";
 export class AssetLoader {
     // FIXME: JSDoc stimmt nicht mehr
     /**
-    * Creates a new instance and initializes asset state.
-    */
+     * Creates a new instance and initializes asset state.
+     */
     constructor() {
         this.characterImages = {};
         this.entityImages = {};
@@ -34,9 +34,9 @@ export class AssetLoader {
     }
 
     /**
-    * Initializes the setup sequence.
-    * @returns {Promise<void>}
-    */
+     * Initializes the setup sequence.
+     * @returns {Promise<void>}
+     */
     async init() {
         this.cacheDom();
         await this.prepareIntroPhase();
@@ -44,26 +44,26 @@ export class AssetLoader {
     }
 
     /**
-    * Caches required DOM elements.
-    */
+     * Caches required DOM elements.
+     */
     cacheDom() {
         this.bar = document.getElementById('loading-bar');
         this.text = document.getElementById('loading-text');
     }
 
     /**
-    * Prepares the intro phase.
-    * @returns {Promise<void>}
-    */
+     * Prepares the intro phase.
+     * @returns {Promise<void>}
+     */
     async prepareIntroPhase() {
         await this.runFakeIntroProgress();
         await this.preloadIntroAssets();
     }
 
     /**
-    * Runs a simulated intro loading progress.
-    * @returns {Promise<void>}
-    */
+     * Runs a simulated intro loading progress.
+     * @returns {Promise<void>}
+     */
     async runFakeIntroProgress() {
         await this.smoothFillProgress(0, 5, {
             duration: 400,
@@ -74,9 +74,9 @@ export class AssetLoader {
 
     // FIXME: JSDoc stimmt nicht mehr
     /**
-    * Preloads intro assets.
-    * @returns {Promise<void>}
-    */
+     * Preloads intro assets.
+     * @returns {Promise<void>}
+     */
     async preloadIntroAssets() {
         // await initScriptVisuals();
         const introAudios = await preloadManifestAudio(introAudioManifest);
@@ -86,9 +86,9 @@ export class AssetLoader {
     }
 
     /**
-    * Loads and applies immediately required assets.
-    * @returns {Promise<void>}
-    */
+     * Loads and applies immediately required assets.
+     * @returns {Promise<void>}
+     */
     async loadImmediateAssets() {
         const manifests = this.buildImmediateManifests();
         const totalFiles = this.countManifestFiles(manifests);
@@ -100,9 +100,9 @@ export class AssetLoader {
     }
 
     /**
-    * Builds the list of immediate asset manifests.
-    * @returns {Array<Object>}
-    */
+     * Builds the list of immediate asset manifests.
+     * @returns {Array<Object>}
+     */
     buildImmediateManifests() {
         return [
             characterManifestImmediate,
@@ -112,10 +112,10 @@ export class AssetLoader {
     }
 
     /**
-    * Counts the total number of files in asset manifests.
-    * @param {Array<Object>} manifests Asset manifests.
-    * @returns {number}
-    */
+     * Counts the total number of files in asset manifests.
+     * @param {Array<Object>} manifests Asset manifests.
+     * @returns {number}
+     */
     countManifestFiles(manifests) {
         return manifests.reduce((count, manifest) => {
             for (const value of Object.values(manifest)) {
@@ -128,12 +128,12 @@ export class AssetLoader {
     }
 
     /**
-    * Creates a progress tracker for asset loading.
-    * @param {number} totalFiles Total number of files to load.
-    * @param {number} [base=0] Base progress percentage.
-    * @param {number} [range=100] Progress range.
-    * @returns {{updateProgress: Function, onFileLoaded: Function}}
-    */
+     * Creates a progress tracker for asset loading.
+     * @param {number} totalFiles Total number of files to load.
+     * @param {number} [base=0] Base progress percentage.
+     * @param {number} [range=100] Progress range.
+     * @returns {{updateProgress: Function, onFileLoaded: Function}}
+     */
     createProgressTracker(totalFiles, base = 0, range = 100) {
         let loaded = 0;
         const updateProgress = (label = "Loading assets…") => {
@@ -149,10 +149,10 @@ export class AssetLoader {
     }
 
     /**
-    * Loads immediate asset files.
-    * @param {Function} onFileLoaded Callback invoked after each loaded file.
-    * @returns {Promise<Array<PromiseSettledResult>>}
-    */
+     * Loads immediate asset files.
+     * @param {Function} onFileLoaded Callback invoked after each loaded file.
+     * @returns {Promise<Array<PromiseSettledResult>>}
+     */
     async loadImmediateFiles(onFileLoaded) {
         return Promise.allSettled([
             preloadManifestImages(characterManifestImmediate, onFileLoaded),
@@ -164,8 +164,8 @@ export class AssetLoader {
     // FIXME: JSDoc stimmt nicht mehr
     /**
      * Applies results of immediate asset loading.
-    * @param {Array<PromiseSettledResult>} results Settled load results.
-    */
+     * @param {Array<PromiseSettledResult>} results Settled load results.
+     */
     applyImmediateResults([charsRes, entitiesRes, farmAudioRes]) {
         const chars = this.getSettledValue(charsRes, {});
         const entities = this.getSettledValue(entitiesRes, {});
@@ -184,11 +184,11 @@ export class AssetLoader {
     }
 
     /**
-    * Extracts the fulfilled value from a settled promise result.
-    * @param {PromiseSettledResult} res Settled promise result.
-    * @param {*} [fallback={}] Fallback value.
-    * @returns {*}
-    */
+     * Extracts the fulfilled value from a settled promise result.
+     * @param {PromiseSettledResult} res Settled promise result.
+     * @param {*} [fallback={}] Fallback value.
+     * @returns {*}
+     */
     getSettledValue(res, fallback = {}) {
         return res && res.status === "fulfilled" && res.value != null
             ? res.value
@@ -196,9 +196,9 @@ export class AssetLoader {
     }
 
     /**
-    * Finalizes the loading progress.
-    * @returns {Promise<void>}
-    */
+     * Finalizes the loading progress.
+     * @returns {Promise<void>}
+     */
     async finishImmediateProgress() {
         await this.smoothFillProgress(this.progressValue || 70, 100, {
             duration: 600,
@@ -207,12 +207,12 @@ export class AssetLoader {
     }
 
     /**
-    * Smoothly fills the progress bar over time.
-    * @param {number} from Start value.
-    * @param {number} to End value.
-    * @param {Object} [options] Animation options.
-    * @returns {Promise<void>}
-    */
+     * Smoothly fills the progress bar over time.
+     * @param {number} from Start value.
+     * @param {number} to End value.
+     * @param {Object} [options] Animation options.
+     * @returns {Promise<void>}
+     */
     smoothFillProgress(from, to, options = {}) {
         const settings = this.createProgressSettings(from, to, options);
         return new Promise((resolve) => {
@@ -223,12 +223,12 @@ export class AssetLoader {
     }
 
     /**
-    * Creates normalized settings for progress animation.
-    * @param {number} from Start value.
-    * @param {number} to End value.
-    * @param {Object} [options] Animation options.
-    * @returns {Object}
-    */
+     * Creates normalized settings for progress animation.
+     * @param {number} from Start value.
+     * @param {number} to End value.
+     * @param {Object} [options] Animation options.
+     * @returns {Object}
+     */
     createProgressSettings(from, to,
         {
             duration = 600,
@@ -242,12 +242,12 @@ export class AssetLoader {
     }
 
     /**
-    * Handles a single progress animation step.
-    * @param {number} now Current timestamp.
-    * @param {Object} settings Progress settings.
-    * @param {Function} step Animation frame callback.
-    * @param {Function} resolve Promise resolve function.
-    */
+     * Handles a single progress animation step.
+     * @param {number} now Current timestamp.
+     * @param {Object} settings Progress settings.
+     * @param {Function} step Animation frame callback.
+     * @param {Function} resolve Promise resolve function.
+     */
     handleProgressStep(now, settings, step, resolve) {
         const { from, to, duration, showPercent, label, start } = settings;
         const progress = Math.min((now - start) / duration, 1);
@@ -259,9 +259,9 @@ export class AssetLoader {
     }
 
     /**
-    * Updates the loading progress value.
-    * @param {number} value Progress percentage.
-    */
+     * Updates the loading progress value.
+     * @param {number} value Progress percentage.
+     */
     setProgress(value) {
         this.progressValue = Math.max(this.progressValue, value);
         this.bar.style.width = `${this.progressValue}%`;
@@ -269,9 +269,9 @@ export class AssetLoader {
 
     // FIXME: JSDoc stimmt nicht mehr
     /**
-    * Loads deferred asset manifests.
-    * @returns {Promise<Object>}
-    */
+     * Loads deferred asset manifests.
+     * @returns {Promise<Object>}
+     */
     async loadDeferredManifests() {
         const [charRes, entityRes, audioRes, videoRes] = await Promise.allSettled([
             preloadManifestImages(characterManifestDeferred),
@@ -301,9 +301,9 @@ export class AssetLoader {
 
     // FIXME: JSDoc stimmt nicht mehr
     /**
-    * Loads lazy asset manifests after idle time.
-    * @returns {Promise<Object>}
-    */
+     * Loads lazy asset manifests after idle time.
+     * @returns {Promise<Object>}
+     */
     async loadLazyManifests() {
         await this.waitForIdle(1500);
         const [charRes, entityRes, audioRes] = await Promise.allSettled([
@@ -326,10 +326,10 @@ export class AssetLoader {
     };
 
     /**
-    * Waits until the browser is idle or a timeout is reached.
-    * @param {number} [timeout=1500] Maximum wait time in milliseconds.
-    * @returns {Promise<void>}
-    */
+     * Waits until the browser is idle or a timeout is reached.
+     * @param {number} [timeout=1500] Maximum wait time in milliseconds.
+     * @returns {Promise<void>}
+     */
     waitForIdle(timeout = 1500) {
         return new Promise(r =>
             ("requestIdleCallback" in window)

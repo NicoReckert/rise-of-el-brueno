@@ -12,15 +12,15 @@ import { CameraController } from '../systems/camera-controller.class.js';
  */
 export class World {
     /**
-    * Creates a new instance.
-    * @param {HTMLCanvasElement} canvas Rendering canvas.
-    * @param {Object} keyboard Keyboard input handler.
-    * @param {Object} characterImages Character image assets.
-    * @param {Object} entityImages Entity image assets.
-    * @param {Object} audioManager Audio manager instance.
-    * @param {Object} videoManager Video manager instance.
-    * @param {Object} inputManager Input manager instance.
-    */
+     * Creates a new instance.
+     * @param {HTMLCanvasElement} canvas Rendering canvas.
+     * @param {Object} keyboard Keyboard input handler.
+     * @param {Object} characterImages Character image assets.
+     * @param {Object} entityImages Entity image assets.
+     * @param {Object} audioManager Audio manager instance.
+     * @param {Object} videoManager Video manager instance.
+     * @param {Object} inputManager Input manager instance.
+     */
     constructor(canvas, keyboard, characterImages, entityImages, audioManager, videoManager, inputManager) {
         this.initCore(canvas, keyboard, characterImages, entityImages, audioManager, videoManager, inputManager);
         this.initCharacterAndAudio();
@@ -33,15 +33,15 @@ export class World {
     }
 
     /**
-    * Initializes core properties and dependencies.
-    * @param {HTMLCanvasElement} canvas Rendering canvas.
-    * @param {Object} keyboard Keyboard input handler.
-    * @param {Object} characterImages Character image assets.
-    * @param {Object} entityImages Entity image assets.
-    * @param {Object} audioManager Audio manager instance.
-    * @param {Object} videoManager Video manager instance.
-    * @param {Object} inputManager Input manager instance.
-    */
+     * Initializes core properties and dependencies.
+     * @param {HTMLCanvasElement} canvas Rendering canvas.
+     * @param {Object} keyboard Keyboard input handler.
+     * @param {Object} characterImages Character image assets.
+     * @param {Object} entityImages Entity image assets.
+     * @param {Object} audioManager Audio manager instance.
+     * @param {Object} videoManager Video manager instance.
+     * @param {Object} inputManager Input manager instance.
+     */
     initCore(canvas, keyboard, characterImages, entityImages, audioManager, videoManager, inputManager) {
         this.canvas = canvas;
         this.ctx = canvas.getContext('2d');
@@ -56,8 +56,8 @@ export class World {
     }
 
     /**
-    * Initializes character and audio components.
-    */
+     * Initializes character and audio components.
+     */
     initCharacterAndAudio() {
         this.character = new Character(this.characterImages, this, this.audioManager);
         this.allAudios = this.audioManager.audios;
@@ -65,8 +65,8 @@ export class World {
     }
 
     /**
-    * Initializes system components.
-    */
+     * Initializes system components.
+     */
     initSystems() {
         this.levelManager = new LevelManager(this);
         this.cleanup = new WorldCleanup(this);
@@ -74,8 +74,8 @@ export class World {
     }
 
     /**
-    * Initializes throw and camera state.
-    */
+     * Initializes throw and camera state.
+     */
     initThrowAndCameraState() {
         this.lastThrowCheck = 0;
         this.throwCheckDelay = 120;
@@ -85,8 +85,8 @@ export class World {
     }
 
     /**
-    * Initializes intro and pause state.
-    */
+     * Initializes intro and pause state.
+     */
     initIntroAndPauseState() {
         this.intro = new IntroScreen(this.ctx, this.canvas);
         this.chapterSound = this.allAudios.chapterSound;
@@ -97,23 +97,23 @@ export class World {
     }
 
     /**
-    * Initializes combat state.
-    */
+     * Initializes combat state.
+     */
     initCombatState() {
         this.attackStartTime = null;
         this.attackCommitUntil = null;
     }
 
     /**
-    * Initializes level boundary state.
-    */
+     * Initializes level boundary state.
+     */
     initLevelBounds() {
         this.level_end_x = null;
     }
 
     /**
-    * Initializes task-related state.
-    */
+     * Initializes task-related state.
+     */
     initTasks() {
         if (this.currentScene === 'farmLevel') {
             this.tasks = [
@@ -130,25 +130,25 @@ export class World {
     }
 
     /**
-    * Starts the game.
-    */
+     * Starts the game.
+     */
     startGame() {
         this.levelManager.initLevels();
         this.draw();
     }
 
     /**
-    * Starts the next level.
-    */
+     * Starts the next level.
+     */
     startNextLevel() {
         this.currentScene = 'townLevel';
     }
 
     /**
-    * Applies deferred asset updates.
-    * @param {Object} charDeferred Deferred character image assets.
-    * @param {Object} entityDeferred Deferred entity image assets.
-    */
+     * Applies deferred asset updates.
+     * @param {Object} charDeferred Deferred character image assets.
+     * @param {Object} entityDeferred Deferred entity image assets.
+     */
     applyDeferredAssets(charDeferred, entityDeferred) {
         if (!charDeferred && !entityDeferred) return;
         Object.assign(this.characterImages, charDeferred);
@@ -160,10 +160,10 @@ export class World {
     }
 
     /**
-    * Applies lazy-loaded asset updates.
-    * @param {Object} charLazy Lazy character image assets.
-    * @param {Object} entityLazy Lazy entity image assets.
-    */
+     * Applies lazy-loaded asset updates.
+     * @param {Object} charLazy Lazy character image assets.
+     * @param {Object} entityLazy Lazy entity image assets.
+     */
     applyLazyAssets(charLazy, entityLazy) {
         if (!charLazy && !entityLazy) return;
         Object.assign(this.characterImages, charLazy);
@@ -178,16 +178,16 @@ export class World {
     }
 
     /**
-    * Pauses the game.
-    */
+     * Pauses the game.
+     */
     pauseGame() {
         this.paused = true;
         this.isKeysStopp = true;
     }
 
     /**
-    * Resumes the game.
-    */
+     * Resumes the game.
+     */
     resumeGame() {
         this.paused = false;
         this.isKeysStopp = false;
@@ -197,9 +197,9 @@ export class World {
     }
 
     /**
-    * Renders a frame.
-    * @param {number} timestamp Frame timestamp.
-    */
+     * Renders a frame.
+     * @param {number} timestamp Frame timestamp.
+     */
     draw(timestamp) {
         this.timestamp = timestamp;
         if (!this.handleRunningState(timestamp)) return;
@@ -213,10 +213,10 @@ export class World {
     }
 
     /**
-    * Handles running and paused state before rendering.
-    * @param {number} timestamp Frame timestamp.
-    * @returns {boolean} True if rendering should continue, otherwise false.
-    */
+     * Handles running and paused state before rendering.
+     * @param {number} timestamp Frame timestamp.
+     * @returns {boolean} True if rendering should continue, otherwise false.
+     */
     handleRunningState(timestamp) {
         if (!this.isRunning) {
             this._drawing = false;
@@ -233,10 +233,10 @@ export class World {
     }
 
     /**
-    * Updates and returns the delta time since the last frame.
-    * @param {number} timestamp Frame timestamp.
-    * @returns {number} Delta time in milliseconds.
-    */
+     * Updates and returns the delta time since the last frame.
+     * @param {number} timestamp Frame timestamp.
+     * @returns {number} Delta time in milliseconds.
+     */
     updateDeltaTime(timestamp) {
         const deltaTime = timestamp - this.lastTime;
         this.lastTime = timestamp;
@@ -244,10 +244,10 @@ export class World {
     }
 
     /**
-    * Handles the intro phase rendering and updates.
-    * @param {number} deltaTime Delta time in milliseconds.
-    * @returns {boolean} True if intro is active, otherwise false.
-    */
+     * Handles the intro phase rendering and updates.
+     * @param {number} deltaTime Delta time in milliseconds.
+     * @returns {boolean} True if intro is active, otherwise false.
+     */
     handleIntroPhase(deltaTime) {
         if (this.intro?.done) return false;
         this.intro.update(deltaTime);
@@ -260,18 +260,18 @@ export class World {
     }
 
     /**
-    * Updates the current scene.
-    * @param {number} timestamp Frame timestamp.
-    */
+     * Updates the current scene.
+     * @param {number} timestamp Frame timestamp.
+     */
     updateCurrentScene(timestamp) {
         const controller = this.getCurrentController();
         controller?.update(timestamp);
     }
 
     /**
-    * Returns the controller for the current scene.
-    * @returns {*|null} Scene controller or null if not found.
-    */
+     * Returns the controller for the current scene.
+     * @returns {*|null} Scene controller or null if not found.
+     */
     getCurrentController() {
         const map = {
             farmLevel: this.farmLevelController,
@@ -285,34 +285,34 @@ export class World {
     }
 
     /**
-    * Updates and renders UI elements.
-    * @param {number} timestamp Frame timestamp.
-    */
+     * Updates and renders UI elements.
+     * @param {number} timestamp Frame timestamp.
+     */
     updateUI(timestamp) {
         this.taskWindow.update(timestamp);
         this.taskWindow.draw(this.ctx);
     }
 
     /**
-    * Schedules the next animation frame.
-    */
+     * Schedules the next animation frame.
+     */
     scheduleNextFrame() {
         this.frameId = requestAnimationFrame(ts => this.draw(ts));
     }
 
     /**
-    * Returns the current setup instance.
-    * @returns {*} Current setup.
-    */
+     * Returns the current setup instance.
+     * @returns {*} Current setup.
+     */
     getCurrentSetup() {
         return this.getSetupByScene(this.currentScene);
     }
 
     /**
-    * Returns the setup instance for the given scene.
-    * @param {string} scene Scene identifier.
-    * @returns {*|null} Setup instance or null if not found.
-    */
+     * Returns the setup instance for the given scene.
+     * @param {string} scene Scene identifier.
+     * @returns {*|null} Setup instance or null if not found.
+     */
     getSetupByScene(scene) {
         const map = {
             farmLevel: this.farmLevelSetup,
@@ -326,66 +326,66 @@ export class World {
     }
 
     /**
-    * Restarts the specified level.
-    * @param {string} levelName Level identifier.
-    */
+     * Restarts the specified level.
+     * @param {string} levelName Level identifier.
+     */
     restartLevel(levelName) {
         this.levelManager.restartLevel(levelName);
     }
 
     /**
-    * Fades out the level complete music.
-    */
+     * Fades out the level complete music.
+     */
     fadeOutLevelCompleteMusic() {
         this.levelManager.fadeOutLevelCompleteMusic();
     }
 
     /**
-    * Starts the main loop.
-    */
+     * Starts the main loop.
+     */
     startLoop() {
         this.levelManager.startLoop();
     }
 
     /**
-    * Stops the main loop.
-    */
+     * Stops the main loop.
+     */
     stop() {
         this.levelManager.stop();
     }
 
     /**
-    * Destroys the world instance.
-    */
+     * Destroys the world instance.
+     */
     destroy() {
         this.cleanup.destroy();
     }
 
     /**
-    * Pauses and stops the main loop.
-    */
+     * Pauses and stops the main loop.
+     */
     pauseAndStopLoop() {
         this.cleanup.pauseAndStopLoop();
     }
 
     /**
-    * Clears the canvas.
-    */
+     * Clears the canvas.
+     */
     clearCanvas() {
         this.cleanup.clearCanvas();
     }
 
     /**
-    * Stops all active sounds.
-    */
+     * Stops all active sounds.
+     */
     stopAllSounds() {
         this.cleanup.stopAllSounds();
     }
 
     /**
-    * Stops a sound.
-    * @param {HTMLMediaElement} sound Audio element to stop.
-    */
+     * Stops a sound.
+     * @param {HTMLMediaElement} sound Audio element to stop.
+     */
     stopSound(sound) {
         this.cleanup.stopSound(sound);
     }

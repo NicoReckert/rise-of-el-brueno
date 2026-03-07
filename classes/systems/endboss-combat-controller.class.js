@@ -6,9 +6,9 @@ import { EndbossFireBeam } from "../effects/endboss-fire-beam.class.js";
  */
 export class EndbossCombatController {
     /**
-    * Creates a new instance.
-    * @param {*} endboss Reference to the endboss object.
-    */
+     * Creates a new instance.
+     * @param {*} endboss Reference to the endboss object.
+     */
     constructor(endboss) {
         this.endboss = endboss;
         this.animCtrl = this.endboss.animCtrl;
@@ -16,10 +16,10 @@ export class EndbossCombatController {
     }
 
     /**
-    * Shoots a projectile toward the given character.
-    * @param {*} character Target character instance.
-    * @returns {void}
-    */
+     * Shoots a projectile toward the given character.
+     * @param {*} character Target character instance.
+     * @returns {void}
+     */
     shootProjectile(character) {
         const targetX = character.x + character.width * 0.5;
         const targetY = character.y + character.height * 0.35;
@@ -34,10 +34,10 @@ export class EndbossCombatController {
     }
 
     /**
-    * Starts the finisher sequence.
-    * @param {number} timestamp Frame timestamp.
-    * @returns {void}
-    */
+     * Starts the finisher sequence.
+     * @param {number} timestamp Frame timestamp.
+     * @returns {void}
+     */
     startFinisher(timestamp) {
         this.endboss.finisherStarted = true;
         this.endboss.finisherState = this.endboss.FINISHER.TAKEOFF;
@@ -53,11 +53,11 @@ export class EndbossCombatController {
     }
 
     /**
-    * Starts the fire breath attack.
-    * @param {*} setup Configuration or state setup object.
-    * @param {number} timestamp Frame timestamp.
-    * @returns {void}
-    */
+     * Starts the fire breath attack.
+     * @param {*} setup Configuration or state setup object.
+     * @param {number} timestamp Frame timestamp.
+     * @returns {void}
+     */
     startFireBreath(setup, timestamp) {
         const character = setup.world.character;
         character.combatCtrl.startAirHitStun(timestamp);
@@ -70,21 +70,21 @@ export class EndbossCombatController {
     }
 
     /**
-    * Applies audio changes for the fire breath attack.
-    * @param {*} setup Configuration or state setup object.
-    * @returns {void}
-    */
+     * Applies audio changes for the fire breath attack.
+     * @param {*} setup Configuration or state setup object.
+     * @returns {void}
+     */
     applyFireBreathAudio(setup) {
         this.endboss.fadeOutAudio(setup.backgroundMusic, 1000);
         this.endboss.fadeInAudio(setup.sounds.airHitStunMusic, 2000, 1.0);
     }
 
     /**
-    * Starts the spirit essence sequence if conditions are met.
-    * @param {*} setup Configuration or state setup object.
-    * @param {number} timestamp Frame timestamp.
-    * @returns {void}
-    */
+     * Starts the spirit essence sequence if conditions are met.
+     * @param {*} setup Configuration or state setup object.
+     * @param {number} timestamp Frame timestamp.
+     * @returns {void}
+     */
     maybeStartSpiritEssenceSequence(setup, timestamp) {
         const character = setup.world.character;
         const seq = setup.spiritEssenceSeq;
@@ -94,10 +94,10 @@ export class EndbossCombatController {
     }
 
     /**
-    * Ensures the fire breath beam instance exists.
-    * @param {*} setup Configuration or state setup object.
-    * @returns {void}
-    */
+     * Ensures the fire breath beam instance exists.
+     * @param {*} setup Configuration or state setup object.
+     * @returns {void}
+     */
     ensureFireBreathBeam(setup) {
         if (this.endboss.fireBreathBeam) return;
         const beam = new EndbossFireBeam(setup.entityImages, this.endboss.allAudios);
@@ -107,9 +107,9 @@ export class EndbossCombatController {
     }
 
     /**
-    * Activates the fire breath beam.
-    * @returns {void}
-    */
+     * Activates the fire breath beam.
+     * @returns {void}
+     */
     activateFireBreathBeam() {
         const beam = this.endboss.fireBreathBeam;
         if (!beam) return;
@@ -119,11 +119,11 @@ export class EndbossCombatController {
     }
 
     /**
-    * Updates the fire breath attack.
-    * @param {*} setup Configuration or state setup object.
-    * @param {number} timestamp Frame timestamp.
-    * @returns {void}
-    */
+     * Updates the fire breath attack.
+     * @param {*} setup Configuration or state setup object.
+     * @param {number} timestamp Frame timestamp.
+     * @returns {void}
+     */
     updateFireBreath(setup, timestamp) {
         const beam = this.endboss.fireBreathBeam;
         if (!beam) return;
@@ -135,10 +135,10 @@ export class EndbossCombatController {
     }
 
     /**
-    * Refreshes the fire breath beam state.
-    * @param {*} beam Fire breath beam instance.
-    * @returns {void}
-    */
+     * Refreshes the fire breath beam state.
+     * @param {*} beam Fire breath beam instance.
+     * @returns {void}
+     */
     refreshFireBreathBeam(beam) {
         beam.setOwner(this.endboss);
         beam.active = true;
@@ -146,10 +146,10 @@ export class EndbossCombatController {
     }
 
     /**
-    * Initializes the timestamp for fire breath damage.
-    * @param {number} timestamp Frame timestamp.
-    * @returns {void}
-    */
+     * Initializes the timestamp for fire breath damage.
+     * @param {number} timestamp Frame timestamp.
+     * @returns {void}
+     */
     initBreathDamageTime(timestamp) {
         if (!this.endboss.lastBreathDamageTime) {
             this.endboss.lastBreathDamageTime = timestamp;
@@ -157,12 +157,12 @@ export class EndbossCombatController {
     }
 
     /**
-    * Applies fire breath damage if the interval has elapsed.
-    * @param {*} beam Fire breath beam instance.
-    * @param {*} char Target character instance.
-    * @param {number} timestamp Frame timestamp.
-    * @returns {void}
-    */
+     * Applies fire breath damage if the interval has elapsed.
+     * @param {*} beam Fire breath beam instance.
+     * @param {*} char Target character instance.
+     * @param {number} timestamp Frame timestamp.
+     * @returns {void}
+     */
     applyBreathDamageIfDue(beam, char, timestamp) {
         const last = this.endboss.lastBreathDamageTime || timestamp;
         const interval = this.endboss.fireBreathTickMs;
@@ -174,10 +174,10 @@ export class EndbossCombatController {
     }
 
     /**
-    * Applies fire breath damage to the target character.
-    * @param {*} char Target character instance.
-    * @returns {void}
-    */
+     * Applies fire breath damage to the target character.
+     * @param {*} char Target character instance.
+     * @returns {void}
+     */
     applyFireBreathDamage(char) {
         const dmg = this.endboss.fireBreathDamage;
         if (typeof char.combatCtrl.hit === "function") {
@@ -188,19 +188,19 @@ export class EndbossCombatController {
     }
 
     /**
-    * Stops the fire breath attack.
-    * @returns {void}
-    */
+     * Stops the fire breath attack.
+     * @returns {void}
+     */
     stopFireBreath() {
         this.endboss.isFireBreath = false;
         if (this.endboss.fireBreathBeam) this.endboss.fireBreathBeam.active = false;
     }
 
     /**
-    * Sets a new phase and applies corresponding settings.
-    * @param {*} newPhase Phase identifier.
-    * @returns {void}
-    */
+     * Sets a new phase and applies corresponding settings.
+     * @param {*} newPhase Phase identifier.
+     * @returns {void}
+     */
     setPhase(newPhase) {
         this.endboss.phase = newPhase;
         this.endboss.phaseStartTime = performance.now();
@@ -208,10 +208,10 @@ export class EndbossCombatController {
     }
 
     /**
-    * Applies settings for the specified phase.
-    * @param {*} newPhase Phase identifier.
-    * @returns {void}
-    */
+     * Applies settings for the specified phase.
+     * @param {*} newPhase Phase identifier.
+     * @returns {void}
+     */
     applyPhaseSettings(newPhase) {
         const phase = this.endboss.ENDBOSS_PHASE;
         switch (newPhase) {
@@ -223,9 +223,9 @@ export class EndbossCombatController {
     }
 
     /**
-    * Applies settings for the air eggs phase.
-    * @returns {void}
-    */
+     * Applies settings for the air eggs phase.
+     * @returns {void}
+     */
     applyAirEggsPhase() {
         this.endboss.isFly = true;
         this.endboss.isVulnerable = false;
@@ -239,27 +239,27 @@ export class EndbossCombatController {
     }
 
     /**
-    * Applies settings for the storm phase.
-    * @returns {void}
-    */
+     * Applies settings for the storm phase.
+     * @returns {void}
+     */
     applyStormPhase() {
         this.endboss.isFly = true;
         this.endboss.isVulnerable = false;
     }
 
     /**
-    * Applies settings for the ground phase.
-    * @returns {void}
-    */
+     * Applies settings for the ground phase.
+     * @returns {void}
+     */
     applyGroundPhase() {
         this.endboss.isFly = false;
         this.endboss.isVulnerable = true;
     }
 
     /**
-    * Applies settings for the enrage phase.
-    * @returns {void}
-    */
+     * Applies settings for the enrage phase.
+     * @returns {void}
+     */
     applyEnragePhase() {
         this.endboss.isVulnerable = true;
         this.endboss.speedX *= 1.3;

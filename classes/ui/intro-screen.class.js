@@ -1,10 +1,26 @@
+/**
+ * Displays and updates the intro screen.
+ */
 export class IntroScreen {
+    /**
+     * Creates a new prolog screen instance.
+     * @param {CanvasRenderingContext2D} ctx Rendering context.
+     * @param {HTMLCanvasElement} canvas Canvas element.
+     * @param {string} [text="Prolog"] Display text.
+     */
     constructor(ctx, canvas, text = "Prolog") {
         this.ctx = ctx;
         this.canvas = canvas;
         this.text = text;
+        this.initFadeConfig();
+        this.initBackgroundImage();
+    }
 
-        // Fade-Logik
+    /**
+     * Initializes the fade configuration.
+     * @returns {void}
+     */
+    initFadeConfig() {
         this.alpha = 0;
         this.fadeInSpeed = 0.02;
         this.fadeOutSpeed = 0.0035;
@@ -12,50 +28,87 @@ export class IntroScreen {
         this.visibleTime = 0;
         this.phase = "fadeIn";
         this.done = false;
-
-        // Hintergrundbild
-        this.bgImage = new Image();
-        this.bgLoaded = false;
-        this.bgImage.onload = () => this.bgLoaded = true;
-        this.bgImage.onerror = () => this.bgLoaded = false;
-        this.bgImage.src = "./assets/img/intro_background.webp";
-
-        // Overlay über dem Bild (optional)
-        this.bgOverlayAlpha = 0.20;
-
-        // Für Flacker-Effekt
+        this.bgOverlayAlpha = 0.2;
         this.time = 0;
     }
 
-    update(deltaTime) {
-        this.time += deltaTime * 0.005; // langsame Animation
-
-        if (this.phase === "fadeIn") {
-            this.alpha += this.fadeInSpeed;
-            if (this.alpha >= 1) {
-                this.alpha = 1;
-                this.phase = "visible";
-            }
-        } else if (this.phase === "visible") {
-            this.visibleTime += deltaTime;
-            if (this.visibleTime >= this.duration) {
-                this.phase = "fadeOut";
-            }
-        } else if (this.phase === "fadeOut") {
-            this.alpha -= this.fadeOutSpeed;
-            if (this.alpha <= 0) {
-                this.alpha = 0;
-                this.done = true;
-            }
-        }
+    /**
+     * Initializes the background image.
+     * @returns {void}
+     */
+    initBackgroundImage() {
+        this.bgImage = new Image();
+        this.bgLoaded = false;
+        this.bgImage.onload = () => (this.bgLoaded = true);
+        this.bgImage.onerror = () => (this.bgLoaded = false);
+        this.bgImage.src = "./assets/img/intro_background.webp";
     }
 
+    /**
+     * Updates the intro screen state.
+     * @param {number} deltaTime Time since the last update.
+     * @returns {void}
+     */
+    update(deltaTime) {
+        this.time += deltaTime * 0.005;
+        if (this.phase === "fadeIn") { this.updateFadeIn(); return; }
+        if (this.phase === "visible") { this.updateVisible(deltaTime); return; }
+        if (this.phase === "fadeOut") { this.updateFadeOut(); }
+    }
+
+    /**
+     * Updates the fade-in phase.
+     * @returns {void}
+     */
+    updateFadeIn() {
+        this.alpha += this.fadeInSpeed;
+        if (this.alpha < 1) return;
+        this.alpha = 1;
+        this.phase = "visible";
+    }
+
+    /**
+     * Updates the visible phase.
+     * @param {number} deltaTime Time since the last update.
+     * @returns {void}
+     */
+    updateVisible(deltaTime) {
+        this.visibleTime += deltaTime;
+        if (this.visibleTime < this.duration) return;
+        this.phase = "fadeOut";
+    }
+
+    /**
+     * Updates the fade-out phase.
+     * @returns {void}
+     */
+    updateFadeOut() {
+        this.alpha -= this.fadeOutSpeed;
+        if (this.alpha > 0) return;
+        this.alpha = 0;
+        this.done = true;
+    }
+
+    /**
+     * Draws the intro screen.
+     * @returns {void}
+     */
     draw() {
         const ctx = this.ctx;
         ctx.save();
         ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+        this.drawBackground(ctx);
+        this.drawTitle(ctx);
+        ctx.globalAlpha = 1.0;
+        ctx.restore();
+    }
 
-        // --- Hintergrund ---
+    /**
+     * Draws the background layer.
+     * @param {CanvasRenderingContext2D} ctx Rendering context.
+     * @returns {void}
+     */
+    drawBackground(ctx) {
         if (this.bgLoaded) {
             ctx.globalAlpha = this.alpha;
             ctx.drawImage(this.bgImage, 0, 0, this.canvas.width, this.canvas.height);
@@ -64,55 +117,91 @@ export class IntroScreen {
                 ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
             }
             ctx.globalAlpha = 1.0;
-        } else {
-            ctx.fillStyle = `rgba(0,0,0,${0.5 * this.alpha})`;
-            ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+            return;
         }
+        ctx.fillStyle = `rgba(0,0,0,${0.5 * this.alpha})`;
+        ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+    }
 
-        // --- Hero-Text (Gold + Outline + Glow + Flackern) ---
+    /**
+     * Draws the title.
+     * @param {CanvasRenderingContext2D} ctx Rendering context.
+     * @returns {void}
+     */
+    drawTitle(ctx) {
         ctx.globalAlpha = this.alpha;
-        ctx.font = "bold 90px 'UncialAntiqua', serif"; // große, edle Schrift
-        ctx.textAlign = "center";
-        ctx.textBaseline = "middle";
-
-        // Farbverlauf (Gold)
-        const gradient = ctx.createLinearGradient(
-            0, this.canvas.height / 2 - 60,
-            0, this.canvas.height / 2 + 60
-        );
-        gradient.addColorStop(0, "#fff8dc"); // helles Gold oben
-        gradient.addColorStop(1, "#e6b800"); // kräftiges Gold unten
+        this.setupTitleFont(ctx);
+        const gradient = this.createTitleGradient(ctx);
         ctx.fillStyle = gradient;
-
-        // Outline (dunkelbraun)
         ctx.lineWidth = 6;
         ctx.strokeStyle = "rgba(30,15,0,0.9)";
-        ctx.strokeText(this.text, this.canvas.width / 2, this.canvas.height / 2);
+        this.strokeTitle(ctx);
+        this.fillTitleWithGlow(ctx);
+        this.fillTitleHighlight(ctx);
+    }
 
-        // Glow-Effekt (flackert leicht mit der Zeit)
+    /**
+     * Configures the title font settings.
+     * @param {CanvasRenderingContext2D} ctx Rendering context.
+     * @returns {void}
+     */
+    setupTitleFont(ctx) {
+        ctx.font = "bold 90px 'UncialAntiqua', serif";
+        ctx.textAlign = "center";
+        ctx.textBaseline = "middle";
+    }
+
+    /**
+     * Creates the title gradient.
+     * @param {CanvasRenderingContext2D} ctx Rendering context.
+     * @returns {CanvasGradient} Title gradient.
+     */
+    createTitleGradient(ctx) {
+        const cy = this.canvas.height / 2;
+        const g = ctx.createLinearGradient(0, cy - 60, 0, cy + 60);
+        g.addColorStop(0, "#fff8dc");
+        g.addColorStop(1, "#e6b800");
+        return g;
+    }
+
+    /**
+     * Strokes the title text.
+     * @param {CanvasRenderingContext2D} ctx Rendering context.
+     * @returns {void}
+     */
+    strokeTitle(ctx) {
+        const cx = this.canvas.width / 2;
+        const cy = this.canvas.height / 2;
+        ctx.strokeText(this.text, cx, cy);
+    }
+
+    /**
+     * Fills the title text with a glow effect.
+     * @param {CanvasRenderingContext2D} ctx Rendering context.
+     * @returns {void}
+     */
+    fillTitleWithGlow(ctx) {
+        const cx = this.canvas.width / 2;
+        const cy = this.canvas.height / 2;
         const glowStrength = 40 + Math.sin(this.time * 3) * 10;
         ctx.shadowColor = "rgba(255,200,50,0.9)";
         ctx.shadowBlur = glowStrength;
+        ctx.fillText(this.text, cx, cy);
+    }
 
-        // Füllen
-        ctx.fillText(this.text, this.canvas.width / 2, this.canvas.height / 2);
-
-        // Highlight oben (metallischer Glanz)
-        const highlight = ctx.createLinearGradient(
-            0, this.canvas.height / 2 - 60,
-            0, this.canvas.height / 2
-        );
-        highlight.addColorStop(0, "rgba(255,255,255,0.8)");
-        highlight.addColorStop(1, "rgba(255,255,255,0)");
-        ctx.fillStyle = highlight;
-        ctx.shadowBlur = 0; // kein Glow beim Highlight
-        ctx.fillText(this.text, this.canvas.width / 2, this.canvas.height / 2);
-
-        // Reset
-        ctx.globalAlpha = 1.0;
-        ctx.restore();
+    /**
+     * Fills the title text with a highlight effect.
+     * @param {CanvasRenderingContext2D} ctx Rendering context.
+     * @returns {void}
+     */
+    fillTitleHighlight(ctx) {
+        const cx = this.canvas.width / 2;
+        const cy = this.canvas.height / 2;
+        const hi = ctx.createLinearGradient(0, cy - 60, 0, cy);
+        hi.addColorStop(0, "rgba(255,255,255,0.8)");
+        hi.addColorStop(1, "rgba(255,255,255,0)");
+        ctx.fillStyle = hi;
+        ctx.shadowBlur = 0;
+        ctx.fillText(this.text, cx, cy);
     }
 }
-
-
-

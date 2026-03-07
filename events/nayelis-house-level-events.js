@@ -1,9 +1,9 @@
 export const nayelisHouseEvents =
     [
         /**
-        * Quest event that initializes the scene, positions the character,
-        * sets Nayeli to idle, starts background music, and plays the video.
-        */
+         * Quest event that initializes the scene, positions the character,
+         * sets Nayeli to idle, starts background music, and plays the video.
+         */
         {
             type: 'quest',
             action: (setup) => {
@@ -21,9 +21,9 @@ export const nayelisHouseEvents =
         },
 
         /**
-        * Collision-based event that triggers Nayeli dialogue,
-        * emits a new weapon event, and advances the quest.
-        */
+         * Collision-based event that triggers Nayeli dialogue,
+         * emits a new weapon event, and advances the quest.
+         */
         {
             type: 'collision',
             objectA: 'character',
@@ -38,9 +38,9 @@ export const nayelisHouseEvents =
         },
 
         /**
-        * Time-based quest event that transitions to the new weapon level,
-        * updates character state, switches audio, and starts the level video.
-        */
+         * Time-based quest event that transitions to the new weapon level,
+         * updates character state, switches audio, and starts the level video.
+         */
         {
             type: 'time',
             delay: 8000,

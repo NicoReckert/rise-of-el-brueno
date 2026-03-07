@@ -3,10 +3,10 @@
  */
 export class EarthquakeEffect {
     /**
-    * Creates a new instance.
-    * @param {*} setup Configuration object.
-    * @param {*} ctx Rendering context.
-    */
+     * Creates a new instance.
+     * @param {*} setup Configuration object.
+     * @param {*} ctx Rendering context.
+     */
     constructor(setup, ctx) {
         this.setup = setup;
         this.ctx = ctx;
@@ -16,10 +16,10 @@ export class EarthquakeEffect {
     }
 
     /**
-    * Renders the earthquake effect.
-    * @param {number} timestamp Current frame timestamp.
-    * @param {Function} drawFn Render callback.
-    */
+     * Renders the earthquake effect.
+     * @param {number} timestamp Current frame timestamp.
+     * @param {Function} drawFn Render callback.
+     */
     render(timestamp, drawFn) {
         if (!this.setup.state.earthquakeStart) {
             drawFn();
@@ -34,10 +34,10 @@ export class EarthquakeEffect {
     }
 
     /**
-    * Computes the time difference between frames.
-    * @param {number} timestamp Current frame timestamp.
-    * @returns {number} Delta time in seconds.
-    */
+     * Computes the time difference between frames.
+     * @param {number} timestamp Current frame timestamp.
+     * @returns {number} Delta time in seconds.
+     */
     _computeDeltaTime(timestamp) {
         if (!this.lastTimestamp) this.lastTimestamp = timestamp;
         const delta = (timestamp - this.lastTimestamp) / 1000;
@@ -46,9 +46,9 @@ export class EarthquakeEffect {
     }
 
     /**
-    * Updates the shake offset values.
-    * @param {number} deltaTime Delta time in seconds.
-    */
+     * Updates the shake offset values.
+     * @param {number} deltaTime Delta time in seconds.
+     */
     _updateShakeValues(deltaTime) {
         if (this.setup.state.shakeIntensity <= 0) {
             this.setup.state.earthquakeStart = false;

@@ -357,9 +357,9 @@ export class MovableObject extends DrawableObject {
     }
 
     /**
-    * Applies the next animation frame from the given images.
-    * @param {Array} images Animation frame images.
-    */
+     * Applies the next animation frame from the given images.
+     * @param {Array} images Animation frame images.
+     */
     applyNextFrame(images) {
         if (!images || !images.length) return;
         this.img = images[this.frameIndex % images.length];
@@ -367,9 +367,9 @@ export class MovableObject extends DrawableObject {
     }
 
     /**
-    * Applies the next frame from a sprite sheet.
-    * @param {Object} sheet Sprite sheet definition.
-    */
+     * Applies the next frame from a sprite sheet.
+     * @param {Object} sheet Sprite sheet definition.
+     */
     applyNextSheetFrame(sheet) {
         if (!sheet?.meta) return;
         const animDef = this.getSheetAnimDef(sheet);
@@ -380,10 +380,10 @@ export class MovableObject extends DrawableObject {
     }
 
     /**
-    * Returns the animation definition for a sprite sheet.
-    * @param {Object} sheet Sprite sheet definition.
-    * @returns {Object} Animation definition.
-    */
+     * Returns the animation definition for a sprite sheet.
+     * @param {Object} sheet Sprite sheet definition.
+     * @returns {Object} Animation definition.
+     */
     getSheetAnimDef(sheet) {
         const meta = sheet.meta;
         const animName = sheet.anim ?? this.currentAnimation;
@@ -395,11 +395,11 @@ export class MovableObject extends DrawableObject {
     }
 
     /**
-    * Calculates frame range information for a sprite sheet animation.
-    * @param {Object} animDef Animation definition.
-    * @param {Object} meta Sprite sheet metadata.
-    * @returns {{from: number, to: number, count: number}} Frame range data.
-    */
+     * Calculates frame range information for a sprite sheet animation.
+     * @param {Object} animDef Animation definition.
+     * @param {Object} meta Sprite sheet metadata.
+     * @returns {{from: number, to: number, count: number}} Frame range data.
+     */
     getSheetFrameRange(animDef, meta) {
         const from = animDef.from ?? 0;
         const to = animDef.to ?? (meta.frames - 1);
@@ -408,21 +408,21 @@ export class MovableObject extends DrawableObject {
     }
 
     /**
-    * Calculates the current frame index for a sprite sheet animation.
-    * @param {number} from Starting frame index.
-    * @param {number} count Number of frames in the range.
-    * @returns {number} Calculated frame index.
-    */
+     * Calculates the current frame index for a sprite sheet animation.
+     * @param {number} from Starting frame index.
+     * @param {number} count Number of frames in the range.
+     * @returns {number} Calculated frame index.
+     */
     getSheetFrameIndex(from, count) {
         return from + (this.frameIndex % count);
     }
 
     /**
-    * Calculates the grid position for a frame in a sprite sheet.
-    * @param {number} frame Frame index.
-    * @param {Object} meta Sprite sheet metadata.
-    * @returns {{col: number, row: number}} Grid position.
-    */
+     * Calculates the grid position for a frame in a sprite sheet.
+     * @param {number} frame Frame index.
+     * @param {Object} meta Sprite sheet metadata.
+     * @returns {{col: number, row: number}} Grid position.
+     */
     getSheetGridPosition(frame, meta) {
         const col = frame % meta.columns;
         const row = Math.floor(frame / meta.columns);
@@ -430,12 +430,12 @@ export class MovableObject extends DrawableObject {
     }
 
     /**
-    * Sets the current sprite sheet frame source.
-    * @param {HTMLImageElement} image Sprite sheet image.
-    * @param {Object} meta Sprite sheet metadata.
-    * @param {number} col Column index.
-    * @param {number} row Row index.
-    */
+     * Sets the current sprite sheet frame source.
+     * @param {HTMLImageElement} image Sprite sheet image.
+     * @param {Object} meta Sprite sheet metadata.
+     * @param {number} col Column index.
+     * @param {number} row Row index.
+     */
     setSheetFrameSource(image, meta, col, row) {
         this.img = image;
         this.frameSource = {
@@ -447,12 +447,12 @@ export class MovableObject extends DrawableObject {
     }
 
     /**
-* Returns the sprite sheet animation definition.
-* Mirrors CharacterAnimationController.getSheetDef, aber generisch.
-* @param {Object} meta Sprite sheet metadata.
-* @param {string} animName Animation state identifier.
-* @returns {Object} Animation definition.
-*/
+     * Returns the sprite sheet animation definition.
+     * Mirrors CharacterAnimationController.getSheetDef, aber generisch.
+     * @param {Object} meta Sprite sheet metadata.
+     * @param {string} animName Animation state identifier.
+     * @returns {Object} Animation definition.
+     */
     getSheetDef(meta, animName) {
         const anims = meta.animations ?? {};
         return anims[animName] ?? anims.default ?? {
@@ -462,12 +462,12 @@ export class MovableObject extends DrawableObject {
     }
 
     /**
-    * Calculates the frame count for a sprite sheet animation.
-    * Mirrors CharacterAnimationController.getFrameCount.
-    * @param {Object} def Animation definition.
-    * @param {number} totalFrames Total number of frames in the sheet.
-    * @returns {number} Frame count.
-    */
+     * Calculates the frame count for a sprite sheet animation.
+     * Mirrors CharacterAnimationController.getFrameCount.
+     * @param {Object} def Animation definition.
+     * @param {number} totalFrames Total number of frames in the sheet.
+     * @returns {number} Frame count.
+     */
     getFrameCount(def, totalFrames) {
         const from = def.from ?? 0;
         const to = def.to ?? (totalFrames - 1);
@@ -475,15 +475,15 @@ export class MovableObject extends DrawableObject {
     }
 
     /**
-    * Generic animation-stepper für Arrays, sheet und sheetSequence.
-    * DELEGIEREND – keine Character-spezifische Logik, keine Transitions.
-    *
-    * @param {*} anim - Animation source (Array | sheet | sheetSequence)
-    * @param {Object} [options={}]
-    * @param {boolean} [options.isOneShot=false]       - nicht loopen / fertig nach Ende
-    * @param {Function} [options.onFinished=null]      - Callback bei Ende
-    * @param {boolean} [options.allowLoop=true]        - Ob loopenden Anim loopen darf
-    */
+     * Generic animation-stepper für Arrays, sheet und sheetSequence.
+     * DELEGIEREND – keine Character-spezifische Logik, keine Transitions.
+     * 
+     * @param {*} anim - Animation source (Array | sheet | sheetSequence)
+     * @param {Object} [options={}]
+     * @param {boolean} [options.isOneShot=false]       - nicht loopen / fertig nach Ende
+     * @param {Function} [options.onFinished=null]      - Callback bei Ende
+     * @param {boolean} [options.allowLoop=true]        - Ob loopenden Anim loopen darf
+     */
     updateAnimationFromSourceGeneric(anim, {
         isOneShot = false,
         onFinished = null,
@@ -508,11 +508,11 @@ export class MovableObject extends DrawableObject {
     }
 
     /**
-    * Handles animation defined as an image array.
-    * Entspricht CharacterAnimationController.handleArrayAnimation,
-    * nur ohne Transitions.
-    * @param {Array} images Animation frame images.
-    */
+     * Handles animation defined as an image array.
+     * Entspricht CharacterAnimationController.handleArrayAnimation,
+     * nur ohne Transitions.
+     * @param {Array} images Animation frame images.
+     */
     stepArrayAnimation(images, { isOneShot, onFinished }) {
         this.applyNextFrame(images);
         // falls Object eine deferredSizeUpdate-Logik hat (Character z.B.)
@@ -528,11 +528,11 @@ export class MovableObject extends DrawableObject {
     }
 
     /**
-    * Handles animation defined as a single sprite sheet.
-    * Entspricht CharacterAnimationController.handleSheet,
-    * aber ohne Transitions – Ende wird via onFinished gemeldet.
-    * @param {Object} anim Animation definition.
-    */
+     * Handles animation defined as a single sprite sheet.
+     * Entspricht CharacterAnimationController.handleSheet,
+     * aber ohne Transitions – Ende wird via onFinished gemeldet.
+     * @param {Object} anim Animation definition.
+     */
     stepSheetAnimation(anim, { isOneShot, onFinished, allowLoop }) {
         this.applyNextSheetFrame(anim);
         if (typeof this.handleDeferredSizeUpdate === 'function') {
@@ -557,11 +557,11 @@ export class MovableObject extends DrawableObject {
     }
 
     /**
-    * Handles animation defined as a sheet sequence.
-    * Entspricht CharacterAnimationController.handleSheetSequence/advanceSheetSequence,
-    * aber generisch.
-    * @param {Object} anim Animation definition (sheetSequence).
-    */
+     * Handles animation defined as a sheet sequence.
+     * Entspricht CharacterAnimationController.handleSheetSequence/advanceSheetSequence,
+     * aber generisch.
+     * @param {Object} anim Animation definition (sheetSequence).
+     */
     stepSheetSequenceAnimation(anim, { isOneShot, onFinished, allowLoop }) {
         const sheets = anim.sheets ?? [];
         const sheet = sheets[this.sheetIndex];

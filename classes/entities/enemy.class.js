@@ -11,20 +11,20 @@ import { EnemyDragonMovementController } from '../systems/enemy-dragon-movement-
 import { EnemyDragonAttackController } from '../systems/enemy-dragon-attack-controller.class.js';
 
 /**
-* Enemy entity with animation, movement, combat, and AI controllers.
-*/
+ * Enemy entity with animation, movement, combat, and AI controllers.
+ */
 export class Enemy extends MovableObject {
     /**
-    * Creates a new instance.
-    * @param {string} currentEnemy Enemy identifier.
-    * @param {object} entityImages Image collection.
-    * @param {number} [width=120] Enemy width.
-    * @param {number} [height=120] Enemy height.
-    * @param {number} [y=545] Vertical position.
-    * @param {?number} [x=null] Horizontal position.
-    * @param {object} allAudios Audio collection.
-    * @param {object} world World reference.
-    */
+     * Creates a new instance.
+     * @param {string} currentEnemy Enemy identifier.
+     * @param {object} entityImages Image collection.
+     * @param {number} [width=120] Enemy width.
+     * @param {number} [height=120] Enemy height.
+     * @param {number} [y=545] Vertical position.
+     * @param {?number} [x=null] Horizontal position.
+     * @param {object} allAudios Audio collection.
+     * @param {object} world World reference.
+     */
     constructor(currentEnemy, entityImages, width = 120, height = 120, y = 545, x = null, allAudios, world) {
         super();
         this.config = new EnemyConfig(this, currentEnemy, entityImages, width, height, x, y, allAudios, world);
@@ -41,10 +41,10 @@ export class Enemy extends MovableObject {
     }
 
     /**
-    * Updates the enemy state for the current frame.
-    * @param {number} timestamp Frame timestamp.
-    * @returns {void}
-    */
+     * Updates the enemy state for the current frame.
+     * @param {number} timestamp Frame timestamp.
+     * @returns {void}
+     */
     updateState(timestamp) {
         this.updateDeltaTime(timestamp);
         if (this.handleDeadState(timestamp)) return;
@@ -58,10 +58,10 @@ export class Enemy extends MovableObject {
     }
 
     /**
-    * Handles the enemy dead state.
-    * @param {number} timestamp Frame timestamp.
-    * @returns {boolean} True if the dead state was handled, otherwise false.
-    */
+     * Handles the enemy dead state.
+     * @param {number} timestamp Frame timestamp.
+     * @returns {boolean} True if the dead state was handled, otherwise false.
+     */
     handleDeadState(timestamp) {
         if (!this.movementCtrl.updateDeadState(timestamp)) return false;
         this.animCtrl.updateAnimation(timestamp);
@@ -69,11 +69,11 @@ export class Enemy extends MovableObject {
     }
 
     /**
-    * Handles the dragon-specific state update.
-    * @param {number} timestamp Frame timestamp.
-    * @param {object} char Character object.
-    * @returns {boolean} True if the dragon state was handled, otherwise false.
-    */
+     * Handles the dragon-specific state update.
+     * @param {number} timestamp Frame timestamp.
+     * @param {object} char Character object.
+     * @returns {boolean} True if the dragon state was handled, otherwise false.
+     */
     handleDragonState(timestamp, char) {
         if (this.currentEnemy !== "dragonSmall") return false;
         this.dragonCtrl.updateDragonAI(timestamp, char);
@@ -82,11 +82,11 @@ export class Enemy extends MovableObject {
     }
 
     /**
-    * Updates the state of a ground-based enemy.
-    * @param {number} timestamp Frame timestamp.
-    * @param {object} char Character object.
-    * @returns {void}
-    */
+     * Updates the state of a ground-based enemy.
+     * @param {number} timestamp Frame timestamp.
+     * @param {object} char Character object.
+     * @returns {void}
+     */
     updateGroundEnemyState(timestamp, char) {
         this.movementCtrl.applyGravity();
         this.movementCtrl.snapBackToSpawnY();

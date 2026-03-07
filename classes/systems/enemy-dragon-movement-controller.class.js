@@ -3,18 +3,18 @@
  */
 export class EnemyDragonMovementController {
     /**
-    * Creates a new instance.
-    * @param {object} enemy Enemy instance.
-    */
+     * Creates a new instance.
+     * @param {object} enemy Enemy instance.
+     */
     constructor(enemy) {
         this.enemy = enemy;
     }
 
     /**
-    * Handles dragon approach movement toward the character.
-    * @param {object} char Character object.
-    * @returns {void}
-    */
+     * Handles dragon approach movement toward the character.
+     * @param {object} char Character object.
+     * @returns {void}
+     */
     dragonApproach(char) {
         const { pBox, eBox } = this.getDragonBoxes(char);
         const targetX = pBox.cx - (eBox.right - eBox.left) * 0.5;
@@ -29,10 +29,10 @@ export class EnemyDragonMovementController {
     }
 
     /**
-    * Returns the hitbox data for the dragon and character.
-    * @param {object} char Character object.
-    * @returns {{pBox: object, eBox: object}} Character and enemy hitbox data.
-    */
+     * Returns the hitbox data for the dragon and character.
+     * @param {object} char Character object.
+     * @returns {{pBox: object, eBox: object}} Character and enemy hitbox data.
+     */
     getDragonBoxes(char) {
         const pBox = char.getHitboxRect();
         const eBox = this.enemy.getHitboxRect();
@@ -40,18 +40,18 @@ export class EnemyDragonMovementController {
     }
 
     /**
-    * Initializes the base Y position for dragon approach movement.
-    * @returns {void}
-    */
+     * Initializes the base Y position for dragon approach movement.
+     * @returns {void}
+     */
     updateApproachBaseY() {
         if (this.enemy.approachBaseY != null) return;
         this.enemy.approachBaseY = this.enemy.y;
     }
 
     /**
-    * Applies vertical bobbing during dragon approach movement.
-    * @returns {void}
-    */
+     * Applies vertical bobbing during dragon approach movement.
+     * @returns {void}
+     */
     applyApproachBob() {
         const amplitude = 12;
         this.enemy.y =
@@ -60,10 +60,10 @@ export class EnemyDragonMovementController {
     }
 
     /**
-    * Handles dragon idle follow behavior.
-    * @param {object} char Character object.
-    * @returns {void}
-    */
+     * Handles dragon idle follow behavior.
+     * @param {object} char Character object.
+     * @returns {void}
+     */
     dragonIdleFollow(char) {
         const { pBox, eBox } = this.getDragonBoxes(char);
         this.followDragonIdleX(char, pBox, eBox);
@@ -71,12 +71,12 @@ export class EnemyDragonMovementController {
     }
 
     /**
-    * Updates dragon idle movement on the x axis.
-    * @param {object} char Character object.
-    * @param {object} pBox Character hitbox.
-    * @param {object} eBox Enemy hitbox.
-    * @returns {void}
-    */
+     * Updates dragon idle movement on the x axis.
+     * @param {object} char Character object.
+     * @param {object} pBox Character hitbox.
+     * @param {object} eBox Enemy hitbox.
+     * @returns {void}
+     */
     followDragonIdleX(char, pBox, eBox) {
         const desiredDistX = 80;
         const dx = pBox.cx - eBox.cx;
@@ -91,9 +91,9 @@ export class EnemyDragonMovementController {
     }
 
     /**
-    * Relaxes the dragon idle Y position toward the base height.
-    * @returns {void}
-    */
+     * Relaxes the dragon idle Y position toward the base height.
+     * @returns {void}
+     */
     relaxDragonIdleY() {
         const dt = this.enemy.deltaTime ?? 1 / 60;
         const lerpSpeed = 2;
@@ -104,9 +104,9 @@ export class EnemyDragonMovementController {
     }
 
     /**
-    * Moves the dragon toward its current dive target.
-    * @returns {void}
-    */
+     * Moves the dragon toward its current dive target.
+     * @returns {void}
+     */
     dragonDive() {
         const eBox = this.enemy.getHitboxRect();
         const dx = this.enemy.diveTargetX - eBox.cx;
@@ -118,9 +118,9 @@ export class EnemyDragonMovementController {
     }
 
     /**
-    * Handles dragon retreat movement.
-    * @returns {void}
-    */
+     * Handles dragon retreat movement.
+     * @returns {void}
+     */
     dragonRetreat() {
         const step = this.enemy.flySpeed * (this.enemy.deltaTime ?? 1 / 60);
         this.enemy.y -= step;
@@ -133,13 +133,13 @@ export class EnemyDragonMovementController {
     }
 
     /**
-    * Finishes the dragon fast dive phase.
-    * @param {number} dx Horizontal delta to the dive target.
-    * @param {number} dy Vertical delta to the dive target.
-    * @param {number} step Movement step size.
-    * @param {number} dist Remaining distance to the dive target.
-    * @returns {void}
-    */
+     * Finishes the dragon fast dive phase.
+     * @param {number} dx Horizontal delta to the dive target.
+     * @param {number} dy Vertical delta to the dive target.
+     * @param {number} step Movement step size.
+     * @param {number} dist Remaining distance to the dive target.
+     * @returns {void}
+     */
     finishDragonDiveFast(dx, dy, step, dist) {
         this.enemy.x += dx;
         this.enemy.y += dy;
@@ -151,33 +151,33 @@ export class EnemyDragonMovementController {
     }
 
     /**
-    * Advances the dragon during the fast dive phase.
-    * @param {number} dx Horizontal delta to the dive target.
-    * @param {number} dy Vertical delta to the dive target.
-    * @param {number} dist Distance to the dive target.
-    * @param {number} step Movement step size.
-    * @returns {void}
-    */
+     * Advances the dragon during the fast dive phase.
+     * @param {number} dx Horizontal delta to the dive target.
+     * @param {number} dy Vertical delta to the dive target.
+     * @param {number} dist Distance to the dive target.
+     * @param {number} step Movement step size.
+     * @returns {void}
+     */
     stepDragonDiveFast(dx, dy, dist, step) {
         this.enemy.x += (dx / dist) * step;
         this.enemy.y += (dy / dist) * step;
     }
 
     /**
-    * Handles the dragon upward dive phase for the given angle.
-    * @param {number} angle Dive-up angle.
-    * @returns {void}
-    */
+     * Handles the dragon upward dive phase for the given angle.
+     * @param {number} angle Dive-up angle.
+     * @returns {void}
+     */
     handleDragonDiveUpAngle(angle) {
         this.dragonDiveUp(angle);
         this.checkDiveUpEnd();
     }
 
     /**
-    * Moves the dragon upward during the dive-up phase.
-    * @param {number} angleDeg Dive-up angle in degrees.
-    * @returns {void}
-    */
+     * Moves the dragon upward during the dive-up phase.
+     * @param {number} angleDeg Dive-up angle in degrees.
+     * @returns {void}
+     */
     dragonDiveUp(angleDeg) {
         const rad = angleDeg * Math.PI / 180;
         const dx = Math.cos(rad) * this.enemy.exitDir;
@@ -189,9 +189,9 @@ export class EnemyDragonMovementController {
     }
 
     /**
-    * Checks whether the dragon dive-up phase has ended.
-    * @returns {void}
-    */
+     * Checks whether the dragon dive-up phase has ended.
+     * @returns {void}
+     */
     checkDiveUpEnd() {
         if (this.enemy.y <= this.enemy.spawnY - this.enemy.retreatHeight) {
             this.enemy.lockDirection = false;

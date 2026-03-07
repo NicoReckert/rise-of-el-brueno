@@ -3,9 +3,9 @@
  */
 export class EnemyAnimationController {
     /**
-    * Creates a new instance.
-    * @param {object} enemy Enemy instance.
-    */
+     * Creates a new instance.
+     * @param {object} enemy Enemy instance.
+     */
     constructor(enemy) {
         this.enemy = enemy;
         this.initDragonAnimMap();
@@ -13,9 +13,9 @@ export class EnemyAnimationController {
     }
 
     /**
-    * Initializes the dragon animation map.
-    * @returns {void}
-    */
+     * Initializes the dragon animation map.
+     * @returns {void}
+     */
     initDragonAnimMap() {
         this.dragonAirAnimMap = {
             idle: ['idle', 6], retreat: ['idle', 6],
@@ -29,9 +29,9 @@ export class EnemyAnimationController {
     }
 
     /**
-    * Initializes the enemy animation map.
-    * @returns {void}
-    */
+     * Initializes the enemy animation map.
+     * @returns {void}
+     */
     initEnemyAnimMap() {
         this.enemyAnimMap = {
             idle: "idle", walk: "walk", hurt: "hurt", attack: "attack",
@@ -43,9 +43,9 @@ export class EnemyAnimationController {
     }
 
     /**
-    * Handles enemy animation based on the current state.
-    * @returns {void}
-    */
+     * Handles enemy animation based on the current state.
+     * @returns {void}
+     */
     handleAnimation() {
         const isDragonSmall = this.enemy.currentEnemy === 'dragonSmall';
         if (this.enemy.isDead) {
@@ -58,9 +58,9 @@ export class EnemyAnimationController {
     }
 
     /**
-    * Handles dragon death animation.
-    * @returns {void}
-    */
+     * Handles dragon death animation.
+     * @returns {void}
+     */
     handleDragonDeathAnimation() {
         if (this.enemy.deathPhase === 'fall') {
             this.setAnimation('fallDown', 12);
@@ -74,9 +74,9 @@ export class EnemyAnimationController {
     }
 
     /**
-    * Handles dragon animation based on the current state.
-    * @returns {void}
-    */
+     * Handles dragon animation based on the current state.
+     * @returns {void}
+     */
     handleDragonAnimation() {
         if (this.enemy.isHurt) { this.setAnimation('hurt', 10); return; }
         if (this.enemy.isAttack) { this.setAnimation('attack', 6.5); return; }
@@ -88,9 +88,9 @@ export class EnemyAnimationController {
     }
 
     /**
-    * Handles default enemy animation based on the current state.
-    * @returns {void}
-    */
+     * Handles default enemy animation based on the current state.
+     * @returns {void}
+     */
     handleDefaultAnimation() {
         const e = this.enemy;
         const moving = e.isMovingLeft || e.isMovingRight;
@@ -103,20 +103,20 @@ export class EnemyAnimationController {
     }
 
     /**
-    * Returns the animation images for the given state.
-    * @param {string} state Animation state.
-    * @returns {*} Animation images.
-    */
+     * Returns the animation images for the given state.
+     * @param {string} state Animation state.
+     * @returns {*} Animation images.
+     */
     getAnimationImages(state) {
         const key = this.enemyAnimMap?.[state];
         return key ? this.enemy[key] : undefined;
     }
 
     /**
-    * Updates the animation based on the given timestamp.
-    * @param {number} timestamp Frame timestamp.
-    * @returns {void}
-    */
+     * Updates the animation based on the given timestamp.
+     * @param {number} timestamp Frame timestamp.
+     * @returns {void}
+     */
     updateAnimation(timestamp) {
         this.handleAnimation();
         if (this.shouldSkipFrame(timestamp)) return;
@@ -126,10 +126,10 @@ export class EnemyAnimationController {
     }
 
     /**
-    * Checks whether the current animation frame should be skipped.
-    * @param {number} timestamp Frame timestamp.
-    * @returns {boolean} True if the frame should be skipped, otherwise false.
-    */
+     * Checks whether the current animation frame should be skipped.
+     * @param {number} timestamp Frame timestamp.
+     * @returns {boolean} True if the frame should be skipped, otherwise false.
+     */
     shouldSkipFrame(timestamp) {
         if (!this.enemy.lastFrameTime) this.enemy.lastFrameTime = timestamp;
         const deltaTime = timestamp - this.enemy.lastFrameTime;
@@ -137,11 +137,11 @@ export class EnemyAnimationController {
     }
 
     /**
-    * Runs one animation update step.
-    * @param {number} timestamp Frame timestamp.
-    * @param {*} anim Animation source.
-    * @returns {void}
-    */
+     * Runs one animation update step.
+     * @param {number} timestamp Frame timestamp.
+     * @param {*} anim Animation source.
+     * @returns {void}
+     */
     runAnimationStep(timestamp, anim) {
         const prevFrame = this.enemy.frameIndex;
         this.enemy.updateAnimationFromSourceGeneric(anim);
@@ -155,11 +155,11 @@ export class EnemyAnimationController {
     }
 
     /**
-    * Sets the current animation and optionally updates the frame rate.
-    * @param {string} newAnim Animation state.
-    * @param {?number} [fps=null] Animation frame rate.
-    * @returns {void}
-    */
+     * Sets the current animation and optionally updates the frame rate.
+     * @param {string} newAnim Animation state.
+     * @param {?number} [fps=null] Animation frame rate.
+     * @returns {void}
+     */
     setAnimation(newAnim, fps = null) {
         if (this.enemy.currentAnimation !== newAnim) {
             this.enemy.currentAnimation = newAnim;

@@ -17,16 +17,16 @@ import { LevelCompleteController } from '../../levels/level-complete/level-compl
  */
 export class LevelManager {
     /**
-    * Creates a new instance.
-    * @param {Object} world World instance.
-    */
+     * Creates a new instance.
+     * @param {Object} world World instance.
+     */
     constructor(world) {
         this.world = world;
     }
 
     /**
-    * Initializes available levels.
-    */
+     * Initializes available levels.
+     */
     initLevels() {
         const world = this.world;
         world.farmLevelSetup = new FarmLevelSetup(world);
@@ -36,8 +36,8 @@ export class LevelManager {
     }
 
     /**
-    * Initializes remaining level setups.
-    */
+     * Initializes remaining level setups.
+     */
     initRemainingSetups() {
         const world = this.world;
         world.townLevelSetup = new TownLevelSetup(world);
@@ -54,9 +54,9 @@ export class LevelManager {
     }
 
     /**
-    * Restarts the specified level.
-    * @param {string} levelName Level identifier.
-    */
+     * Restarts the specified level.
+     * @param {string} levelName Level identifier.
+     */
     restartLevel(levelName) {
         const world = this.world;
         this.stop();
@@ -71,8 +71,8 @@ export class LevelManager {
     }
 
     /**
-    * Fades out the level complete music if available.
-    */
+     * Fades out the level complete music if available.
+     */
     fadeOutLevelCompleteMusic() {
         const world = this.world;
         const music = world.levelCompleteSetup?.sounds?.levelCompleteMusic;
@@ -84,8 +84,8 @@ export class LevelManager {
     }
 
     /**
-    * Cleans up the current character instance.
-    */
+     * Cleans up the current character instance.
+     */
     cleanupCharacter() {
         const world = this.world;
         if (!world.character) return;
@@ -93,8 +93,8 @@ export class LevelManager {
     }
 
     /**
-    * Resets global world state.
-    */
+     * Resets global world state.
+     */
     resetGlobalState() {
         const world = this.world;
         world.paused = false;
@@ -105,17 +105,17 @@ export class LevelManager {
     }
 
     /**
-    * Creates and initializes a new character instance.
-    */
+     * Creates and initializes a new character instance.
+     */
     createNewCharacter() {
         const world = this.world;
         world.character = new Character(world.characterImages, this.world, this.world.audioManager);
     }
 
     /**
-    * Initializes a level for restart based on its identifier.
-    * @param {string} levelName Level identifier.
-    */
+     * Initializes a level for restart based on its identifier.
+     * @param {string} levelName Level identifier.
+     */
     initLevelForRestart(levelName) {
         const map = {
             farmLevel: () => this.initFarmLevelRestart(),
@@ -130,8 +130,8 @@ export class LevelManager {
     }
 
     /**
-    * Initializes the farm level for restart.
-    */
+     * Initializes the farm level for restart.
+     */
     initFarmLevelRestart() {
         const world = this.world;
         world.farmLevelSetup = new FarmLevelSetup(world);
@@ -139,8 +139,8 @@ export class LevelManager {
     }
 
     /**
-    * Initializes the stable level for restart.
-    */
+     * Initializes the stable level for restart.
+     */
     initStableLevelRestart() {
         const world = this.world;
         world.stableLevelSetup = new StableLevelSetup(world);
@@ -148,8 +148,8 @@ export class LevelManager {
     }
 
     /**
-    * Initializes the town level for restart.
-    */
+     * Initializes the town level for restart.
+     */
     initTownLevelRestart() {
         const world = this.world;
         world.townLevelSetup = new TownLevelSetup(world);
@@ -157,8 +157,8 @@ export class LevelManager {
     }
 
     /**
-    * Initializes Nayeli's house level for restart.
-    */
+     * Initializes Nayeli's house level for restart.
+     */
     initNayelisHouseLevelRestart() {
         const world = this.world;
         world.nayelisHouseLevelSetup = new NayelisHouseLevelSetup(world);
@@ -167,8 +167,8 @@ export class LevelManager {
     }
 
     /**
-    * Initializes the new weapon level for restart.
-    */
+     * Initializes the new weapon level for restart.
+     */
     initNewWeaponLevelRestart() {
         const world = this.world;
         world.newWeaponLevelSetup = new NewWeaponLevelSetup(world);
@@ -177,8 +177,8 @@ export class LevelManager {
     }
 
     /**
-    * Initializes the level complete state for restart.
-    */
+     * Initializes the level complete state for restart.
+     */
     initLevelCompleteRestart() {
         const world = this.world;
         world.levelCompleteSetup = new LevelCompleteSetup(world);
@@ -187,24 +187,24 @@ export class LevelManager {
     }
 
     /**
-    * Hides the level complete UI.
-    */
+     * Hides the level complete UI.
+     */
     hideLevelCompleteUI() {
         const box = document.getElementById('level-complete-button-box');
         if (box) box.classList.add('d-none');
     }
 
     /**
-    * Starts the main loop.
-    */
+     * Starts the main loop.
+     */
     startLoop() {
         const world = this.world;
         world.frameId = requestAnimationFrame(ts => world.draw(ts));
     }
 
     /**
-    * Stops the main loop.
-    */
+     * Stops the main loop.
+     */
     stop() {
         const world = this.world;
         world.isRunning = false;

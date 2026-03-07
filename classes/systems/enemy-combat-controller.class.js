@@ -1,22 +1,22 @@
 import { Projectile } from "../entities/projectile.class.js";
 
 /**
-* Controls combat behavior for an enemy.
-*/
+ * Controls combat behavior for an enemy.
+ */
 export class EnemyCombatController {
     /**
-    * Creates a new instance.
-    * @param {object} enemy Enemy instance.
-    */
+     * Creates a new instance.
+     * @param {object} enemy Enemy instance.
+     */
     constructor(enemy) {
         this.enemy = enemy;
     }
 
     /**
-    * Shoots a projectile of the given type.
-    * @param {string} type Projectile type.
-    * @returns {void}
-    */
+     * Shoots a projectile of the given type.
+     * @param {string} type Projectile type.
+     * @returns {void}
+     */
     shootProjectile(type) {
         const direction = this.enemy.isFlipped;
         const setup = this.enemy.world.townLevelSetup;
@@ -26,11 +26,11 @@ export class EnemyCombatController {
     }
 
     /**
-    * Creates a projectile instance for the given type and direction.
-    * @param {string} type Projectile type.
-    * @param {boolean} direction Projectile direction.
-    * @returns {Projectile} Projectile instance.
-    */
+     * Creates a projectile instance for the given type and direction.
+     * @param {string} type Projectile type.
+     * @param {boolean} direction Projectile direction.
+     * @returns {Projectile} Projectile instance.
+     */
     createProjectileForType(type, direction) {
         const offsetX = direction ? this.enemy.width - 25 : -45;
         const offsetY = this.enemy.y + this.enemy.height * 0.22;
@@ -44,10 +44,10 @@ export class EnemyCombatController {
     }
 
     /**
-    * Ensures the projectile array exists in the setup.
-    * @param {object} setup Level setup object.
-    * @returns {void}
-    */
+     * Ensures the projectile array exists in the setup.
+     * @param {object} setup Level setup object.
+     * @returns {void}
+     */
     ensureProjectileArray(setup) {
         if (!setup.townLevel.projectiles) {
             setup.townLevel.projectiles = [];
@@ -55,10 +55,10 @@ export class EnemyCombatController {
     }
 
     /**
-    * Tries to start an attack if the enemy can attack.
-    * @param {number} timestamp Frame timestamp.
-    * @returns {boolean} True if the attack was started, otherwise false.
-    */
+     * Tries to start an attack if the enemy can attack.
+     * @param {number} timestamp Frame timestamp.
+     * @returns {boolean} True if the attack was started, otherwise false.
+     */
     tryStartAttack(timestamp) {
         if (this.enemy.isDead || this.enemy.isHurt) return false;
         if (this.enemy.isAttack) return false;
@@ -72,11 +72,11 @@ export class EnemyCombatController {
     }
 
     /**
-    * Applies a hit to the enemy.
-    * @param {number} timestamp Frame timestamp.
-    * @param {object} [opts={}] Hit options.
-    * @returns {boolean} True if the hit was applied, otherwise false.
-    */
+     * Applies a hit to the enemy.
+     * @param {number} timestamp Frame timestamp.
+     * @param {object} [opts={}] Hit options.
+     * @returns {boolean} True if the hit was applied, otherwise false.
+     */
     receiveHit(timestamp, opts = {}) {
         const { dmg = 1, attackerFlipped = false, knockX = 12, knockY = 12, deathRemoveMs = 2000, onHurtSound = null, onDeathSound = null } = opts;
         if (this.enemy.isDead || this.enemy.isHurt) return false;
@@ -92,9 +92,9 @@ export class EnemyCombatController {
     }
 
     /**
-    * Checks whether the dragon can currently receive damage.
-    * @returns {boolean} True if the dragon is vulnerable, otherwise false.
-    */
+     * Checks whether the dragon can currently receive damage.
+     * @returns {boolean} True if the dragon is vulnerable, otherwise false.
+     */
     checkDragonVulnerable() {
         if (this.enemy.currentEnemy !== 'dragonSmall') return true;
         const vulnerableStates = ['dive_fast', 'attack', 'approach_low'];
@@ -105,10 +105,10 @@ export class EnemyCombatController {
     }
 
     /**
-    * Applies damage to the enemy.
-    * @param {number} dmg Damage amount.
-    * @returns {void}
-    */
+     * Applies damage to the enemy.
+     * @param {number} dmg Damage amount.
+     * @returns {void}
+     */
     applyHitDamage(dmg) {
         this.enemy.attackHitbox.active = false;
         this.enemy.hasHitPlayerThisAttack = false;
@@ -116,9 +116,9 @@ export class EnemyCombatController {
     }
 
     /**
-    * Cancels the current attack if active.
-    * @returns {void}
-    */
+     * Cancels the current attack if active.
+     * @returns {void}
+     */
     cancelAttackIfAny() {
         if (!this.enemy.isAttack) return;
         this.enemy.isAttack = false;
@@ -126,12 +126,12 @@ export class EnemyCombatController {
     }
 
     /**
-    * Applies knockback to the enemy.
-    * @param {boolean} attackerFlipped Whether the attacker is flipped.
-    * @param {number} knockX Horizontal knockback strength.
-    * @param {number} knockY Vertical knockback strength.
-    * @returns {void}
-    */
+     * Applies knockback to the enemy.
+     * @param {boolean} attackerFlipped Whether the attacker is flipped.
+     * @param {number} knockX Horizontal knockback strength.
+     * @param {number} knockY Vertical knockback strength.
+     * @returns {void}
+     */
     applyKnockback(attackerFlipped, knockX, knockY) {
         const dir = attackerFlipped ? -1 : 1;
         this.enemy.speedXKnock = dir * knockX;
@@ -141,21 +141,21 @@ export class EnemyCombatController {
     }
 
     /**
-    * Stops horizontal enemy movement.
-    * @returns {void}
-    */
+     * Stops horizontal enemy movement.
+     * @returns {void}
+     */
     stopHorizontalMovement() {
         this.enemy.isMovingLeft = false;
         this.enemy.isMovingRight = false;
     }
 
     /**
-    * Handles enemy death after a hit.
-    * @param {number} timestamp Frame timestamp.
-    * @param {number} deathRemoveMs Delay before removal in milliseconds.
-    * @param {?Function} onDeathSound Callback for the death sound.
-    * @returns {void}
-    */
+     * Handles enemy death after a hit.
+     * @param {number} timestamp Frame timestamp.
+     * @param {number} deathRemoveMs Delay before removal in milliseconds.
+     * @param {?Function} onDeathSound Callback for the death sound.
+     * @returns {void}
+     */
     handleDeathHit(timestamp, deathRemoveMs, onDeathSound) {
         this.enemy.isDead = true;
         this.enemy.isHurt = false;
@@ -168,10 +168,10 @@ export class EnemyCombatController {
     }
 
     /**
-    * Handles enemy hurt state after a hit.
-    * @param {?Function} onHurtSound Callback for the hurt sound.
-    * @returns {void}
-    */
+     * Handles enemy hurt state after a hit.
+     * @param {?Function} onHurtSound Callback for the hurt sound.
+     * @returns {void}
+     */
     handleHurtHit(onHurtSound) {
         this.enemy.isHurt = true;
         this.enemy.animCtrl.setAnimation('hurt');

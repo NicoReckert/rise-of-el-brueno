@@ -17,10 +17,10 @@ export class EventManager {
     }
 
     /**
-    * Resolves a target by name.
-    * @param {string} name Target name.
-    * @returns {object|null} Resolved target or null.
-    */
+     * Resolves a target by name.
+     * @param {string} name Target name.
+     * @returns {object|null} Resolved target or null.
+     */
     resolveTarget(name) {
         if (!this.isValidName(name)) return null;
         for (const pool of this.getTargetPools()) {
@@ -305,11 +305,11 @@ export class EventManager {
     }
 
     /**
-    * Initializes time-based event data.
-    * @param {object} e Event object.
-    * @param {number} now Current time.
-    * @returns {void}
-    */
+     * Initializes time-based event data.
+     * @param {object} e Event object.
+     * @param {number} now Current time.
+     * @returns {void}
+     */
     initTimeEvent(e, now) {
         if (e.startAt === undefined) {
             e.startAt = now;
@@ -571,12 +571,12 @@ export class EventManager {
 
 
     /**
-    * Executes collision action.
-    * @param {object} e - The event.
-    * @param {number} now - The current time.
-    * @param {object} a - The first object.
-    * @param {object} b - The second object.
-    */
+     * Executes collision action.
+     * @param {object} e - The event.
+     * @param {number} now - The current time.
+     * @param {object} a - The first object.
+     * @param {object} b - The second object.
+     */
     triggerCollision(e, now, a, b) {
         e.action?.(this.setup, a, b);
         e.lastTrigger = now;
@@ -584,13 +584,13 @@ export class EventManager {
     }
 
     /**
-    * Handles collision leave.
-    * @param {object} e Event object.
-    * @param {number} now Current time.
-    * @param {object} a First object.
-    * @param {object} b Second object.
-    * @returns {void}
-    */
+     * Handles collision leave.
+     * @param {object} e Event object.
+     * @param {number} now Current time.
+     * @param {object} a First object.
+     * @param {object} b Second object.
+     * @returns {void}
+     */
     triggerCollisionLeave(e, now, a, b) {
         if (!e.onLeave) return;
         if (!e.cooldown || now - (e.lastLeave ?? 0) >= e.cooldown) {
@@ -689,12 +689,12 @@ export class EventManager {
     }
 
     /**
-    * Cancels a hold event.
-    * @param {object} e Event object.
-    * @param {object} a First object.
-    * @param {object} b Second object.
-    * @returns {void}
-    */
+     * Cancels a hold event.
+     * @param {object} e Event object.
+     * @param {object} a First object.
+     * @param {object} b Second object.
+     * @returns {void}
+     */
     cancelHold(e, a, b) {
         const p = e.progress ?? 0;
         if (p > 0 && e.onCancel) e.onCancel(this.setup, a, b, p);

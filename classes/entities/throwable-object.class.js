@@ -5,11 +5,11 @@ import { MovableObject } from '../systems/movable-object.class.js';
  */
 export class ThrowableObject extends MovableObject {
     /**
-    * Creates a new instance.
-    * @param {Object} entityImages Image collection.
-    * @param {number} x Horizontal position.
-    * @param {number} y Vertical position.
-    */
+     * Creates a new instance.
+     * @param {Object} entityImages Image collection.
+     * @param {number} x Horizontal position.
+     * @param {number} y Vertical position.
+     */
     constructor(entityImages, x, y) {
         super();
         this.initPositionAndSize(x, y);
@@ -20,11 +20,11 @@ export class ThrowableObject extends MovableObject {
     }
 
     /**
-    * Initializes position and size.
-    * @param {number} x Horizontal position.
-    * @param {number} y Vertical position.
-    * @returns {void}
-    */
+     * Initializes position and size.
+     * @param {number} x Horizontal position.
+     * @param {number} y Vertical position.
+     * @returns {void}
+     */
     initPositionAndSize(x, y) {
         this.x = x;
         this.y = y;
@@ -33,9 +33,9 @@ export class ThrowableObject extends MovableObject {
     }
 
     /**
-    * Initializes collision offsets.
-    * @returns {void}
-    */
+     * Initializes collision offsets.
+     * @returns {void}
+     */
     initOffsets() {
         this.offset.top = 14;
         this.offset.left = 10;
@@ -44,9 +44,9 @@ export class ThrowableObject extends MovableObject {
     }
 
     /**
-    * Initializes animation state.
-    * @returns {void}
-    */
+     * Initializes animation state.
+     * @returns {void}
+     */
     initAnimationState() {
         this.currentAnimation = "throw";
         this.frameInterval = 1000 / 15;
@@ -57,9 +57,9 @@ export class ThrowableObject extends MovableObject {
     }
 
     /**
-    * Initializes physics state.
-    * @returns {void}
-    */
+     * Initializes physics state.
+     * @returns {void}
+     */
     initPhysicsState() {
         this.isGravity = false;
         this.ignoreGroundCollision = true;
@@ -72,10 +72,10 @@ export class ThrowableObject extends MovableObject {
     }
 
     /**
-    * Initializes animation sheets and related flags.
-    * @param {Object} entityImages Image collection.
-    * @returns {void}
-    */
+     * Initializes animation sheets and related flags.
+     * @param {Object} entityImages Image collection.
+     * @returns {void}
+     */
     initSheetsAndFlags(entityImages) {
         this.throwSheet =
             entityImages?.throwableBottle?.throw ?? null;
@@ -86,10 +86,10 @@ export class ThrowableObject extends MovableObject {
     }
 
     /**
-    * Returns the animation images for the given state.
-    * @param {string} [state=this.currentAnimation] Animation state.
-    * @returns {Array|null} Animation images or null.
-    */
+     * Returns the animation images for the given state.
+     * @param {string} [state=this.currentAnimation] Animation state.
+     * @returns {Array|null} Animation images or null.
+     */
     getAnimationImages(state = this.currentAnimation) {
         if (state === 'broken') {
             return this.brokenSheet ?? null;
@@ -98,10 +98,10 @@ export class ThrowableObject extends MovableObject {
     }
 
     /**
-    * Sets the current animation state.
-    * @param {string} newState Animation state.
-    * @returns {void}
-    */
+     * Sets the current animation state.
+     * @param {string} newState Animation state.
+     * @returns {void}
+     */
     setAnimation(newState) {
         if (this.currentAnimation !== newState) {
             this.currentAnimation = newState;
@@ -113,10 +113,10 @@ export class ThrowableObject extends MovableObject {
     }
 
     /**
-    * Updates the state based on the given timestamp.
-    * @param {number} timestamp Frame timestamp.
-    * @returns {void}
-    */
+     * Updates the state based on the given timestamp.
+     * @param {number} timestamp Frame timestamp.
+     * @returns {void}
+     */
     updateState(timestamp) {
         this.updateDeltaTime(timestamp);
         const step = this.getMovementStep();
@@ -126,19 +126,19 @@ export class ThrowableObject extends MovableObject {
     }
 
     /**
-    * Calculates the movement step based on delta time.
-    * @returns {number} Movement step.
-    */
+     * Calculates the movement step based on delta time.
+     * @returns {number} Movement step.
+     */
     getMovementStep() {
         const dt = this.deltaTime ?? 1 / 60;
         return dt * 60;
     }
 
     /**
-    * Updates the horizontal position.
-    * @param {number} step Movement step.
-    * @returns {void}
-    */
+     * Updates the horizontal position.
+     * @param {number} step Movement step.
+     * @returns {void}
+     */
     updateHorizontalPosition(step) {
         if (this.isBroken) return;
         if (this.isMovingLeft) {
@@ -149,9 +149,9 @@ export class ThrowableObject extends MovableObject {
     }
 
     /**
-    * Updates the animation based on the current state.
-    * @returns {void}
-    */
+     * Updates the animation based on the current state.
+     * @returns {void}
+     */
     updateAnimationFromState() {
         if (this.isBroken) {
             this.setAnimation("broken");
@@ -165,10 +165,10 @@ export class ThrowableObject extends MovableObject {
     }
 
     /**
-    * Updates the animation based on the given timestamp.
-    * @param {number} timestamp Frame timestamp.
-    * @returns {void}
-    */
+     * Updates the animation based on the given timestamp.
+     * @param {number} timestamp Frame timestamp.
+     * @returns {void}
+     */
     updateAnimation(timestamp) {
         this.initLastFrameTime(timestamp);
         if (this.shouldSkipFrame(timestamp)) return;
@@ -184,10 +184,10 @@ export class ThrowableObject extends MovableObject {
     }
 
     /**
-    * Initializes the last frame timestamp if not set.
-    * @param {number} timestamp Frame timestamp.
-    * @returns {void}
-    */
+     * Initializes the last frame timestamp if not set.
+     * @param {number} timestamp Frame timestamp.
+     * @returns {void}
+     */
     initLastFrameTime(timestamp) {
         if (!this.lastFrameTime) {
             this.lastFrameTime = timestamp;
@@ -195,19 +195,19 @@ export class ThrowableObject extends MovableObject {
     }
 
     /**
-    * Checks whether the current animation frame should be skipped.
-    * @param {number} timestamp Frame timestamp.
-    * @returns {boolean} True if the frame should be skipped, otherwise false.
-    */
+     * Checks whether the current animation frame should be skipped.
+     * @param {number} timestamp Frame timestamp.
+     * @returns {boolean} True if the frame should be skipped, otherwise false.
+     */
     shouldSkipFrame(timestamp) {
         const dtMs = timestamp - this.lastFrameTime;
         return dtMs <= this.frameInterval;
     }
 
     /**
-    * Handles completion of the broken animation.
-    * @returns {void}
-    */
+     * Handles completion of the broken animation.
+     * @returns {void}
+     */
     handleBrokenAnimationCompletion() {
         if (this.currentAnimation !== "broken") return;
         if (!this.animationFinished) return;
@@ -217,9 +217,9 @@ export class ThrowableObject extends MovableObject {
     }
 
     /**
-    * Applies gravity to the object.
-    * @returns {void}
-    */
+     * Applies gravity to the object.
+     * @returns {void}
+     */
     applyGravity() {
         if (!this.isGravity) return;
         const dt = this.deltaTime ?? 1 / 60;

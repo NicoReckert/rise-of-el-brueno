@@ -3,17 +3,17 @@
  */
 export class MagicShieldEffect {
     /**
-    * Creates a new instance.
-    * @param {HTMLCanvasElement} canvas Canvas element.
-    */
+     * Creates a new instance.
+     * @param {HTMLCanvasElement} canvas Canvas element.
+     */
     constructor(canvas) {
         this.canvas = canvas;
         this.initEffectState();
     }
 
     /**
-    * Initializes the internal state of the effect.
-    */
+     * Initializes the internal state of the effect.
+     */
     initEffectState() {
         this.active = false;
 
@@ -43,9 +43,9 @@ export class MagicShieldEffect {
     }
 
     /**
-    * Activates the effect and resets its state.
-    * @param {number} [timestamp] Optional timestamp; defaults to performance.now()
-    */
+     * Activates the effect and resets its state.
+     * @param {number} [timestamp] Optional timestamp; defaults to performance.now()
+     */
     start(timestamp = performance.now()) {
         this.active = true;
 
@@ -65,8 +65,8 @@ export class MagicShieldEffect {
     }
 
     /**
-    * Deactivates the effect and clears active elements.
-    */
+     * Deactivates the effect and clears active elements.
+     */
     stop() {
         this.active = false;
         this.rings = [];
@@ -75,9 +75,9 @@ export class MagicShieldEffect {
     }
 
     /**
-    * Updates the effect state.
-    * @param {number} timestamp Frame timestamp.
-    */
+     * Updates the effect state.
+     * @param {number} timestamp Frame timestamp.
+     */
     update(timestamp) {
         if (!this.active) return;
 
@@ -101,10 +101,10 @@ export class MagicShieldEffect {
     }
 
     /**
-    * Computes the delta time since the last update.
-    * @param {number} timestamp Frame timestamp.
-    * @returns {number} Delta time in seconds.
-    */
+     * Computes the delta time since the last update.
+     * @param {number} timestamp Frame timestamp.
+     * @returns {number} Delta time in seconds.
+     */
     computeDeltaTime(timestamp) {
         if (!this.lastTime) {
             this.lastTime = timestamp;
@@ -115,9 +115,9 @@ export class MagicShieldEffect {
     }
 
     /**
-    * Updates pulse and dynamic offset values.
-    * @param {number} timestamp Frame timestamp.
-    */
+     * Updates pulse and dynamic offset values.
+     * @param {number} timestamp Frame timestamp.
+     */
     updatePulseAndOffset(timestamp) {
         this.pulse = Math.sin(timestamp * this.pulseSpeed) * 15;
         const slowWave = Math.sin(timestamp * 0.002) * 6;
@@ -126,9 +126,9 @@ export class MagicShieldEffect {
     }
 
     /**
-    * Spawns a new ring if the interval has elapsed.
-    * @param {number} timestamp Frame timestamp.
-    */
+     * Spawns a new ring if the interval has elapsed.
+     * @param {number} timestamp Frame timestamp.
+     */
     maybeSpawnRing(timestamp) {
         if (timestamp - this.ringTimer <= 350) return;
 
@@ -145,9 +145,9 @@ export class MagicShieldEffect {
     }
 
     /**
-    * Updates active rings.
-    * @param {number} dt Delta time in seconds.
-    */
+     * Updates active rings.
+     * @param {number} dt Delta time in seconds.
+     */
     updateRings(dt) {
         const radiusSpeed = 4 * 60;
         const alphaFade = 0.01 * 60;
@@ -161,9 +161,9 @@ export class MagicShieldEffect {
     }
 
     /**
-    * Spawns new particles based on accumulated time.
-    * @param {number} dt Delta time in seconds.
-    */
+     * Spawns new particles based on accumulated time.
+     * @param {number} dt Delta time in seconds.
+     */
     spawnNewParticles(dt) {
         this.spawnAccumulator += 3 * 60 * dt;
 
@@ -182,9 +182,9 @@ export class MagicShieldEffect {
     }
 
     /**
-    * Updates active particles.
-    * @param {number} dt Delta time in seconds.
-    */
+     * Updates active particles.
+     * @param {number} dt Delta time in seconds.
+     */
     updateParticles(dt) {
         const alphaFade = 0.02 * 60;
 
@@ -197,9 +197,9 @@ export class MagicShieldEffect {
     }
 
     /**
-    * Updates clip jitter offsets.
-    * @param {number} timestamp Frame timestamp.
-    */
+     * Updates clip jitter offsets.
+     * @param {number} timestamp Frame timestamp.
+     */
     updateClipJitter(timestamp) {
         this.clipJitterX = Math.sin(timestamp * 0.004) * 4;
         this.clipJitterY = Math.cos(timestamp * 0.003) * 4;
@@ -251,11 +251,11 @@ export class MagicShieldEffect {
         ctx.restore();
     }
     /**
-    * Draws the beam effect.
-    * @param {CanvasRenderingContext2D} ctx Rendering context.
-    * @param {number} x X-coordinate of the effect center.
-    * @param {number} y Y-coordinate of the effect center.
-    */
+     * Draws the beam effect.
+     * @param {CanvasRenderingContext2D} ctx Rendering context.
+     * @param {number} x X-coordinate of the effect center.
+     * @param {number} y Y-coordinate of the effect center.
+     */
     drawBeam(ctx, x, y) {
         const gradBeam = ctx.createLinearGradient(x, y - 80, x, 0);
         gradBeam.addColorStop(0, "rgba(80,180,255,0.07)");
@@ -265,11 +265,11 @@ export class MagicShieldEffect {
     }
 
     /**
-    * Draws the glow effect.
-    * @param {CanvasRenderingContext2D} ctx Rendering context.
-    * @param {number} x X-coordinate of the effect center.
-    * @param {number} y Y-coordinate of the effect center.
-    */
+     * Draws the glow effect.
+     * @param {CanvasRenderingContext2D} ctx Rendering context.
+     * @param {number} x X-coordinate of the effect center.
+     * @param {number} y Y-coordinate of the effect center.
+     */
     drawGlow(ctx, x, y) {
         const radius = this.getDynamicRadius();
         const glow = this.createGlowGradient(ctx, x, y, radius);
@@ -278,13 +278,13 @@ export class MagicShieldEffect {
     }
 
     /**
-    * Creates a radial gradient for the glow.
-    * @param {CanvasRenderingContext2D} ctx Rendering context.
-    * @param {number} x X-coordinate of the gradient center.
-    * @param {number} y Y-coordinate of the effect center.
-    * @param {number} radius Base radius value.
-    * @returns {CanvasGradient} Radial gradient instance.
-    */
+     * Creates a radial gradient for the glow.
+     * @param {CanvasRenderingContext2D} ctx Rendering context.
+     * @param {number} x X-coordinate of the gradient center.
+     * @param {number} y Y-coordinate of the effect center.
+     * @param {number} radius Base radius value.
+     * @returns {CanvasGradient} Radial gradient instance.
+     */
     createGlowGradient(ctx, x, y, radius) {
         const glow = ctx.createRadialGradient(
             x, y, radius * 0.2,
@@ -296,12 +296,12 @@ export class MagicShieldEffect {
     }
 
     /**
-    * Fills the glow circle.
-    * @param {CanvasRenderingContext2D} ctx Rendering context.
-    * @param {number} x X-coordinate of the circle center.
-    * @param {number} y Y-coordinate of the effect center.
-    * @param {number} radius Base radius value.
-    */
+     * Fills the glow circle.
+     * @param {CanvasRenderingContext2D} ctx Rendering context.
+     * @param {number} x X-coordinate of the circle center.
+     * @param {number} y Y-coordinate of the effect center.
+     * @param {number} radius Base radius value.
+     */
     fillGlowCircle(ctx, x, y, radius) {
         const totalRadius = radius + this.pulse + this.dynamicOffset;
 
@@ -314,11 +314,11 @@ export class MagicShieldEffect {
     }
 
     /**
-    * Draws active rings.
-    * @param {CanvasRenderingContext2D} ctx Rendering context.
-    * @param {number} x X-coordinate of the effect center.
-    * @param {number} y Y-coordinate of the effect center.
-    */
+     * Draws active rings.
+     * @param {CanvasRenderingContext2D} ctx Rendering context.
+     * @param {number} x X-coordinate of the effect center.
+     * @param {number} y Y-coordinate of the effect center.
+     */
     drawRings(ctx, x, y) {
         this.rings.forEach(r => {
             ctx.strokeStyle = `rgba(120,200,255,${r.alpha * 0.4})`;
@@ -330,11 +330,11 @@ export class MagicShieldEffect {
     }
 
     /**
-    * Draws active particles.
-    * @param {CanvasRenderingContext2D} ctx Rendering context.
-    * @param {number} x X-coordinate of the effect center.
-    * @param {number} y Y-coordinate of the effect center.
-    */
+     * Draws active particles.
+     * @param {CanvasRenderingContext2D} ctx Rendering context.
+     * @param {number} x X-coordinate of the effect center.
+     * @param {number} y Y-coordinate of the effect center.
+     */
     drawParticles(ctx, x, y) {
         this.particles.forEach(p => {
             const px = x + Math.cos(p.angle) * p.dist;
@@ -347,10 +347,10 @@ export class MagicShieldEffect {
     }
 
     /**
-    * Returns the current dynamic radius.
-    * Intro included: radius grows from 0..radius, and pulse/offset ramp in too.
-    * @returns {number} Calculated radius value.
-    */
+     * Returns the current dynamic radius.
+     * Intro included: radius grows from 0..radius, and pulse/offset ramp in too.
+     * @returns {number} Calculated radius value.
+     */
     getDynamicRadius() {
         // Nach Intro: exakt wie vorher
         if (this.introT >= 0.999) {

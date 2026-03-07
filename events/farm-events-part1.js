@@ -3,9 +3,9 @@ import { farmHelper } from "./farm-helper.js";
 
 export const farmEvents_part1 = [
     /**
-    * Quest event that initializes the level state,
-    * sets character and camera positions, and starts farm music.
-    */
+     * Quest event that initializes the level state,
+     * sets character and camera positions, and starts farm music.
+     */
     {
         type: 'quest',
         name: 'initialize',
@@ -21,8 +21,8 @@ export const farmEvents_part1 = [
     },
 
     /**
-    * Quest event that handles the stable door trigger logic.
-    */
+     * Quest event that handles the stable door trigger logic.
+     */
     {
         type: "quest",
         once: false,
@@ -32,9 +32,9 @@ export const farmEvents_part1 = [
     },
 
     /**
-    * Time-based event that plays the new task sound and
-    * displays a popup message after a delay.
-    */
+     * Time-based event that plays the new task sound and
+     * displays a popup message after a delay.
+     */
     {
         type: 'time',
         delay: 2000,
@@ -47,9 +47,9 @@ export const farmEvents_part1 = [
     },
 
     /**
-    * Position-based event that changes to the stable level,
-    * resets related events, and clears the interaction key.
-    */
+     * Position-based event that changes to the stable level,
+     * resets related events, and clears the interaction key.
+     */
     {
         type: 'position',
         name: 'changeLevel',
@@ -65,9 +65,9 @@ export const farmEvents_part1 = [
     },
 
     /**
-    * Position-based event that shows a hint when the character
-    * enters the defined area and hides it on leave.
-    */
+     * Position-based event that shows a hint when the character
+     * enters the defined area and hides it on leave.
+     */
     {
         type: 'position',
         area: { x: 1705, width: 125 },
@@ -82,9 +82,9 @@ export const farmEvents_part1 = [
     },
 
     /**
-    * Collision-based event that sets the cow animation to "happy"
-    * while colliding and resets it to "idle" on leave.
-    */
+     * Collision-based event that sets the cow animation to "happy"
+     * while colliding and resets it to "idle" on leave.
+     */
     {
         type: 'collision',
         objectA: 'character',
@@ -96,8 +96,8 @@ export const farmEvents_part1 = [
     },
 
     /**
-    * Collision-based event that plays a cow sound with a cooldown.
-    */
+     * Collision-based event that plays a cow sound with a cooldown.
+     */
     {
         type: 'collision',
         objectA: 'character',
@@ -109,8 +109,8 @@ export const farmEvents_part1 = [
     },
 
     /**
-    * Quest event that advances to step 2 when the first two tasks are completed.
-    */
+     * Quest event that advances to step 2 when the first two tasks are completed.
+     */
     {
         type: 'quest',
         step: 1,
@@ -120,9 +120,9 @@ export const farmEvents_part1 = [
     },
 
     /**
-    * Quest event that adds a new task, plays a sound,
-    * and displays a popup message.
-    */
+     * Quest event that adds a new task, plays a sound,
+     * and displays a popup message.
+     */
     {
         type: 'quest',
         step: 2,
@@ -134,9 +134,9 @@ export const farmEvents_part1 = [
     },
 
     /**
-    * Collision-based quest event that triggers the cow stand-up animation,
-    * hides the hint, starts movement, and advances the quest after a delay.
-    */
+     * Collision-based quest event that triggers the cow stand-up animation,
+     * hides the hint, starts movement, and advances the quest after a delay.
+     */
     {
         type: 'collision',
         objectA: 'character',
@@ -156,8 +156,8 @@ export const farmEvents_part1 = [
     },
 
     /**
-    * Quest event that shows the second hint.
-    */
+     * Quest event that shows the second hint.
+     */
     {
         type: 'quest',
         step: 2,
@@ -165,9 +165,9 @@ export const farmEvents_part1 = [
     },
 
     /**
-    * Collision-based quest event that guides the cow to a target position,
-    * advances the quest upon arrival, and restores hint and animation on leave.
-    */
+     * Collision-based quest event that guides the cow to a target position,
+     * advances the quest upon arrival, and restores hint and animation on leave.
+     */
     {
         type: 'collision',
         objectA: 'character',
@@ -191,8 +191,8 @@ export const farmEvents_part1 = [
     },
 
     /**
-    * Collision-based event that plays a cow sound on leave with a cooldown.
-    */
+     * Collision-based event that plays a cow sound on leave with a cooldown.
+     */
     {
         type: 'collision',
         objectA: 'character',
@@ -205,9 +205,9 @@ export const farmEvents_part1 = [
     },
 
     /**
-    * Quest event that completes the task, shows a completion popup,
-    * plays a sound, and sets the cow to the eating animation.
-    */
+     * Quest event that completes the task, shows a completion popup,
+     * plays a sound, and sets the cow to the eating animation.
+     */
     {
         type: 'quest',
         step: 4,
@@ -222,9 +222,9 @@ export const farmEvents_part1 = [
     },
 
     /**
-    * Time-based quest event that shows a hint, adds a new task,
-    * plays a sound, and displays a popup message after a delay.
-    */
+     * Time-based quest event that shows a hint, adds a new task,
+     * plays a sound, and displays a popup message after a delay.
+     */
     {
         type: 'time',
         delay: 3000,
@@ -238,9 +238,9 @@ export const farmEvents_part1 = [
     },
 
     /**
-    * Time-range event that renders the clock in the world
-    * while the timer is within the specified interval.
-    */
+     * Time-range event that renders the clock in the world
+     * while the timer is within the specified interval.
+     */
     {
         type: 'time',
         from: 4000,
@@ -256,9 +256,9 @@ export const farmEvents_part1 = [
     },
 
     /**
-    * Time-based quest event that hides the hint, marks the task as done,
-    * plays a completion sound, and displays a popup message after a delay.
-    */
+     * Time-based quest event that hides the hint, marks the task as done,
+     * plays a completion sound, and displays a popup message after a delay.
+     */
     {
         type: 'time',
         delay: 15000,
@@ -272,9 +272,9 @@ export const farmEvents_part1 = [
     },
 
     /**
-    * Time-based quest event that shows a hint, adds a new task,
-    * plays a sound, displays a popup message, and advances the quest.
-    */
+     * Time-based quest event that shows a hint, adds a new task,
+     * plays a sound, displays a popup message, and advances the quest.
+     */
     {
         type: 'time',
         delay: 18000,
@@ -289,9 +289,9 @@ export const farmEvents_part1 = [
     },
 
     /**
-    * Collision-based quest event that triggers a caress interaction,
-    * updates animations and states, plays a sound, and advances the quest.
-    */
+     * Collision-based quest event that triggers a caress interaction,
+     * updates animations and states, plays a sound, and advances the quest.
+     */
     {
         type: 'collision',
         objectA: 'character',
@@ -312,9 +312,9 @@ export const farmEvents_part1 = [
     },
 
     /**
-    * Collision-based quest event that plays a cow sound
-    * while the cow is in the "love" animation state.
-    */
+     * Collision-based quest event that plays a cow sound
+     * while the cow is in the "love" animation state.
+     */
     {
         type: 'collision',
         objectA: 'character',
@@ -327,9 +327,9 @@ export const farmEvents_part1 = [
     },
 
     /**
-    * Time-based quest event that restores controls and
-    * sets the cow back to the eating animation after a delay.
-    */
+     * Time-based quest event that restores controls and
+     * sets the cow back to the eating animation after a delay.
+     */
     {
         type: "time",
         delay: 5000,
@@ -343,9 +343,9 @@ export const farmEvents_part1 = [
     },
 
     /**
-    * Time-based quest event that hides the hint, marks the task as done,
-    * plays a completion sound, and displays a popup message after a delay.
-    */
+     * Time-based quest event that hides the hint, marks the task as done,
+     * plays a completion sound, and displays a popup message after a delay.
+     */
     {
         type: "time",
         delay: 6000,
@@ -359,8 +359,8 @@ export const farmEvents_part1 = [
     },
 
     /**
-    * Time-based quest event that advances the quest after a delay.
-    */
+     * Time-based quest event that advances the quest after a delay.
+     */
     {
         type: "time",
         delay: 9000,
@@ -371,9 +371,9 @@ export const farmEvents_part1 = [
     },
 
     /**
-    * Quest event that adds a new task, plays a sound,
-    * displays a popup message, and sets the cow to walk.
-    */
+     * Quest event that adds a new task, plays a sound,
+     * displays a popup message, and sets the cow to walk.
+     */
     {
         type: "quest",
         step: 7,

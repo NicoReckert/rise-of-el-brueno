@@ -3,18 +3,18 @@
  */
 export class EnemyDragonAttackController {
     /**
-    * Creates a new instance.
-    * @param {object} enemy Enemy instance.
-    */
+     * Creates a new instance.
+     * @param {object} enemy Enemy instance.
+     */
     constructor(enemy) {
         this.enemy = enemy;
     }
 
     /**
-    * Returns horizontal distance data for dragon AI.
-    * @param {object} char Character object.
-    * @returns {{ex: number, tx: number, dx: number, distX: number}} Enemy and target positions with horizontal distance.
-    */
+     * Returns horizontal distance data for dragon AI.
+     * @param {object} char Character object.
+     * @returns {{ex: number, tx: number, dx: number, distX: number}} Enemy and target positions with horizontal distance.
+     */
     getDragonDistanceInfo(char) {
         const ex = this.enemy.x + this.enemy.width * 0.5;
         const tx = char.x + char.width * 0.5;
@@ -24,18 +24,18 @@ export class EnemyDragonAttackController {
     }
 
     /**
-    * Resets the dragon approach base position when not in approach state.
-    * @returns {void}
-    */
+     * Resets the dragon approach base position when not in approach state.
+     * @returns {void}
+     */
     resetDragonApproachBase() {
         if (this.enemy.airState !== 'approach') this.enemy.approachBaseY = null;
     }
 
     /**
-    * Resets the dragon state when the target is too far away.
-    * @param {number} distX Horizontal distance to the target.
-    * @returns {void}
-    */
+     * Resets the dragon state when the target is too far away.
+     * @param {number} distX Horizontal distance to the target.
+     * @returns {void}
+     */
     resetDragonIfTooFar(distX) {
         const tooFar = this.enemy.approachDistance * 1.6;
         const s = this.enemy.airState;
@@ -47,11 +47,11 @@ export class EnemyDragonAttackController {
     }
 
     /**
-    * Starts the dragon dive setup.
-    * @param {number} timestamp Frame timestamp.
-    * @param {object} char Character object.
-    * @returns {void}
-    */
+     * Starts the dragon dive setup.
+     * @param {number} timestamp Frame timestamp.
+     * @param {object} char Character object.
+     * @returns {void}
+     */
     startDragonDiveSetup(timestamp, char) {
         const eBox = this.enemy.getHitboxRect();
         const pBox = char.getHitboxRect();
@@ -60,11 +60,11 @@ export class EnemyDragonAttackController {
     }
 
     /**
-    * Sets dragon dive geometry based on the target and enemy hitboxes.
-    * @param {object} pBox Target hitbox.
-    * @param {object} eBox Enemy hitbox.
-    * @returns {void}
-    */
+     * Sets dragon dive geometry based on the target and enemy hitboxes.
+     * @param {object} pBox Target hitbox.
+     * @param {object} eBox Enemy hitbox.
+     * @returns {void}
+     */
     setDragonDiveGeometry(pBox, eBox) {
         this.enemy.entryDir = pBox.cx > eBox.cx ? 1 : -1;
         const over = -140, pre = 140, post = 140;
@@ -76,10 +76,10 @@ export class EnemyDragonAttackController {
     }
 
     /**
-    * Sets the dragon dive state.
-    * @param {number} timestamp Frame timestamp.
-    * @returns {void}
-    */
+     * Sets the dragon dive state.
+     * @param {number} timestamp Frame timestamp.
+     * @returns {void}
+     */
     setDragonDiveState(timestamp) {
         this.enemy.lowApproachSpeed = this.enemy.flySpeed * 2.5;
         this.enemy.lockDirection = true;
@@ -90,10 +90,10 @@ export class EnemyDragonAttackController {
     }
 
     /**
-    * Returns distance and hitbox data for the dragon low approach phase.
-    * @param {object} char Character object.
-    * @returns {object} Dragon low approach data.
-    */
+     * Returns distance and hitbox data for the dragon low approach phase.
+     * @param {object} char Character object.
+     * @returns {object} Dragon low approach data.
+     */
     getDragonApproachLowInfo(char) {
         const eBox = this.enemy.getHitboxRect();
         const pBox = char.getHitboxRect();
@@ -102,11 +102,11 @@ export class EnemyDragonAttackController {
     }
 
     /**
-    * Checks whether the dragon should perform a bite attack.
-    * @param {number} timestamp Frame timestamp.
-    * @param {object} info Dragon low approach data.
-    * @returns {boolean} True if the dragon should bite, otherwise false.
-    */
+     * Checks whether the dragon should perform a bite attack.
+     * @param {number} timestamp Frame timestamp.
+     * @param {object} info Dragon low approach data.
+     * @returns {boolean} True if the dragon should bite, otherwise false.
+     */
     shouldDragonBite(timestamp, info) {
         const start = 110, end = 10;
         const rel = info.rel;
@@ -121,11 +121,11 @@ export class EnemyDragonAttackController {
     }
 
     /**
-    * Starts the dragon bite attack.
-    * @param {number} timestamp Frame timestamp.
-    * @param {object} char Character object.
-    * @returns {void}
-    */
+     * Starts the dragon bite attack.
+     * @param {number} timestamp Frame timestamp.
+     * @param {object} char Character object.
+     * @returns {void}
+     */
     startDragonBite(timestamp, char) {
         this.enemy.isAttack = true;
         this.enemy.hasHitPlayerThisAttack = false;
@@ -137,18 +137,18 @@ export class EnemyDragonAttackController {
     }
 
     /**
-    * Checks whether the dragon can perform an attack.
-    * @param {number} timestamp Frame timestamp.
-    * @returns {boolean} True if the dragon can attack, otherwise false.
-    */
+     * Checks whether the dragon can perform an attack.
+     * @param {number} timestamp Frame timestamp.
+     * @returns {boolean} True if the dragon can attack, otherwise false.
+     */
     canDragonAttack(timestamp) {
         return (timestamp - this.enemy.lastAttackTime) > this.enemy.attackCooldownMs;
     }
 
     /**
-    * Checks whether the dragon has reached the current dive target.
-    * @returns {boolean} True if the dive target was reached, otherwise false.
-    */
+     * Checks whether the dragon has reached the current dive target.
+     * @returns {boolean} True if the dive target was reached, otherwise false.
+     */
     reachedDiveTarget() {
         const eBox = this.enemy.getHitboxRect();
         const dx = this.enemy.diveTargetX - eBox.cx;
@@ -159,10 +159,10 @@ export class EnemyDragonAttackController {
     }
 
     /**
-    * Chooses the dragon dive-up angle based on the character position.
-    * @param {object} char Character object.
-    * @returns {string} Dive-up angle.
-    */
+     * Chooses the dragon dive-up angle based on the character position.
+     * @param {object} char Character object.
+     * @returns {string} Dive-up angle.
+     */
     chooseDiveUpAngle(char) {
         const eBox = this.enemy.getHitboxRect();
         const pBox = char.getHitboxRect();

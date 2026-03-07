@@ -3,17 +3,17 @@
  */
 export class EndbossAnimationController {
     /**
-    * Creates a new instance.
-    * @param {*} endboss Reference to the endboss object.
-    */
+     * Creates a new instance.
+     * @param {*} endboss Reference to the endboss object.
+     */
     constructor(endboss) {
         this.endboss = endboss;
     }
 
     /**
-    * Updates animations based on the current state.
-    * @returns {void}
-    */
+     * Updates animations based on the current state.
+     * @returns {void}
+     */
     handleStateAnimations() {
         if (this.endboss.isFindsPeace) return this.playFindsPeace();
         if (this.endboss.isDead) return this.playDeathAnimation();
@@ -28,10 +28,10 @@ export class EndbossAnimationController {
     }
 
     /**
-    * Updates the current animation frame.
-    * @param {number} timestamp Frame timestamp.
-    * @returns {void}
-    */
+     * Updates the current animation frame.
+     * @param {number} timestamp Frame timestamp.
+     * @returns {void}
+     */
     updateAnimation(timestamp) {
         this.initLastFrameTime(timestamp);
         if (this.isFrameTooEarly(timestamp)) return;
@@ -48,30 +48,30 @@ export class EndbossAnimationController {
     }
 
     /**
-    * Initializes the last frame timestamp.
-    * @param {number} timestamp Frame timestamp.
-    * @returns {void}
-    */
+     * Initializes the last frame timestamp.
+     * @param {number} timestamp Frame timestamp.
+     * @returns {void}
+     */
     initLastFrameTime(timestamp) {
         if (this.endboss.lastFrameTime) return;
         this.endboss.lastFrameTime = timestamp;
     }
 
     /**
-    * Checks whether it is too early to advance the animation frame.
-    * @param {number} timestamp Frame timestamp.
-    * @returns {boolean} True if the frame update should be skipped, otherwise false.
-    */
+     * Checks whether it is too early to advance the animation frame.
+     * @param {number} timestamp Frame timestamp.
+     * @returns {boolean} True if the frame update should be skipped, otherwise false.
+     */
     isFrameTooEarly(timestamp) {
         const deltaTime = timestamp - this.endboss.lastFrameTime;
         return deltaTime <= this.endboss.frameInterval;
     }
 
     /**
-    * Handles projectile spawning during the fireball attack animation.
-    * @param {number} prevFrame Previous animation frame index.
-    * @returns {void}
-    */
+     * Handles projectile spawning during the fireball attack animation.
+     * @param {number} prevFrame Previous animation frame index.
+     * @returns {void}
+     */
     handleFireballProjectile(prevFrame) {
         if (!this.endboss.isFireballAttack) return;
         const shootFrame = 13;
@@ -85,9 +85,9 @@ export class EndbossAnimationController {
     }
 
     /**
-    * Updates the readiness state of the death animation.
-    * @returns {void}
-    */
+     * Updates the readiness state of the death animation.
+     * @returns {void}
+     */
     updateDeadAnimationReady() {
         if (this.endboss.currentAnimation !== 'dead') return;
         const animDead = this.endboss.deadImages;
@@ -100,19 +100,19 @@ export class EndbossAnimationController {
     }
 
     /**
-    * Marks death animation as ready when finished.
-    * @returns {void}
-    */
+     * Marks death animation as ready when finished.
+     * @returns {void}
+     */
     updateDeadSheetReady() {
         if (!this.endboss.animationFinished) return;
         this.endboss.isDeadAnimationReady = true;
     }
 
     /**
-    * Marks death animation as ready when the last frame is reached.
-    * @param {*} animDead Death animation source.
-    * @returns {void}
-    */
+     * Marks death animation as ready when the last frame is reached.
+     * @param {*} animDead Death animation source.
+     * @returns {void}
+     */
     updateDeadFramesReady(animDead) {
         const frameCount =
             this.endboss.getFrameCountForSource(animDead, 'dead');
@@ -122,9 +122,9 @@ export class EndbossAnimationController {
     }
 
     /**
-    * Plays the finds peace animation.
-    * @returns {void}
-    */
+     * Plays the finds peace animation.
+     * @returns {void}
+     */
     playFindsPeace() {
         this.setAnimation('findsPeace', 6);
         const anim = this.endboss.findsPeaceImages;
@@ -138,9 +138,9 @@ export class EndbossAnimationController {
     }
 
     /**
-    * Handles sheet-based finds peace animation completion.
-    * @returns {void}
-    */
+     * Handles sheet-based finds peace animation completion.
+     * @returns {void}
+     */
     handleFindsPeaceSheet() {
         if (!this.endboss.animationFinished) return;
         if (this.endboss.currentAnimation !== 'findsPeace') return;
@@ -148,9 +148,9 @@ export class EndbossAnimationController {
     }
 
     /**
-    * Resets state after the finds peace sheet animation.
-    * @returns {void}
-    */
+     * Resets state after the finds peace sheet animation.
+     * @returns {void}
+     */
     resetFindsPeaceSheetState() {
         this.endboss.isFindsPeace = false;
         this.endboss.frameIndex = 0;
@@ -159,10 +159,10 @@ export class EndbossAnimationController {
     }
 
     /**
-    * Handles frame-based finds peace animation completion.
-    * @param {*} anim Finds peace animation source.
-    * @returns {void}
-    */
+     * Handles frame-based finds peace animation completion.
+     * @param {*} anim Finds peace animation source.
+     * @returns {void}
+     */
     handleFindsPeaceFrames(anim) {
         const count = this.endboss.getFrameCountForSource(anim, 'findsPeace');
         if (!count) return;
@@ -172,9 +172,9 @@ export class EndbossAnimationController {
     }
 
     /**
-    * Plays the death animation or clears it when finished.
-    * @returns {void}
-    */
+     * Plays the death animation or clears it when finished.
+     * @returns {void}
+     */
     playDeathAnimation() {
         if (!this.endboss.isDeadAnimationReady) {
             this.setAnimation('dead', 4);
@@ -184,9 +184,9 @@ export class EndbossAnimationController {
     }
 
     /**
-    * Plays the hurt animation.
-    * @returns {void}
-    */
+     * Plays the hurt animation.
+     * @returns {void}
+     */
     playHurtAnimation() {
         this.setAnimation('hurt', 4);
         const anim = this.endboss.hurtImages;
@@ -199,9 +199,9 @@ export class EndbossAnimationController {
     }
 
     /**
-    * Handles sheet-based hurt animation completion.
-    * @returns {void}
-    */
+     * Handles sheet-based hurt animation completion.
+     * @returns {void}
+     */
     handleHurtSheet() {
         if (!this.endboss.animationFinished) return;
         if (this.endboss.currentAnimation !== 'hurt') return;
@@ -209,9 +209,9 @@ export class EndbossAnimationController {
     }
 
     /**
-    * Resets state after the hurt sheet animation.
-    * @returns {void}
-    */
+     * Resets state after the hurt sheet animation.
+     * @returns {void}
+     */
     resetHurtSheetState() {
         this.endboss.isHurt = false;
         this.endboss.frameIndex = 0;
@@ -220,10 +220,10 @@ export class EndbossAnimationController {
     }
 
     /**
-    * Handles frame-based hurt animation completion.
-    * @param {*} anim Hurt animation source.
-    * @returns {void}
-    */
+     * Handles frame-based hurt animation completion.
+     * @param {*} anim Hurt animation source.
+     * @returns {void}
+     */
     handleHurtFrames(anim) {
         const count = this.endboss.getFrameCountForSource(anim, 'hurt');
         if (!count) return;
@@ -233,17 +233,17 @@ export class EndbossAnimationController {
     }
 
     /**
-    * Plays the fly animation.
-    * @returns {void}
-    */
+     * Plays the fly animation.
+     * @returns {void}
+     */
     playFlyAnimation() {
         this.setAnimation('fly', 6);
     }
 
     /**
-    * Plays the fireball attack animation.
-    * @returns {void}
-    */
+     * Plays the fireball attack animation.
+     * @returns {void}
+     */
     playFireballAttackAnimation() {
         this.setAnimation('fireballAttack', 5);
         const anim = this.endboss.fireballAttackImages;
@@ -256,9 +256,9 @@ export class EndbossAnimationController {
     }
 
     /**
-    * Handles sheet-based fireball attack animation completion.
-    * @returns {void}
-    */
+     * Handles sheet-based fireball attack animation completion.
+     * @returns {void}
+     */
     handleFireballAttackSheet() {
         if (!this.endboss.animationFinished) return;
         if (this.endboss.currentAnimation !== 'fireballAttack') return;
@@ -266,9 +266,9 @@ export class EndbossAnimationController {
     }
 
     /**
-    * Resets state after the fireball attack sheet animation.
-    * @returns {void}
-    */
+     * Resets state after the fireball attack sheet animation.
+     * @returns {void}
+     */
     resetFireballAttackSheetState() {
         this.endboss.isFireballAttack = false;
         this.endboss.hasFiredThisAttack = false;
@@ -278,10 +278,10 @@ export class EndbossAnimationController {
     }
 
     /**
-    * Handles frame-based fireball attack animation completion.
-    * @param {*} anim Fireball attack animation source.
-    * @returns {void}
-    */
+     * Handles frame-based fireball attack animation completion.
+     * @param {*} anim Fireball attack animation source.
+     * @returns {void}
+     */
     handleFireballAttackFrames(anim) {
         const count = this.endboss.getFrameCountForSource(
             anim,
@@ -295,11 +295,11 @@ export class EndbossAnimationController {
     }
 
     /**
-    * Sets the current animation and frame rate.
-    * @param {string} name Animation name.
-    * @param {number} fps Frames per second.
-    * @returns {void}
-    */
+     * Sets the current animation and frame rate.
+     * @param {string} name Animation name.
+     * @param {number} fps Frames per second.
+     * @returns {void}
+     */
     setAnimation(name, fps) {
         if (this.endboss.currentAnimation !== name) {
             this.endboss.currentAnimation = name;
@@ -314,10 +314,10 @@ export class EndbossAnimationController {
     }
 
     /**
-    * Returns animation images for the given state.
-    * @param {string} state Animation state name.
-    * @returns {*} Animation image source.
-    */
+     * Returns animation images for the given state.
+     * @param {string} state Animation state name.
+     * @returns {*} Animation image source.
+     */
     getAnimationImages(state) {
         switch (state) {
             case 'dead': return this.endboss.deadImages;

@@ -3,10 +3,10 @@
  */
 export class CharacterMovementController {
     /**
-    * Creates a new instance.
-    * @param {Object} character Character instance.
-    * @param {Object} world World instance.
-    */
+     * Creates a new instance.
+     * @param {Object} character Character instance.
+     * @param {Object} world World instance.
+     */
     constructor(character, world, animationController) {
         this.char = character;
         this.world = world;
@@ -14,9 +14,9 @@ export class CharacterMovementController {
     }
 
     /**
-    * Updates the character state.
-    * @param {number} timestamp Frame timestamp.
-    */
+     * Updates the character state.
+     * @param {number} timestamp Frame timestamp.
+     */
     updateState(timestamp) {
         this.char.prevBottom =
             this.char.y + this.char.height - (this.char.offset?.bottom || 0);
@@ -31,9 +31,9 @@ export class CharacterMovementController {
     }
 
     /**
-    * Handles movement lock state.
-    * @param {number} timestamp Frame timestamp.
-    */
+     * Handles movement lock state.
+     * @param {number} timestamp Frame timestamp.
+     */
     handleMovementLock(timestamp) {
         if (!this.char.movementLockUntil) return;
         if (timestamp < this.char.movementLockUntil) {
@@ -43,10 +43,10 @@ export class CharacterMovementController {
     }
 
     /**
-    * Handles air hit stun state.
-    * @param {number} timestamp Frame timestamp.
-    * @returns {boolean} True if air hit stun is active, otherwise false.
-    */
+     * Handles air hit stun state.
+     * @param {number} timestamp Frame timestamp.
+     * @returns {boolean} True if air hit stun is active, otherwise false.
+     */
     handleAirHitStun(timestamp) {
         if (!this.char.isAirHitStun) return false;
         if (timestamp - this.char.airHitStunStart >= this.char.airHitStunDuration) {
@@ -61,9 +61,9 @@ export class CharacterMovementController {
     }
 
     /**
-    * Handles tornado capture state.
-    * @returns {boolean} True if captured by tornado, otherwise false.
-    */
+     * Handles tornado capture state.
+     * @returns {boolean} True if captured by tornado, otherwise false.
+     */
     handleTornadoCapture() {
         if (!this.char.isCapturedByTornado) return false;
         this.char.speedY = 0;
@@ -71,8 +71,8 @@ export class CharacterMovementController {
     }
 
     /**
-    * Applies knockback movement to the character.
-    */
+     * Applies knockback movement to the character.
+     */
     applyKnockback() {
         if (!this.char.knockbackVelocityX) return;
         this.char.x += this.char.knockbackVelocityX;
@@ -83,8 +83,8 @@ export class CharacterMovementController {
     }
 
     /**
-    * Handles horizontal character movement.
-    */
+     * Handles horizontal character movement.
+     */
     handleMovement() {
         if (this.char.isMovingLeft) {
             this.moveLeft();
@@ -94,8 +94,8 @@ export class CharacterMovementController {
     }
 
     /**
-    * Moves the character to the left.
-    */
+     * Moves the character to the left.
+     */
     moveLeft() {
         const isMobile = window.innerWidth <= 900;
         const cameraOffset = isMobile ? 920 : 1060;
@@ -109,8 +109,8 @@ export class CharacterMovementController {
     }
 
     /**
-    * Moves the character to the right.
-    */
+     * Moves the character to the right.
+     */
     moveRight() {
         const isMobile = window.innerWidth <= 900;
         const cameraOffset = isMobile ? 150 : 100;
@@ -124,37 +124,37 @@ export class CharacterMovementController {
     }
 
     /**
-    * Applies an upward bounce to the character.
-    */
+     * Applies an upward bounce to the character.
+     */
     bounce() {
         this.char.speedY = 10;
     }
 
     /**
-    * Clamps the camera position within level boundaries.
-    */
+     * Clamps the camera position within level boundaries.
+     */
     clampCamera() {
         const maxCameraX = this.world.level_end_x - 720;
         this.world.camera_x = Math.max(0, Math.min(this.world.camera_x, maxCameraX));
     }
 
     /**
-    * Moves the camera towards a target position.
-    * @param {number} targetX Target x-coordinate.
-    * @param {Object} [options={}] Movement options.
-    * @returns {boolean} True if movement is finished, otherwise false.
-    */
+     * Moves the camera towards a target position.
+     * @param {number} targetX Target x-coordinate.
+     * @param {Object} [options={}] Movement options.
+     * @returns {boolean} True if movement is finished, otherwise false.
+     */
     moveToX(targetX, options = {}) {
         const cfg = this.buildMoveToXConfig(targetX, options);
         return this.applyMoveToX(cfg);
     }
 
     /**
-    * Builds configuration for horizontal movement towards a target.
-    * @param {number} targetX Target x-coordinate.
-    * @param {Object} [options={}] Movement options.
-    * @returns {Object} Movement configuration.
-    */
+     * Builds configuration for horizontal movement towards a target.
+     * @param {number} targetX Target x-coordinate.
+     * @param {Object} [options={}] Movement options.
+     * @returns {Object} Movement configuration.
+     */
     buildMoveToXConfig(targetX, options = {}) {
         const char = this.char;
         const cfg = this.normalizeMoveToXOptions(options);
@@ -169,16 +169,16 @@ export class CharacterMovementController {
     }
 
     /**
-    * Normalizes movement options for horizontal movement.
-    * @param {Object} [options={}] Movement options.
-    * @param {number} [options.tolerance=3] Distance threshold to consider arrival.
-    * @param {boolean} [options.snap=true] Whether to snap to target on arrival.
-    * @param {number} [options.speed=5] Movement speed.
-    * @param {boolean} [options.faceTarget=true] Whether to face the target direction.
-    * @param {boolean} [options.setWalkFlag=false] Whether to set the walk state flag.
-    * @param {?Function} [options.onArrive=null] Callback invoked on arrival.
-    * @returns {Object} Normalized movement options.
-    */
+     * Normalizes movement options for horizontal movement.
+     * @param {Object} [options={}] Movement options.
+     * @param {number} [options.tolerance=3] Distance threshold to consider arrival.
+     * @param {boolean} [options.snap=true] Whether to snap to target on arrival.
+     * @param {number} [options.speed=5] Movement speed.
+     * @param {boolean} [options.faceTarget=true] Whether to face the target direction.
+     * @param {boolean} [options.setWalkFlag=false] Whether to set the walk state flag.
+     * @param {?Function} [options.onArrive=null] Callback invoked on arrival.
+     * @returns {Object} Normalized movement options.
+     */
     normalizeMoveToXOptions(options = {}) {
         const {
             tolerance = 3,
@@ -192,10 +192,10 @@ export class CharacterMovementController {
     }
 
     /**
-    * Applies horizontal movement based on configuration.
-    * @param {Object} cfg Movement configuration.
-    * @returns {boolean} True if movement is finished, otherwise false.
-    */
+     * Applies horizontal movement based on configuration.
+     * @param {Object} cfg Movement configuration.
+     * @returns {boolean} True if movement is finished, otherwise false.
+     */
     applyMoveToX(cfg) {
         const char = this.char;
         const { d, targetX, tolerance, snap, speed, onArrive } = cfg;
@@ -212,26 +212,26 @@ export class CharacterMovementController {
     }
 
     /**
-    * Moves the character vertically towards a target position.
-    * @param {number} targetY Target y-coordinate.
-    * @param {Object} [options={}] Movement options.
-    * @returns {boolean} True if movement is finished, otherwise false.
-    */
+     * Moves the character vertically towards a target position.
+     * @param {number} targetY Target y-coordinate.
+     * @param {Object} [options={}] Movement options.
+     * @returns {boolean} True if movement is finished, otherwise false.
+     */
     moveToY(targetY, options = {}) {
         const cfg = this.buildMoveToYConfig(targetY, options);
         return this.applyMoveToY(cfg);
     }
 
     /**
-    * Builds configuration for vertical movement towards a target.
-    * @param {number} targetY Target y-coordinate.
-    * @param {Object} [options={}] Movement options.
-    * @param {number} [options.tolerance=2] Distance threshold to consider arrival.
-    * @param {boolean} [options.snap=true] Whether to snap to target on arrival.
-    * @param {number} [options.speed=1.5] Movement speed.
-    * @param {?Function} [options.onArrive=null] Callback invoked on arrival.
-    * @returns {Object} Movement configuration.
-    */
+     * Builds configuration for vertical movement towards a target.
+     * @param {number} targetY Target y-coordinate.
+     * @param {Object} [options={}] Movement options.
+     * @param {number} [options.tolerance=2] Distance threshold to consider arrival.
+     * @param {boolean} [options.snap=true] Whether to snap to target on arrival.
+     * @param {number} [options.speed=1.5] Movement speed.
+     * @param {?Function} [options.onArrive=null] Callback invoked on arrival.
+     * @returns {Object} Movement configuration.
+     */
     buildMoveToYConfig(targetY, options = {}) {
         const char = this.char;
         const {
@@ -245,10 +245,10 @@ export class CharacterMovementController {
     }
 
     /**
-    * Applies vertical movement based on configuration.
-    * @param {Object} cfg Movement configuration.
-    * @returns {boolean} True if movement is finished, otherwise false.
-    */
+     * Applies vertical movement based on configuration.
+     * @param {Object} cfg Movement configuration.
+     * @returns {boolean} True if movement is finished, otherwise false.
+     */
     applyMoveToY(cfg) {
         const char = this.char;
         const { d, targetY, tolerance, snap, speed, onArrive } = cfg;
@@ -264,20 +264,20 @@ export class CharacterMovementController {
     }
 
     /**
-    * Clamps an object's x-position within bounds.
-    * @param {Object} object Object with an x property.
-    * @param {number} minX Minimum x-value.
-    * @param {number} maxX Maximum x-value.
-    */
+     * Clamps an object's x-position within bounds.
+     * @param {Object} object Object with an x property.
+     * @param {number} minX Minimum x-value.
+     * @param {number} maxX Maximum x-value.
+     */
     clampX(object, minX, maxX) {
         if (object.x < minX) object.x = minX;
         if (object.x > maxX) object.x = maxX;
     }
 
     /**
-    * Returns the effective movement speed based on the current state.
-    * @returns {number} Effective movement speed.
-    */
+     * Returns the effective movement speed based on the current state.
+     * @returns {number} Effective movement speed.
+     */
     getEffectiveMoveSpeed() {
         const duckMoving =
             this.char.duckState === 'loop' &&

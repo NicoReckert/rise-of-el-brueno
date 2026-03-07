@@ -5,13 +5,13 @@ import { MovableObject } from '../systems/movable-object.class.js';
  */
 export class Egg extends MovableObject {
     /**
-    * Creates a new instance.
-    * @param {Object} entityImages Image definitions.
-    * @param {number} x Initial x-coordinate.
-    * @param {number} y Initial y-coordinate.
-    * @param {Object} allAudios Audio resources.
-    * @param {Object} [options={}] Configuration options.
-    */
+     * Creates a new instance.
+     * @param {Object} entityImages Image definitions.
+     * @param {number} x Initial x-coordinate.
+     * @param {number} y Initial y-coordinate.
+     * @param {Object} allAudios Audio resources.
+     * @param {Object} [options={}] Configuration options.
+     */
     constructor(entityImages, x, y, allAudios, options = {}) {
         super();
         this.x = x;
@@ -28,9 +28,9 @@ export class Egg extends MovableObject {
     }
 
     /**
-    * Initializes size and ground position.
-    * @param {Object} options Configuration options.
-    */
+     * Initializes size and ground position.
+     * @param {Object} options Configuration options.
+     */
     initSizeAndGround(options) {
         this.width = options.width ?? 200;
         this.height = options.height ?? 200;
@@ -38,9 +38,9 @@ export class Egg extends MovableObject {
     }
 
     /**
-    * Initializes physics properties.
-    * @param {Object} options Configuration options.
-    */
+     * Initializes physics properties.
+     * @param {Object} options Configuration options.
+     */
     initPhysics(options) {
         this.lastPhysicsTime = null;
         this.speedY = 0;
@@ -48,8 +48,8 @@ export class Egg extends MovableObject {
     }
 
     /**
-    * Initializes state flags.
-    */
+     * Initializes state flags.
+     */
     initStateFlags() {
         this.isFalling = false;
         this.isBroken = false;
@@ -57,8 +57,8 @@ export class Egg extends MovableObject {
     }
 
     /**
-    * Initializes animation state properties.
-    */
+     * Initializes animation state properties.
+     */
     initAnimationState() {
         this.lastFrameTime = 0;
         this.frameIndex = 0;
@@ -70,8 +70,8 @@ export class Egg extends MovableObject {
     }
 
     /**
-    * Initializes visual timing properties.
-    */
+     * Initializes visual timing properties.
+     */
     initVisualTiming() {
         this.opacity = 1;
         this.blinkStart = 800;
@@ -80,9 +80,9 @@ export class Egg extends MovableObject {
     }
 
     /**
-    * Initializes audio resources and playback state.
-    * @param {Object} allAudios Audio resources.
-    */
+     * Initializes audio resources and playback state.
+     * @param {Object} allAudios Audio resources.
+     */
     initAudio(allAudios) {
         this.audios = allAudios || {};
         this.fallingSoundPlayed = false;
@@ -97,18 +97,18 @@ export class Egg extends MovableObject {
     }
 
     /**
-    * Initializes image resources for the egg.
-    * @param {Object} entityImages Image definitions.
-    */
+     * Initializes image resources for the egg.
+     * @param {Object} entityImages Image definitions.
+     */
     initImages(entityImages) {
         this.idleBrokenSheet = entityImages?.egg?.idleBrokenSheet || null;
     }
 
     /**
-    * Initializes fall timing.
-    * @param {number} delayMin Minimum delay in milliseconds.
-    * @param {number} delayMax Maximum delay in milliseconds.
-    */
+     * Initializes fall timing.
+     * @param {number} delayMin Minimum delay in milliseconds.
+     * @param {number} delayMax Maximum delay in milliseconds.
+     */
     initFallTiming(delayMin, delayMax) {
         const now = performance.now();
         const delay = delayMin + Math.random() * (delayMax - delayMin);
@@ -116,18 +116,18 @@ export class Egg extends MovableObject {
     }
 
     /**
-    * Updates the egg state and animation.
-    * @param {number} timestamp Frame timestamp.
-    */
+     * Updates the egg state and animation.
+     * @param {number} timestamp Frame timestamp.
+     */
     update(timestamp) {
         this.updateState(timestamp);
         this.updateAnimation(timestamp);
     }
 
     /**
-    * Updates the physical and lifecycle state.
-    * @param {number} timestamp Frame timestamp.
-    */
+     * Updates the physical and lifecycle state.
+     * @param {number} timestamp Frame timestamp.
+     */
     updateState(timestamp) {
         const dt = this.updatePhysicsDeltaTime(timestamp);
         this.maybeStartFalling(timestamp);
@@ -139,10 +139,10 @@ export class Egg extends MovableObject {
     }
 
     /**
-    * Computes physics delta time.
-    * @param {number} timestamp Frame timestamp.
-    * @returns {number} Delta time in seconds.
-    */
+     * Computes physics delta time.
+     * @param {number} timestamp Frame timestamp.
+     * @returns {number} Delta time in seconds.
+     */
     updatePhysicsDeltaTime(timestamp) {
         if (!this.lastPhysicsTime) {
             this.lastPhysicsTime = timestamp;
@@ -154,9 +154,9 @@ export class Egg extends MovableObject {
     }
 
     /**
-    * Starts falling when the delay has elapsed.
-    * @param {number} timestamp Frame timestamp.
-    */
+     * Starts falling when the delay has elapsed.
+     * @param {number} timestamp Frame timestamp.
+     */
     maybeStartFalling(timestamp) {
         if (this.isFalling || this.isBroken) return;
         if (timestamp < this.fallStartTime) return;
@@ -166,8 +166,8 @@ export class Egg extends MovableObject {
     }
 
     /**
-    * Plays the falling sound once.
-    */
+     * Plays the falling sound once.
+     */
     playFallingSound() {
         if (this.fallingSoundPlayed) return;
         const sound = this.eggFallingSound;
@@ -178,9 +178,9 @@ export class Egg extends MovableObject {
     }
 
     /**
-    * Applies falling physics.
-    * @param {number} dt Delta time in seconds.
-    */
+     * Applies falling physics.
+     * @param {number} dt Delta time in seconds.
+     */
     applyFallingPhysics(dt) {
         if (!this.isFalling) return;
         if (this.isBroken) return;
@@ -189,9 +189,9 @@ export class Egg extends MovableObject {
     }
 
     /**
-    * Handles landing and transition to broken state.
-    * @param {number} timestamp Frame timestamp.
-    */
+     * Handles landing and transition to broken state.
+     * @param {number} timestamp Frame timestamp.
+     */
     handleLanding(timestamp) {
         if (this.isBroken) return;
         if (this.y < this.groundY) return;
@@ -202,16 +202,16 @@ export class Egg extends MovableObject {
     }
 
     /**
-    * Snaps the egg to the ground position.
-    */
+     * Snaps the egg to the ground position.
+     */
     snapToGround() {
         this.y = this.groundY;
     }
 
     /**
-    * Sets the broken state and resets related properties.
-    * @param {number} timestamp Frame timestamp.
-    */
+     * Sets the broken state and resets related properties.
+     * @param {number} timestamp Frame timestamp.
+     */
     setBrokenState(timestamp) {
         this.isBroken = true;
         this.isFalling = false;
@@ -224,16 +224,16 @@ export class Egg extends MovableObject {
     }
 
     /**
-    * Plays impact and crack sounds.
-    */
+     * Plays impact and crack sounds.
+     */
     playImpactAndCrackSounds() {
         this.playImpactSound();
         this.playCrackSound();
     }
 
     /**
-     Plays the impact sound once.
-    */
+     * Plays the impact sound once.
+     */
     playImpactSound() {
         if (this.impactSoundPlayed) return;
         const sound = this.eggImpactSound;
@@ -244,8 +244,8 @@ export class Egg extends MovableObject {
     }
 
     /**
-    * Plays the crack sound once.
-    */
+     * Plays the crack sound once.
+     */
     playCrackSound() {
         if (this.crackSoundPlayed) return;
         const sound = this.eggCrackSound;
@@ -256,9 +256,9 @@ export class Egg extends MovableObject {
     }
 
     /**
-    * Updates the lifecycle after breaking.
-    * @param {number} timestamp Frame timestamp.
-    */
+     * Updates the lifecycle after breaking.
+     * @param {number} timestamp Frame timestamp.
+     */
     updateBrokenLifecycle(timestamp) {
         const elapsed = timestamp - this.breakTime;
         this.updateBlinking(elapsed);
@@ -269,9 +269,9 @@ export class Egg extends MovableObject {
     }
 
     /**
-    * Updates blinking effect.
-    * @param {number} elapsed Elapsed time since breaking.
-    */
+     * Updates blinking effect.
+     * @param {number} elapsed Elapsed time since breaking.
+     */
     updateBlinking(elapsed) {
         if (elapsed < this.blinkStart) return;
         if (elapsed >= this.fadeStart) return;
@@ -281,9 +281,9 @@ export class Egg extends MovableObject {
     }
 
     /**
-    * Updates fading effect.
-    * @param {number} elapsed Elapsed time since breaking.
-    */
+     * Updates fading effect.
+     * @param {number} elapsed Elapsed time since breaking.
+     */
     updateFading(elapsed) {
         if (elapsed < this.fadeStart) return;
         const fadeDuration = this.removeTime - this.fadeStart;
@@ -292,9 +292,9 @@ export class Egg extends MovableObject {
     }
 
     /**
-    * Updates the animation frame.
-    * @param {number} timestamp Frame timestamp.
-    */
+     * Updates the animation frame.
+     * @param {number} timestamp Frame timestamp.
+     */
     updateAnimation(timestamp) {
         if (this.shouldSkipAnimationFrame(timestamp)) return;
         if (this.shouldResetFrameTimeOnly()) {
@@ -306,10 +306,10 @@ export class Egg extends MovableObject {
     }
 
     /**
-    * Determines whether the animation frame should be skipped.
-    * @param {number} timestamp Frame timestamp.
-    * @returns {boolean} True if the frame should be skipped, otherwise false.
-    */
+     * Determines whether the animation frame should be skipped.
+     * @param {number} timestamp Frame timestamp.
+     * @returns {boolean} True if the frame should be skipped, otherwise false.
+     */
     shouldSkipAnimationFrame(timestamp) {
         if (!this.lastFrameTime) {
             this.lastFrameTime = timestamp;
@@ -319,9 +319,9 @@ export class Egg extends MovableObject {
     }
 
     /**
-    * Determines whether only the frame time should be reset.
-    * @returns {boolean} True if only frame time should be reset, otherwise false.
-    */
+     * Determines whether only the frame time should be reset.
+     * @returns {boolean} True if only frame time should be reset, otherwise false.
+     */
     shouldResetFrameTimeOnly() {
         if (!this.idleBrokenSheet) return true;
         if (this.currentAnimation === "broken" && this.animationFinished) {
@@ -331,8 +331,8 @@ export class Egg extends MovableObject {
     }
 
     /**
-    * Plays the broken animation frame.
-    */
+     * Plays the broken animation frame.
+     */
     playBrokenAnimationFrame() {
         this.updateAnimationFromSourceGeneric(this.idleBrokenSheet, {
             allowLoop: true

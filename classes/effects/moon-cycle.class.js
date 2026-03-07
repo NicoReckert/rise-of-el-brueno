@@ -3,9 +3,9 @@
  */
 export class MoonCycle {
     /**
-    * Creates a new instance.
-    * @param {*} setup Initialization setup object.
-    */
+     * Creates a new instance.
+     * @param {*} setup Initialization setup object.
+     */
     constructor(setup) {
         this.setup = setup;
         this.npc = this.setup.environment.moon;
@@ -14,8 +14,8 @@ export class MoonCycle {
     }
 
     /**
-    * Initializes orbit parameters.
-    */
+     * Initializes orbit parameters.
+     */
     initOrbit() {
         this.centerX = 1200;
         this.centerY = 320;
@@ -25,8 +25,8 @@ export class MoonCycle {
     }
 
     /**
-    * Initializes internal state.
-    */
+     * Initializes internal state.
+     */
     initState() {
         this.isActive = false;
         this.lastUpdateTime = 0;
@@ -34,31 +34,31 @@ export class MoonCycle {
     }
 
     /**
-    * Activates the moon cycle.
-    */
+     * Activates the moon cycle.
+     */
     start() {
         this.isActive = true;
     }
 
     /**
-    * Deactivates the moon cycle.
-    */
+     * Deactivates the moon cycle.
+     */
     stop() {
         this.isActive = false;
     }
 
     /**
-    * Resets the moon cycle state.
-    */
+     * Resets the moon cycle state.
+     */
     reset() {
         this.angle = Math.PI / 2;
         this.lastUpdateTime = 0;
     }
 
     /**
-    * Updates the moon cycle position.
-    * @param {number} timestamp Frame timestamp.
-    */
+     * Updates the moon cycle position.
+     * @param {number} timestamp Frame timestamp.
+     */
     update(timestamp) {
         if (!this.isActive) return;
         if (!this.lastUpdateTime) this.lastUpdateTime = timestamp;

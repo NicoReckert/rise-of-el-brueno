@@ -5,10 +5,10 @@ import { DrawableObject } from '../systems/drawable-object.class.js';
  */
 export class StatusBar extends DrawableObject {
     /**
-    * Creates a new status bar instance.
-    * @param {*} [spriteSheet=null] Sprite sheet reference.
-    * @param {string} [animPrefix='hp'] Animation name prefix.
-    */
+     * Creates a new status bar instance.
+     * @param {*} [spriteSheet=null] Sprite sheet reference.
+     * @param {string} [animPrefix='hp'] Animation name prefix.
+     */
     constructor(spriteSheet = null, animPrefix = 'hp') {
         super();
         this.height = 60;
@@ -22,9 +22,9 @@ export class StatusBar extends DrawableObject {
     }
 
     /**
-    * Sets the percentage value and updates the visual state.
-    * @param {number} percentage Percentage value (0–100).
-    */
+     * Sets the percentage value and updates the visual state.
+     * @param {number} percentage Percentage value (0–100).
+     */
     setPercentage(percentage) {
         this.percentage = Math.max(0, Math.min(100, percentage));
         if (this.spriteSheet && this.applySpriteSheetFrame()) {
@@ -34,18 +34,18 @@ export class StatusBar extends DrawableObject {
     }
 
     /**
-    * Applies the appropriate sprite sheet frame.
-    * @returns {boolean}
-    */
+     * Applies the appropriate sprite sheet frame.
+     * @returns {boolean}
+     */
     applySpriteSheetFrame() {
         const animName = this.resolveAnimName();
         return this.applySheetAnimFrame(this.spriteSheet, animName);
     }
 
     /**
-    * Applies a fallback status image if no sprite sheet is used.
-    * @returns {boolean}
-    */
+     * Applies a fallback status image if no sprite sheet is used.
+     * @returns {boolean}
+     */
     applyStatusImagesFallback() {
         if (!this.statusImages || !this.statusImages.length) return false;
         const index = this.resolveImageIndex();
@@ -55,9 +55,9 @@ export class StatusBar extends DrawableObject {
     }
 
     /**
-    * Resolves the animation name based on the current percentage.
-    * @returns {string}
-    */
+     * Resolves the animation name based on the current percentage.
+     * @returns {string}
+     */
     resolveAnimName() {
         const p = this.percentage;
         let step = 0;
@@ -70,9 +70,9 @@ export class StatusBar extends DrawableObject {
     }
 
     /**
-    * Resolves the fallback image index based on the current percentage.
-    * @returns {number}
-    */
+     * Resolves the fallback image index based on the current percentage.
+     * @returns {number}
+     */
     resolveImageIndex() {
         if (this.percentage === 100) return 5;
         if (this.percentage >= 80) return 4;

@@ -7,18 +7,18 @@ import { EntityAnimationSequenceController } from '../systems/entity-animation-s
  */
 export class AnimatedEntity extends MovableObject {
     /**
-    * Creates a new instance.
-    * @param {*} entityImages Image resources.
-    * @param {*} currentEntity Current entity identifier.
-    * @param {number} [height=150] Entity height.
-    * @param {number} [width=150] Entity width.
-    * @param {number} [x=355] Initial x position.
-    * @param {number} [y=220] Initial y position.
-    * @param {number} [offsetTop=0] Top offset.
-    * @param {number} [offsetLeft=0] Left offset.
-    * @param {number} [offsetRight=0] Right offset.
-    * @param {number} [offsetBottom=0] Bottom offset.
-    */
+     * Creates a new instance.
+     * @param {*} entityImages Image resources.
+     * @param {*} currentEntity Current entity identifier.
+     * @param {number} [height=150] Entity height.
+     * @param {number} [width=150] Entity width.
+     * @param {number} [x=355] Initial x position.
+     * @param {number} [y=220] Initial y position.
+     * @param {number} [offsetTop=0] Top offset.
+     * @param {number} [offsetLeft=0] Left offset.
+     * @param {number} [offsetRight=0] Right offset.
+     * @param {number} [offsetBottom=0] Bottom offset.
+     */
     constructor(entityImages, currentEntity, height = 150, width = 150, x = 355, y = 220, offsetTop = 0, offsetLeft = 0, offsetRight = 0, offsetBottom = 0) {
         super();
         this.animCtrl = new EntityAnimationController(this);
@@ -33,12 +33,12 @@ export class AnimatedEntity extends MovableObject {
     }
 
     /**
-    * Initializes dimensions and position.
-    * @param {number} height Entity height.
-    * @param {number} width Entity width.
-    * @param {number} x Initial x position.
-    * @param {number} y Initial y position.
-    */
+     * Initializes dimensions and position.
+     * @param {number} height Entity height.
+     * @param {number} width Entity width.
+     * @param {number} x Initial x position.
+     * @param {number} y Initial y position.
+     */
     initDimensions(height, width, x, y) {
         this.height = height;
         this.width = width;
@@ -47,8 +47,8 @@ export class AnimatedEntity extends MovableObject {
     }
 
     /**
-    * Initializes animation state.
-    */
+     * Initializes animation state.
+     */
     initAnimationState() {
         this.lastFrameTime = 0;
         this.currentAnimation = 'idle';
@@ -61,12 +61,12 @@ export class AnimatedEntity extends MovableObject {
     }
 
     /**
-    * Initializes offset values.
-    * @param {number} offsetTop Top offset.
-    * @param {number} offsetLeft Left offset.
-    * @param {number} offsetRight Right offset.
-    * @param {number} offsetBottom Bottom offset.
-    */
+     * Initializes offset values.
+     * @param {number} offsetTop Top offset.
+     * @param {number} offsetLeft Left offset.
+     * @param {number} offsetRight Right offset.
+     * @param {number} offsetBottom Bottom offset.
+     */
     initOffset(offsetTop, offsetLeft, offsetRight, offsetBottom) {
         this.offset.top = offsetTop;
         this.offset.left = offsetLeft;
@@ -75,8 +75,8 @@ export class AnimatedEntity extends MovableObject {
     }
 
     /**
-    * Initializes movement state.
-    */
+     * Initializes movement state.
+     */
     initMovementState() {
         this.speedX = 5;
         this.movementSpeed = 0;
@@ -86,8 +86,8 @@ export class AnimatedEntity extends MovableObject {
     }
 
     /**
-    * Initializes fade state.
-    */
+     * Initializes fade state.
+     */
     initFadeState() {
         this.opacity = 1;
         this.fading = null;
@@ -96,11 +96,11 @@ export class AnimatedEntity extends MovableObject {
     }
 
     /**
-    * Starts a fade transition.
-    * @param {string} [direction="in"] Fade direction.
-    * @param {number} timestamp Current frame timestamp.
-    * @param {number} [duration=1000] Fade duration in milliseconds.
-    */
+     * Starts a fade transition.
+     * @param {string} [direction="in"] Fade direction.
+     * @param {number} timestamp Current frame timestamp.
+     * @param {number} [duration=1000] Fade duration in milliseconds.
+     */
     fade(direction = "in", timestamp, duration = 1000) {
         this.fading = direction;
         this.fadeStart = timestamp;
@@ -109,27 +109,27 @@ export class AnimatedEntity extends MovableObject {
     }
 
     /**
-    * Fades the entity in.
-    * @param {number} timestamp Current frame timestamp.
-    * @param {number} [duration=1000] Fade duration in milliseconds.
-    */
+     * Fades the entity in.
+     * @param {number} timestamp Current frame timestamp.
+     * @param {number} [duration=1000] Fade duration in milliseconds.
+     */
     fadeIn(timestamp, duration = 1000) {
         this.fade("in", timestamp, duration);
     }
 
     /**
-    * Fades the entity out.
-    * @param {number} timestamp Current frame timestamp.
-    * @param {number} [duration=1000] Fade duration in milliseconds.
-    */
+     * Fades the entity out.
+     * @param {number} timestamp Current frame timestamp.
+     * @param {number} [duration=1000] Fade duration in milliseconds.
+     */
     fadeOut(timestamp, duration = 1000) {
         this.fade("out", timestamp, duration);
     }
 
     /**
-    * Updates the fade transition.
-    * @param {number} timestamp Current frame timestamp.
-    */
+     * Updates the fade transition.
+     * @param {number} timestamp Current frame timestamp.
+     */
     updateFade(timestamp) {
         if (!this.fading) return;
         const elapsed = timestamp - this.fadeStart;
@@ -141,9 +141,9 @@ export class AnimatedEntity extends MovableObject {
     }
 
     /**
-    * Updates the state of the object.
-    * @param {number} timestamp Frame timestamp.
-    */
+     * Updates the state of the object.
+     * @param {number} timestamp Frame timestamp.
+     */
     updateState(timestamp) {
         this.updateDeltaTime(timestamp);
         this.handleMovement();
@@ -152,26 +152,26 @@ export class AnimatedEntity extends MovableObject {
     }
 
     /**
-    * Updates the animation state.
-    * @param {string} state Animation state.
-    * @param {number} [frameInterval=1000/5.5] Interval between frames in milliseconds.
-    */
+     * Updates the animation state.
+     * @param {string} state Animation state.
+     * @param {number} [frameInterval=1000/5.5] Interval between frames in milliseconds.
+     */
     updateAnimationState(state, frameInterval = 1000 / 5.5) {
         const fps = 1000 / frameInterval;
         this.animCtrl.setAnim(state, fps);
     }
 
     /**
-    * Handles horizontal movement based on the current input state.
-    */
+     * Handles horizontal movement based on the current input state.
+     */
     handleMovement() {
         if (this.isMovingLeft) return this.moveLeft();
         if (this.isMovingRight) return this.moveRight();
     }
 
     /**
-    * Moves the object to the left if within bounds.
-    */
+     * Moves the object to the left if within bounds.
+     */
     moveLeft() {
         if (this.x > 0) {
             this.x -= this.movementSpeed;
@@ -179,17 +179,17 @@ export class AnimatedEntity extends MovableObject {
     }
 
     /**
-    * Moves the object to the right.
-    */
+     * Moves the object to the right.
+     */
     moveRight() {
         this.x += this.movementSpeed;
     }
 
     /**
-    * Returns the animation images for the given state.
-    * @param {string} state Animation state.
-    * @returns {Array<string>|null} Animation images or null if not available.
-    */
+     * Returns the animation images for the given state.
+     * @param {string} state Animation state.
+     * @returns {Array<string>|null} Animation images or null if not available.
+     */
     getAnimationImages(state) {
         const entityDef = this.entityImages?.[this.currentEntity];
         if (!entityDef) return null;
@@ -205,11 +205,11 @@ export class AnimatedEntity extends MovableObject {
     }
 
     /**
-    * Sets a new animation and resets related state if it differs from the current one.
-    * @param {string} newAnimation Animation name.
-    * @param {boolean} [force=false] Whether to force the animation change.
-    * @returns {void}
-    */
+     * Sets a new animation and resets related state if it differs from the current one.
+     * @param {string} newAnimation Animation name.
+     * @param {boolean} [force=false] Whether to force the animation change.
+     * @returns {void}
+     */
     setAnimation(newAnimation, force = false) {
         if (force || this.currentAnimation !== newAnimation) {
             this.currentAnimation = newAnimation;
@@ -221,11 +221,11 @@ export class AnimatedEntity extends MovableObject {
     }
 
     /**
-    * Moves the object towards a target x-coordinate.
-    * @param {number} targetX Target x-coordinate.
-    * @param {Object} [options={}] Movement options.
-    * @returns {boolean} True if the target position has been reached, otherwise false.
-    */
+     * Moves the object towards a target x-coordinate.
+     * @param {number} targetX Target x-coordinate.
+     * @param {Object} [options={}] Movement options.
+     * @returns {boolean} True if the target position has been reached, otherwise false.
+     */
     moveToX(targetX, options = {}) {
         const settings = this.normalizeMoveOptions(options);
         this.applyMoveSpeedOverride(settings.speed);
@@ -240,16 +240,16 @@ export class AnimatedEntity extends MovableObject {
     }
 
     /**
-    * Normalizes movement options with default values.
-    * @param {Object} [options={}] Movement options.
-    * @param {number} [options.tolerance=3] Distance tolerance to consider arrival.
-    * @param {boolean} [options.snap=true] Whether to snap to the target on arrival.
-    * @param {?number} [options.speed=null] Temporary movement speed override.
-    * @param {?Function} [options.onArrive=null] Callback executed on arrival.
-    * @param {?string} [options.moveAnimation=null] Animation used while moving.
-    * @param {?string} [options.idleAnimation=null] Animation used when idle after arrival.
-    * @returns {{tolerance:number, snap:boolean, speed:?number, onArrive:?Function, moveAnimation:?string, idleAnimation:?string}} Normalized movement options.
-    */
+     * Normalizes movement options with default values.
+     * @param {Object} [options={}] Movement options.
+     * @param {number} [options.tolerance=3] Distance tolerance to consider arrival.
+     * @param {boolean} [options.snap=true] Whether to snap to the target on arrival.
+     * @param {?number} [options.speed=null] Temporary movement speed override.
+     * @param {?Function} [options.onArrive=null] Callback executed on arrival.
+     * @param {?string} [options.moveAnimation=null] Animation used while moving.
+     * @param {?string} [options.idleAnimation=null] Animation used when idle after arrival.
+     * @returns {{tolerance:number, snap:boolean, speed:?number, onArrive:?Function, moveAnimation:?string, idleAnimation:?string}} Normalized movement options.
+     */
     normalizeMoveOptions({
         tolerance = 3,
         snap = true,
@@ -262,9 +262,9 @@ export class AnimatedEntity extends MovableObject {
     }
 
     /**
-    * Applies a temporary movement speed override.
-    * @param {?number} speed Movement speed override.
-    */
+     * Applies a temporary movement speed override.
+     * @param {?number} speed Movement speed override.
+     */
     applyMoveSpeedOverride(speed) {
         if (speed === null) return;
         if (this._moveSpeedBackup !== undefined) return;
@@ -273,19 +273,19 @@ export class AnimatedEntity extends MovableObject {
     }
 
     /**
-    * Updates horizontal movement direction flags.
-    * @param {number} distance Distance to the target.
-    * @param {number} tolerance Distance tolerance.
-    */
+     * Updates horizontal movement direction flags.
+     * @param {number} distance Distance to the target.
+     * @param {number} tolerance Distance tolerance.
+     */
     updateMoveDirectionFlags(distance, tolerance) {
         this.isMovingRight = distance > tolerance;
         this.isMovingLeft = distance < -tolerance;
     }
 
     /**
-    * Applies the movement animation if applicable.
-    * @param {?string} moveAnimation Animation state used while moving.
-    */
+     * Applies the movement animation if applicable.
+     * @param {?string} moveAnimation Animation state used while moving.
+     */
     applyMoveAnimation(moveAnimation) {
         if (!moveAnimation) return;
         if (!this.isMovingLeft && !this.isMovingRight) return;
@@ -293,20 +293,20 @@ export class AnimatedEntity extends MovableObject {
     }
 
     /**
-    * Checks whether the target position has been reached.
-    * @param {number} distance Distance to the target.
-    * @param {number} tolerance Distance tolerance.
-    * @returns {boolean} True if the target is within tolerance, otherwise false.
-    */
+     * Checks whether the target position has been reached.
+     * @param {number} distance Distance to the target.
+     * @param {number} tolerance Distance tolerance.
+     * @returns {boolean} True if the target is within tolerance, otherwise false.
+     */
     hasReachedTarget(distance, tolerance) {
         return Math.abs(distance) <= tolerance;
     }
 
     /**
-    * Finalizes movement after reaching the target position.
-    * @param {number} targetX Target x-coordinate.
-    * @param {{snap:boolean, idleAnimation:?string, onArrive:?Function}} settings Movement settings.
-    */
+     * Finalizes movement after reaching the target position.
+     * @param {number} targetX Target x-coordinate.
+     * @param {{snap:boolean, idleAnimation:?string, onArrive:?Function}} settings Movement settings.
+     */
     finishMoveToX(targetX, settings) {
         this.isMovingRight = false;
         this.isMovingLeft = false;
@@ -319,8 +319,8 @@ export class AnimatedEntity extends MovableObject {
     }
 
     /**
-    * Restores the original movement speed if overridden.
-    */
+     * Restores the original movement speed if overridden.
+     */
     restoreMoveSpeed() {
         if (this._moveSpeedBackup === undefined) return;
         this.speedX = this._moveSpeedBackup;
@@ -328,9 +328,9 @@ export class AnimatedEntity extends MovableObject {
     }
 
     /**
-    * Applies the idle animation if provided.
-    * @param {?string} idleAnimation Animation state used when idle.
-    */
+     * Applies the idle animation if provided.
+     * @param {?string} idleAnimation Animation state used when idle.
+     */
     applyIdleAnimation(idleAnimation) {
         if (!idleAnimation) return;
         this.updateAnimationState(idleAnimation);

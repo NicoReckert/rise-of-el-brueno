@@ -5,19 +5,19 @@ import { EntityAnimationTransitions } from "./entity-animation-transitions.class
  */
 export class EntityAnimationController {
     /**
-    * Creates a new instance.
-    * @param {*} entity Associated entity.
-    */
+     * Creates a new instance.
+     * @param {*} entity Associated entity.
+     */
     constructor(entity) {
         this.entity = entity;
         this.transitions = new EntityAnimationTransitions(entity);
     }
 
     /**
-    * Updates the animation based on the given timestamp.
-    * @param {number} timestamp Frame timestamp.
-    * @returns {void}
-    */
+     * Updates the animation based on the given timestamp.
+     * @param {number} timestamp Frame timestamp.
+     * @returns {void}
+     */
     updateAnimation(timestamp) {
         if (this.handleSkipOrPause(timestamp)) return;
         const finishedAnim = this.entity.currentAnimation;
@@ -31,10 +31,10 @@ export class EntityAnimationController {
     }
 
     /**
-    * Handles frame skipping or paused animation state.
-    * @param {number} timestamp Frame timestamp.
-    * @returns {boolean} True if processing should stop, otherwise false.
-    */
+     * Handles frame skipping or paused animation state.
+     * @param {number} timestamp Frame timestamp.
+     * @returns {boolean} True if processing should stop, otherwise false.
+     */
     handleSkipOrPause(timestamp) {
         if (this.shouldSkipFrame(timestamp)) {
             this.entity.updateFade?.(timestamp);
@@ -48,9 +48,9 @@ export class EntityAnimationController {
     }
 
     /**
-    * Checks whether the animation sequence is paused.
-    * @returns {boolean} True if paused, otherwise false.
-    */
+     * Checks whether the animation sequence is paused.
+     * @returns {boolean} True if paused, otherwise false.
+     */
     isAnimationSequencePaused() {
         const seq = this.entity.animSeqCtrl;
         if (!seq?.isActive?.()) return false;
@@ -59,10 +59,10 @@ export class EntityAnimationController {
     }
 
     /**
-    * Determines whether the current animation frame should be skipped.
-    * @param {number} timestamp Frame timestamp.
-    * @returns {boolean} True if the frame should be skipped, otherwise false.
-    */
+     * Determines whether the current animation frame should be skipped.
+     * @param {number} timestamp Frame timestamp.
+     * @returns {boolean} True if the frame should be skipped, otherwise false.
+     */
     shouldSkipFrame(timestamp) {
         if (!this.entity.lastFrameTime) {
             this.entity.lastFrameTime = timestamp;
@@ -72,20 +72,20 @@ export class EntityAnimationController {
     }
 
     /**
-    * Handles the case when no animation is available.
-    * @param {number} timestamp Frame timestamp.
-    */
+     * Handles the case when no animation is available.
+     * @param {number} timestamp Frame timestamp.
+     */
     handleMissingAnimation(timestamp) {
         this.entity.lastFrameTime = timestamp;
         this.entity.updateFade?.(timestamp);
     }
 
     /**
-    * Plays an animation from the provided source.
-    * @param {Array<string>} anim Animation frames.
-    * @param {string} finishedAnim Animation state to handle after completion.
-    * @returns {void}
-    */
+     * Plays an animation from the provided source.
+     * @param {Array<string>} anim Animation frames.
+     * @param {string} finishedAnim Animation state to handle after completion.
+     * @returns {void}
+     */
     playAnimationFromSource(anim, finishedAnim) {
         const seqActive = !!this.entity.animSeqCtrl?.isActive?.();
         this.entity.updateAnimationFromSourceGeneric(anim, {
@@ -98,21 +98,21 @@ export class EntityAnimationController {
     }
 
     /**
-    * Finalizes the frame update.
-    * @param {number} timestamp Frame timestamp.
-    */
+     * Finalizes the frame update.
+     * @param {number} timestamp Frame timestamp.
+     */
     finishFrameUpdate(timestamp) {
         this.entity.lastFrameTime = timestamp;
         this.entity.updateFade?.(timestamp);
     }
 
     /**
-    * Sets the active animation.
-    * @param {string} state Animation state.
-    * @param {number} fps Frames per second.
-    * @param {?string} [skipIf=null] Animation state that prevents switching if active.
-    * @returns {boolean} True when the call completes.
-    */
+     * Sets the active animation.
+     * @param {string} state Animation state.
+     * @param {number} fps Frames per second.
+     * @param {?string} [skipIf=null] Animation state that prevents switching if active.
+     * @returns {boolean} True when the call completes.
+     */
     setAnim(state, fps, skipIf = null) {
         const interval = 1000 / fps;
         this.entity.frameInterval = interval;

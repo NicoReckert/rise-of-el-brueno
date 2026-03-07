@@ -3,16 +3,16 @@
  */
 export class WorldCleanup {
     /**
-    * Creates a new instance.
-    * @param {Object} world World instance.
-    */
+     * Creates a new instance.
+     * @param {Object} world World instance.
+     */
     constructor(world) {
         this.world = world;
     }
 
     /**
-    * Destroys the world and cleans up resources.
-    */
+     * Destroys the world and cleans up resources.
+     */
     destroy() {
         this.pauseAndStopLoop();
         this.clearCanvas();
@@ -24,8 +24,8 @@ export class WorldCleanup {
     }
 
     /**
-    * Pauses and stops the main loop.
-    */
+     * Pauses and stops the main loop.
+     */
     pauseAndStopLoop() {
         const world = this.world;
         world.paused = true;
@@ -36,8 +36,8 @@ export class WorldCleanup {
     }
 
     /**
-    * Clears the canvas.
-    */
+     * Clears the canvas.
+     */
     clearCanvas() {
         const world = this.world;
         if (!world.ctx || !world.canvas) return;
@@ -45,8 +45,8 @@ export class WorldCleanup {
     }
 
     /**
-    * Stops all active sounds.
-    */
+     * Stops all active sounds.
+     */
     stopAllSounds() {
         const manager = this.world.audioManager;
         if (!manager || !manager.audios) return;
@@ -55,9 +55,9 @@ export class WorldCleanup {
     }
 
     /**
-    * Stops a sound and resets its playback position.
-    * @param {HTMLMediaElement} sound Audio element to stop.
-    */
+     * Stops a sound and resets its playback position.
+     * @param {HTMLMediaElement} sound Audio element to stop.
+     */
     stopSound(sound) {
         if (!sound || sound.paused) return;
         try {

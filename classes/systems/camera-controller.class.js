@@ -3,19 +3,19 @@
  */
 export class CameraController {
     /**
-    * Creates a new instance.
-    * @param {Object} world World instance.
-    */
+     * Creates a new instance.
+     * @param {Object} world World instance.
+     */
     constructor(world) {
         this.world = world;
     }
 
     /**
-    * Moves the camera towards a target position.
-    * @param {number} targetX Target x-coordinate.
-    * @param {Object} [options={}] Movement options.
-    * @returns {boolean} True if movement is finished, otherwise false.
-    */
+     * Moves the camera towards a target position.
+     * @param {number} targetX Target x-coordinate.
+     * @param {Object} [options={}] Movement options.
+     * @returns {boolean} True if movement is finished, otherwise false.
+     */
     moveToX(targetX, options = {}) {
         const cfg = this.prepareMove(targetX, options);
         if (!cfg) return false;
@@ -25,16 +25,16 @@ export class CameraController {
     }
 
     /**
-    * Prepares configuration for a camera movement.
-    * @param {number} targetX Target x-coordinate.
-    * @param {Object} [options={}] Movement options.
-    * @param {number} [options.tolerance=1] Distance threshold to consider arrival.
-    * @param {number} [options.speed=6] Movement speed.
-    * @param {boolean} [options.snap=true] Whether to snap to target on arrival.
-    * @param {boolean} [options.clamp=true] Whether to clamp camera within bounds.
-    * @param {?Function} [options.onArrive=null] Callback invoked on arrival.
-    * @returns {Object|null} Movement configuration or null if invalid.
-    */
+     * Prepares configuration for a camera movement.
+     * @param {number} targetX Target x-coordinate.
+     * @param {Object} [options={}] Movement options.
+     * @param {number} [options.tolerance=1] Distance threshold to consider arrival.
+     * @param {number} [options.speed=6] Movement speed.
+     * @param {boolean} [options.snap=true] Whether to snap to target on arrival.
+     * @param {boolean} [options.clamp=true] Whether to clamp camera within bounds.
+     * @param {?Function} [options.onArrive=null] Callback invoked on arrival.
+     * @returns {Object|null} Movement configuration or null if invalid.
+     */
     prepareMove(targetX, options = {}) {
         const {
             tolerance = 1,
@@ -50,11 +50,11 @@ export class CameraController {
     }
 
     /**
-    * Normalizes camera movement parameters.
-    * @param {number} targetX Target x-coordinate.
-    * @param {number} speed Movement speed.
-    * @returns {{targetX: number, speed: number}|null} Normalized parameters or null if invalid.
-    */
+     * Normalizes camera movement parameters.
+     * @param {number} targetX Target x-coordinate.
+     * @param {number} speed Movement speed.
+     * @returns {{targetX: number, speed: number}|null} Normalized parameters or null if invalid.
+     */
     normalizeParams(targetX, speed) {
         const world = this.world;
         const tx = Number(targetX);
@@ -65,9 +65,9 @@ export class CameraController {
     }
 
     /**
-    * Returns the delta time used for camera movement.
-    * @returns {number} Clamped delta time value.
-    */
+     * Returns the delta time used for camera movement.
+     * @returns {number} Clamped delta time value.
+     */
     getDeltaTime() {
         const world = this.world;
         let dt = Number(world.character?.deltaTime);
@@ -76,10 +76,10 @@ export class CameraController {
     }
 
     /**
-    * Attempts to finish the camera movement if within tolerance.
-    * @param {Object} cfg Movement configuration.
-    * @returns {boolean} True if movement is finished, otherwise false.
-    */
+     * Attempts to finish the camera movement if within tolerance.
+     * @param {Object} cfg Movement configuration.
+     * @returns {boolean} True if movement is finished, otherwise false.
+     */
     tryFinish(cfg) {
         const world = this.world;
         const d = cfg.targetX - world.camera_x;
@@ -91,9 +91,9 @@ export class CameraController {
     }
 
     /**
-    * Advances the camera position towards the target.
-    * @param {Object} cfg Movement configuration.
-    */
+     * Advances the camera position towards the target.
+     * @param {Object} cfg Movement configuration.
+     */
     advance(cfg) {
         const world = this.world;
         const d = cfg.targetX - world.camera_x;
@@ -104,8 +104,8 @@ export class CameraController {
     }
 
     /**
-    * Clamps the camera position within level boundaries.
-    */
+     * Clamps the camera position within level boundaries.
+     */
     clamp() {
         const world = this.world;
         const levelEnd = Number(world.level_end_x);

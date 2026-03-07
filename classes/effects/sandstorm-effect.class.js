@@ -3,11 +3,11 @@
  */
 export class SandstormEffect {
     /**
-    * Creates a new instance.
-    * @param {HTMLCanvasElement} canvas Canvas element.
-    * @param {Object} entityImages Image definitions.
-    * @param {number} [worldWidth=7200] Width of the world.
-    */
+     * Creates a new instance.
+     * @param {HTMLCanvasElement} canvas Canvas element.
+     * @param {Object} entityImages Image definitions.
+     * @param {number} [worldWidth=7200] Width of the world.
+     */
     constructor(canvas, entityImages, worldWidth = 7200) {
         this.canvas = canvas;
         this.entityImages = entityImages;
@@ -18,23 +18,23 @@ export class SandstormEffect {
     }
 
     /**
-    * Initializes the rendering context reference.
-    */
+     * Initializes the rendering context reference.
+     */
     initContext() {
         this.ctx = null;
     }
 
     /**
-    * Initializes texture resources for the effect.
-    */
+     * Initializes texture resources for the effect.
+     */
     initTexture() {
         this.texture = this.entityImages?.sandstorm?.texture ?? [];
         this.image = this.texture[0];
     }
 
     /**
-    * Initializes internal storm state.
-    */
+     * Initializes internal storm state.
+     */
     initStormState() {
         this.scrollX = 0;
         this.scrollSpeed = 0.5;
@@ -45,8 +45,8 @@ export class SandstormEffect {
     }
 
     /**
-    * Updates the sandstorm state.
-    */
+     * Updates the sandstorm state.
+     */
     update() {
         if (!this.enabled) return;
         this.scrollX = (this.scrollX + this.scrollSpeed) % this.image.width;
@@ -59,11 +59,11 @@ export class SandstormEffect {
     }
 
     /**
-    * Draws the sandstorm effect.
-    * @param {CanvasRenderingContext2D} ctx Rendering context.
-    * @param {number} [cameraX=0] Camera x-offset.
-    * @param {?Object} [shield=null] Optional shield data for clipping and glow.
-    */
+     * Draws the sandstorm effect.
+     * @param {CanvasRenderingContext2D} ctx Rendering context.
+     * @param {number} [cameraX=0] Camera x-offset.
+     * @param {?Object} [shield=null] Optional shield data for clipping and glow.
+     */
     draw(ctx, cameraX = 0, shield = null) {
         if (!this.enabled || !this.image.complete) return;
         ctx.save();
@@ -78,10 +78,10 @@ export class SandstormEffect {
     }
 
     /**
-    * Applies a clipping region around the shield.
-    * @param {CanvasRenderingContext2D} ctx Rendering context.
-    * @param {{x:number, y:number, radius:number}} shield Shield data.
-    */
+     * Applies a clipping region around the shield.
+     * @param {CanvasRenderingContext2D} ctx Rendering context.
+     * @param {{x:number, y:number, radius:number}} shield Shield data.
+     */
     applyShieldClip(ctx, shield) {
         const { x, y, radius } = shield;
         ctx.beginPath();
@@ -92,10 +92,10 @@ export class SandstormEffect {
     }
 
     /**
-    * Draws the glow around the shield.
-    * @param {CanvasRenderingContext2D} ctx Rendering context.
-    * @param {{x:number, y:number, radius:number}} shield Shield data.
-    */
+     * Draws the glow around the shield.
+     * @param {CanvasRenderingContext2D} ctx Rendering context.
+     * @param {{x:number, y:number, radius:number}} shield Shield data.
+     */
     drawShieldGlow(ctx, shield) {
         const { x, y, radius } = shield;
         const gradient = this.createShieldGradient(ctx, x, y, radius);
@@ -107,13 +107,13 @@ export class SandstormEffect {
     }
 
     /**
-    * Creates a radial gradient for the shield glow.
-    * @param {CanvasRenderingContext2D} ctx Rendering context.
-    * @param {number} x X-coordinate of the gradient center.
-    * @param {number} y Y-coordinate of the gradient center.
-    * @param {number} radius Shield radius.
-    * @returns {CanvasGradient} Radial gradient instance.
-    */
+     * Creates a radial gradient for the shield glow.
+     * @param {CanvasRenderingContext2D} ctx Rendering context.
+     * @param {number} x X-coordinate of the gradient center.
+     * @param {number} y Y-coordinate of the gradient center.
+     * @param {number} radius Shield radius.
+     * @returns {CanvasGradient} Radial gradient instance.
+     */
     createShieldGradient(ctx, x, y, radius) {
         const gradient = ctx.createRadialGradient(
             x, y, radius * 0.6,
@@ -125,12 +125,12 @@ export class SandstormEffect {
     }
 
     /**
-    * Fills the shield circle.
-    * @param {CanvasRenderingContext2D} ctx Rendering context.
-    * @param {number} x X-coordinate of the circle center.
-    * @param {number} y Y-coordinate of the circle center.
-    * @param {number} radius Shield radius.
-    */
+     * Fills the shield circle.
+     * @param {CanvasRenderingContext2D} ctx Rendering context.
+     * @param {number} x X-coordinate of the circle center.
+     * @param {number} y Y-coordinate of the circle center.
+     * @param {number} radius Shield radius.
+     */
     fillShieldCircle(ctx, x, y, radius) {
         ctx.beginPath();
         ctx.arc(x, y, radius, 0, Math.PI * 2);
@@ -138,10 +138,10 @@ export class SandstormEffect {
     }
 
     /**
-    * Draws the sand texture.
-    * @param {CanvasRenderingContext2D} ctx Rendering context.
-    * @param {number} cameraX Camera x-offset.
-    */
+     * Draws the sand texture.
+     * @param {CanvasRenderingContext2D} ctx Rendering context.
+     * @param {number} cameraX Camera x-offset.
+     */
     drawSand(ctx, cameraX) {
         ctx.save();
         ctx.globalAlpha = this.currentAlpha;
@@ -151,10 +151,10 @@ export class SandstormEffect {
     }
 
     /**
-    * Calculates tiling parameters for the sand texture.
-    * @param {number} cameraX Camera x-offset.
-    * @returns {{imgWidth:number, startX:number, repeats:number}} Tiling configuration.
-    */
+     * Calculates tiling parameters for the sand texture.
+     * @param {number} cameraX Camera x-offset.
+     * @returns {{imgWidth:number, startX:number, repeats:number}} Tiling configuration.
+     */
     getSandTiling(cameraX) {
         const imgWidth = this.image.width;
         const offset = (cameraX + this.scrollX) % imgWidth;
@@ -164,10 +164,10 @@ export class SandstormEffect {
     }
 
     /**
-    * Draws repeated sand tiles based on tiling configuration.
-    * @param {CanvasRenderingContext2D} ctx Rendering context.
-    * @param {{imgWidth:number, startX:number, repeats:number}} tiling Tiling configuration.
-    */
+     * Draws repeated sand tiles based on tiling configuration.
+     * @param {CanvasRenderingContext2D} ctx Rendering context.
+     * @param {{imgWidth:number, startX:number, repeats:number}} tiling Tiling configuration.
+     */
     drawSandTiles(ctx, tiling) {
         const { imgWidth, startX, repeats } = tiling;
         for (let i = 0; i < repeats; i++) {
@@ -183,26 +183,26 @@ export class SandstormEffect {
     }
 
     /**
-    * Enables or disables the sandstorm effect.
-    * @param {boolean} val Enabled state.
-    */
+     * Enables or disables the sandstorm effect.
+     * @param {boolean} val Enabled state.
+     */
     setEnabled(val) {
         this.enabled = val;
     }
 
     /**
-    * Sets the base alpha value.
-    * @param {number} alpha Alpha value.
-    */
+     * Sets the base alpha value.
+     * @param {number} alpha Alpha value.
+     */
     setAlpha(alpha) {
         this.alpha = alpha;
         if (this.currentAlpha == null) this.currentAlpha = alpha;
     }
 
     /**
-    * Sets the scroll speed.
-    * @param {number} speed Scroll speed value.
-    */
+     * Sets the scroll speed.
+     * @param {number} speed Scroll speed value.
+     */
     setSpeed(speed) {
         this.scrollSpeed = speed;
     }

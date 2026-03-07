@@ -1,13 +1,13 @@
 /**
-* Dark ribbon effect controller.
-*/
+ * Dark ribbon effect controller.
+ */
 class DarkRibbon {
     /**
-    * Creates a new instance.
-    * @param {number} worldWidth World width.
-    * @param {number} worldHeight World height.
-    * @param {object} [opts={}] Configuration options.
-    */
+     * Creates a new instance.
+     * @param {number} worldWidth World width.
+     * @param {number} worldHeight World height.
+     * @param {object} [opts={}] Configuration options.
+     */
     constructor(
         worldWidth,
         worldHeight,
@@ -20,21 +20,21 @@ class DarkRibbon {
     }
 
     /**
-    * Initializes configuration options.
-    * @param {number} worldHeight World height.
-    * @param {object} [opts={}] Configuration options.
-    * @returns {void}
-    */
+     * Initializes configuration options.
+     * @param {number} worldHeight World height.
+     * @param {object} [opts={}] Configuration options.
+     * @returns {void}
+     */
     initOptions(worldHeight, opts = {}) {
         const base = this.getDefaultOptions(worldHeight);
         this.opts = { ...base, ...opts };
     }
 
     /**
-    * Returns the default configuration options.
-    * @param {number} worldHeight World height.
-    * @returns {object} Default configuration options.
-    */
+     * Returns the default configuration options.
+     * @param {number} worldHeight World height.
+     * @returns {object} Default configuration options.
+     */
     getDefaultOptions(worldHeight) {
         return {
             ...this.getDefaultYOptions(worldHeight),
@@ -45,10 +45,10 @@ class DarkRibbon {
     }
 
     /**
-    * Returns default Y position options.
-    * @param {number} worldHeight World height.
-    * @returns {object} Y position options.
-    */
+     * Returns default Y position options.
+     * @param {number} worldHeight World height.
+     * @returns {object} Y position options.
+     */
     getDefaultYOptions(worldHeight) {
         return {
             yMin: 0,
@@ -57,9 +57,9 @@ class DarkRibbon {
     }
 
     /**
-    * Returns default geometry options.
-    * @returns {object} Geometry options.
-    */
+     * Returns default geometry options.
+     * @returns {object} Geometry options.
+     */
     getDefaultGeomOptions() {
         return {
             minLen: 220,
@@ -72,9 +72,9 @@ class DarkRibbon {
     }
 
     /**
-    * Returns default wobble options.
-    * @returns {object} Wobble options.
-    */
+     * Returns default wobble options.
+     * @returns {object} Wobble options.
+     */
     getDefaultWobbleOptions() {
         return {
             wobbleAmpMin: 8,
@@ -85,9 +85,9 @@ class DarkRibbon {
     }
 
     /**
-    * Returns default alpha options.
-    * @returns {object} Alpha options.
-    */
+     * Returns default alpha options.
+     * @returns {object} Alpha options.
+     */
     getDefaultAlphaOptions() {
         return {
             alphaMin: 0.05,
@@ -96,10 +96,10 @@ class DarkRibbon {
     }
 
     /**
-    * Resets the ribbon state.
-    * @param {boolean} [initial=false] Whether the reset is the initial setup.
-    * @returns {void}
-    */
+     * Resets the ribbon state.
+     * @param {boolean} [initial=false] Whether the reset is the initial setup.
+     * @returns {void}
+     */
     reset(initial = false) {
         const o = this.opts;
         this.initLengthAndWidth(o);
@@ -109,21 +109,21 @@ class DarkRibbon {
     }
 
     /**
-    * Initializes ribbon length and width.
-    * @param {object} o Configuration options.
-    * @returns {void}
-    */
+     * Initializes ribbon length and width.
+     * @param {object} o Configuration options.
+     * @returns {void}
+     */
     initLengthAndWidth(o) {
         this.len = o.minLen + Math.random() * (o.maxLen - o.minLen);
         this.baseWidth = o.minWidth + Math.random() * (o.maxWidth - o.minWidth);
     }
 
     /**
-    * Initializes ribbon position.
-    * @param {boolean} initial Whether the reset is the initial setup.
-    * @param {object} o Configuration options.
-    * @returns {void}
-    */
+     * Initializes ribbon position.
+     * @param {boolean} initial Whether the reset is the initial setup.
+     * @param {object} o Configuration options.
+     * @returns {void}
+     */
     initPosition(initial, o) {
         this.x = initial
             ? Math.random() * this.worldWidth
@@ -132,10 +132,10 @@ class DarkRibbon {
     }
 
     /**
-    * Initializes ribbon motion properties.
-    * @param {object} o Configuration options.
-    * @returns {void}
-    */
+     * Initializes ribbon motion properties.
+     * @param {object} o Configuration options.
+     * @returns {void}
+     */
     initMotion(o) {
         this.speedX = -(o.speedMin + Math.random() * (o.speedMax - o.speedMin));
         this.amp = o.wobbleAmpMin + Math.random() * (o.wobbleAmpMax - o.wobbleAmpMin);
@@ -143,10 +143,10 @@ class DarkRibbon {
     }
 
     /**
-    * Initializes ribbon appearance properties.
-    * @param {object} o Configuration options.
-    * @returns {void}
-    */
+     * Initializes ribbon appearance properties.
+     * @param {object} o Configuration options.
+     * @returns {void}
+     */
     initAppearance(o) {
         this.alpha = o.alphaMin + Math.random() * (o.alphaMax - o.alphaMin);
         this.phase = Math.random() * Math.PI * 2;
@@ -154,22 +154,22 @@ class DarkRibbon {
     }
 
     /**
-    * Updates the ribbon state for the current frame.
-    * @param {number} time Current time value.
-    * @param {number} cameraX Camera x position.
-    * @param {number} viewportW Viewport width.
-    * @returns {void}
-    */
+     * Updates the ribbon state for the current frame.
+     * @param {number} time Current time value.
+     * @param {number} cameraX Camera x position.
+     * @param {number} viewportW Viewport width.
+     * @returns {void}
+     */
     update(time, cameraX, viewportW) {
         this.advanceDustMotion(time);
         this.resetDustIfOffscreen(cameraX, viewportW);
     }
 
     /**
-    * Updates the dust motion state.
-    * @param {number} time Current time value.
-    * @returns {void}
-    */
+     * Updates the dust motion state.
+     * @param {number} time Current time value.
+     * @returns {void}
+     */
     advanceDustMotion(time) {
         this.x += this.speedX;
         this.phase += 0.015;
@@ -177,11 +177,11 @@ class DarkRibbon {
     }
 
     /**
-    * Resets the dust position if it is offscreen.
-    * @param {number} cameraX Current camera x position.
-    * @param {number} viewportW Viewport width.
-    * @returns {void}
-    */
+     * Resets the dust position if it is offscreen.
+     * @param {number} cameraX Current camera x position.
+     * @param {number} viewportW Viewport width.
+     * @returns {void}
+     */
     resetDustIfOffscreen(cameraX, viewportW) {
         const leftKill = cameraX - this.len - 250;
         if (this.x >= leftKill) return;
@@ -189,11 +189,11 @@ class DarkRibbon {
     }
 
     /**
-    * Repositions the dust with randomized properties.
-    * @param {number} cameraX Current camera x position.
-    * @param {number} viewportW Viewport width.
-    * @returns {void}
-    */
+     * Repositions the dust with randomized properties.
+     * @param {number} cameraX Current camera x position.
+     * @param {number} viewportW Viewport width.
+     * @returns {void}
+     */
     repositionDust(cameraX, viewportW) {
         const o = this.opts;
         this.x = cameraX + viewportW + 200 + Math.random() * 400;
@@ -207,12 +207,12 @@ class DarkRibbon {
     }
 
     /**
-    * Draws the dust trail if it is visible on screen.
-    * @param {CanvasRenderingContext2D} ctx Rendering context.
-    * @param {number} cameraX Current camera x position.
-    * @param {number} canvasWidth Canvas width.
-    * @returns {void}
-    */
+     * Draws the dust trail if it is visible on screen.
+     * @param {CanvasRenderingContext2D} ctx Rendering context.
+     * @param {number} cameraX Current camera x position.
+     * @param {number} canvasWidth Canvas width.
+     * @returns {void}
+     */
     draw(ctx, cameraX, canvasWidth) {
         const screenX = this.x - cameraX;
         if (!this.isTrailOnScreen(screenX, canvasWidth)) return;
@@ -225,11 +225,11 @@ class DarkRibbon {
     }
 
     /**
-    * Checks whether the trail is visible on screen.
-    * @param {number} screenX Trail x position on screen.
-    * @param {number} canvasWidth Canvas width.
-    * @returns {boolean} True if the trail is visible on screen, otherwise false.
-    */
+     * Checks whether the trail is visible on screen.
+     * @param {number} screenX Trail x position on screen.
+     * @param {number} canvasWidth Canvas width.
+     * @returns {boolean} True if the trail is visible on screen, otherwise false.
+     */
     isTrailOnScreen(screenX, canvasWidth) {
         if (screenX > canvasWidth + 200) return false;
         if (screenX < -this.len - 220) return false;
@@ -237,10 +237,10 @@ class DarkRibbon {
     }
 
     /**
-    * Builds the trail point data.
-    * @param {number} screenX Trail x position on screen.
-    * @returns {{ a: number, points: Array }} Trail alpha and point data.
-    */
+     * Builds the trail point data.
+     * @param {number} screenX Trail x position on screen.
+     * @returns {{ a: number, points: Array }} Trail alpha and point data.
+     */
     buildTrailPoints(screenX) {
         const segments = 10;
         const step = this.len / segments;
@@ -253,12 +253,12 @@ class DarkRibbon {
     }
 
     /**
-    * Builds a single trail point.
-    * @param {number} screenX Trail x position on screen.
-    * @param {number} step Distance between trail segments.
-    * @param {number} i Current segment index.
-    * @returns {{ x: number, y: number }} Trail point coordinates.
-    */
+     * Builds a single trail point.
+     * @param {number} screenX Trail x position on screen.
+     * @param {number} step Distance between trail segments.
+     * @param {number} i Current segment index.
+     * @returns {{ x: number, y: number }} Trail point coordinates.
+     */
     buildTrailPoint(screenX, step, i) {
         const px = screenX + i * step;
         const t = (this.x + i * step) * this.freq + this.phase;
@@ -272,12 +272,12 @@ class DarkRibbon {
     }
 
     /**
-    * Draws the base trail.
-    * @param {CanvasRenderingContext2D} ctx Rendering context.
-    * @param {number} a Trail alpha value.
-    * @param {Array} points Trail point data.
-    * @returns {void}
-    */
+     * Draws the base trail.
+     * @param {CanvasRenderingContext2D} ctx Rendering context.
+     * @param {number} a Trail alpha value.
+     * @param {Array} points Trail point data.
+     * @returns {void}
+     */
     drawBaseTrail(ctx, a, points) {
         ctx.globalCompositeOperation = "source-over";
         ctx.globalAlpha = a * 0.9;
@@ -289,12 +289,12 @@ class DarkRibbon {
     }
 
     /**
-    * Draws the glow trail.
-    * @param {CanvasRenderingContext2D} ctx Rendering context.
-    * @param {number} a Trail alpha value.
-    * @param {Array} points Trail point data.
-    * @returns {void}
-    */
+     * Draws the glow trail.
+     * @param {CanvasRenderingContext2D} ctx Rendering context.
+     * @param {number} a Trail alpha value.
+     * @param {Array} points Trail point data.
+     * @returns {void}
+     */
     drawGlowTrail(ctx, a, points) {
         ctx.globalCompositeOperation = "screen";
         ctx.globalAlpha = a;
@@ -305,11 +305,11 @@ class DarkRibbon {
     }
 
     /**
-    * Creates the glow gradient for the trail.
-    * @param {CanvasRenderingContext2D} ctx Rendering context.
-    * @param {Array} points Trail point data.
-    * @returns {CanvasGradient} Glow gradient.
-    */
+     * Creates the glow gradient for the trail.
+     * @param {CanvasRenderingContext2D} ctx Rendering context.
+     * @param {Array} points Trail point data.
+     * @returns {CanvasGradient} Glow gradient.
+     */
     createGlowGradient(ctx, points) {
         const start = points[0];
         const end = points[points.length - 1];
@@ -323,12 +323,12 @@ class DarkRibbon {
     }
 
     /**
-    * Draws the highlight trail.
-    * @param {CanvasRenderingContext2D} ctx Rendering context.
-    * @param {number} a Trail alpha value.
-    * @param {Array} points Trail point data.
-    * @returns {void}
-    */
+     * Draws the highlight trail.
+     * @param {CanvasRenderingContext2D} ctx Rendering context.
+     * @param {number} a Trail alpha value.
+     * @param {Array} points Trail point data.
+     * @returns {void}
+     */
     drawHighlightTrail(ctx, a, points) {
         ctx.globalCompositeOperation = "screen";
         ctx.globalAlpha = a * 0.9;
@@ -338,11 +338,11 @@ class DarkRibbon {
     }
 
     /**
-    * Draws a smoothed trail path.
-    * @param {CanvasRenderingContext2D} ctx Rendering context.
-    * @param {Array} pts Trail point data.
-    * @returns {void}
-    */
+     * Draws a smoothed trail path.
+     * @param {CanvasRenderingContext2D} ctx Rendering context.
+     * @param {Array} pts Trail point data.
+     * @returns {void}
+     */
     strokeSmooth(ctx, pts) {
         if (pts.length < 2) return;
         ctx.beginPath();
@@ -359,16 +359,16 @@ class DarkRibbon {
 }
 
 /**
-* Manages and renders multiple dark ribbon effects.
-*/
+ * Manages and renders multiple dark ribbon effects.
+ */
 export class DarkEnergyEffect {
     /**
-    * Creates a new dark ribbon manager instance.
-    * @param {number} worldWidth World width.
-    * @param {number} worldHeight World height.
-    * @param {number} [ribbonCount=10] Number of ribbons.
-    * @param {Object} [options={}] Ribbon options.
-    */
+     * Creates a new dark ribbon manager instance.
+     * @param {number} worldWidth World width.
+     * @param {number} worldHeight World height.
+     * @param {number} [ribbonCount=10] Number of ribbons.
+     * @param {Object} [options={}] Ribbon options.
+     */
     constructor(worldWidth, worldHeight, ribbonCount = 10, options = {}) {
         this.worldWidth = worldWidth;
         this.worldHeight = worldHeight;
@@ -376,22 +376,22 @@ export class DarkEnergyEffect {
     }
 
     /**
-    * Updates all dark ribbon effects.
-    * @param {number} [time=performance.now()] Current time value.
-    * @param {number} [cameraX=0] Current camera x position.
-    * @param {number} [viewportW=800] Viewport width.
-    * @returns {void}
-    */
+     * Updates all dark ribbon effects.
+     * @param {number} [time=performance.now()] Current time value.
+     * @param {number} [cameraX=0] Current camera x position.
+     * @param {number} [viewportW=800] Viewport width.
+     * @returns {void}
+     */
     update(time = performance.now(), cameraX = 0, viewportW = 800) {
         for (const r of this.ribbons) r.update(time, cameraX, viewportW);
     }
 
     /**
-    * Draws all dark ribbon effects.
-    * @param {CanvasRenderingContext2D} ctx Rendering context.
-    * @param {number} cameraX Current camera x position.
-    * @returns {void}
-    */
+     * Draws all dark ribbon effects.
+     * @param {CanvasRenderingContext2D} ctx Rendering context.
+     * @param {number} cameraX Current camera x position.
+     * @returns {void}
+     */
     draw(ctx, cameraX) {
         const canvasWidth = ctx.canvas.width;
         for (const r of this.ribbons) r.draw(ctx, cameraX, canvasWidth);

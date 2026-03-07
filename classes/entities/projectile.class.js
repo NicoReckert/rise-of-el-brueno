@@ -5,14 +5,14 @@ import { MovableObject } from '../systems/movable-object.class.js';
  */
 export class Projectile extends MovableObject {
   /**
-  * Creates a new instance.
-  * @param {Object} entityImages Image collection for the projectile.
-  * @param {string} type Projectile type.
-  * @param {number} x Initial x position.
-  * @param {number} y Initial y position.
-  * @param {boolean} [direction=true] Movement direction.
-  * @param {number} [maxDistance=800] Maximum travel distance.
-  */
+   * Creates a new instance.
+   * @param {Object} entityImages Image collection for the projectile.
+   * @param {string} type Projectile type.
+   * @param {number} x Initial x position.
+   * @param {number} y Initial y position.
+   * @param {boolean} [direction=true] Movement direction.
+   * @param {number} [maxDistance=800] Maximum travel distance.
+   */
   constructor(entityImages, type, x, y, direction = true, maxDistance = 800) {
     super();
     this.entityImages = entityImages;
@@ -22,14 +22,14 @@ export class Projectile extends MovableObject {
   }
 
   /**
-  * Initializes the core projectile properties.
-  * @param {string} type Projectile type.
-  * @param {number} x Initial x position.
-  * @param {number} y Initial y position.
-  * @param {boolean} direction Movement direction.
-  * @param {number} maxDistance Maximum travel distance.
-  * @returns {void}
-  */
+   * Initializes the core projectile properties.
+   * @param {string} type Projectile type.
+   * @param {number} x Initial x position.
+   * @param {number} y Initial y position.
+   * @param {boolean} direction Movement direction.
+   * @param {number} maxDistance Maximum travel distance.
+   * @returns {void}
+   */
   initProjectileCore(type, x, y, direction, maxDistance) {
     this.type = type;
     this.x = x;
@@ -41,9 +41,9 @@ export class Projectile extends MovableObject {
   }
 
   /**
-  * Initializes the projectile statistics.
-  * @returns {void}
-  */
+   * Initializes the projectile statistics.
+   * @returns {void}
+   */
   initProjectileStats() {
     this.width = 60;
     this.height = 60;
@@ -54,9 +54,9 @@ export class Projectile extends MovableObject {
   }
 
   /**
-  * Initializes the projectile animation properties.
-  * @returns {void}
-  */
+   * Initializes the projectile animation properties.
+   * @returns {void}
+   */
   initProjectileAnimation() {
     this.currentAnimation = 'idle';
     this.frameInterval = 1000 / 8;
@@ -70,18 +70,18 @@ export class Projectile extends MovableObject {
   }
 
   /**
-  * Returns the animation images.
-  * @returns {Array|null} Animation images or null.
-  */
+   * Returns the animation images.
+   * @returns {Array|null} Animation images or null.
+   */
   getAnimationImages() {
     return this.idleExplodeSheet ?? null;
   }
 
   /**
-  * Sets the current animation state.
-  * @param {string} newState Animation state.
-  * @returns {void}
-  */
+   * Sets the current animation state.
+   * @param {string} newState Animation state.
+   * @returns {void}
+   */
   setAnimation(newState) {
     if (this.currentAnimation !== newState) {
       this.currentAnimation = newState;
@@ -93,10 +93,10 @@ export class Projectile extends MovableObject {
   }
 
   /**
-  * Updates the state based on the given timestamp.
-  * @param {number} timestamp Frame timestamp.
-  * @returns {void}
-  */
+   * Updates the state based on the given timestamp.
+   * @param {number} timestamp Frame timestamp.
+   * @returns {void}
+   */
   updateState(timestamp) {
     this.updateDeltaTime(timestamp);
     if (this.currentAnimation === 'idle') {
@@ -106,10 +106,10 @@ export class Projectile extends MovableObject {
   }
 
   /**
-  * Updates the animation based on the given timestamp.
-  * @param {number} timestamp Frame timestamp.
-  * @returns {void}
-  */
+   * Updates the animation based on the given timestamp.
+   * @param {number} timestamp Frame timestamp.
+   * @returns {void}
+   */
   updateAnimation(timestamp) {
     this.initLastFrameTime(timestamp);
     if (this.shouldSkipAnimationFrame(timestamp)) return;
@@ -125,10 +125,10 @@ export class Projectile extends MovableObject {
   }
 
   /**
-  * Initializes the last frame timestamp if not set.
-  * @param {number} timestamp Frame timestamp.
-  * @returns {void}
-  */
+   * Initializes the last frame timestamp if not set.
+   * @param {number} timestamp Frame timestamp.
+   * @returns {void}
+   */
   initLastFrameTime(timestamp) {
     if (!this.lastFrameTime) {
       this.lastFrameTime = timestamp;
@@ -136,27 +136,27 @@ export class Projectile extends MovableObject {
   }
 
   /**
-  * Checks whether the current animation frame should be skipped.
-  * @param {number} timestamp Frame timestamp.
-  * @returns {boolean} True if the frame should be skipped, otherwise false.
-  */
+   * Checks whether the current animation frame should be skipped.
+   * @param {number} timestamp Frame timestamp.
+   * @returns {boolean} True if the frame should be skipped, otherwise false.
+   */
   shouldSkipAnimationFrame(timestamp) {
     const dt = timestamp - this.lastFrameTime;
     return dt <= this.frameInterval;
   }
 
   /**
-  * Returns the current animation source.
-  * @returns {Array|null} Animation source or null.
-  */
+   * Returns the current animation source.
+   * @returns {Array|null} Animation source or null.
+   */
   getCurrentAnimationSource() {
     return this.getAnimationImages(this.currentAnimation);
   }
 
   /**
-  * Handles state updates after the animation has finished.
-  * @returns {void}
-  */
+   * Handles state updates after the animation has finished.
+   * @returns {void}
+   */
   handlePostAnimationState() {
     if (this.currentAnimation !== 'explode') return;
     if (!this.animationFinished) return;
@@ -164,9 +164,9 @@ export class Projectile extends MovableObject {
   }
 
   /**
-  * Updates the projectile movement and checks maximum travel distance.
-  * @returns {void}
-  */
+   * Updates the projectile movement and checks maximum travel distance.
+   * @returns {void}
+   */
   updateMovement() {
     const dt = this.deltaTime ?? 1 / 60;
     const step = this.speed * dt * 60;
@@ -178,9 +178,9 @@ export class Projectile extends MovableObject {
   }
 
   /**
-  * Triggers the explode animation and stops movement.
-  * @returns {void}
-  */
+   * Triggers the explode animation and stops movement.
+   * @returns {void}
+   */
   explode() {
     if (this.currentAnimation === 'explode') return;
     this.setAnimation('explode');

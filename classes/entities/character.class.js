@@ -8,13 +8,13 @@ import { CharacterAudioController } from '../systems/character-audio-controller.
 /**
  * Represents the playable character.
  */
-export class Character extends MovableObject {
+export class Character extends MovableObject { //FIX 412 Zeilen
     /**
-    * Creates a new character instance.
-    * @param {Object} characterImages Character image assets.
-    * @param {Object} world World instance.
-    * @param {Object} audioManager Audio manager instance.
-    */
+     * Creates a new character instance.
+     * @param {Object} characterImages Character image assets.
+     * @param {Object} world World instance.
+     * @param {Object} audioManager Audio manager instance.
+     */
     constructor(characterImages, world, audioManager) {
         super();
         this.config = new CharacterConfig(this, characterImages);
@@ -28,8 +28,8 @@ export class Character extends MovableObject {
     }
 
     /**
-    * Updates all character subsystems.
-    */
+     * Updates all character subsystems.
+     */
     updateAll(timestamp) {
         this.movementCtrl.updateState(timestamp);
         this.animCtrl.updateAnimation(timestamp);
@@ -38,10 +38,10 @@ export class Character extends MovableObject {
     }
 
     /**
-    * Returns animation images for the given state.
-    * @param {string} state Animation state identifier.
-    * @returns {*} Animation images.
-    */
+     * Returns animation images for the given state.
+     * @param {string} state Animation state identifier.
+     * @returns {*} Animation images.
+     */
     getAnimationImages(state) {
         return (
             this.getMovementImages(state) ??
@@ -55,10 +55,10 @@ export class Character extends MovableObject {
     }
 
     /**
-    * Returns movement-related animation images for the given state.
-    * @param {string} state Animation state identifier.
-    * @returns {*|null} Animation images or null if not found.
-    */
+     * Returns movement-related animation images for the given state.
+     * @param {string} state Animation state identifier.
+     * @returns {*|null} Animation images or null if not found.
+     */
     getMovementImages(state) {
         switch (state) {
             case 'walk': return this.idleWalkSheet;
@@ -75,10 +75,10 @@ export class Character extends MovableObject {
     }
 
     /**
-    * Returns emotion-related animation images for the given state.
-    * @param {string} state Animation state identifier.
-    * @returns {*|null} Animation images or null if not found.
-    */
+     * Returns emotion-related animation images for the given state.
+     * @param {string} state Animation state identifier.
+     * @returns {*|null} Animation images or null if not found.
+     */
     getEmotionImages(state) {
         switch (state) {
             case 'dead': return this.hurtDeadSheet;
@@ -95,10 +95,10 @@ export class Character extends MovableObject {
     }
 
     /**
-    * Returns determined-state animation images for the given state.
-    * @param {string} state Animation state identifier.
-    * @returns {*|null} Animation images or null if not found.
-    */
+     * Returns determined-state animation images for the given state.
+     * @param {string} state Animation state identifier.
+     * @returns {*|null} Animation images or null if not found.
+     */
     getDeterminedImages(state) {
         switch (state) {
             case 'stand-up-determined': return this.kneelCryStandUpDeterminedSheet;
@@ -112,10 +112,10 @@ export class Character extends MovableObject {
     }
 
     /**
-    * Returns music-related animation images for the given state.
-    * @param {string} state Animation state identifier.
-    * @returns {*|null} Animation images or null if not found.
-    */
+     * Returns music-related animation images for the given state.
+     * @param {string} state Animation state identifier.
+     * @returns {*|null} Animation images or null if not found.
+     */
     getMusicImages(state) {
         switch (state) {
             case 'caress': return this.caressSheet;
@@ -129,10 +129,10 @@ export class Character extends MovableObject {
     }
 
     /**
-    * Returns combat-related animation images for the given state.
-    * @param {string} state Animation state identifier.
-    * @returns {*|null} Animation images or null if not found.
-    */
+     * Returns combat-related animation images for the given state.
+     * @param {string} state Animation state identifier.
+     * @returns {*|null} Animation images or null if not found.
+     */
     getCombatImages(state) {
         switch (state) {
             case 'attack-staff': return this.attackStaffSheet;
@@ -150,10 +150,10 @@ export class Character extends MovableObject {
     }
 
     /**
-    * Returns special-case animation images for the given state.
-    * @param {string} state Animation state identifier.
-    * @returns {*|null} Animation images or null if not found.
-    */
+     * Returns special-case animation images for the given state.
+     * @param {string} state Animation state identifier.
+     * @returns {*|null} Animation images or null if not found.
+     */
     getSpecialImages(state) {
         switch (state) {
             case 'idle': return this.idleWalkSheet;
@@ -162,8 +162,8 @@ export class Character extends MovableObject {
     }
 
     /**
-    * Applies deferred size update for the current animation.
-    */
+     * Applies deferred size update for the current animation.
+     */
     handleDeferredSizeUpdate() {
         if (!this.deferSizeUpdate) return;
         const oldBottom = this.y + this.height;
@@ -175,19 +175,19 @@ export class Character extends MovableObject {
     }
 
     /**
-    * Applies size configuration for the specified animation.
-    * @param {string} anim Animation state identifier.
-    */
+     * Applies size configuration for the specified animation.
+     * @param {string} anim Animation state identifier.
+     */
     applySizeForAnimation(anim) {
         const cfg = this.getSizeConfigForAnim(anim);
         this.setCharacterSize(cfg.width, cfg.height, this.y, cfg.offset);
     }
 
     /**
-    * Returns size configuration for the given animation.
-    * @param {string} anim Animation state identifier.
-    * @returns {Object} Size configuration.
-    */
+     * Returns size configuration for the given animation.
+     * @param {string} anim Animation state identifier.
+     * @returns {Object} Size configuration.
+     */
     getSizeConfigForAnim(anim) {
         return (
             this.getVoidlessSizeConfig(anim) ??
@@ -198,10 +198,10 @@ export class Character extends MovableObject {
     }
 
     /**
-    * Returns size configuration for voidless animations.
-    * @param {string} anim Animation state identifier.
-    * @returns {Object|null} Size configuration or null if not applicable.
-    */
+     * Returns size configuration for voidless animations.
+     * @param {string} anim Animation state identifier.
+     * @returns {Object|null} Size configuration or null if not applicable.
+     */
     getVoidlessSizeConfig(anim) {
         if (!this.isVoidlessAnimation(anim)) return null;
         return {
@@ -212,10 +212,10 @@ export class Character extends MovableObject {
     }
 
     /**
-    * Returns size configuration for large animations.
-    * @param {string} anim Animation state identifier.
-    * @returns {Object|null} Size configuration or null if not applicable.
-    */
+     * Returns size configuration for large animations.
+     * @param {string} anim Animation state identifier.
+     * @returns {Object|null} Size configuration or null if not applicable.
+     */
     getLargeSizeConfig(anim) {
         if (this.isLargeAnimationA(anim)) {
             return this.getLargeASizeConfig();
@@ -227,9 +227,9 @@ export class Character extends MovableObject {
     }
 
     /**
-    * Returns size configuration for large animation type A.
-    * @returns {Object} Size configuration.
-    */
+     * Returns size configuration for large animation type A.
+     * @returns {Object} Size configuration.
+     */
     getLargeASizeConfig() {
         return {
             width: 240,
@@ -239,9 +239,9 @@ export class Character extends MovableObject {
     }
 
     /**
-    * Returns size configuration for large animation type B.
-    * @returns {Object} Size configuration.
-    */
+     * Returns size configuration for large animation type B.
+     * @returns {Object} Size configuration.
+     */
     getLargeBSizeConfig() {
         return {
             width: 270,
@@ -251,10 +251,10 @@ export class Character extends MovableObject {
     }
 
     /**
-    * Returns size configuration for special animations.
-    * @param {string} anim Animation state identifier.
-    * @returns {Object|null} Size configuration or null if not applicable.
-    */
+     * Returns size configuration for special animations.
+     * @param {string} anim Animation state identifier.
+     * @returns {Object|null} Size configuration or null if not applicable.
+     */
     getSpecialSizeConfig(anim) {
         if (this.isProtectAnim(anim)) {
             return this.getProtectSizeConfig();
@@ -269,36 +269,36 @@ export class Character extends MovableObject {
     }
 
     /**
-    * Checks whether the animation is a protect animation.
-    * @param {string} anim Animation state identifier.
-    * @returns {boolean} True if protect animation, otherwise false.
-    */
+     * Checks whether the animation is a protect animation.
+     * @param {string} anim Animation state identifier.
+     * @returns {boolean} True if protect animation, otherwise false.
+     */
     isProtectAnim(anim) {
         return anim === 'protect' || anim === 'protect-loop';
     }
 
     /**
-    * Checks whether the animation is a new weapon animation.
-    * @param {string} anim Animation state identifier.
-    * @returns {boolean} True if new weapon animation, otherwise false.
-    */
+     * Checks whether the animation is a new weapon animation.
+     * @param {string} anim Animation state identifier.
+     * @returns {boolean} True if new weapon animation, otherwise false.
+     */
     isNewWeaponAnim(anim) {
         return anim === 'new-weapon' || anim === 'new-weapon-loop';
     }
 
     /**
-    * Checks whether the animation is a duck animation.
-    * @param {string} anim Animation state identifier.
-    * @returns {boolean} True if duck animation, otherwise false.
-    */
+     * Checks whether the animation is a duck animation.
+     * @param {string} anim Animation state identifier.
+     * @returns {boolean} True if duck animation, otherwise false.
+     */
     isDuckAnim(anim) {
         return anim === 'duck-enter' || anim === 'duck-loop' || anim === 'duck-exit' || anim === 'duck-walk';
     }
 
     /**
-    * Returns size configuration for protect animations.
-    * @returns {Object} Size configuration.
-    */
+     * Returns size configuration for protect animations.
+     * @returns {Object} Size configuration.
+     */
     getProtectSizeConfig() {
         return {
             width: 158,
@@ -308,9 +308,9 @@ export class Character extends MovableObject {
     }
 
     /**
-    * Returns size configuration for new weapon animations.
-    * @returns {Object} Size configuration.
-    */
+     * Returns size configuration for new weapon animations.
+     * @returns {Object} Size configuration.
+     */
     getNewWeaponSizeConfig() {
         return {
             width: 300,
@@ -320,9 +320,9 @@ export class Character extends MovableObject {
     }
 
     /**
-    * Returns size configuration for duck animations.
-    * @returns {Object} Size configuration.
-    */
+     * Returns size configuration for duck animations.
+     * @returns {Object} Size configuration.
+     */
     getDuckSizeConfig() {
         return {
             width: 158,
@@ -332,9 +332,9 @@ export class Character extends MovableObject {
     }
 
     /**
-    * Returns default size configuration.
-    * @returns {Object} Size configuration.
-    */
+     * Returns default size configuration.
+     * @returns {Object} Size configuration.
+     */
     getDefaultSizeConfig() {
         return {
             width: 130,
@@ -344,17 +344,17 @@ export class Character extends MovableObject {
     }
 
     /**
-    * Restores the bottom position after resizing.
-    * @param {number} oldBottom Previous bottom position.
-    */
+     * Restores the bottom position after resizing.
+     * @param {number} oldBottom Previous bottom position.
+     */
     restoreBottomAfterResize(oldBottom) {
         this.y = oldBottom - this.height;
     }
 
     /**
-    * Updates draw offset based on the current animation.
-    * @param {string} anim Animation state identifier.
-    */
+     * Updates draw offset based on the current animation.
+     * @param {string} anim Animation state identifier.
+     */
     updateDrawOffsetForAnim(anim) {
         if (anim === 'attack-staff') {
             this.drawOffset = { x: 0, y: 0, flipX: -100 };
@@ -370,39 +370,39 @@ export class Character extends MovableObject {
     }
 
     /**
-    * Checks whether the animation is voidless.
-    * @param {string} anim Animation state identifier.
-    * @returns {boolean} True if voidless animation, otherwise false.
-    */
+     * Checks whether the animation is voidless.
+     * @param {string} anim Animation state identifier.
+     * @returns {boolean} True if voidless animation, otherwise false.
+     */
     isVoidlessAnimation(anim) {
         return this.VOIDLESS_ANIMS.has(anim);
     }
 
     /**
-    * Checks whether the animation is of large type A.
-    * @param {string} anim Animation state identifier.
-    * @returns {boolean} True if large type A animation, otherwise false.
-    */
+     * Checks whether the animation is of large type A.
+     * @param {string} anim Animation state identifier.
+     * @returns {boolean} True if large type A animation, otherwise false.
+     */
     isLargeAnimationA(anim) {
         return ['attack-staff'].includes(anim);
     }
 
     /**
-    * Checks whether the animation is of large type B.
-    * @param {string} anim Animation state identifier.
-    * @returns {boolean} True if large type B animation, otherwise false.
-    */
+     * Checks whether the animation is of large type B.
+     * @param {string} anim Animation state identifier.
+     * @returns {boolean} True if large type B animation, otherwise false.
+     */
     isLargeAnimationB(anim) {
         return ['attack-sword'].includes(anim);
     }
 
     /**
-    * Sets the character size and offset.
-    * @param {number} width Character width.
-    * @param {number} height Character height.
-    * @param {number} [y] Optional y-position.
-    * @param {Object} offset Offset configuration.
-    */
+     * Sets the character size and offset.
+     * @param {number} width Character width.
+     * @param {number} height Character height.
+     * @param {number} [y] Optional y-position.
+     * @param {Object} offset Offset configuration.
+     */
     setCharacterSize(width, height, y, offset) {
         this.width = width;
         this.height = height;

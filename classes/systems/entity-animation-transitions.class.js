@@ -18,18 +18,18 @@ export class EntityAnimationTransitions {
     };
 
     /**
-    * Creates a new instance.
-    * @param {*} entity Associated entity.
-    */
+     * Creates a new instance.
+     * @param {*} entity Associated entity.
+     */
     constructor(entity) {
         this.entity = entity;
     }
 
     /**
-    * Returns the transition rule for a given state.
-    * @param {string} state Animation state.
-    * @returns {Object|null} Transition rule or null if none exists.
-    */
+     * Returns the transition rule for a given state.
+     * @param {string} state Animation state.
+     * @returns {Object|null} Transition rule or null if none exists.
+     */
     rule(state) {
         const id = this.entity?.currentEntity;
         const perEntity = id ? EntityAnimationTransitions.RULES?.[id]?.[state] : null;
@@ -38,20 +38,20 @@ export class EntityAnimationTransitions {
     }
 
     /**
-    * Determines whether a transition to the given state should be skipped.
-    * @param {string} state Animation state.
-    * @returns {boolean} True if the transition should be skipped, otherwise false.
-    */
+     * Determines whether a transition to the given state should be skipped.
+     * @param {string} state Animation state.
+     * @returns {boolean} True if the transition should be skipped, otherwise false.
+     */
     shouldSkip(state) {
         const r = this.rule(state);
         return !!(r?.skipIfCurrent && this.entity.currentAnimation === r.skipIfCurrent);
     }
 
     /**
-    * Handles post-animation transition logic.
-    * @param {string} state Completed animation state.
-    * @returns {void}
-    */
+     * Handles post-animation transition logic.
+     * @param {string} state Completed animation state.
+     * @returns {void}
+     */
     handlePostAnimation(state) {
         const r = this.rule(state);
         const next = r?.next;

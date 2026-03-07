@@ -73,9 +73,9 @@ export class StormHazardSystem {
     }
 
     /**
- * Von außen aufrufbar, z.B. aus deinem Positions-Event:
- * world.stormHazardSystem.setDifficulty('hard');
- */
+     * Von außen aufrufbar, z.B. aus deinem Positions-Event:
+     * world.stormHazardSystem.setDifficulty('hard');
+     */
     setDifficulty(name) {
         const profile = DIFFICULTY_PROFILES[name];
         if (!profile) {

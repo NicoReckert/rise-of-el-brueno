@@ -8,11 +8,11 @@ import { Egg } from '../entities/egg.class.js';
  */
 export class EndbossAttack extends MovableObject {
     /**
-    * Creates a new instance.
-    * @param {*} entityImages Image resources.
-    * @param {*} allAudios Audio resources.
-    * @param {*} world World reference.
-    */
+     * Creates a new instance.
+     * @param {*} entityImages Image resources.
+     * @param {*} allAudios Audio resources.
+     * @param {*} world World reference.
+     */
     constructor(entityImages, allAudios, world) {
         super();
         this.world = world;
@@ -26,8 +26,8 @@ export class EndbossAttack extends MovableObject {
     }
 
     /**
-    * Initializes base dimensions and position.
-    */
+     * Initializes base dimensions and position.
+     */
     initBaseDimensions() {
         this.x = 800;
         this.y = 35;
@@ -36,8 +36,8 @@ export class EndbossAttack extends MovableObject {
     }
 
     /**
-    * Initializes animation state.
-    */
+     * Initializes animation state.
+     */
     initAnimationState() {
         this.lastFrameTime = 0;
         this.currentAnimation = 'idle';
@@ -46,8 +46,8 @@ export class EndbossAttack extends MovableObject {
     }
 
     /**
-    * Initializes the egg system.
-    */
+     * Initializes the egg system.
+     */
     initEggSystem() {
         this.eggs = [];
         this.lastEggTime = 0;
@@ -58,8 +58,8 @@ export class EndbossAttack extends MovableObject {
     }
 
     /**
-    * Initializes egg spawn configuration.
-    */
+     * Initializes egg spawn configuration.
+     */
     initEggSpawnConfig() {
         this.EGG_SPAWN_ENEMY = {
             small: { type: 'chickenMutatesSmall', w: 120, h: 120, groundY: 545 },
@@ -69,18 +69,18 @@ export class EndbossAttack extends MovableObject {
     }
 
     /**
-    * Initializes resources.
-    */
+     * Initializes resources.
+     */
     init() {
         this.idleImages = this.entityImages.endbossAttack_idle || [];
     }
 
     /**
-    * Updates the attack state.
-    * @param {number} timestamp Current frame timestamp.
-    * @param {*} endboss Endboss reference.
-    * @param {*} setup Configuration object.
-    */
+     * Updates the attack state.
+     * @param {number} timestamp Current frame timestamp.
+     * @param {*} endboss Endboss reference.
+     * @param {*} setup Configuration object.
+     */
     updateState(timestamp, endboss, setup) {
         this.handleMovement();
         this.handleAnimationState();
@@ -91,8 +91,8 @@ export class EndbossAttack extends MovableObject {
     }
 
     /**
-    * Handles movement based on current direction flags.
-    */
+     * Handles movement based on current direction flags.
+     */
     handleMovement() {
         if (this.isMovingLeft) {
             this.moveLeft();
@@ -102,8 +102,8 @@ export class EndbossAttack extends MovableObject {
     }
 
     /**
-    * Updates the animation state based on movement.
-    */
+     * Updates the animation state based on movement.
+     */
     handleAnimationState() {
         if (this.isMovingLeft || this.isMovingRight) {
             this.setAnimation('walk', 8);
@@ -113,8 +113,8 @@ export class EndbossAttack extends MovableObject {
     }
 
     /**
-    * Moves the entity to the left.
-    */
+     * Moves the entity to the left.
+     */
     moveLeft() {
         this.isFlipped = false;
         if (this.x > 0) {
@@ -123,28 +123,28 @@ export class EndbossAttack extends MovableObject {
     }
 
     /**
-    * Moves the entity to the right.
-    */
+     * Moves the entity to the right.
+     */
     moveRight() {
         this.isFlipped = true;
         this.x += this.speedX;
     }
 
     /**
-    * Sets the current animation.
-    * @param {string} name Animation name.
-    * @param {number} fps Frames per second.
-    */
+     * Sets the current animation.
+     * @param {string} name Animation name.
+     * @param {number} fps Frames per second.
+     */
     setAnimation(name, fps) {
         this.currentAnimation = name;
         this.frameInterval = 1000 / fps;
     }
 
     /**
-    * Returns animation images for a given state.
-    * @param {string} state Animation state.
-    * @returns {Array|undefined} List of images or undefined.
-    */
+     * Returns animation images for a given state.
+     * @param {string} state Animation state.
+     * @returns {Array|undefined} List of images or undefined.
+     */
     getAnimationImages(state) {
         switch (state) {
             case 'idle': return this.idleImages;
@@ -152,9 +152,9 @@ export class EndbossAttack extends MovableObject {
     }
 
     /**
-    * Updates the animation frame.
-    * @param {number} timestamp Current frame timestamp.
-    */
+     * Updates the animation frame.
+     * @param {number} timestamp Current frame timestamp.
+     */
     updateAnimation(timestamp) {
         if (!this.lastFrameTime) this.lastFrameTime = timestamp;
         const deltaTime = timestamp - this.lastFrameTime;
@@ -169,12 +169,12 @@ export class EndbossAttack extends MovableObject {
     }
 
     /**
-    * Attempts to spawn an egg.
-    * @param {number} timestamp Current frame timestamp.
-    * @param {*} boss Endboss reference.
-    * @param {*} setup Configuration object.
-    * @param {string} [enemySize='small'] Enemy size type.
-    */
+     * Attempts to spawn an egg.
+     * @param {number} timestamp Current frame timestamp.
+     * @param {*} boss Endboss reference.
+     * @param {*} setup Configuration object.
+     * @param {string} [enemySize='small'] Enemy size type.
+     */
     trySpawnEgg(timestamp, boss, setup, enemySize = 'small') {
         const nextAllowed = this.lastEggTime + this.eggIntervalMin;
         if (timestamp < nextAllowed) return;
@@ -187,14 +187,14 @@ export class EndbossAttack extends MovableObject {
     }
 
     /**
-    * Spawns an egg.
-    * @param {*} endboss Endboss reference.
-    * @param {*} setup Configuration object.
-    * @param {string} [enemySize='small'] Enemy size type.
-    * @param {number} [fallDelayMs=0] Fall delay in milliseconds.
-    * @param {Object} [opts={}] Additional options.
-    * @returns {*} Spawned egg instance.
-    */
+     * Spawns an egg.
+     * @param {*} endboss Endboss reference.
+     * @param {*} setup Configuration object.
+     * @param {string} [enemySize='small'] Enemy size type.
+     * @param {number} [fallDelayMs=0] Fall delay in milliseconds.
+     * @param {Object} [opts={}] Additional options.
+     * @returns {*} Spawned egg instance.
+     */
     spawnEgg(endboss, setup, enemySize = 'small', fallDelayMs = 0, opts = {}) {
         const eggPos = this.getEggSpawnPosition(endboss);
         const cfg = this.getEggConfig(enemySize);
@@ -205,10 +205,10 @@ export class EndbossAttack extends MovableObject {
     }
 
     /**
-    * Calculates the egg spawn position.
-    * @param {{x: number, y: number, width: number, height: number, isFlipped: boolean}} endboss Endboss data.
-    * @returns {{x: number, y: number}} Spawn position.
-    */
+     * Calculates the egg spawn position.
+     * @param {{x: number, y: number, width: number, height: number, isFlipped: boolean}} endboss Endboss data.
+     * @returns {{x: number, y: number}} Spawn position.
+     */
     getEggSpawnPosition(endboss) {
         const offset = endboss.isFlipped ? -150 : -50;
         const x = endboss.x + endboss.width / 2 + offset;
@@ -217,22 +217,22 @@ export class EndbossAttack extends MovableObject {
     }
 
     /**
-    * Returns the egg configuration for a given enemy size.
-    * @param {string} enemySize Enemy size type.
-    * @returns {{type: string, w: number, h: number, groundY: number}} Egg configuration.
-    */
+     * Returns the egg configuration for a given enemy size.
+     * @param {string} enemySize Enemy size type.
+     * @returns {{type: string, w: number, h: number, groundY: number}} Egg configuration.
+     */
     getEggConfig(enemySize) {
         return this.EGG_SPAWN_ENEMY[enemySize] ?? this.EGG_SPAWN_ENEMY.small;
     }
 
     /**
-    * Creates an egg instance.
-    * @param {{x: number, y: number}} eggPos Spawn position.
-    * @param {{type: string, w: number, h: number, groundY: number}} cfg Egg configuration.
-    * @param {number} fallDelayMs Fall delay in milliseconds.
-    * @param {*} setup Configuration object.
-    * @returns {*} Egg instance.
-    */
+     * Creates an egg instance.
+     * @param {{x: number, y: number}} eggPos Spawn position.
+     * @param {{type: string, w: number, h: number, groundY: number}} cfg Egg configuration.
+     * @param {number} fallDelayMs Fall delay in milliseconds.
+     * @param {*} setup Configuration object.
+     * @returns {*} Egg instance.
+     */
     createEgg(eggPos, cfg, fallDelayMs, setup) {
         return new Egg(
             this.entityImages,
@@ -249,11 +249,11 @@ export class EndbossAttack extends MovableObject {
     }
 
     /**
-    * Handles egg break behavior.
-    * @param {{type: string, w: number, h: number, groundY: number}} cfg Egg configuration.
-    * @param {*} eggInstance Egg instance.
-    * @param {*} setup Configuration object.
-    */
+     * Handles egg break behavior.
+     * @param {{type: string, w: number, h: number, groundY: number}} cfg Egg configuration.
+     * @param {*} eggInstance Egg instance.
+     * @param {*} setup Configuration object.
+     */
     handleEggBreak(cfg, eggInstance, setup) {
         if (cfg.type === 'tornado') {
             this.spawnTornadoFromEgg(eggInstance, setup);
@@ -264,10 +264,10 @@ export class EndbossAttack extends MovableObject {
     }
 
     /**
-    * Spawns a tornado from a broken egg.
-    * @param {*} eggInstance Egg instance.
-    * @param {*} setup Configuration object.
-    */
+     * Spawns a tornado from a broken egg.
+     * @param {*} eggInstance Egg instance.
+     * @param {*} setup Configuration object.
+     */
     spawnTornadoFromEgg(eggInstance, setup) {
         const tornado = new EndbossTornado(
             setup.entityImages,
@@ -283,12 +283,12 @@ export class EndbossAttack extends MovableObject {
     }
 
     /**
-    * Creates an enemy from a broken egg.
-    * @param {{type: string, w: number, h: number, groundY: number}} cfg Egg configuration.
-    * @param {*} eggInstance Egg instance.
-    * @param {*} setup Configuration object.
-    * @returns {*} Enemy instance.
-    */
+     * Creates an enemy from a broken egg.
+     * @param {{type: string, w: number, h: number, groundY: number}} cfg Egg configuration.
+     * @param {*} eggInstance Egg instance.
+     * @param {*} setup Configuration object.
+     * @returns {*} Enemy instance.
+     */
     createEnemyFromEgg(cfg, eggInstance, setup) {
         return new Enemy(
             cfg.type,
@@ -303,10 +303,10 @@ export class EndbossAttack extends MovableObject {
     }
 
     /**
-    * Applies additional options to an egg instance.
-    * @param {*} egg Egg instance.
-    * @param {{width?: number, height?: number, groundY?: number}} opts Optional settings.
-    */
+     * Applies additional options to an egg instance.
+     * @param {*} egg Egg instance.
+     * @param {{width?: number, height?: number, groundY?: number}} opts Optional settings.
+     */
     applyEggOptions(egg, opts) {
         if (opts.width) egg.width = opts.width;
         if (opts.height) egg.height = opts.height;
@@ -314,18 +314,18 @@ export class EndbossAttack extends MovableObject {
     }
 
     /**
-    * Updates all eggs and removes destroyed ones.
-    * @param {number} timestamp Current frame timestamp.
-    */
+     * Updates all eggs and removes destroyed ones.
+     * @param {number} timestamp Current frame timestamp.
+     */
     updateEggs(timestamp) {
         this.eggs.forEach(e => e.update(timestamp));
         this.eggs = this.eggs.filter(e => !e.isDestroyed);
     }
 
     /**
-    * Spawns a pedestal under a character.
-    * @param {{x: number}} character Character reference.
-    */
+     * Spawns a pedestal under a character.
+     * @param {{x: number}} character Character reference.
+     */
     spawnPedestalUnder(character) {
         const x = character.x - 40;
         const y = 420;

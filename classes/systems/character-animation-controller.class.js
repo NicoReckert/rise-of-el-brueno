@@ -5,18 +5,18 @@ import { CharacterAnimationTransitions } from "./character-animation-transitions
  */
 export class CharacterAnimationController {
     /**
-    * Creates a new instance.
-    * @param {Object} character Character instance.
-    */
+     * Creates a new instance.
+     * @param {Object} character Character instance.
+     */
     constructor(character) {
         this.char = character;
         this.transitions = new CharacterAnimationTransitions(character, this);
     }
 
     /**
-    * Updates the current animation frame.
-    * @param {number} timestamp Frame timestamp.
-    */
+     * Updates the current animation frame.
+     * @param {number} timestamp Frame timestamp.
+     */
     updateAnimation(timestamp) {
         if (!this.char.lastFrameTime) this.char.lastFrameTime = timestamp;
         const dt = timestamp - this.char.lastFrameTime;
@@ -32,9 +32,9 @@ export class CharacterAnimationController {
     }
 
     /**
-    * Updates animation based on the provided source.
-    * @param {*} anim Animation source definition.
-    */
+     * Updates animation based on the provided source.
+     * @param {*} anim Animation source definition.
+     */
     updateAnimationFromSource(anim) {
         if (Array.isArray(anim)) {
             if (!anim.length) return;
@@ -51,9 +51,9 @@ export class CharacterAnimationController {
     }
 
     /**
-    * Handles animation defined as an image array.
-    * @param {Array} images Animation frame images.
-    */
+     * Handles animation defined as an image array.
+     * @param {Array} images Animation frame images.
+     */
     handleArrayAnimation(images) {
         this.char.applyNextFrame(images);
         this.char.handleDeferredSizeUpdate();
@@ -62,9 +62,9 @@ export class CharacterAnimationController {
     }
 
     /**
-    * Handles animation defined as a sheet sequence.
-    * @param {Object} anim Animation definition.
-    */
+     * Handles animation defined as a sheet sequence.
+     * @param {Object} anim Animation definition.
+     */
     handleSheetSequence(anim) {
         const sheet = anim.sheets[this.char.sheetIndex];
         if (!sheet) return;
@@ -78,11 +78,11 @@ export class CharacterAnimationController {
     }
 
     /**
-    * Returns the sprite sheet animation definition.
-    * @param {Object} meta Sprite sheet metadata.
-    * @param {string} animName Animation state identifier.
-    * @returns {Object} Animation definition.
-    */
+     * Returns the sprite sheet animation definition.
+     * @param {Object} meta Sprite sheet metadata.
+     * @param {string} animName Animation state identifier.
+     * @returns {Object} Animation definition.
+     */
     getSheetDef(meta, animName) {
         const anims = meta.animations ?? {};
         return anims[animName] ?? anims.default ?? {
@@ -92,11 +92,11 @@ export class CharacterAnimationController {
     }
 
     /**
-    * Calculates the frame count for a sprite sheet animation.
-    * @param {Object} def Animation definition.
-    * @param {number} totalFrames Total number of frames in the sheet.
-    * @returns {number} Frame count.
-    */
+     * Calculates the frame count for a sprite sheet animation.
+     * @param {Object} def Animation definition.
+     * @param {number} totalFrames Total number of frames in the sheet.
+     * @returns {number} Frame count.
+     */
     getFrameCount(def, totalFrames) {
         const from = def.from ?? 0;
         const to = def.to ?? (totalFrames - 1);
@@ -104,9 +104,9 @@ export class CharacterAnimationController {
     }
 
     /**
-    * Advances the sprite sheet sequence or finalizes the animation.
-    * @param {Object} anim Animation definition.
-    */
+     * Advances the sprite sheet sequence or finalizes the animation.
+     * @param {Object} anim Animation definition.
+     */
     advanceSheetSequence(anim) {
         this.char.frameIndex = 0;
         this.char.sheetIndex++;
@@ -120,9 +120,9 @@ export class CharacterAnimationController {
     }
 
     /**
-    * Handles animation defined as a single sprite sheet.
-    * @param {Object} anim Animation definition.
-    */
+     * Handles animation defined as a single sprite sheet.
+     * @param {Object} anim Animation definition.
+     */
     handleSheet(anim) {
         this.char.applyNextSheetFrame(anim);
         this.char.handleDeferredSizeUpdate();
@@ -136,9 +136,9 @@ export class CharacterAnimationController {
     }
 
     /**
-    * Handles looping or ending behavior for a sprite sheet animation.
-    * @param {Object} def Animation definition.
-    */
+     * Handles looping or ending behavior for a sprite sheet animation.
+     * @param {Object} def Animation definition.
+     */
     handleSheetLoopOrEnd(def) {
         if (def.loop) {
             this.char.frameIndex = 0;
@@ -149,8 +149,8 @@ export class CharacterAnimationController {
     }
 
     /**
-    * Updates the attack hitbox state based on the current animation.
-    */
+     * Updates the attack hitbox state based on the current animation.
+     */
     updateAttackHitboxState() {
         const anim = this.char.currentAnimation;
         if (anim === 'attack-staff') {
@@ -163,8 +163,8 @@ export class CharacterAnimationController {
     }
 
     /**
-    * Updates the staff attack hitbox state.
-    */
+     * Updates the staff attack hitbox state.
+     */
     updateStaffHitbox() {
         const frame = this.char.frameIndex;
         const active = frame % 6 === 0 && frame !== 0;
@@ -173,8 +173,8 @@ export class CharacterAnimationController {
     }
 
     /**
-    * Updates the sword attack hitbox state.
-    */
+     * Updates the sword attack hitbox state.
+     */
     updateSwordHitbox() {
         const frame = this.char.frameIndex;
         const active = frame % 4 === 0 && frame !== 0;
@@ -183,8 +183,8 @@ export class CharacterAnimationController {
     }
 
     /**
-    * Determines and applies the appropriate character animation.
-    */
+     * Determines and applies the appropriate character animation.
+     */
     handleCharacterAnimation() {
         if (this.handleDeathOrJump()) return;
         if (this.handleEmotionalAnimations()) return;
@@ -195,9 +195,9 @@ export class CharacterAnimationController {
     }
 
     /**
-    * Handles death, hurt, or jump animations.
-    * @returns {boolean} True if an animation was applied, otherwise false.
-    */
+     * Handles death, hurt, or jump animations.
+     * @returns {boolean} True if an animation was applied, otherwise false.
+     */
     handleDeathOrJump() {
         if (this.char.isDead) return this.setAnim('dead', 6);
         if (this.char.isHurt) return this.setAnim('hurt', 6);
@@ -206,9 +206,9 @@ export class CharacterAnimationController {
     }
 
     /**
-    * Handles emotional animation states.
-    * @returns {boolean} True if an animation was applied, otherwise false.
-    */
+     * Handles emotional animation states.
+     * @returns {boolean} True if an animation was applied, otherwise false.
+     */
     handleEmotionalAnimations() {
         if (this.handleCareAndGrief()) return true;
         if (this.handleDeterminedAndCollapse()) return true;
@@ -217,9 +217,9 @@ export class CharacterAnimationController {
     }
 
     /**
-    * Handles care and grief related animations.
-    * @returns {boolean} True if an animation was applied, otherwise false.
-    */
+     * Handles care and grief related animations.
+     * @returns {boolean} True if an animation was applied, otherwise false.
+     */
     handleCareAndGrief() {
         if (this.char.isCaress)
             return this.setAnim('caress', 6, 'caress-loop');
@@ -233,9 +233,9 @@ export class CharacterAnimationController {
     }
 
     /**
-    * Handles determined stance and collapse animations.
-    * @returns {boolean} True if an animation was applied, otherwise false.
-    */
+     * Handles determined stance and collapse animations.
+     * @returns {boolean} True if an animation was applied, otherwise false.
+     */
     handleDeterminedAndCollapse() {
         if (this.char.isStandDetermined)
             return this.setAnim('stand-determined', 5, 'stand-determined-loop');
@@ -247,9 +247,9 @@ export class CharacterAnimationController {
     }
 
     /**
-    * Handles air hit stun animation.
-    * @returns {boolean} True if an animation was applied, otherwise false.
-    */
+     * Handles air hit stun animation.
+     * @returns {boolean} True if an animation was applied, otherwise false.
+     */
     handleAirStunAnimation() {
         if (this.char.isAirHitStun)
             return this.setAnim('air-hit-stun', 5, 'air-pain-stun');
@@ -257,9 +257,9 @@ export class CharacterAnimationController {
     }
 
     /**
-    * Handles music-related animations.
-    * @returns {boolean} True if an animation was applied, otherwise false.
-    */
+     * Handles music-related animations.
+     * @returns {boolean} True if an animation was applied, otherwise false.
+     */
     handleMusicAnimations() {
         if (this.char.isSitDownAndPlayGuitar)
             return this.setAnim('sit-down-and-play-guitar', 6, 'play-guitar');
@@ -271,9 +271,9 @@ export class CharacterAnimationController {
     }
 
     /**
-    * Handles combat and meditation-related animations.
-    * @returns {boolean} True if an animation was applied, otherwise false.
-    */
+     * Handles combat and meditation-related animations.
+     * @returns {boolean} True if an animation was applied, otherwise false.
+     */
     handleCombatAndMeditation() {
         if (this.char.isAttack) {
             if (!this.char.isHaveSword) {
@@ -290,9 +290,9 @@ export class CharacterAnimationController {
     }
 
     /**
-    * Handles movement-related animations.
-    * @returns {boolean} True if an animation was applied, otherwise false.
-    */
+     * Handles movement-related animations.
+     * @returns {boolean} True if an animation was applied, otherwise false.
+     */
     handleMovementAnimations() {
         if (this.char.duckState === 'enter') return this.setAnim('duck-enter', 16);
         if (this.char.duckState === 'loop') {
@@ -308,12 +308,12 @@ export class CharacterAnimationController {
     }
 
     /**
-    * Sets the current animation.
-    * @param {string} name Animation state identifier.
-    * @param {number} fps Frames per second.
-    * @param {?string} [skipIf=null] Animation name to skip if already active.
-    * @returns {boolean} Always returns true.
-    */
+     * Sets the current animation.
+     * @param {string} name Animation state identifier.
+     * @param {number} fps Frames per second.
+     * @param {?string} [skipIf=null] Animation name to skip if already active.
+     * @returns {boolean} Always returns true.
+     */
     setAnim(name, fps, skipIf = null) {
         if (skipIf && this.char.currentAnimation === skipIf) return true;
         this.setAnimation(name);
@@ -322,11 +322,11 @@ export class CharacterAnimationController {
     }
 
     /**
-    * Sets a simple animation without transition handling.
-    * @param {string} name Animation state identifier.
-    * @param {number} fps Frames per second.
-    * @returns {boolean} Always returns true.
-    */
+     * Sets a simple animation without transition handling.
+     * @param {string} name Animation state identifier.
+     * @param {number} fps Frames per second.
+     * @returns {boolean} Always returns true.
+     */
     setSimpleAnim(name, fps) {
         this.char.currentAnimation = name;
         this.char.frameInterval = 1000 / fps;
@@ -334,9 +334,9 @@ export class CharacterAnimationController {
     }
 
     /**
-    * Checks whether the current animation has ended.
-    * @param {Array} images Animation frame images.
-    */
+     * Checks whether the current animation has ended.
+     * @param {Array} images Animation frame images.
+     */
     checkAnimationEnd(images) {
         if (this.char.frameIndex < images.length) return;
         if (!this.char.TRANSITIONABLE_ANIMS.has(this.char.currentAnimation)) return;
@@ -345,9 +345,9 @@ export class CharacterAnimationController {
     }
 
     /**
-    * Sets the current animation and resets animation state.
-    * @param {string} newAnimation Animation state identifier.
-    */
+     * Sets the current animation and resets animation state.
+     * @param {string} newAnimation Animation state identifier.
+     */
     setAnimation(newAnimation) {
         if (this.char.currentAnimation !== newAnimation) {
             this.char.currentAnimation = newAnimation;
@@ -360,8 +360,8 @@ export class CharacterAnimationController {
     }
 
     /**
-    * Resets animation and update timers.
-    */
+     * Resets animation and update timers.
+     */
     resetTimers() {
         this.char.lastUpdateTime = null;
         this.char.lastFrameTime = null;

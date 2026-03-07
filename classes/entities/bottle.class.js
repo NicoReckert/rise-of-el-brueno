@@ -5,10 +5,10 @@ import { MovableObject } from '../systems/movable-object.class.js';
  */
 export class Bottle extends MovableObject {
     /**
-    * Creates a new instance.
-    * @param {Object} entityImages Image definitions.
-    * @param {number} x Initial x-coordinate.
-    */
+     * Creates a new instance.
+     * @param {Object} entityImages Image definitions.
+     * @param {number} x Initial x-coordinate.
+     */
     constructor(entityImages, x) {
         super();
         this.entityImages = entityImages;
@@ -18,8 +18,8 @@ export class Bottle extends MovableObject {
     }
 
     /**
-    * Initializes bottle image selection.
-    */
+     * Initializes bottle image selection.
+     */
     initBottleImage() {
         this.bottleImages = this.entityImages.bottleOnGround || [];
         this.randomImageIndex = Math.floor(Math.random() * this.bottleImages.length);
@@ -28,9 +28,9 @@ export class Bottle extends MovableObject {
     }
 
     /**
-    * Initializes bottle position and size.
-    * @param {number} x Initial x-coordinate.
-    */
+     * Initializes bottle position and size.
+     * @param {number} x Initial x-coordinate.
+     */
     initBottlePosition(x) {
         this.x = x;
         this.y = 583;
@@ -39,8 +39,8 @@ export class Bottle extends MovableObject {
     }
     
     /**
-    * Sets collision offset values for the bottle.
-    */
+     * Sets collision offset values for the bottle.
+     */
     setOffset() {
         this.offset.top = 12;
         if (this.randomImage === 0) {

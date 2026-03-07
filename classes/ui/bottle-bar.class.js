@@ -5,9 +5,9 @@ import { StatusBar } from './status-bar.class.js';
  */
 export class BottleBar extends StatusBar {
     /**
-    * Creates a new bottle status bar instance.
-    * @param {Object} entityImages Entity image configuration.
-    */
+     * Creates a new bottle status bar instance.
+     * @param {Object} entityImages Entity image configuration.
+     */
     constructor(entityImages) {
         const spriteSheet = entityImages?.bottleBar?.statusSheet ?? null;
         super(spriteSheet, 'bottle');

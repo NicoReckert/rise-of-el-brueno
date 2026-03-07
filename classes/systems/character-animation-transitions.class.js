@@ -3,19 +3,19 @@
  */
 export class CharacterAnimationTransitions {
     /**
-    * Creates a new instance.
-    * @param {Object} character Character instance.
-    * @param {Object} animationController Animation controller instance.
-    */
+     * Creates a new instance.
+     * @param {Object} character Character instance.
+     * @param {Object} animationController Animation controller instance.
+     */
     constructor(character, animationController) {
         this.char = character;
         this.animCtrl = animationController;
     }
 
     /**
-    * Handles transitions after an animation finishes.
-    * @param {string} anim Animation state identifier.
-    */
+     * Handles transitions after an animation finishes.
+     * @param {string} anim Animation state identifier.
+     */
     handleAnimationTransition(anim) {
         if (this.handleDuckTransitions(anim)) return;
         if (this.handleDeterminedTransitions(anim)) return;
@@ -25,10 +25,10 @@ export class CharacterAnimationTransitions {
     }
 
     /**
-    * Handles duck-related animation transitions.
-    * @param {string} anim Animation state.
-    * @returns {boolean} True if handled, otherwise false.
-    */
+     * Handles duck-related animation transitions.
+     * @param {string} anim Animation state.
+     * @returns {boolean} True if handled, otherwise false.
+     */
     handleDuckTransitions(anim) {
         if (anim === 'duck-enter') {
             if (this.char.duckState === 'enter') this.char.duckState = 'loop';
@@ -42,10 +42,10 @@ export class CharacterAnimationTransitions {
         return false;
     }
     /**
-    * Handles determined-related animation transitions.
-    * @param {string} anim Animation state identifier.
-    * @returns {boolean} True if a transition was applied, otherwise false.
-    */
+     * Handles determined-related animation transitions.
+     * @param {string} anim Animation state identifier.
+     * @returns {boolean} True if a transition was applied, otherwise false.
+     */
     handleDeterminedTransitions(anim) {
         switch (anim) {
             case 'stand-up-determined':
@@ -62,10 +62,10 @@ export class CharacterAnimationTransitions {
     }
 
     /**
-    * Handles emotional animation transitions.
-    * @param {string} anim Animation state identifier.
-    * @returns {boolean} True if a transition was applied, otherwise false.
-    */
+     * Handles emotional animation transitions.
+     * @param {string} anim Animation state identifier.
+     * @returns {boolean} True if a transition was applied, otherwise false.
+     */
     handleEmotionalTransitions(anim) {
         if (this.handleHurtAndBasic(anim)) return true;
         if (this.handleCollapseAndStand(anim)) return true;
@@ -74,10 +74,10 @@ export class CharacterAnimationTransitions {
     }
 
     /**
-    * Handles hurt and basic emotional animation transitions.
-    * @param {string} anim Animation state identifier.
-    * @returns {boolean} True if a transition was applied, otherwise false.
-    */
+     * Handles hurt and basic emotional animation transitions.
+     * @param {string} anim Animation state identifier.
+     * @returns {boolean} True if a transition was applied, otherwise false.
+     */
     handleHurtAndBasic(anim) {
         if (anim === 'hurt') {
             this.char.isHurt = false;
@@ -91,10 +91,10 @@ export class CharacterAnimationTransitions {
     }
 
     /**
-    * Handles collapse and stand-up animation transitions.
-    * @param {string} anim Animation state identifier.
-    * @returns {boolean} True if a transition was applied, otherwise false.
-    */
+     * Handles collapse and stand-up animation transitions.
+     * @param {string} anim Animation state identifier.
+     * @returns {boolean} True if a transition was applied, otherwise false.
+     */
     handleCollapseAndStand(anim) {
         if (anim === 'collapse')
             return this.setTransition('collapse-loop', 5);
@@ -106,10 +106,10 @@ export class CharacterAnimationTransitions {
     }
 
     /**
-    * Handles air hit stun animation transition.
-    * @param {string} anim Animation state identifier.
-    * @returns {boolean} True if a transition was applied, otherwise false.
-    */
+     * Handles air hit stun animation transition.
+     * @param {string} anim Animation state identifier.
+     * @returns {boolean} True if a transition was applied, otherwise false.
+     */
     handleAirHitStunTransition(anim) {
         if (anim === 'air-hit-stun')
             return this.setTransition('air-pain-stun', 5);
@@ -117,10 +117,10 @@ export class CharacterAnimationTransitions {
     }
 
     /**
-    * Handles music-related animation transitions.
-    * @param {string} anim Animation state identifier.
-    * @returns {boolean} True if a transition was applied, otherwise false.
-    */
+     * Handles music-related animation transitions.
+     * @param {string} anim Animation state identifier.
+     * @returns {boolean} True if a transition was applied, otherwise false.
+     */
     handleMusicTransitions(anim) {
         switch (anim) {
             case 'sit-down-and-play-guitar':
@@ -134,10 +134,10 @@ export class CharacterAnimationTransitions {
     }
 
     /**
-    * Handles combat-related animation transitions.
-    * @param {string} anim Animation state identifier.
-    * @returns {boolean} True if a transition was applied, otherwise false.
-    */
+     * Handles combat-related animation transitions.
+     * @param {string} anim Animation state identifier.
+     * @returns {boolean} True if a transition was applied, otherwise false.
+     */
     handleCombatTransitions(anim) {
         if (this.handleAttackTransitions(anim)) return true;
         if (this.handleThrowTransition(anim)) return true;
@@ -149,10 +149,10 @@ export class CharacterAnimationTransitions {
     }
 
     /**
-    * Handles attack animation transitions.
-    * @param {string} anim Animation state identifier.
-    * @returns {boolean} True if a transition was applied, otherwise false.
-    */
+     * Handles attack animation transitions.
+     * @param {string} anim Animation state identifier.
+     * @returns {boolean} True if a transition was applied, otherwise false.
+     */
     handleAttackTransitions(anim) {
         if (anim !== 'attack-staff' && anim !== 'attack-sword') {
             return false;
@@ -163,10 +163,10 @@ export class CharacterAnimationTransitions {
     }
 
     /**
-    * Handles the transition after a throw animation.
-    * @param {string} anim Animation state.
-    * @returns {boolean} True if the transition was handled, otherwise false.
-    */
+     * Handles the transition after a throw animation.
+     * @param {string} anim Animation state.
+     * @returns {boolean} True if the transition was handled, otherwise false.
+     */
     handleThrowTransition(anim) {
         if (anim !== 'throw') return false;
         this.char.isThrowing = false;
@@ -174,10 +174,10 @@ export class CharacterAnimationTransitions {
     }
 
     /**
-    * Handles the transition after a heal animation.
-    * @param {string} anim Animation state.
-    * @returns {boolean} True if the transition was handled, otherwise false.
-    */
+     * Handles the transition after a heal animation.
+     * @param {string} anim Animation state.
+     * @returns {boolean} True if the transition was handled, otherwise false.
+     */
     handleHealTransition(anim) {
         if (anim !== 'heal') return false;
         this.char.isHealing = false;
@@ -185,41 +185,41 @@ export class CharacterAnimationTransitions {
     }
 
     /**
-    * Handles meditation animation transition.
-    * @param {string} anim Animation state identifier.
-    * @returns {boolean} True if a transition was applied, otherwise false.
-    */
+     * Handles meditation animation transition.
+     * @param {string} anim Animation state identifier.
+     * @returns {boolean} True if a transition was applied, otherwise false.
+     */
     handleMeditationTransition(anim) {
         if (anim !== 'meditation') return false;
         return this.setTransition('meditation-loop', 4);
     }
 
     /**
-    * Handles new weapon animation transition.
-    * @param {string} anim Animation state identifier.
-    * @returns {boolean} True if a transition was applied, otherwise false.
-    */
+     * Handles new weapon animation transition.
+     * @param {string} anim Animation state identifier.
+     * @returns {boolean} True if a transition was applied, otherwise false.
+     */
     handleNewWeaponTransition(anim) {
         if (anim !== 'new-weapon') return false;
         return this.setTransition('new-weapon-loop', 6);
     }
 
     /**
-    * Handles protect animation transition.
-    * @param {string} anim Animation state identifier.
-    * @returns {boolean} True if a transition was applied, otherwise false.
-    */
+     * Handles protect animation transition.
+     * @param {string} anim Animation state identifier.
+     * @returns {boolean} True if a transition was applied, otherwise false.
+     */
     handleProtectTransition(anim) {
         if (anim !== 'protect') return false;
         return this.setTransition('protect-loop', 6);
     }
 
     /**
-    * Sets an animation transition.
-    * @param {string} name Animation state identifier.
-    * @param {?number} [fps=null] Optional frames per second.
-    * @returns {boolean} Always returns true.
-    */
+     * Sets an animation transition.
+     * @param {string} name Animation state identifier.
+     * @param {?number} [fps=null] Optional frames per second.
+     * @returns {boolean} Always returns true.
+     */
     setTransition(name, fps = null) {
         this.animCtrl.setAnimation(name);
         if (fps) this.char.frameInterval = 1000 / fps;

@@ -3,19 +3,19 @@
  */
 export class EndbossAirPhaseController {
     /**
-    * Creates a new instance.
-    * @param {*} endboss Reference to the endboss object.
-    */
+     * Creates a new instance.
+     * @param {*} endboss Reference to the endboss object.
+     */
     constructor(endboss) {
         this.endboss = endboss;
     }
 
     /**
-    * Updates behavior during the air eggs phase.
-    * @param {number} timestamp Frame timestamp.
-    * @param {*} setup Configuration or state setup object.
-    * @returns {void}
-    */
+     * Updates behavior during the air eggs phase.
+     * @param {number} timestamp Frame timestamp.
+     * @param {*} setup Configuration or state setup object.
+     * @returns {void}
+     */
     updateAirEggPhase(timestamp, setup) {
         const attack = setup.endbossAttack;
         if (this.shouldSkipAirEggPhase()) return;
@@ -31,9 +31,9 @@ export class EndbossAirPhaseController {
     }
 
     /**
-    * Determines whether the air eggs phase should be skipped.
-    * @returns {boolean} True if the phase should be skipped, otherwise false.
-    */
+     * Determines whether the air eggs phase should be skipped.
+     * @returns {boolean} True if the phase should be skipped, otherwise false.
+     */
     shouldSkipAirEggPhase() {
         if (!this.endboss.finisherStarted) return false;
         const state = this.endboss.airState;
@@ -45,9 +45,9 @@ export class EndbossAirPhaseController {
     }
 
     /**
-    * Ensures the correct vertical position during the air phase.
-    * @returns {void}
-    */
+     * Ensures the correct vertical position during the air phase.
+     * @returns {void}
+     */
     ensureAirYPosition() {
         const state = this.endboss.airState;
         const air = this.endboss.AIR_STATE;
@@ -57,10 +57,10 @@ export class EndbossAirPhaseController {
     }
 
     /**
-    * Handles horizontal movement toward the current air target.
-    * @param {number} timestamp Frame timestamp.
-    * @returns {void}
-    */
+     * Handles horizontal movement toward the current air target.
+     * @param {number} timestamp Frame timestamp.
+     * @returns {void}
+     */
     handleAirMove(timestamp) {
         const boss = this.endboss;
         const points = boss.airPoints;
@@ -76,10 +76,10 @@ export class EndbossAirPhaseController {
     }
 
     /**
-    * Determines whether the current air target has been reached.
-    * @param {number} targetX Target x-coordinate.
-    * @returns {boolean} True if the target is reached, otherwise false.
-    */
+     * Determines whether the current air target has been reached.
+     * @param {number} targetX Target x-coordinate.
+     * @returns {boolean} True if the target is reached, otherwise false.
+     */
     hasReachedAirTarget(targetX) {
         const boss = this.endboss;
         const dir = boss.airDir;
@@ -89,11 +89,11 @@ export class EndbossAirPhaseController {
     }
 
     /**
-    * Handles logic after reaching the current air target.
-    * @param {number} timestamp Frame timestamp.
-    * @param {number} targetX Target x-coordinate.
-    * @returns {void}
-    */
+     * Handles logic after reaching the current air target.
+     * @param {number} timestamp Frame timestamp.
+     * @param {number} targetX Target x-coordinate.
+     * @returns {void}
+     */
     onReachedAirTarget(timestamp, targetX) {
         const boss = this.endboss;
         boss.x = targetX;
@@ -104,12 +104,12 @@ export class EndbossAirPhaseController {
     }
 
     /**
-    * Handles the air drop sequence.
-    * @param {number} timestamp Frame timestamp.
-    * @param {*} setup Configuration or state setup object.
-    * @param {*} attack Attack controller instance.
-    * @returns {void}
-    */
+     * Handles the air drop sequence.
+     * @param {number} timestamp Frame timestamp.
+     * @param {*} setup Configuration or state setup object.
+     * @param {*} attack Attack controller instance.
+     * @returns {void}
+     */
     handleAirDrop(timestamp, setup, attack) {
         const boss = this.endboss;
         const seq = boss.airDropSequence;
@@ -126,10 +126,10 @@ export class EndbossAirPhaseController {
     }
 
     /**
-    * Handles the wait state during the air phase.
-    * @param {number} timestamp Frame timestamp.
-    * @returns {void}
-    */
+     * Handles the wait state during the air phase.
+     * @param {number} timestamp Frame timestamp.
+     * @returns {void}
+     */
     handleAirWait(timestamp) {
         const boss = this.endboss;
         const elapsed = timestamp - boss.airLastActionTime;
@@ -144,9 +144,9 @@ export class EndbossAirPhaseController {
     }
 
     /**
-    * Handles descending movement during the air phase.
-    * @returns {void}
-    */
+     * Handles descending movement during the air phase.
+     * @returns {void}
+     */
     handleAirDescend() {
         const boss = this.endboss;
         const groundY = 205;
@@ -157,9 +157,9 @@ export class EndbossAirPhaseController {
     }
 
     /**
-    * Finalizes the descend action and switches to ground phase.
-    * @returns {void}
-    */
+     * Finalizes the descend action and switches to ground phase.
+     * @returns {void}
+     */
     onFinishDescend() {
         const boss = this.endboss;
         boss.y = 205;
@@ -170,9 +170,9 @@ export class EndbossAirPhaseController {
     }
 
     /**
-    * Handles ascending movement during the air phase.
-    * @returns {void}
-    */
+     * Handles ascending movement during the air phase.
+     * @returns {void}
+     */
     handleAirAscend() {
         const boss = this.endboss;
         const targetY = boss.airY;
@@ -184,10 +184,10 @@ export class EndbossAirPhaseController {
     }
 
     /**
-    * Prepares the entity for ascending.
-    * @param {*} boss Endboss instance.
-    * @returns {void}
-    */
+     * Prepares the entity for ascending.
+     * @param {*} boss Endboss instance.
+     * @returns {void}
+     */
     prepareAscend(boss) {
         boss.isFly = true;
         boss.isJumping = false;
@@ -195,9 +195,9 @@ export class EndbossAirPhaseController {
     }
 
     /**
-    * Handles logic after reaching the ascend target.
-    * @returns {void}
-    */
+     * Handles logic after reaching the ascend target.
+     * @returns {void}
+     */
     onReachAscendTarget() {
         const boss = this.endboss;
         const targetY = boss.airY;
@@ -207,12 +207,12 @@ export class EndbossAirPhaseController {
     }
 
     /**
-    * Moves the entity toward a target y-position.
-    * @param {*} boss Endboss instance.
-    * @param {number} targetY Target y-coordinate.
-    * @param {number} speed Movement speed in units per second.
-    * @returns {void}
-    */
+     * Moves the entity toward a target y-position.
+     * @param {*} boss Endboss instance.
+     * @param {number} targetY Target y-coordinate.
+     * @param {number} speed Movement speed in units per second.
+     * @returns {void}
+     */
     moveTowardsY(boss, targetY, speed) {
         const dt = boss.deltaSeconds ?? 0;
         const dy = targetY - boss.y;

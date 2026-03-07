@@ -1,7 +1,3 @@
-const characterImageManifest = {
-    jetPackImages: Array.from({ length: 1 }, _ => `./assets/img/Pepe_Jetpack.webp`),
-};
-
 export const characterManifestImmediate = {
     idleWalkSheet: {
         type: 'sheet',
@@ -23,7 +19,6 @@ export const characterManifestImmediate = {
         type: 'sheet',
         json: './assets/img/2_character_pepe/duck_walk/duck_walk_sheet.json'
     }
-
 }
 
 export const characterManifestDeferred = {

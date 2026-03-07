@@ -3,26 +3,26 @@
  */
 export class WorldRenderer {
     /**
-    * Creates a new instance.
-    * @param {*} ctx Rendering context.
-    */
+     * Creates a new instance.
+     * @param {*} ctx Rendering context.
+     */
     constructor(ctx) {
         this.ctx = ctx;
     }
 
     /**
-    * Adds multiple objects to the world.
-    * @param {Array} objectArray List of objects.
-    */
+     * Adds multiple objects to the world.
+     * @param {Array} objectArray List of objects.
+     */
     addObject(objectArray) {
         objectArray.forEach(obj => this.addToWorld(obj));
     }
 
     /**
-    * Adds a drawable object to the world.
-    * @param {*} object Object to draw.
-    * @param {CanvasRenderingContext2D} [ctx=this.ctx] Rendering context.
-    */
+     * Adds a drawable object to the world.
+     * @param {*} object Object to draw.
+     * @param {CanvasRenderingContext2D} [ctx=this.ctx] Rendering context.
+     */
     addToWorld(object, ctx = this.ctx) {
         if (!this.isDrawableObject(object)) return;
         const flipState = this.getFlipState(object);
@@ -40,10 +40,10 @@ export class WorldRenderer {
     }
 
     /**
-    * Checks whether an object is drawable.
-    * @param {*} object Object to check.
-    * @returns {boolean} True if drawable, otherwise false.
-    */
+     * Checks whether an object is drawable.
+     * @param {*} object Object to check.
+     * @returns {boolean} True if drawable, otherwise false.
+     */
     isDrawableObject(object) {
         if (!object) return false;
         if (typeof object.draw === "function") return true;
@@ -52,10 +52,10 @@ export class WorldRenderer {
     }
 
     /**
-    * Determines whether an object should be flipped.
-    * @param {*} object Object to evaluate.
-    * @returns {boolean} True if the object should be flipped, otherwise false.
-    */
+     * Determines whether an object should be flipped.
+     * @param {*} object Object to evaluate.
+     * @returns {boolean} True if the object should be flipped, otherwise false.
+     */
     getFlipState(object) {
         const flipped = !!(object.isFlipped ?? false);
         const npcFlipped = !!(object.isNpcFlipped ?? false);
@@ -63,30 +63,30 @@ export class WorldRenderer {
     }
 
     /**
-    * Returns the object offsets.
-    * @param {*} object Object containing offset data.
-    * @returns {{left: number, right: number, top: number, bottom: number}} Offset values.
-    */
+     * Returns the object offsets.
+     * @param {*} object Object containing offset data.
+     * @returns {{left: number, right: number, top: number, bottom: number}} Offset values.
+     */
     getObjectOffsets(object) {
         const baseOffsets = { left: 0, right: 0, top: 0, bottom: 0 };
         return Object.assign(baseOffsets, object.offset || {});
     }
 
     /**
-    * Returns the drawing offsets of an object.
-    * @param {*} object Object containing draw offset data.
-    * @returns {{x: number, y: number, flipX: number}} Drawing offset values.
-    */
+     * Returns the drawing offsets of an object.
+     * @param {*} object Object containing draw offset data.
+     * @returns {{x: number, y: number, flipX: number}} Drawing offset values.
+     */
     getDrawOffsets(object) {
         const baseOffsets = { x: 0, y: 0, flipX: 0 };
         return Object.assign(baseOffsets, object.drawOffset || {});
     }
 
     /**
-    * Applies the object's opacity to the rendering context.
-    * @param {*} ctx Rendering context.
-    * @param {*} object Object containing opacity data.
-    */
+     * Applies the object's opacity to the rendering context.
+     * @param {*} ctx Rendering context.
+     * @param {*} object Object containing opacity data.
+     */
     applyObjectOpacity(ctx, object) {
         if (object.opacity !== undefined) {
             ctx.globalAlpha = object.opacity;
@@ -96,13 +96,13 @@ export class WorldRenderer {
     }
 
     /**
-    * Draws an object with optional horizontal flip.
-    * @param {*} ctx Rendering context.
-    * @param {*} object Object to draw.
-    * @param {boolean} isFlipped Whether the object should be flipped.
-    * @param {{left: number, right: number, top: number, bottom: number}} offsets Object offsets.
-    * @param {{x: number, y: number, flipX: number}} drawOffsets Drawing offsets.
-    */
+     * Draws an object with optional horizontal flip.
+     * @param {*} ctx Rendering context.
+     * @param {*} object Object to draw.
+     * @param {boolean} isFlipped Whether the object should be flipped.
+     * @param {{left: number, right: number, top: number, bottom: number}} offsets Object offsets.
+     * @param {{x: number, y: number, flipX: number}} drawOffsets Drawing offsets.
+     */
     drawObjectWithFlip(ctx, object, isFlipped, offsets, drawOffsets) {
         const dx = drawOffsets.x;
         const dy = drawOffsets.y;
@@ -115,14 +115,14 @@ export class WorldRenderer {
     }
 
     /**
-    * Draws a horizontally flipped object.
-    * @param {*} ctx Rendering context.
-    * @param {*} object Object to draw.
-    * @param {{left: number, right: number, top: number, bottom: number}} offsets Object offsets.
-    * @param {number} dx Horizontal draw offset.
-    * @param {number} dy Vertical draw offset.
-    * @param {number} fx Additional horizontal flip offset.
-    */
+     * Draws a horizontally flipped object.
+     * @param {*} ctx Rendering context.
+     * @param {*} object Object to draw.
+     * @param {{left: number, right: number, top: number, bottom: number}} offsets Object offsets.
+     * @param {number} dx Horizontal draw offset.
+     * @param {number} dy Vertical draw offset.
+     * @param {number} fx Additional horizontal flip offset.
+     */
     drawFlippedObject(ctx, object, offsets, dx, dy, fx) {
         const tx = Math.round(object.x + object.width + dx + fx);
         const ty = Math.round(object.y + dy);
@@ -134,13 +134,13 @@ export class WorldRenderer {
     }
 
     /**
-    * Draws a non-flipped object.
-    * @param {*} ctx Rendering context.
-    * @param {*} object Object to draw.
-    * @param {{left: number, right: number, top: number, bottom: number}} offsets Object offsets.
-    * @param {number} dx Horizontal draw offset.
-    * @param {number} dy Vertical draw offset.
-    */
+     * Draws a non-flipped object.
+     * @param {*} ctx Rendering context.
+     * @param {*} object Object to draw.
+     * @param {{left: number, right: number, top: number, bottom: number}} offsets Object offsets.
+     * @param {number} dx Horizontal draw offset.
+     * @param {number} dy Vertical draw offset.
+     */
     drawRegularObject(ctx, object, offsets, dx, dy) {
         const drawX = Math.round(object.x + dx);
         const drawY = Math.round(object.y + dy);
@@ -150,12 +150,12 @@ export class WorldRenderer {
     }
 
     /**
-    * Draws a sprite.
-    * @param {*} ctx Rendering context.
-    * @param {{img: *, width: number, height: number, frameSource?: *}} object Sprite data.
-    * @param {number} dx Horizontal draw position.
-    * @param {number} dy Vertical draw position.
-    */
+     * Draws a sprite.
+     * @param {*} ctx Rendering context.
+     * @param {{img: *, width: number, height: number, frameSource?: *}} object Sprite data.
+     * @param {number} dx Horizontal draw position.
+     * @param {number} dy Vertical draw position.
+     */
     drawSprite(ctx, object, dx, dy) {
         const { img, width, height, frameSource } = object;
         if (frameSource) {
@@ -166,15 +166,15 @@ export class WorldRenderer {
     }
 
     /**
-    * Draws a sprite frame from a source image.
-    * @param {*} ctx Rendering context.
-    * @param {*} img Source image.
-    * @param {{sx: number, sy: number, sw: number, sh: number}} frame Frame source data.
-    * @param {number} dx Horizontal draw position.
-    * @param {number} dy Vertical draw position.
-    * @param {number} width Target width.
-    * @param {number} height Target height.
-    */
+     * Draws a sprite frame from a source image.
+     * @param {*} ctx Rendering context.
+     * @param {*} img Source image.
+     * @param {{sx: number, sy: number, sw: number, sh: number}} frame Frame source data.
+     * @param {number} dx Horizontal draw position.
+     * @param {number} dy Vertical draw position.
+     * @param {number} width Target width.
+     * @param {number} height Target height.
+     */
     drawSpriteFrame(ctx, img, frame, dx, dy, width, height) {
         ctx.drawImage(
             img,
@@ -190,26 +190,26 @@ export class WorldRenderer {
     }
 
     /**
-    * Draws a full image sprite.
-    * @param {*} ctx Rendering context.
-    * @param {*} img Source image.
-    * @param {number} dx Horizontal draw position.
-    * @param {number} dy Vertical draw position.
-    * @param {number} width Target width.
-    * @param {number} height Target height.
-    */
+     * Draws a full image sprite.
+     * @param {*} ctx Rendering context.
+     * @param {*} img Source image.
+     * @param {number} dx Horizontal draw position.
+     * @param {number} dy Vertical draw position.
+     * @param {number} width Target width.
+     * @param {number} height Target height.
+     */
     drawFullSprite(ctx, img, dx, dy, width, height) {
         ctx.drawImage(img, dx, dy, width, height);
     }
 
     /**
-    * Draws debug information for a character.
-    * @param {*} ctx Rendering context.
-    * @param {*} object Character object.
-    * @param {{left: number, right: number, top: number, bottom: number}} off Offset values.
-    * @param {number} x Horizontal position.
-    * @param {number} y Vertical position.
-    */
+     * Draws debug information for a character.
+     * @param {*} ctx Rendering context.
+     * @param {*} object Character object.
+     * @param {{left: number, right: number, top: number, bottom: number}} off Offset values.
+     * @param {number} x Horizontal position.
+     * @param {number} y Vertical position.
+     */
     drawCharacterDebug(ctx, object, off, x, y) {
         this.drawCharacterOuterBounds(ctx, object, x, y);
         this.drawCharacterBodyHitbox(ctx, object, off, x, y);
@@ -217,12 +217,12 @@ export class WorldRenderer {
     }
 
     /**
-    * Draws the outer bounds of a character.
-    * @param {*} ctx Rendering context.
-    * @param {{width: number, height: number}} object Character dimensions.
-    * @param {number} x Horizontal position.
-    * @param {number} y Vertical position.
-    */
+     * Draws the outer bounds of a character.
+     * @param {*} ctx Rendering context.
+     * @param {{width: number, height: number}} object Character dimensions.
+     * @param {number} x Horizontal position.
+     * @param {number} y Vertical position.
+     */
     drawCharacterOuterBounds(ctx, object, x, y) {
         ctx.lineWidth = 3;
         ctx.strokeStyle = 'red';
@@ -230,13 +230,13 @@ export class WorldRenderer {
     }
 
     /**
-    * Draws the body hitbox of a character.
-    * @param {*} ctx Rendering context.
-    * @param {{width: number, height: number}} object Character dimensions.
-    * @param {{left: number, right: number, top: number, bottom: number}} off Offset values.
-    * @param {number} x Horizontal position.
-    * @param {number} y Vertical position.
-    */
+     * Draws the body hitbox of a character.
+     * @param {*} ctx Rendering context.
+     * @param {{width: number, height: number}} object Character dimensions.
+     * @param {{left: number, right: number, top: number, bottom: number}} off Offset values.
+     * @param {number} x Horizontal position.
+     * @param {number} y Vertical position.
+     */
     drawCharacterBodyHitbox(ctx, object, off, x, y) {
         ctx.strokeStyle = 'blue';
         const width = object.width - off.left - off.right;
@@ -247,12 +247,12 @@ export class WorldRenderer {
     }
 
     /**
-    * Draws the attack hitbox of a character if active.
-    * @param {*} ctx Rendering context.
-    * @param {{width: number, height: number, attackHitbox?: {left: number, right: number, top: number, bottom: number, active: boolean}}} object Character data.
-    * @param {number} x Horizontal position.
-    * @param {number} y Vertical position.
-    */
+     * Draws the attack hitbox of a character if active.
+     * @param {*} ctx Rendering context.
+     * @param {{width: number, height: number, attackHitbox?: {left: number, right: number, top: number, bottom: number, active: boolean}}} object Character data.
+     * @param {number} x Horizontal position.
+     * @param {number} y Vertical position.
+     */
     drawCharacterAttackHitbox(ctx, object, x, y) {
         const hb = object.attackHitbox;
         if (!hb?.active) return;
@@ -265,11 +265,11 @@ export class WorldRenderer {
     }
 
     /**
-    * Draws debug information for a flipped character.
-    * @param {*} ctx Rendering context.
-    * @param {*} object Character object.
-    * @param {{left: number, right: number, top: number, bottom: number}} off Offset values.
-    */
+     * Draws debug information for a flipped character.
+     * @param {*} ctx Rendering context.
+     * @param {*} object Character object.
+     * @param {{left: number, right: number, top: number, bottom: number}} off Offset values.
+     */
     drawCharacterDebugFlipped(ctx, object, off) {
         this.drawFlippedOuterBounds(ctx, object);
         this.drawFlippedBodyHitbox(ctx, object, off);
@@ -277,10 +277,10 @@ export class WorldRenderer {
     }
 
     /**
-    * Draws the outer bounds of a flipped character.
-    * @param {*} ctx Rendering context.
-    * @param {{width: number, height: number}} object Character dimensions.
-    */
+     * Draws the outer bounds of a flipped character.
+     * @param {*} ctx Rendering context.
+     * @param {{width: number, height: number}} object Character dimensions.
+     */
     drawFlippedOuterBounds(ctx, object) {
         ctx.lineWidth = 3;
         ctx.strokeStyle = 'red';
@@ -288,11 +288,11 @@ export class WorldRenderer {
     }
 
     /**
-    * Draws the body hitbox of a flipped character.
-    * @param {*} ctx Rendering context.
-    * @param {{width: number, height: number}} object Character dimensions.
-    * @param {{left: number, right: number, top: number, bottom: number}} off Offset values.
-    */
+     * Draws the body hitbox of a flipped character.
+     * @param {*} ctx Rendering context.
+     * @param {{width: number, height: number}} object Character dimensions.
+     * @param {{left: number, right: number, top: number, bottom: number}} off Offset values.
+     */
     drawFlippedBodyHitbox(ctx, object, off) {
         const width = object.width - off.left - off.right;
         const height = object.height - off.top - off.bottom;
@@ -303,10 +303,10 @@ export class WorldRenderer {
     }
 
     /**
-    * Draws the attack hitbox of a flipped character if active.
-    * @param {*} ctx Rendering context.
-    * @param {{width: number, height: number, attackHitbox?: {left: number, right: number, top: number, bottom: number, active: boolean}}} object Character data.
-    */
+     * Draws the attack hitbox of a flipped character if active.
+     * @param {*} ctx Rendering context.
+     * @param {{width: number, height: number, attackHitbox?: {left: number, right: number, top: number, bottom: number, active: boolean}}} object Character data.
+     */
     drawFlippedAttackHitbox(ctx, object) {
         const hb = object.attackHitbox;
         if (!hb?.active) return;

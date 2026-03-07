@@ -3,19 +3,19 @@
  */
 export class EndbossGroundAttackController {
     /**
-    * Creates a new instance.
-    * @param {*} endboss Reference to the endboss object.
-    */
+     * Creates a new instance.
+     * @param {*} endboss Reference to the endboss object.
+     */
     constructor(endboss) {
         this.endboss = endboss;
     }
 
     /**
-   * Updates behavior during the ground phase.
-   * @param {number} timestamp Frame timestamp.
-   * @param {*} setup Configuration or state setup object.
-   * @returns {void}
-   */
+     * Updates behavior during the ground phase.
+     * @param {number} timestamp Frame timestamp.
+     * @param {*} setup Configuration or state setup object.
+     * @returns {void}
+     */
     updateGroundPhase(timestamp, setup) {
         const char = setup.world.character;
         const dist = Math.abs(char.x - this.endboss.x);
@@ -31,9 +31,9 @@ export class EndbossGroundAttackController {
     }
 
     /**
-    * Initializes the ground fireball sequence.
-    * @returns {void}
-    */
+     * Initializes the ground fireball sequence.
+     * @returns {void}
+     */
     startGroundFireballSequence() {
         this.endboss.groundFireballSequenceActive = true;
         this.endboss.groundFireballShotsDone = 0;
@@ -42,10 +42,10 @@ export class EndbossGroundAttackController {
     }
 
     /**
-    * Updates progress of the current ground shot.
-    * @param {number} timestamp Frame timestamp.
-    * @returns {void}
-    */
+     * Updates progress of the current ground shot.
+     * @param {number} timestamp Frame timestamp.
+     * @returns {void}
+     */
     updateGroundShotProgress(timestamp) {
         if (!this.endboss.groundShotInProgress) return;
         if (this.endboss.isFireballAttack) return;
@@ -55,9 +55,9 @@ export class EndbossGroundAttackController {
     }
 
     /**
-    * Handles completion of the ground fireball sequence.
-    * @returns {boolean} True if the sequence was completed and handled, otherwise false.
-    */
+     * Handles completion of the ground fireball sequence.
+     * @returns {boolean} True if the sequence was completed and handled, otherwise false.
+     */
     handleGroundSequenceCompletion() {
         if (!this.isGroundSequenceFinished()) {
             return false;
@@ -67,9 +67,9 @@ export class EndbossGroundAttackController {
     }
 
     /**
-    * Determines whether the ground fireball sequence is finished.
-    * @returns {boolean} True if the sequence is finished, otherwise false.
-    */
+     * Determines whether the ground fireball sequence is finished.
+     * @returns {boolean} True if the sequence is finished, otherwise false.
+     */
     isGroundSequenceFinished() {
         const shotsDone = this.endboss.groundFireballShotsDone;
         const shotsMax = this.endboss.groundFireballShotsMax;
@@ -77,9 +77,9 @@ export class EndbossGroundAttackController {
     }
 
     /**
-    * Resets state and switches to the air eggs phase.
-    * @returns {void}
-    */
+     * Resets state and switches to the air eggs phase.
+     * @returns {void}
+     */
     resetToAirEggsPhase() {
         this.endboss.groundFireballSequenceActive = false;
         this.endboss.airPointIndex = 0;
@@ -91,10 +91,10 @@ export class EndbossGroundAttackController {
     }
 
     /**
-    * Attempts to start the next ground shot.
-    * @param {number} timestamp Frame timestamp.
-    * @returns {void}
-    */
+     * Attempts to start the next ground shot.
+     * @param {number} timestamp Frame timestamp.
+     * @returns {void}
+     */
     tryStartNextGroundShot(timestamp) {
         const boss = this.endboss;
         if (!this.canStartNextGroundShot(boss, timestamp)) return;
@@ -102,11 +102,11 @@ export class EndbossGroundAttackController {
     }
 
     /**
-    * Checks whether the next ground shot can be started.
-    * @param {*} boss Endboss instance.
-    * @param {number} timestamp Frame timestamp.
-    * @returns {boolean} True if the next shot can start, otherwise false.
-    */
+     * Checks whether the next ground shot can be started.
+     * @param {*} boss Endboss instance.
+     * @param {number} timestamp Frame timestamp.
+     * @returns {boolean} True if the next shot can start, otherwise false.
+     */
     canStartNextGroundShot(boss, timestamp) {
         if (boss.isFireballAttack) return false;
         const delayOk =
@@ -119,11 +119,11 @@ export class EndbossGroundAttackController {
     }
 
     /**
-    * Starts a ground shot attack.
-    * @param {*} boss Endboss instance.
-    * @param {number} timestamp Frame timestamp.
-    * @returns {void}
-    */
+     * Starts a ground shot attack.
+     * @param {*} boss Endboss instance.
+     * @param {number} timestamp Frame timestamp.
+     * @returns {void}
+     */
     startGroundShot(boss, timestamp) {
         boss.isFireballAttack = true;
         boss.hasFiredThisAttack = false;

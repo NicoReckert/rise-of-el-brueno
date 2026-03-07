@@ -3,10 +3,10 @@
  */
 class WindParticle {
     /**
-    * Creates a new instance.
-    * @param {number} worldWidth Width of the world.
-    * @param {number} worldHeight Height of the world.
-    */
+     * Creates a new instance.
+     * @param {number} worldWidth Width of the world.
+     * @param {number} worldHeight Height of the world.
+     */
     constructor(worldWidth, worldHeight) {
         this.worldWidth = worldWidth;
         this.worldHeight = worldHeight;
@@ -14,8 +14,8 @@ class WindParticle {
     }
 
     /**
-    * Resets the particle with randomized properties.
-    */
+     * Resets the particle with randomized properties.
+     */
     reset() {
         this.x = Math.random() * this.worldWidth;
         this.y = Math.random() * this.worldHeight;
@@ -28,8 +28,8 @@ class WindParticle {
     }
 
     /**
-    * Updates the particle position and state.
-    */
+     * Updates the particle position and state.
+     */
     update() {
         this.x += this.speedX;
         this.y += this.speedY;
@@ -41,12 +41,12 @@ class WindParticle {
     }
 
     /**
-    * Draws the particle.
-    * @param {CanvasRenderingContext2D} ctx Rendering context.
-    * @param {number} renderCameraX Camera x-offset.
-    * @param {number} canvasWidth Canvas width.
-    * @param {number} canvasHeight Canvas height.
-    */
+     * Draws the particle.
+     * @param {CanvasRenderingContext2D} ctx Rendering context.
+     * @param {number} renderCameraX Camera x-offset.
+     * @param {number} canvasWidth Canvas width.
+     * @param {number} canvasHeight Canvas height.
+     */
     draw(ctx, renderCameraX, canvasWidth, canvasHeight) {
         const screenX = this.x - renderCameraX;
         if (screenX < -50 || screenX > canvasWidth + 50) return;
@@ -68,11 +68,11 @@ class WindParticle {
  */
 export class WindParticleEffect {
     /**
-    * Creates a new instance.
-    * @param {number} worldWidth Width of the world.
-    * @param {number} worldHeight Height of the world.
-    * @param {number} [particleCount=200] Number of particles.
-    */
+     * Creates a new instance.
+     * @param {number} worldWidth Width of the world.
+     * @param {number} worldHeight Height of the world.
+     * @param {number} [particleCount=200] Number of particles.
+     */
     constructor(worldWidth, worldHeight, particleCount = 200) {
         this.worldWidth = worldWidth;
         this.worldHeight = worldHeight;
@@ -82,17 +82,17 @@ export class WindParticleEffect {
     }
 
     /**
-    * Updates all particles.
-    */
+     * Updates all particles.
+     */
     update() {
         this.particles.forEach(p => p.update());
     }
 
     /**
-    * Draws all particles.
-    * @param {CanvasRenderingContext2D} ctx Rendering context.
-    * @param {number} renderCameraX Camera x-offset.
-    */
+     * Draws all particles.
+     * @param {CanvasRenderingContext2D} ctx Rendering context.
+     * @param {number} renderCameraX Camera x-offset.
+     */
     draw(ctx, renderCameraX) {
         const canvasWidth = ctx.canvas.width * 38;
         const canvasHeight = ctx.canvas.height;

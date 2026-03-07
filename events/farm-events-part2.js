@@ -3,9 +3,9 @@ import { farmHelper } from "./farm-helper.js";
 
 export const farmEvents_part2 = [
     /**
-    * Collision-based quest event that guides the cow back,
-    * completes the task upon arrival, and restores hint and animation on leave.
-    */
+     * Collision-based quest event that guides the cow back,
+     * completes the task upon arrival, and restores hint and animation on leave.
+     */
     {
         type: 'collision',
         objectA: 'character',
@@ -35,8 +35,8 @@ export const farmEvents_part2 = [
     },
 
     /**
-    * Collision-based event that plays a cow sound on leave with a cooldown.
-    */
+     * Collision-based event that plays a cow sound on leave with a cooldown.
+     */
     {
         type: 'collision',
         objectA: 'character',
@@ -49,9 +49,9 @@ export const farmEvents_part2 = [
     },
 
     /**
-    * Time-based quest event that stops character movement,
-    * locks controls, and adjusts character orientations.
-    */
+     * Time-based quest event that stops character movement,
+     * locks controls, and adjusts character orientations.
+     */
     {
         type: 'time',
         delay: 0,
@@ -66,8 +66,8 @@ export const farmEvents_part2 = [
     },
 
     /**
-    * Time-based quest event that starts the first farm speech bubble after a delay.
-    */
+     * Time-based quest event that starts the first farm speech bubble after a delay.
+     */
     {
         type: 'time',
         delay: 2000,
@@ -78,9 +78,9 @@ export const farmEvents_part2 = [
     },
 
     /**
-    * Time-range event that renders the first farm speech bubble
-    * during the specified interval.
-    */
+     * Time-range event that renders the first farm speech bubble
+     * during the specified interval.
+     */
     {
         type: 'time',
         from: 2000,
@@ -91,8 +91,8 @@ export const farmEvents_part2 = [
     },
 
     /**
-    * Time-based quest event that starts the second farm speech bubble after a delay.
-    */
+     * Time-based quest event that starts the second farm speech bubble after a delay.
+     */
     {
         type: 'time',
         delay: 7000,
@@ -101,9 +101,9 @@ export const farmEvents_part2 = [
     },
 
     /**
-    * Time-range event that renders the second farm speech bubble
-    * during the specified interval.
-    */
+     * Time-range event that renders the second farm speech bubble
+     * during the specified interval.
+     */
     {
         type: 'time',
         from: 7000,
@@ -114,9 +114,9 @@ export const farmEvents_part2 = [
     },
 
     /**
-    * Time-based quest event that starts movement animations and
-    * moves Juanito and Pollito in opposite directions after a delay.
-    */
+     * Time-based quest event that starts movement animations and
+     * moves Juanito and Pollito in opposite directions after a delay.
+     */
     {
         type: 'time',
         delay: 12000,
@@ -134,9 +134,9 @@ export const farmEvents_part2 = [
     },
 
     /**
-    * Time-based event that stops Juanito and Pollito
-    * once they reach their target positions.
-    */
+     * Time-based event that stops Juanito and Pollito
+     * once they reach their target positions.
+     */
     {
         type: 'time',
         delay: 6000,
@@ -149,9 +149,9 @@ export const farmEvents_part2 = [
     },
 
     /**
-    * Position-based quest event that advances the quest
-    * when Pollito reaches the defined area.
-    */
+     * Position-based quest event that advances the quest
+     * when Pollito reaches the defined area.
+     */
     {
         type: 'position',
         objectA: 'pollito',
@@ -163,9 +163,9 @@ export const farmEvents_part2 = [
     },
 
     /**
-    * Quest event that sets Juanito and Pollito to idle,
-    * adjusts their orientation, and enables character walking.
-    */
+     * Quest event that sets Juanito and Pollito to idle,
+     * adjusts their orientation, and enables character walking.
+     */
     {
         type: 'quest',
         step: 9,
@@ -180,9 +180,9 @@ export const farmEvents_part2 = [
     },
 
     /**
-    * Quest event that flips the character
-    * once the defined position is reached.
-    */
+     * Quest event that flips the character
+     * once the defined position is reached.
+     */
     {
         type: 'quest',
         step: 9,
@@ -191,9 +191,9 @@ export const farmEvents_part2 = [
     },
 
     /**
-    * Quest event that resets the character orientation
-    * when returning past the defined position.
-    */
+     * Quest event that resets the character orientation
+     * when returning past the defined position.
+     */
     {
         type: 'quest',
         step: 9,
@@ -202,9 +202,9 @@ export const farmEvents_part2 = [
     },
 
     /**
-    * Quest event that transitions the character
-    * to the campfire scene.
-    */
+     * Quest event that transitions the character
+     * to the campfire scene.
+     */
     {
         type: 'quest',
         step: 9,
@@ -215,8 +215,8 @@ export const farmEvents_part2 = [
     },
 
     /**
-    * Quest event that starts the sun cycle.
-    */
+     * Quest event that starts the sun cycle.
+     */
     {
         type: 'quest',
         step: 10,
@@ -224,9 +224,9 @@ export const farmEvents_part2 = [
     },
 
     /**
-    * Quest event that gradually lowers the farm music volume
-    * until the minimum level is reached.
-    */
+     * Quest event that gradually lowers the farm music volume
+     * until the minimum level is reached.
+     */
     {
         type: 'quest',
         step: 10,
@@ -240,8 +240,8 @@ export const farmEvents_part2 = [
     },
 
     /**
-    * Time-based quest event that starts the moon cycle after a delay.
-    */
+     * Time-based quest event that starts the moon cycle after a delay.
+     */
     {
         type: 'time',
         delay: 5000,
@@ -250,8 +250,8 @@ export const farmEvents_part2 = [
     },
 
     /**
-    * Time-based quest event that sets the world state to night after a delay.
-    */
+     * Time-based quest event that sets the world state to night after a delay.
+     */
     {
         type: 'time',
         delay: 5000,
@@ -260,9 +260,9 @@ export const farmEvents_part2 = [
     },
 
     /**
-    * Quest event that dynamically adjusts and renders a darkness overlay
-    * based on the current quest step and night state.
-    */
+     * Quest event that dynamically adjusts and renders a darkness overlay
+     * based on the current quest step and night state.
+     */
     {
         type: 'quest',
         once: false,
@@ -278,9 +278,9 @@ export const farmEvents_part2 = [
     },
 
     /**
-    * Time-based quest event that starts the campfire animation,
-    * switches background audio, and sets characters and moon to music animations.
-    */
+     * Time-based quest event that starts the campfire animation,
+     * switches background audio, and sets characters and moon to music animations.
+     */
     {
         type: 'time',
         delay: 1500,
@@ -299,8 +299,8 @@ export const farmEvents_part2 = [
     },
 
     /**
-    * Time-based event that continuously renders the song lyrics after a delay.
-    */
+     * Time-based event that continuously renders the song lyrics after a delay.
+     */
     {
         type: 'time',
         delay: 3000,
@@ -312,9 +312,9 @@ export const farmEvents_part2 = [
     },
 
     /**
-    * Quest event that transitions the scene to night rest when the music ends,
-    * updates animations, plays a sound, and advances the quest.
-    */
+     * Quest event that transitions the scene to night rest when the music ends,
+     * updates animations, plays a sound, and advances the quest.
+     */
     {
         type: 'quest',
         step: 10,
@@ -336,9 +336,9 @@ export const farmEvents_part2 = [
     },
 
     /**
-    * Input-based quest event that skips to the end of the music
-    * when the moon cycle is finished and the F key is pressed.
-    */
+     * Input-based quest event that skips to the end of the music
+     * when the moon cycle is finished and the F key is pressed.
+     */
     {
         type: 'input',
         step: 10,
@@ -350,9 +350,9 @@ export const farmEvents_part2 = [
     },
 
     /**
-    * Quest event that adds a new task, plays a sound,
-    * and displays a popup message.
-    */
+     * Quest event that adds a new task, plays a sound,
+     * and displays a popup message.
+     */
     {
         type: 'quest',
         step: 11,
@@ -364,9 +364,9 @@ export const farmEvents_part2 = [
     },
 
     /**
-    * Time-based quest event that enables character walking
-    * and resets orientation after a delay.
-    */
+     * Time-based quest event that enables character walking
+     * and resets orientation after a delay.
+     */
     {
         type: 'time',
         delay: 4000,

@@ -6,12 +6,12 @@ import { EndbossTornadoConfig } from '../systems/endboss-tornado-config.class.js
  */
 export class EndbossTornado extends MovableObject {
     /**
-    * Creates a new instance.
-    * @param {*} entityImages Image resources.
-    * @param {number} x Initial x position.
-    * @param {number} y Initial y position.
-    * @param {*} allAudios Audio resources.
-    */
+     * Creates a new instance.
+     * @param {*} entityImages Image resources.
+     * @param {number} x Initial x position.
+     * @param {number} y Initial y position.
+     * @param {*} allAudios Audio resources.
+     */
     constructor(entityImages, x, y, allAudios) {
         super();
         this.config = new EndbossTornadoConfig(this, entityImages);
@@ -21,34 +21,34 @@ export class EndbossTornado extends MovableObject {
     }
 
     /**
-    * Sets the target character.
-    * @param {*} character Character reference.
-    */
+     * Sets the target character.
+     * @param {*} character Character reference.
+     */
     setTarget(character) {
         this.target = character;
     }
 
     /**
-    * Sets the build target x position.
-    * @param {number} x Target x position.
-    */
+     * Sets the build target x position.
+     * @param {number} x Target x position.
+     */
     setBuildTargetX(x) {
         this.buildX = x;
     }
 
     /**
-    * Checks whether the tornado has captured the character.
-    * @param {*} character Character reference.
-    * @returns {boolean} True if captured, otherwise false.
-    */
+     * Checks whether the tornado has captured the character.
+     * @param {*} character Character reference.
+     * @returns {boolean} True if captured, otherwise false.
+     */
     hasCaptured(character) {
         return this.captured && this.target === character;
     }
 
     /**
-    * Updates the tornado state.
-    * @param {number} timestamp Current frame timestamp.
-    */
+     * Updates the tornado state.
+     * @param {number} timestamp Current frame timestamp.
+     */
     updateState(timestamp) {
         if (this.isFinished) return;
         this.updateDeltaTime(timestamp);
@@ -64,8 +64,8 @@ export class EndbossTornado extends MovableObject {
     }
 
     /**
-    * Moves towards the target and attempts capture.
-    */
+     * Moves towards the target and attempts capture.
+     */
     seekTarget() {
         if (!this.target) return;
         const dt60 = this.getScaledDeltaTime();
@@ -78,9 +78,9 @@ export class EndbossTornado extends MovableObject {
     }
 
     /**
-    * Returns the scaled delta time factor.
-    * @returns {number} Scaled delta time multiplier.
-    */
+     * Returns the scaled delta time factor.
+     * @returns {number} Scaled delta time multiplier.
+     */
     getScaledDeltaTime() {
         const base = 1 / 60;
         const dt = this.deltaTime ?? base;
@@ -88,9 +88,9 @@ export class EndbossTornado extends MovableObject {
     }
 
     /**
-    * Calculates the horizontal distance to the target.
-    * @returns {number} Horizontal distance value.
-    */
+     * Calculates the horizontal distance to the target.
+     * @returns {number} Horizontal distance value.
+     */
     getHorizontalDistanceToTarget() {
         const targetCenter = this.target.x + this.target.width * 0.5;
         const selfCenter = this.x + this.width * 0.5;
@@ -98,11 +98,11 @@ export class EndbossTornado extends MovableObject {
     }
 
     /**
-    * Calculates the horizontal movement step.
-    * @param {number} dx Horizontal distance to target.
-    * @param {number} dt60 Scaled delta time multiplier.
-    * @returns {number} Horizontal step value.
-    */
+     * Calculates the horizontal movement step.
+     * @param {number} dx Horizontal distance to target.
+     * @param {number} dt60 Scaled delta time multiplier.
+     * @returns {number} Horizontal step value.
+     */
     getHorizontalStep(dx, dt60) {
         const absDx = Math.abs(dx);
         const maxStep = this.speed * dt60;
@@ -110,8 +110,8 @@ export class EndbossTornado extends MovableObject {
     }
 
     /**
-    * Captures the target and switches to lift state.
-    */
+     * Captures the target and switches to lift state.
+     */
     captureTarget() {
         this.captured = true;
         this.state = "LIFT";
@@ -121,8 +121,8 @@ export class EndbossTornado extends MovableObject {
     }
 
     /**
-    * Lifts the captured target upwards.
-    */
+     * Lifts the captured target upwards.
+     */
     liftTarget() {
         if (!this.target) return;
         const targetHeroY = this.buildYHero;
@@ -136,9 +136,9 @@ export class EndbossTornado extends MovableObject {
     }
 
     /**
-    * Moves to the build position.
-    * @param {number} timestamp Current frame timestamp.
-    */
+     * Moves to the build position.
+     * @param {number} timestamp Current frame timestamp.
+     */
     moveToBuildSpot(timestamp) {
         if (!this.target) return;
         const reached = this.moveToCenterX(this.buildX);
@@ -152,9 +152,9 @@ export class EndbossTornado extends MovableObject {
     }
 
     /**
-    * Builds the pedestal beneath the target.
-    * @param {number} timestamp Current frame timestamp.
-    */
+     * Builds the pedestal beneath the target.
+     * @param {number} timestamp Current frame timestamp.
+     */
     buildPedestal(timestamp) {
         if (!this.target) return;
         const progress = this.getPedestalProgress(timestamp);
@@ -169,10 +169,10 @@ export class EndbossTornado extends MovableObject {
     }
 
     /**
-    * Calculates the pedestal build progress.
-    * @param {number} timestamp Current frame timestamp.
-    * @returns {number} Progress value between 0 and 1.
-    */
+     * Calculates the pedestal build progress.
+     * @param {number} timestamp Current frame timestamp.
+     * @returns {number} Progress value between 0 and 1.
+     */
     getPedestalProgress(timestamp) {
         const elapsed = timestamp - this.wiggleStart;
         const rawProgress = elapsed / this.wiggleDuration;
@@ -180,9 +180,9 @@ export class EndbossTornado extends MovableObject {
     }
 
     /**
-    * Updates the pedestal position during build.
-    * @param {number} progress Build progress value.
-    */
+     * Updates the pedestal position during build.
+     * @param {number} progress Build progress value.
+     */
     updatePedestalPosition(progress) {
         const wigglePhase = progress * Math.PI * 6;
         const wiggleOffset = Math.sin(wigglePhase) * this.wiggleAmp;
@@ -191,8 +191,8 @@ export class EndbossTornado extends MovableObject {
     }
 
     /**
-    * Updates the target position while on the pedestal.
-    */
+     * Updates the target position while on the pedestal.
+     */
     updateTargetOnPedestal() {
         if (!this.target) return;
         this.target.x = this.x + this.width * 0.35;
@@ -200,9 +200,9 @@ export class EndbossTornado extends MovableObject {
     }
 
     /**
-    * Returns the pedestal object from the world.
-    * @returns {*} Pedestal object or null.
-    */
+     * Returns the pedestal object from the world.
+     * @returns {*} Pedestal object or null.
+     */
     getPedestalObject() {
         return (
             this.world?.townLevelSetup?.environment?.rockyDesertPedestal ?? null
@@ -210,10 +210,10 @@ export class EndbossTornado extends MovableObject {
     }
 
     /**
-    * Handles pedestal spawn during build.
-    * @param {number} progress Build progress value.
-    * @param {*} pedestal Pedestal object.
-    */
+     * Handles pedestal spawn during build.
+     * @param {number} progress Build progress value.
+     * @param {*} pedestal Pedestal object.
+     */
     handlePedestalSpawn(progress, pedestal) {
         if (!pedestal) return;
         if (this.pedestalSpawned) return;
@@ -225,9 +225,9 @@ export class EndbossTornado extends MovableObject {
     }
 
     /**
-    * Fades in the pedestal.
-    * @param {*} pedestal Pedestal object.
-    */
+     * Fades in the pedestal.
+     * @param {*} pedestal Pedestal object.
+     */
     fadeInPedestal(pedestal) {
         if (!pedestal) return;
         if (!this.pedestalSpawned) return;
@@ -236,18 +236,18 @@ export class EndbossTornado extends MovableObject {
     }
 
     /**
-    * Checks whether the pedestal build is complete.
-    * @param {number} progress Build progress value.
-    * @returns {boolean} True if complete, otherwise false.
-    */
+     * Checks whether the pedestal build is complete.
+     * @param {number} progress Build progress value.
+     * @returns {boolean} True if complete, otherwise false.
+     */
     isPedestalDone(progress) {
         return progress >= 1;
     }
 
     /**
-    * Finishes the pedestal build and releases the target.
-    * @param {number} timestamp Current frame timestamp.
-    */
+     * Finishes the pedestal build and releases the target.
+     * @param {number} timestamp Current frame timestamp.
+     */
     finishPedestal(timestamp) {
         if (!this.target) return;
         this.state = "RELEASE";
@@ -259,9 +259,9 @@ export class EndbossTornado extends MovableObject {
     }
 
     /**
-    * Handles the release phase.
-    * @param {number} timestamp Current frame timestamp.
-    */
+     * Handles the release phase.
+     * @param {number} timestamp Current frame timestamp.
+     */
     releaseTarget(timestamp) {
         if (this.handleMissingTarget()) return;
         this.ensureReleaseInitialized(timestamp);
@@ -273,9 +273,9 @@ export class EndbossTornado extends MovableObject {
     }
 
     /**
-    * Handles missing target during release.
-    * @returns {boolean} True if finished due to missing target, otherwise false.
-    */
+     * Handles missing target during release.
+     * @returns {boolean} True if finished due to missing target, otherwise false.
+     */
     handleMissingTarget() {
         if (this.target) return false;
         this.isFinished = true;
@@ -283,9 +283,9 @@ export class EndbossTornado extends MovableObject {
     }
 
     /**
-    * Initializes release state if not already set.
-    * @param {number} timestamp Current frame timestamp.
-    */
+     * Initializes release state if not already set.
+     * @param {number} timestamp Current frame timestamp.
+     */
     ensureReleaseInitialized(timestamp) {
         if (this.releaseStart) return;
         this.releaseStart = timestamp;
@@ -297,10 +297,10 @@ export class EndbossTornado extends MovableObject {
     }
 
     /**
-    * Calculates the release progress.
-    * @param {number} timestamp Current frame timestamp.
-    * @returns {number} Progress value between 0 and 1.
-    */
+     * Calculates the release progress.
+     * @param {number} timestamp Current frame timestamp.
+     * @returns {number} Progress value between 0 and 1.
+     */
     getReleaseProgress(timestamp) {
         const duration = this.releaseDuration ?? 600;
         const elapsed = timestamp - this.releaseStart;
@@ -308,34 +308,34 @@ export class EndbossTornado extends MovableObject {
     }
 
     /**
-    * Updates opacity during release.
-    * @param {number} t Release progress value.
-    */
+     * Updates opacity during release.
+     * @param {number} t Release progress value.
+     */
     updateReleaseOpacity(t) {
         this.opacity = 1 - t;
     }
 
     /**
-    * Checks whether the release is complete.
-    * @param {number} t Release progress value.
-    * @returns {boolean} True if complete, otherwise false.
-    */
+     * Checks whether the release is complete.
+     * @param {number} t Release progress value.
+     * @returns {boolean} True if complete, otherwise false.
+     */
     isReleaseComplete(t) {
         return t >= 1;
     }
 
     /**
-    * Finalizes the release state.
-    */
+     * Finalizes the release state.
+     */
     finishRelease() {
         this.opacity = 0;
         this.isFinished = true;
     }
 
     /**
-    * Updates the animation frame.
-    * @param {number} timestamp Current frame timestamp.
-    */
+     * Updates the animation frame.
+     * @param {number} timestamp Current frame timestamp.
+     */
     updateAnimation(timestamp) {
         if (!this.anim) return;
         if (!this.lastFrameTime) this.lastFrameTime = timestamp;
@@ -349,10 +349,10 @@ export class EndbossTornado extends MovableObject {
     }
 
     /**
-    * Moves towards a target center x position.
-    * @param {number} targetCenterX Target center x position.
-    * @returns {boolean} True if target position reached, otherwise false.
-    */
+     * Moves towards a target center x position.
+     * @param {number} targetCenterX Target center x position.
+     * @returns {boolean} True if target position reached, otherwise false.
+     */
     moveToCenterX(targetCenterX) {
         const centerX = this.x + this.width * 0.5;
         const dx = targetCenterX - centerX;

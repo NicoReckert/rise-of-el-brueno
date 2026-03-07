@@ -4,11 +4,11 @@ import { MovableObject } from '../systems/movable-object.class.js';
  */
 export class EssenceTrailParticle extends MovableObject {
   /**
-  * Creates a new instance.
-  * @param {*} img Image source.
-  * @param {number} x Initial x-coordinate.
-  * @param {number} y Initial y-coordinate.
-  */
+   * Creates a new instance.
+   * @param {*} img Image source.
+   * @param {number} x Initial x-coordinate.
+   * @param {number} y Initial y-coordinate.
+   */
   constructor(img, x, y) {
     super();
     this.initBaseProperties(img, x, y);
@@ -16,11 +16,11 @@ export class EssenceTrailParticle extends MovableObject {
   }
 
   /**
-  * Initializes base properties for the particle.
-  * @param {*} img Image source.
-  * @param {number} x Initial x-coordinate.
-  * @param {number} y Initial y-coordinate.
-  */
+   * Initializes base properties for the particle.
+   * @param {*} img Image source.
+   * @param {number} x Initial x-coordinate.
+   * @param {number} y Initial y-coordinate.
+   */
   initBaseProperties(img, x, y) {
     this.img = img;
     this.x = x;
@@ -34,17 +34,17 @@ export class EssenceTrailParticle extends MovableObject {
   }
 
   /**
-  * Initializes a random velocity for the particle.
-  */
+   * Initializes a random velocity for the particle.
+   */
   initRandomVelocity() {
     this.vx = (Math.random() - 0.5) * 0.6;
     this.vy = (Math.random() - 0.5) * 0.6;
   }
 
   /**
-  * Updates the particle state.
-  * @param {number} timestamp Frame timestamp.
-  */
+   * Updates the particle state.
+   * @param {number} timestamp Frame timestamp.
+   */
   updateState(timestamp) {
     if (!this.birth) this.birth = timestamp;
     const t = timestamp - this.birth;

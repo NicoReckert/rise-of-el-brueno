@@ -11,11 +11,11 @@ import { EndbossGroundAttackController } from '../systems/endboss-ground-attack-
  */
 export class Endboss extends MovableObject {
     /**
-    * Creates a new endboss instance.
-    * @param {*} entityImages Entity image resources.
-    * @param {*} allAudios Audio resources.
-    * @param {*} world World instance.
-    */
+     * Creates a new endboss instance.
+     * @param {*} entityImages Entity image resources.
+     * @param {*} allAudios Audio resources.
+     * @param {*} world World instance.
+     */
     constructor(entityImages, allAudios, world) {
         super();
         this.world = world;
@@ -31,11 +31,11 @@ export class Endboss extends MovableObject {
     }
 
     /**
-    * Updates all subsystems for the current frame.
-    * @param {number} timestamp Frame timestamp.
-    * @param {*} setup Configuration or state setup object.
-    * @returns {void}
-    */
+     * Updates all subsystems for the current frame.
+     * @param {number} timestamp Frame timestamp.
+     * @param {*} setup Configuration or state setup object.
+     * @returns {void}
+     */
     updateAll(timestamp, setup) {
         this.updateDeltaTime(timestamp);
         this.movementCtrl.updateState(timestamp, setup);
@@ -46,11 +46,11 @@ export class Endboss extends MovableObject {
     }
 
     /**
-    * Updates the finisher sequence state.
-    * @param {number} timestamp Frame timestamp.
-    * @param {*} setup Configuration or state setup object.
-    * @returns {void}
-    */
+     * Updates the finisher sequence state.
+     * @param {number} timestamp Frame timestamp.
+     * @param {*} setup Configuration or state setup object.
+     * @returns {void}
+     */
     updateFinisher(timestamp, setup) {
         const char = setup.world.character;
         const tornado = setup.world.tornado;
@@ -67,14 +67,14 @@ export class Endboss extends MovableObject {
     }
 
     /**
-    * Updates early states of the finisher sequence.
-    * @param {*} state Current finisher state.
-    * @param {number} timestamp Frame timestamp.
-    * @param {*} setup Configuration or state setup object.
-    * @param {*} char Character instance.
-    * @param {*} tornado Tornado instance.
-    * @returns {void}
-    */
+     * Updates early states of the finisher sequence.
+     * @param {*} state Current finisher state.
+     * @param {number} timestamp Frame timestamp.
+     * @param {*} setup Configuration or state setup object.
+     * @param {*} char Character instance.
+     * @param {*} tornado Tornado instance.
+     * @returns {void}
+     */
     updateFinisherEarlyStates(state, timestamp, setup, char, tornado) {
         if (state === this.FINISHER.TAKEOFF) {
             this.handleFinisherTakeoff(timestamp, setup);
@@ -90,13 +90,13 @@ export class Endboss extends MovableObject {
     }
 
     /**
-    * Updates late states of the finisher sequence.
-    * @param {*} state Current finisher state.
-    * @param {number} timestamp Frame timestamp.
-    * @param {*} setup Configuration or state setup object.
-    * @param {*} char Character instance.
-    * @returns {void}
-    */
+     * Updates late states of the finisher sequence.
+     * @param {*} state Current finisher state.
+     * @param {number} timestamp Frame timestamp.
+     * @param {*} setup Configuration or state setup object.
+     * @param {*} char Character instance.
+     * @returns {void}
+     */
     updateFinisherLateStates(state, timestamp, setup, char) {
         if (state === this.FINISHER.MOVE_TO_FIRE_POS) {
             this.handleFinisherMoveToFirePos(char);
@@ -112,11 +112,11 @@ export class Endboss extends MovableObject {
     }
 
     /**
-    * Handles the takeoff state of the finisher sequence.
-    * @param {number} timestamp Frame timestamp.
-    * @param {*} setup Configuration or state setup object.
-    * @returns {void}
-    */
+     * Handles the takeoff state of the finisher sequence.
+     * @param {number} timestamp Frame timestamp.
+     * @param {*} setup Configuration or state setup object.
+     * @returns {void}
+     */
     handleFinisherTakeoff(timestamp, setup) {
         this.airState = this.AIR_STATE.ASCEND;
         this.isFly = true;
@@ -128,10 +128,10 @@ export class Endboss extends MovableObject {
     }
 
     /**
-    * Handles dropping the tornado egg during the finisher sequence.
-    * @param {*} setup Configuration or state setup object.
-    * @returns {void}
-    */
+     * Handles dropping the tornado egg during the finisher sequence.
+     * @param {*} setup Configuration or state setup object.
+     * @returns {void}
+     */
     handleFinisherDropEgg(setup) {
         if (!this.finisherEggDropped) {
             setup.endbossAttack.spawnEgg(
@@ -147,11 +147,11 @@ export class Endboss extends MovableObject {
     }
 
     /**
-    * Handles waiting for the tornado to finish during the finisher sequence.
-    * @param {*} char Character instance.
-    * @param {*} tornado Tornado instance.
-    * @returns {void}
-    */
+     * Handles waiting for the tornado to finish during the finisher sequence.
+     * @param {*} char Character instance.
+     * @param {*} tornado Tornado instance.
+     * @returns {void}
+     */
     handleFinisherWaitTornado(char, tornado) {
         if (!tornado) return;
         if (!tornado.isFinished) return;
@@ -164,10 +164,10 @@ export class Endboss extends MovableObject {
     }
 
     /**
-    * Handles movement to the fire position during the finisher sequence.
-    * @param {*} char Character instance.
-    * @returns {void}
-    */
+     * Handles movement to the fire position during the finisher sequence.
+     * @param {*} char Character instance.
+     * @returns {void}
+     */
     handleFinisherMoveToFirePos(char) {
         this.isFly = true;
         this.isJumping = false;
@@ -182,12 +182,12 @@ export class Endboss extends MovableObject {
     }
 
     /**
-    * Handles boss descend during the finisher sequence.
-    * @param {number} timestamp Frame timestamp.
-    * @param {*} setup Configuration or state setup object.
-    * @param {*} char Character instance.
-    * @returns {void}
-    */
+     * Handles boss descend during the finisher sequence.
+     * @param {number} timestamp Frame timestamp.
+     * @param {*} setup Configuration or state setup object.
+     * @param {*} char Character instance.
+     * @returns {void}
+     */
     handleFinisherBossDescend(timestamp, setup, char) {
         this.isFlipped = char.x > this.x;
         this.airPhaseCtrl.updateAirEggPhase(timestamp, setup);
@@ -198,12 +198,12 @@ export class Endboss extends MovableObject {
     }
 
     /**
-    * Handles the fire breath state during the finisher sequence.
-    * @param {number} timestamp Frame timestamp.
-    * @param {*} setup Configuration or state setup object.
-    * @param {*} char Character instance.
-    * @returns {void}
-    */
+     * Handles the fire breath state during the finisher sequence.
+     * @param {number} timestamp Frame timestamp.
+     * @param {*} setup Configuration or state setup object.
+     * @param {*} char Character instance.
+     * @returns {void}
+     */
     handleFinisherFireBreath(timestamp, setup, char) {
         this.isMovingLeft = false;
         this.isMovingRight = false;
@@ -211,45 +211,22 @@ export class Endboss extends MovableObject {
         this.combatCtrl.updateFireBreath(setup, timestamp);
     }
 
+    /**
+     * Moves the object to the target x position.
+     * @param {number} targetX Target x position.
+     * @param {number} speedPxPerSec Movement speed in pixels per second.
+     * @returns {*}
+     */
     moveToX(targetX, speedPxPerSec) {
         return this.movementCtrl.moveToX(targetX, speedPxPerSec);
     }
 
+    /**
+     * Sets the combat phase.
+     * @param {*} newPhase New phase value.
+     * @returns {void}
+     */
     setPhase(newPhase) {
         this.combatCtrl.setPhase(newPhase);
     }
 }
-
-// endbossReaction() {
-//     const boss = this.townLevelSetup.characters.endboss;
-//     const player = this.character;
-//     const distance = Math.abs((player.x + player.width / 2) - (boss.x + boss.width / 2));
-
-//     if (distance < 200 && !boss.isDead) {
-//         // Wenn noch nicht springt, dann Starte den Sprung
-//         if (!boss.isJumping) {
-//             boss.speedY = 20;
-//             boss.isJumping = true;
-//         }
-//         if (player.x < boss.x) {
-//             boss.isMovingLeft = true;
-//             boss.isMovingRight = false;
-//         } else {
-//             boss.isMovingRight = true;
-//             boss.isMovingLeft = false;
-//         }
-//     } else if (distance < 500 && !boss.isDead) {
-//         boss.isJumping = false; // Nur laufen
-//         if (player.x < boss.x) {
-//             boss.isMovingLeft = true;
-//             boss.isMovingRight = false;
-//         } else {
-//             boss.isMovingRight = true;
-//             boss.isMovingLeft = false;
-//         }
-//     } else {
-//         boss.isMovingLeft = false;
-//         boss.isMovingRight = false;
-//         boss.isJumping = false;
-//     }
-// }

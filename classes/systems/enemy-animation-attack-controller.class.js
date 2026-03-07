@@ -3,19 +3,19 @@
  */
 export class EnemyAnimationAttackController {
     /**
-    * Creates a new instance.
-    * @param {object} enemy Enemy instance.
-    */
+     * Creates a new instance.
+     * @param {object} enemy Enemy instance.
+     */
     constructor(enemy) {
         this.enemy = enemy
     }
 
     /**
-    * Handles attack-related animation logic.
-    * @param {number} prevFrame Previous frame index.
-    * @param {number} frameCount Number of animation frames.
-    * @returns {void}
-    */
+     * Handles attack-related animation logic.
+     * @param {number} prevFrame Previous frame index.
+     * @param {number} frameCount Number of animation frames.
+     * @returns {void}
+     */
     handleAttackLogic(prevFrame, frameCount) {
         if (!frameCount || frameCount <= 0) return;
         this.handleBigChickenAttack(prevFrame, frameCount);
@@ -24,11 +24,11 @@ export class EnemyAnimationAttackController {
     }
 
     /**
-    * Handles big chicken attack logic during the animation.
-    * @param {number} prevFrame Previous frame index.
-    * @param {number} frameCount Number of animation frames.
-    * @returns {void}
-    */
+     * Handles big chicken attack logic during the animation.
+     * @param {number} prevFrame Previous frame index.
+     * @param {number} frameCount Number of animation frames.
+     * @returns {void}
+     */
     handleBigChickenAttack(prevFrame, frameCount) {
         if (!this.shouldProcessBigChickenAttack()) return;
         const shootFrame = 8;
@@ -40,9 +40,9 @@ export class EnemyAnimationAttackController {
     }
 
     /**
-    * Checks whether big chicken attack logic should be processed.
-    * @returns {boolean} True if big chicken attack logic should be processed, otherwise false.
-    */
+     * Checks whether big chicken attack logic should be processed.
+     * @returns {boolean} True if big chicken attack logic should be processed, otherwise false.
+     */
     shouldProcessBigChickenAttack() {
         const e = this.enemy;
         if (!e.isAttack) return false;
@@ -52,11 +52,11 @@ export class EnemyAnimationAttackController {
     }
 
     /**
-    * Checks whether the enemy should fire the projectile in this frame.
-    * @param {number} prevFrame Previous frame index.
-    * @param {number} shootFrame Frame index at which to shoot.
-    * @returns {boolean} True if the projectile should be fired, otherwise false.
-    */
+     * Checks whether the enemy should fire the projectile in this frame.
+     * @param {number} prevFrame Previous frame index.
+     * @param {number} shootFrame Frame index at which to shoot.
+     * @returns {boolean} True if the projectile should be fired, otherwise false.
+     */
     shouldShootNow(prevFrame, shootFrame) {
         if (prevFrame !== shootFrame) return false;
         if (this.enemy.hasFiredThisAttack) return false;
@@ -64,9 +64,9 @@ export class EnemyAnimationAttackController {
     }
 
     /**
-    * Fires the projectile for the big chicken attack.
-    * @returns {void}
-    */
+     * Fires the projectile for the big chicken attack.
+     * @returns {void}
+     */
     fireBigChickenProjectile() {
         const e = this.enemy;
         const audio = e.allAudios.fireballShotSound.cloneNode();
@@ -76,9 +76,9 @@ export class EnemyAnimationAttackController {
     }
 
     /**
-    * Resets the big chicken attack state.
-    * @returns {void}
-    */
+     * Resets the big chicken attack state.
+     * @returns {void}
+     */
     resetBigChickenAttackState() {
         this.enemy.hasFiredThisAttack = false;
         this.enemy.isAttack = false;
@@ -86,11 +86,11 @@ export class EnemyAnimationAttackController {
     }
 
     /**
-    * Handles small chicken attack logic during the animation.
-    * @param {number} prevFrame Previous frame index.
-    * @param {number} frameCount Number of animation frames.
-    * @returns {void}
-    */
+     * Handles small chicken attack logic during the animation.
+     * @param {number} prevFrame Previous frame index.
+     * @param {number} frameCount Number of animation frames.
+     * @returns {void}
+     */
     handleSmallChickenAttack(prevFrame, frameCount) {
         if (!this.enemy.isAttack || this.enemy.currentEnemy !== 'chickenMutatesSmall') return;
         if (this.enemy.isHurt || this.enemy.isDead) return;
@@ -104,10 +104,10 @@ export class EnemyAnimationAttackController {
     }
 
     /**
-    * Handles dragon attack logic during the animation.
-    * @param {number} prevFrame Previous frame index.
-    * @returns {void}
-    */
+     * Handles dragon attack logic during the animation.
+     * @param {number} prevFrame Previous frame index.
+     * @returns {void}
+     */
     handleDragonAttack(prevFrame) {
         if (this.enemy.currentAnimation !== 'attack') return;
         if (this.enemy.currentEnemy !== 'dragonSmall') return;

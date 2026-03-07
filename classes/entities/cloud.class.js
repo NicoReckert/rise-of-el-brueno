@@ -5,14 +5,14 @@ import { MovableObject } from '../systems/movable-object.class.js';
  */
 export class Cloud extends MovableObject {
   /**
- * Creates a new instance.
- * @param {Object} [options={}] Configuration options.
- * @param {Array} [options.existingClouds=[]] Existing cloud instances.
- * @param {number} [options.minDistance=200] Minimum distance between clouds.
- * @param {number} [options.levelWidth=6500] Width of the level.
- * @param {*} [options.spriteSheet=null] Optional sprite sheet source.
- * @param {?Object} [options.entityImages=null] Optional image definitions.
- */
+   * Creates a new instance.
+   * @param {Object} [options={}] Configuration options.
+   * @param {Array} [options.existingClouds=[]] Existing cloud instances.
+   * @param {number} [options.minDistance=200] Minimum distance between clouds.
+   * @param {number} [options.levelWidth=6500] Width of the level.
+   * @param {*} [options.spriteSheet=null] Optional sprite sheet source.
+   * @param {?Object} [options.entityImages=null] Optional image definitions.
+   */
   constructor({ existingClouds = [], minDistance = 200, levelWidth = 6500, spriteSheet = null, entityImages = null } = {}) {
     super();
     this.initConfig(existingClouds, minDistance, levelWidth, spriteSheet);
@@ -25,12 +25,12 @@ export class Cloud extends MovableObject {
   }
 
   /**
-  * Initializes configuration values.
-  * @param {Array} existingClouds Existing cloud instances.
-  * @param {number} minDistance Minimum distance between clouds.
-  * @param {number} levelWidth Width of the level.
-  * @param {*} spriteSheet Sprite sheet source.
-  */
+   * Initializes configuration values.
+   * @param {Array} existingClouds Existing cloud instances.
+   * @param {number} minDistance Minimum distance between clouds.
+   * @param {number} levelWidth Width of the level.
+   * @param {*} spriteSheet Sprite sheet source.
+   */
   initConfig(existingClouds, minDistance, levelWidth, spriteSheet) {
     this.existingClouds = existingClouds;
     this.minDistance = minDistance;
@@ -39,17 +39,17 @@ export class Cloud extends MovableObject {
   }
 
   /**
-  * Initializes cloud image resources.
-  * @param {Object} entityImages Image definitions.
-  */
+   * Initializes cloud image resources.
+   * @param {Object} entityImages Image definitions.
+   */
   initImages(entityImages) {
     this.cloudImages = entityImages?.cloud?.variants || [];
     this.frameSource = null;
   }
 
   /**
-  * Initializes movement-related state.
-  */
+   * Initializes movement-related state.
+   */
   initMovementState() {
     this.speed = 0.3;
     this.x = this.findInitialPosition();
@@ -57,8 +57,8 @@ export class Cloud extends MovableObject {
   }
 
   /**
-  * Selects a random sprite for the cloud.
-  */
+   * Selects a random sprite for the cloud.
+   */
   pickRandomSprite() {
     const sheet = this.spriteSheet;
     if (this.tryPickSpriteFromSheet(sheet)) return;
@@ -67,10 +67,10 @@ export class Cloud extends MovableObject {
   }
 
   /**
-  * Attempts to select a sprite from a sprite sheet.
-  * @param {*} sheet Sprite sheet data.
-  * @returns {boolean} True if selection was successful, otherwise false.
-  */
+   * Attempts to select a sprite from a sprite sheet.
+   * @param {*} sheet Sprite sheet data.
+   * @returns {boolean} True if selection was successful, otherwise false.
+   */
   tryPickSpriteFromSheet(sheet) {
     if (!sheet?.meta || !sheet?.image) return false;
     const def = this.getSheetAnimDef(sheet);
@@ -83,9 +83,9 @@ export class Cloud extends MovableObject {
   }
 
   /**
-  * Attempts to select a sprite from available images.
-  * @returns {boolean} True if selection was successful, otherwise false.
-  */
+   * Attempts to select a sprite from available images.
+   * @returns {boolean} True if selection was successful, otherwise false.
+   */
   tryPickSpriteFromImages() {
     if (!this.cloudImages.length) return false;
     this.cloudVariantIndex = Math.floor(
@@ -97,8 +97,8 @@ export class Cloud extends MovableObject {
   }
 
   /**
-  * Resets sprite selection state.
-  */
+   * Resets sprite selection state.
+   */
   resetSpriteSelection() {
     this.img = null;
     this.frameSource = null;
@@ -106,8 +106,8 @@ export class Cloud extends MovableObject {
   }
 
   /**
-  * Randomizes cloud size and vertical position.
-  */
+   * Randomizes cloud size and vertical position.
+   */
   randomizeSizeAndY() {
     this.y = 50 + Math.random() * 50;
     this.width = 300 + Math.random() * 200;
@@ -115,9 +115,9 @@ export class Cloud extends MovableObject {
   }
 
   /**
-  * Determines the initial horizontal position of the cloud.
-  * @returns {number}
-  */
+   * Determines the initial horizontal position of the cloud.
+   * @returns {number}
+   */
   findInitialPosition() {
     const clouds = this.existingClouds || [];
     if (!clouds.length) {
@@ -127,12 +127,12 @@ export class Cloud extends MovableObject {
   }
 
   /**
-  * Finds a valid horizontal position respecting minimum distance.
-  * @param {Array<Object>} existingClouds Existing clouds.
-  * @param {number} minDistance Minimum horizontal distance.
-  * @param {number} [maxTries=40] Maximum random attempts.
-  * @returns {number}
-  */
+   * Finds a valid horizontal position respecting minimum distance.
+   * @param {Array<Object>} existingClouds Existing clouds.
+   * @param {number} minDistance Minimum horizontal distance.
+   * @param {number} [maxTries=40] Maximum random attempts.
+   * @returns {number}
+   */
   findValidPosition(existingClouds, minDistance, maxTries = 40) {
     const candidate = this.tryFindRandomPosition(existingClouds, minDistance, maxTries);
     if (candidate != null) {
@@ -142,12 +142,12 @@ export class Cloud extends MovableObject {
   }
 
   /**
-  * Tries to find a random valid horizontal position.
-  * @param {Array<Object>} existingClouds Existing clouds.
-  * @param {number} minDistance Minimum horizontal distance.
-  * @param {number} maxTries Maximum random attempts.
-  * @returns {number|null}
-  */
+   * Tries to find a random valid horizontal position.
+   * @param {Array<Object>} existingClouds Existing clouds.
+   * @param {number} minDistance Minimum horizontal distance.
+   * @param {number} maxTries Maximum random attempts.
+   * @returns {number|null}
+   */
   tryFindRandomPosition(existingClouds, minDistance, maxTries) {
     let currentMin = minDistance;
     for (let i = 0; i < maxTries; i++) {
@@ -163,11 +163,11 @@ export class Cloud extends MovableObject {
   }
 
   /**
-  * Calculates a fallback horizontal position.
-  * @param {Array<Object>} existingClouds Existing clouds.
-  * @param {number} minDistance Minimum horizontal distance.
-  * @returns {number}
-  */
+   * Calculates a fallback horizontal position.
+   * @param {Array<Object>} existingClouds Existing clouds.
+   * @param {number} minDistance Minimum horizontal distance.
+   * @returns {number}
+   */
   getFallbackPosition(existingClouds, minDistance) {
     if (existingClouds.length > 0) {
       const rightMost = Math.max(...existingClouds.map(c => c.x + c.width));
@@ -177,12 +177,12 @@ export class Cloud extends MovableObject {
   }
 
   /**
-  * Checks whether a position keeps sufficient distance from another cloud.
-  * @param {number} candidateX Proposed horizontal position.
-  * @param {Object} other Other cloud instance.
-  * @param {number} minDistance Minimum horizontal distance.
-  * @returns {boolean}
-  */
+   * Checks whether a position keeps sufficient distance from another cloud.
+   * @param {number} candidateX Proposed horizontal position.
+   * @param {Object} other Other cloud instance.
+   * @param {number} minDistance Minimum horizontal distance.
+   * @returns {boolean}
+   */
   isFarEnough(candidateX, other, minDistance) {
     return (
       candidateX + this.width + minDistance < other.x ||
@@ -191,8 +191,8 @@ export class Cloud extends MovableObject {
   }
 
   /**
-  * Respawns the cloud at a new valid position.
-  */
+   * Respawns the cloud at a new valid position.
+   */
   respawn() {
     this.randomizeSizeAndY();
     this.pickRandomSprite();
@@ -206,9 +206,9 @@ export class Cloud extends MovableObject {
   }
 
   /**
-  * Updates cloud position based on elapsed time.
-  * @param {number} timestamp Current animation frame timestamp.
-  */
+   * Updates cloud position based on elapsed time.
+   * @param {number} timestamp Current animation frame timestamp.
+   */
   update(timestamp) {
     if (this.lastUpdateTime == null) {
       this.lastUpdateTime = timestamp;

@@ -3,19 +3,19 @@
  */
 export class EnemyDragonController {
     /**
-    * Creates a new instance.
-    * @param {object} enemy Enemy instance.
-    */
+     * Creates a new instance.
+     * @param {object} enemy Enemy instance.
+     */
     constructor(enemy) {
         this.enemy = enemy;
     }
 
     /**
-    * Updates the dragon AI state.
-    * @param {number} timestamp Frame timestamp.
-    * @param {object} char Character object.
-    * @returns {void}
-    */
+     * Updates the dragon AI state.
+     * @param {number} timestamp Frame timestamp.
+     * @param {object} char Character object.
+     * @returns {void}
+     */
     updateDragonAI(timestamp, char) {
         this.enemy.isMovingLeft = false;
         this.enemy.isMovingRight = false;
@@ -27,12 +27,12 @@ export class EnemyDragonController {
     }
 
     /**
-    * Updates the dragon state machine.
-    * @param {number} timestamp Frame timestamp.
-    * @param {object} char Character object.
-    * @param {object} distInfo Dragon distance data.
-    * @returns {void}
-    */
+     * Updates the dragon state machine.
+     * @param {number} timestamp Frame timestamp.
+     * @param {object} char Character object.
+     * @param {object} distInfo Dragon distance data.
+     * @returns {void}
+     */
     updateDragonStateMachine(timestamp, char, distInfo) {
         const s = this.enemy.airState;
         if (s === 'idle') this.handleDragonIdle(char, distInfo.distX);
@@ -44,12 +44,12 @@ export class EnemyDragonController {
     }
 
     /**
-    * Updates dragon dive and exit related states.
-    * @param {string} state Current air state.
-    * @param {number} timestamp Frame timestamp.
-    * @param {object} char Character object.
-    * @returns {void}
-    */
+     * Updates dragon dive and exit related states.
+     * @param {string} state Current air state.
+     * @param {number} timestamp Frame timestamp.
+     * @param {object} char Character object.
+     * @returns {void}
+     */
     updateDragonStateDiveAndExit(state, timestamp, char) {
         if (state === 'dive_up_shallow') this.enemy.dragonMovementCtrl.handleDragonDiveUpAngle(30);
         else if (state === 'dive_up_medium') this.enemy.dragonMovementCtrl.handleDragonDiveUpAngle(50);
@@ -59,11 +59,11 @@ export class EnemyDragonController {
     }
 
     /**
-    * Handles dragon idle behavior.
-    * @param {object} char Character object.
-    * @param {number} distX Horizontal distance to the target.
-    * @returns {void}
-    */
+     * Handles dragon idle behavior.
+     * @param {object} char Character object.
+     * @param {number} distX Horizontal distance to the target.
+     * @returns {void}
+     */
     handleDragonIdle(char, distX) {
         this.enemy.dragonMovementCtrl.dragonIdleFollow(char);
         if (distX > this.enemy.approachDistance) return;
@@ -72,12 +72,12 @@ export class EnemyDragonController {
     }
 
     /**
-    * Handles dragon approach behavior.
-    * @param {number} timestamp Frame timestamp.
-    * @param {object} char Character object.
-    * @param {object} distInfo Dragon distance data.
-    * @returns {void}
-    */
+     * Handles dragon approach behavior.
+     * @param {number} timestamp Frame timestamp.
+     * @param {object} char Character object.
+     * @param {object} distInfo Dragon distance data.
+     * @returns {void}
+     */
     handleDragonApproach(timestamp, char, distInfo) {
         this.enemy.dragonMovementCtrl.dragonApproach(char);
         if (distInfo.distX > this.enemy.attackDistance) return;
@@ -86,10 +86,10 @@ export class EnemyDragonController {
     }
 
     /**
-    * Handles the dragon dive start phase.
-    * @param {number} timestamp Frame timestamp.
-    * @returns {void}
-    */
+     * Handles the dragon dive start phase.
+     * @param {number} timestamp Frame timestamp.
+     * @returns {void}
+     */
     handleDragonDiveStart(timestamp) {
         this.enemy.dragonMovementCtrl.dragonDive();
         const elapsed = timestamp - this.enemy.diveStartTime;
@@ -98,9 +98,9 @@ export class EnemyDragonController {
     }
 
     /**
-    * Handles the dragon fast dive phase.
-    * @returns {void}
-    */
+     * Handles the dragon fast dive phase.
+     * @returns {void}
+     */
     handleDragonDiveFast() {
         const dt = this.enemy.deltaTime ?? 1 / 60;
         const eBox = this.enemy.getHitboxRect();
@@ -113,10 +113,10 @@ export class EnemyDragonController {
     }
 
     /**
-    * Handles the dragon air exit state.
-    * @param {number} timestamp Frame timestamp.
-    * @returns {void}
-    */
+     * Handles the dragon air exit state.
+     * @param {number} timestamp Frame timestamp.
+     * @returns {void}
+     */
     handleDragonAirExit(timestamp) {
         this.enemy.exitTimer ??= timestamp;
         const elapsed = timestamp - this.enemy.exitTimer;
@@ -127,11 +127,11 @@ export class EnemyDragonController {
     }
 
     /**
-    * Handles the dragon low approach phase.
-    * @param {number} timestamp Frame timestamp.
-    * @param {object} char Character object.
-    * @returns {void}
-    */
+     * Handles the dragon low approach phase.
+     * @param {number} timestamp Frame timestamp.
+     * @param {object} char Character object.
+     * @returns {void}
+     */
     handleDragonApproachLow(timestamp, char) {
         const dt = this.enemy.deltaTime ?? 1 / 60;
         if (this.enemy.planeY != null) this.enemy.y = this.enemy.planeY;
@@ -144,11 +144,11 @@ export class EnemyDragonController {
     }
 
     /**
-    * Handles the dragon transition after the dive phase.
-    * @param {object} char Character object.
-    * @param {object} info Dragon low approach data.
-    * @returns {void}
-    */
+     * Handles the dragon transition after the dive phase.
+     * @param {object} char Character object.
+     * @param {object} info Dragon low approach data.
+     * @returns {void}
+     */
     handleDragonPostDiveTransition(char, info) {
         const eBox = info.eBox;
         const dir = this.enemy.entryDir;

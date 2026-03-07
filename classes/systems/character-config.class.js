@@ -3,18 +3,18 @@
  */
 export class CharacterConfig {
     /**
-    * Creates a new instance.
-    * @param {Object} character Character instance.
-    * @param {Object} characterImages Character image assets.
-    */
+     * Creates a new instance.
+     * @param {Object} character Character instance.
+     * @param {Object} characterImages Character image assets.
+     */
     constructor(character, characterImages) {
         this.char = character;
         this.images = characterImages;
     }
 
     /**
-    * Initializes character properties, images, and state configurations.
-    */
+     * Initializes character properties, images, and state configurations.
+     */
     initAll() {
         this.initCoreValues();
         this.setSizeAndPosition();
@@ -26,16 +26,16 @@ export class CharacterConfig {
     }
 
     /**
-    * Initializes animation set definitions.
-    */
+     * Initializes animation set definitions.
+     */
     initAnimationSets() {
         this.initVoidlessAnimations();
         this.initTransitionableAnimations();
     }
 
     /**
-    * Initializes animations that are not affected by void state.
-    */
+     * Initializes animations that are not affected by void state.
+     */
     initVoidlessAnimations() {
         this.char.VOIDLESS_ANIMS = new Set([
             'kneel-and-cry', 'stand-up-determined', 'kneel-and-cry-loop', 'stand-up-determined-loop',
@@ -48,8 +48,8 @@ export class CharacterConfig {
         ]);
     }
     /**
-    * Initializes animations that support transitions.
-    */
+     * Initializes animations that support transitions.
+     */
     initTransitionableAnimations() {
         this.char.TRANSITIONABLE_ANIMS = new Set([
             'kneel-and-cry', 'stand-up-determined', 'determined-rise', 'caress',
@@ -60,16 +60,16 @@ export class CharacterConfig {
     }
 
     /**
-    * Initializes core character values.
-    */
+     * Initializes core character values.
+     */
     initCoreValues() {
         this.initCoreMovementValues();
         this.initCoreStateValues();
     }
 
     /**
-    * Initializes core movement-related values.
-    */
+     * Initializes core movement-related values.
+     */
     initCoreMovementValues() {
         this.char.speedX = 6;
         this.char.lastFrameTime = 0;
@@ -83,8 +83,8 @@ export class CharacterConfig {
     }
 
     /**
-    * Initializes core state-related values.
-    */
+     * Initializes core state-related values.
+     */
     initCoreStateValues() {
         this.char.isGamecharacter = false;
         this.char.isHaveSword = false;
@@ -96,8 +96,8 @@ export class CharacterConfig {
     }
 
     /**
-    * Sets the character's size and initial position on the screen.
-    */
+     * Sets the character's size and initial position on the screen.
+     */
     setSizeAndPosition() {
         this.char.height = 300; // 183 für voidless.dev sprite - 300 * 0.61
         this.char.width = 130; // 158 für voidless.dev sprite - 130 * 1.216
@@ -106,8 +106,8 @@ export class CharacterConfig {
     }
 
     /**
-    * Sets the character's collision or interaction offset values.
-    */
+     * Sets the character's collision or interaction offset values.
+     */
     setOffset() {
         this.char.offset.top = 130;
         this.char.offset.left = 20;
@@ -116,8 +116,8 @@ export class CharacterConfig {
     }
 
     /**
-    * Initializes character image groups.
-    */
+     * Initializes character image groups.
+     */
     initImages() {
         this.initMovementImages();
         this.initEmotionImages();
@@ -126,8 +126,8 @@ export class CharacterConfig {
     }
 
     /**
-    * Initializes character movement-related image sets.
-    */
+     * Initializes character movement-related image sets.
+     */
     initMovementImages() {
         this.char.idleWalkSheet = this.images.idleWalkSheet ?? null;
         this.char.jumpSheet = this.images.jumpSheet ?? null;
@@ -136,8 +136,8 @@ export class CharacterConfig {
     }
 
     /**
-    * Initializes character emotion-related image sets.
-    */
+     * Initializes character emotion-related image sets.
+     */
     initEmotionImages() {
         this.char.hurtDeadSheet = this.images.hurtDeadSheet ?? null;
         this.char.kneelCryStandUpDeterminedSheet = this.images.kneelCryStandUpDeterminedSheet ?? null;
@@ -149,8 +149,8 @@ export class CharacterConfig {
     }
 
     /**
-    * Initializes character action-related image sets.
-    */
+     * Initializes character action-related image sets.
+     */
     initActionImages() {
         this.char.attackStaffSheet = this.images.attackStaffSheet ?? null;
         this.char.attackSwordSheet = this.images.attackSwordSheet ?? null;
@@ -164,8 +164,8 @@ export class CharacterConfig {
     }
 
     /**
-    * Initializes character special interaction and event-related image sets.
-    */
+     * Initializes character special interaction and event-related image sets.
+     */
     initSpecialImages() {
         this.char.caressSheet = this.images.caressSheet ?? null;
         this.char.sitDownAndPlayGuitarSheet = this.images.sitDownAndPlayGuitarSheet ?? null;
@@ -175,8 +175,8 @@ export class CharacterConfig {
     }
 
     /**
-    * Initializes character state groups.
-    */
+     * Initializes character state groups.
+     */
     initStates() {
         this.initBasicStates();
         this.initMovementStates();
@@ -186,8 +186,8 @@ export class CharacterConfig {
     }
 
     /**
-    * Initializes the character's basic state properties.
-    */
+     * Initializes the character's basic state properties.
+     */
     initBasicStates() {
         this.char.isFlipped = false;
         this.char.isMoving = false;
@@ -195,8 +195,8 @@ export class CharacterConfig {
     }
 
     /**
-    * Initializes the character's movement state flags.
-    */
+     * Initializes the character's movement state flags.
+     */
     initMovementStates() {
         this.char.isMovingLeft = false;
         this.char.isMovingRight = false;
@@ -210,8 +210,8 @@ export class CharacterConfig {
     }
 
     /**
-    * Initializes the character's action state flags.
-    */
+     * Initializes the character's action state flags.
+     */
     initActionStates() {
         this.char.isAttack = false;
         this.char.isStandUp = false;
@@ -226,8 +226,8 @@ export class CharacterConfig {
     }
 
     /**
-    * Initializes the character's emotion state flags.
-    */
+     * Initializes the character's emotion state flags.
+     */
     initEmotionStates() {
         this.char.isMeditation = false;
         this.char.isKneelAndCry = false;
@@ -240,8 +240,8 @@ export class CharacterConfig {
     }
 
     /**
-    * Initializes the character's interaction state flags.
-    */
+     * Initializes the character's interaction state flags.
+     */
     initInteractionStates() {
         this.char.isCaress = false;
         this.char.isSitDownAndPlayGuitar = false;
@@ -251,8 +251,8 @@ export class CharacterConfig {
     }
 
     /**
-    * Initializes combat configuration.
-    */
+     * Initializes combat configuration.
+     */
     initCombatConfig() {
         this.char.attackHitbox = this.char.isHaveSword
             ? { top: 200, left: 200, right: 8, bottom: 65, active: false }

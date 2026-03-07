@@ -1,10 +1,10 @@
 /**
-* Represents a drawable object with position and rendering data.
-*/
+ * Represents a drawable object with position and rendering data.
+ */
 export class DrawableObject {
     /**
-    * Creates a new drawable object with default properties.
-    */
+     * Creates a new drawable object with default properties.
+     */
     constructor() {
         this.x = 0;
         this.y = 0;
@@ -15,9 +15,9 @@ export class DrawableObject {
     }
 
     /**
-    * Loads an image and assigns it to the object.
-    * @param {string} path Image source path.
-    */
+     * Loads an image and assigns it to the object.
+     * @param {string} path Image source path.
+     */
     loadImage(path) {
         const img = new Image();
         img.src = path;
@@ -26,11 +26,11 @@ export class DrawableObject {
     }
 
     /**
-    * Applies a specific animation frame from a sprite sheet.
-    * @param {Object} spriteSheet Sprite sheet configuration.
-    * @param {string} animName Animation name.
-    * @returns {boolean}
-    */
+     * Applies a specific animation frame from a sprite sheet.
+     * @param {Object} spriteSheet Sprite sheet configuration.
+     * @param {string} animName Animation name.
+     * @returns {boolean}
+     */
     applySheetAnimFrame(spriteSheet, animName) {
         const { image, meta } = spriteSheet || {};
         if (!image || !meta) return false;
@@ -43,12 +43,12 @@ export class DrawableObject {
     }
 
     /**
-    * Sets frame source data from sprite sheet metadata.
-    * @param {HTMLImageElement} image Sprite sheet image.
-    * @param {Object} meta Sprite sheet metadata.
-    * @param {number} frame Frame index.
-    * @returns {boolean}
-    */
+     * Sets frame source data from sprite sheet metadata.
+     * @param {HTMLImageElement} image Sprite sheet image.
+     * @param {Object} meta Sprite sheet metadata.
+     * @param {number} frame Frame index.
+     * @returns {boolean}
+     */
     setFrameFromSheetMeta(image, meta, frame) {
         if (!meta || !meta.columns || !meta.frameWidth || !meta.frameHeight) return false;
         const col = frame % meta.columns;

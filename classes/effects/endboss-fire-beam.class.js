@@ -5,10 +5,10 @@ import { MovableObject } from '../systems/movable-object.class.js'
  */
 export class EndbossFireBeam extends MovableObject {
     /**
-    * Creates a new instance.
-    * @param {*} entityImages Image resources.
-    * @param {*} allAudios Audio resources.
-    */
+     * Creates a new instance.
+     * @param {*} entityImages Image resources.
+     * @param {*} allAudios Audio resources.
+     */
     constructor(entityImages, allAudios) {
         super();
         this.entityImages = entityImages;
@@ -18,8 +18,8 @@ export class EndbossFireBeam extends MovableObject {
     }
 
     /**
-    * Initializes base state.
-    */
+     * Initializes base state.
+     */
     initBaseState() {
         this.owner = null;
         this.active = false;
@@ -31,8 +31,8 @@ export class EndbossFireBeam extends MovableObject {
     }
 
     /**
-    * Initializes animation state.
-    */
+     * Initializes animation state.
+     */
     initAnimationState() {
         this.frameIndex = 0;
         this.lastFrameTime = 0;
@@ -40,16 +40,16 @@ export class EndbossFireBeam extends MovableObject {
     }
 
     /**
-    * Sets the owner of the fire beam.
-    * @param {*} endboss Endboss reference.
-    */
+     * Sets the owner of the fire beam.
+     * @param {*} endboss Endboss reference.
+     */
     setOwner(endboss) {
         this.owner = endboss;
     }
 
     /**
-    * Updates position and orientation based on the owner.
-    */
+     * Updates position and orientation based on the owner.
+     */
     updateFromOwner() {
         if (!this.owner) return;
         const mouthX = this.owner.isFlipped
@@ -62,18 +62,18 @@ export class EndbossFireBeam extends MovableObject {
     }
 
     /**
-    * Updates the fire beam state.
-    * @param {number} timestamp Current frame timestamp.
-    */
+     * Updates the fire beam state.
+     * @param {number} timestamp Current frame timestamp.
+     */
     updateState(timestamp) {
         if (!this.active) return;
         this.updateAnimation(timestamp);
     }
 
     /**
-    * Updates the animation frame.
-    * @param {number} timestamp Current frame timestamp.
-    */
+     * Updates the animation frame.
+     * @param {number} timestamp Current frame timestamp.
+     */
     updateAnimation(timestamp) {
         if (!this.images || this.images.length === 0) return;
         if (!this.lastFrameTime) this.lastFrameTime = timestamp;
@@ -85,10 +85,10 @@ export class EndbossFireBeam extends MovableObject {
     }
 
     /**
-    * Checks whether the fire beam hits a target.
-    * @param {*} target Target object.
-    * @returns {boolean} True if hitting, otherwise false.
-    */
+     * Checks whether the fire beam hits a target.
+     * @param {*} target Target object.
+     * @returns {boolean} True if hitting, otherwise false.
+     */
     isHitting(target) {
         return this.isCollidingBefore(target, 0, 0);
     }

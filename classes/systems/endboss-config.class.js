@@ -3,12 +3,12 @@
  */
 export class EndbossConfig {
     /**
-    * Creates a new instance.
-    * @param {*} endboss Endboss reference.
-    * @param {Object} entityImages Image definitions.
-    * @param {Object} allAudios Audio resources.
-    * @param {*} world World reference.
-    */
+     * Creates a new instance.
+     * @param {*} endboss Endboss reference.
+     * @param {Object} entityImages Image definitions.
+     * @param {Object} allAudios Audio resources.
+     * @param {*} world World reference.
+     */
     constructor(endboss, entityImages, allAudios, world) {
         this.endboss = endboss;
         this.entityImages = entityImages;
@@ -18,8 +18,8 @@ export class EndbossConfig {
     }
 
     /**
-    * Initializes all configuration aspects.
-    */
+     * Initializes all configuration aspects.
+     */
     initAll() {
         this.initCoreValues();
         this.setSizeAndPosition();
@@ -29,8 +29,8 @@ export class EndbossConfig {
     }
 
     /**
-    * Initializes core values and subsystems.
-    */
+     * Initializes core values and subsystems.
+     */
     initCoreValues() {
         this.initEndbossMovement();
         this.initEndbossAudio();
@@ -43,8 +43,8 @@ export class EndbossConfig {
     }
 
     /**
-    * Initializes movement-related properties.
-    */
+     * Initializes movement-related properties.
+     */
     initEndbossMovement() {
         this.endboss.customGroundCheck = () => this.y < -35;
         this.endboss.speedX = 8;
@@ -54,8 +54,8 @@ export class EndbossConfig {
     }
 
     /**
-    * Initializes audio management for the endboss.
-    */
+     * Initializes audio management for the endboss.
+     */
     initEndbossAudio() {
         this.endboss.audioManager = this.endboss.world.audioManager;
         const audioManager = this.endboss.audioManager;
@@ -64,8 +64,8 @@ export class EndbossConfig {
     }
 
     /**
-    * Initializes animation-related properties.
-    */
+     * Initializes animation-related properties.
+     */
     initEndbossAnimation() {
         this.endboss.currentAnimation = 'idle';
         this.endboss.frameInterval = 1000 / 8;
@@ -77,8 +77,8 @@ export class EndbossConfig {
     }
 
     /**
-    * Initializes phase enumeration values.
-    */
+     * Initializes phase enumeration values.
+     */
     initEndbossPhaseEnums() {
         this.endboss.ENDBOSS_PHASE = {
             INTRO: 0,
@@ -91,8 +91,8 @@ export class EndbossConfig {
     }
 
     /**
-    * Initializes finisher enumeration values.
-    */
+     * Initializes finisher enumeration values.
+     */
     initEndbossFinisherEnums() {
         this.endboss.FINISHER = {
             TAKEOFF: 0,
@@ -106,8 +106,8 @@ export class EndbossConfig {
     }
 
     /**
-    * Initializes air state enumeration values.
-    */
+     * Initializes air state enumeration values.
+     */
     initEndbossAirStateEnums() {
         this.endboss.AIR_STATE = {
             MOVE: 0,
@@ -119,8 +119,8 @@ export class EndbossConfig {
     }
 
     /**
-    * Initializes phase-related state values.
-    */
+     * Initializes phase-related state values.
+     */
     initEndbossPhaseState() {
         this.endboss.phase = this.endboss.ENDBOSS_PHASE.INTRO;
         this.endboss.phaseStartTime = performance.now();
@@ -132,8 +132,8 @@ export class EndbossConfig {
     }
 
     /**
-    * Initializes air movement configuration.
-    */
+     * Initializes air movement configuration.
+     */
     initEndbossAirConfig() {
         this.endboss.airPoints = [
             23000,
@@ -148,8 +148,8 @@ export class EndbossConfig {
     }
 
     /**
-    * Sets size and initial position.
-    */
+     * Sets size and initial position.
+     */
     setSizeAndPosition() {
         this.endboss.x = 23000;
         this.endboss.y = 205;
@@ -158,8 +158,8 @@ export class EndbossConfig {
     }
 
     /**
-    * Sets collision offset values.
-    */
+     * Sets collision offset values.
+     */
     setOffset() {
         this.endboss.offset.top = 98;
         this.endboss.offset.left = 75;
@@ -168,8 +168,8 @@ export class EndbossConfig {
     }
 
     /**
-    * Initializes base image resources.
-    */
+     * Initializes base image resources.
+     */
     initBaseImages() {
         this.endboss.idleImages = this.entityImages.endboss?.idle ?? [];
         this.endboss.walkImages = this.entityImages.endboss?.walk ?? [];
@@ -183,8 +183,8 @@ export class EndbossConfig {
     }
 
     /**
-    * Initializes state-related configurations.
-    */
+     * Initializes state-related configurations.
+     */
     initStates() {
         this.initCoreFlags();
         this.initAirMovementState();
@@ -196,8 +196,8 @@ export class EndbossConfig {
     }
 
     /**
-    * Initializes core state flags.
-    */
+     * Initializes core state flags.
+     */
     initCoreFlags() {
         this.endboss.isHurt = false;
         this.endboss.isDead = false;
@@ -212,8 +212,8 @@ export class EndbossConfig {
     }
 
     /**
-    * Initializes air movement state values.
-    */
+     * Initializes air movement state values.
+     */
     initAirMovementState() {
         this.endboss.airMinX = 22650;
         this.endboss.airMaxX = 23350;
@@ -226,8 +226,8 @@ export class EndbossConfig {
     }
 
     /**
-    * Initializes air attack state values.
-    */
+     * Initializes air attack state values.
+     */
     initAirAttackState() {
         this.endboss.attackOnCooldown = false;
         this.endboss.hasFiredThisAttack = false;
@@ -236,8 +236,8 @@ export class EndbossConfig {
     }
 
     /**
-    * Initializes ground fireball state values.
-    */
+     * Initializes ground fireball state values.
+     */
     initGroundFireballState() {
         this.endboss.groundFireballShotsDone = 0;
         this.endboss.groundFireballShotsMax = 5;
@@ -248,8 +248,8 @@ export class EndbossConfig {
     }
 
     /**
-    * Initializes finisher state values.
-    */
+     * Initializes finisher state values.
+     */
     initFinisherState() {
         this.endboss.lowEnergyThreshold = 90;
         this.endboss.finisherStarted = false;
@@ -258,8 +258,8 @@ export class EndbossConfig {
     }
 
     /**
-    * Initializes finisher fire state values.
-    */
+     * Initializes finisher fire state values.
+     */
     initFinisherFireState() {
         this.endboss.finisherFireX = 23800;
         this.endboss.finisherFireShotsMax = 5;
@@ -269,8 +269,8 @@ export class EndbossConfig {
     }
 
     /**
-    * Initializes fire breath state values.
-    */
+     * Initializes fire breath state values.
+     */
     initFireBreathState() {
         this.endboss.isFireBreath = false;
         this.endboss.fireBreathBeam = null;
