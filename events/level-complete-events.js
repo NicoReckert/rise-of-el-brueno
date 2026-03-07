@@ -1,5 +1,9 @@
 export const levelCompleteEvents =
     [
+        /**
+         * Quest event that plays level completion audio and video,
+         * updates the completion character state, and shows the UI button box.
+         */
         {
             type: 'quest',
             action: (setup) => {

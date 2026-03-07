@@ -66,12 +66,8 @@ export class EndbossMovementController {
         const phases = this.endboss.ENDBOSS_PHASE;
         if (phase === phases.AIR_EGGS) {
             this.endboss.airPhaseCtrl.updateAirEggPhase(timestamp, setup);
-        } else if (phase === phases.STORM) {
-            // this.endboss.movementCtrl.updateStormPhase(timestamp, setup);
         } else if (phase === phases.GROUND) {
             this.endboss.groundAttackCtrl.updateGroundPhase(timestamp, setup);
-        } else if (phase === phases.ENRAGE) {
-            // this.endboss.movementCtrl.updateEnragePhase(timestamp, setup);
         }
     }
 
