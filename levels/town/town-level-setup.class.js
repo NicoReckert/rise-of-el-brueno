@@ -128,14 +128,12 @@ export class TownLevelSetup {
         this.backgroundMusic.volume = 0.6;
 
         this.speechBubbles = [
-            new SpeechBubble("Ein Bauernhof… völlig verwüstet.", this.world.character, 'speech', this.allAudios),
-            new SpeechBubble("Hier hat jemand gewütet…", this.world.character, 'speech', this.allAudios),
-            new SpeechBubble("Kratzspuren… Federn… und Blut.", this.world.character, 'speech', this.allAudios),
-            new SpeechBubble("Ich darf keine Zeit verlieren.", this.world.character, 'speech', this.allAudios),
-            new SpeechBubble("Hey Brünö bist du es?", this.characters.tadeo, 'speech', this.allAudios),
-            new SpeechBubble("Ja ich bin es Brünö. Wer bist du?", this.world.character, 'speech', this.allAudios),
-            new SpeechBubble("Ich bin Tadeo und Nayeli hat mich geschickt um dir zu helfen", this.characters.tadeo, 'speech', this.allAudios)
+            new SpeechBubble("Ein Bauernhof… völlig verwüstet.", this.world.character, 'speech', { audioManager: this.world.audioManager }),
+            new SpeechBubble("Hier hat jemand gewütet…", this.world.character, 'speech', { audioManager: this.world.audioManager }),
+            new SpeechBubble("Kratzspuren… Federn… und Blut.", this.world.character, 'speech', { audioManager: this.world.audioManager }),
+            new SpeechBubble("Ich darf keine Zeit verlieren.", this.world.character, 'speech', { audioManager: this.world.audioManager }),
         ];
+
         this.speechBubblesNayeli = [
             new SpeechBubble("Brünö...", this.environment.nayeliSpirit, 'speech'),
             new SpeechBubble("Du kannst jetzt nicht aufgeben.", this.environment.nayeliSpirit, 'speech'),
