@@ -1,22 +1,67 @@
+const imageCache = new Map();
+const jsonCache = new Map();
+
 /**
- * Loads an image asynchronously.
- * @param {string} src Image source path.
- * @param {Function} [onProgress] Optional callback triggered after load attempt.
- * @returns {Promise<HTMLImageElement|null>}
+ * Loads an image with optional progress callback, using cache.
+ * @param {string} src Image source URL.
+ * @param {Function} [onProgress] Optional progress callback.
+ * @returns {Promise<HTMLImageElement|null>} Loaded image.
  */
 function loadImage(src, onProgress) {
+    if (imageCache.has(src)) return imageCache.get(src);
+    const promise = createImagePromise(src, onProgress);
+    imageCache.set(src, promise);
+    return promise;
+}
+
+/**
+ * Creates a promise to load an image.
+ * @param {string} src Image source URL.
+ * @param {Function} [onProgress] Optional progress callback.
+ * @returns {Promise<HTMLImageElement|null>} Promise resolving with the loaded image.
+ */
+function createImagePromise(src, onProgress) {
     return new Promise((resolve) => {
         const img = new Image();
-        img.onload = () => {
-            if (onProgress) onProgress(src);
-            resolve(img);
-        };
-        img.onerror = () => {
-            if (onProgress) onProgress(src);
-            resolve(null);
-        };
+        setupImageHandlers(img, src, onProgress, resolve);
         img.src = src;
     });
+}
+
+/**
+ * Sets up load and error handlers for an image.
+ * @param {HTMLImageElement} img Image element.
+ * @param {string} src Image source URL.
+ * @param {Function} [onProgress] Optional progress callback.
+ * @param {Function} resolve Promise resolve function.
+ */
+function setupImageHandlers(img, src, onProgress, resolve) {
+    img.onload = () => handleImageLoad(src, onProgress, resolve, img);
+    img.onerror = () => handleImageError(src, onProgress, resolve);
+}
+
+/**
+ * Handles successful image load.
+ * @param {string} src Image source URL.
+ * @param {Function} [onProgress] Optional progress callback.
+ * @param {Function} resolve Promise resolve function.
+ * @param {HTMLImageElement} img Loaded image element.
+ */
+function handleImageLoad(src, onProgress, resolve, img) {
+    if (onProgress) onProgress(src);
+    resolve(img);
+}
+
+/**
+ * Handles image load errors by removing from cache and resolving null.
+ * @param {string} src Image source URL.
+ * @param {Function} [onProgress] Optional progress callback.
+ * @param {Function} resolve Promise resolve function.
+ */
+function handleImageError(src, onProgress, resolve) {
+    if (onProgress) onProgress(src);
+    imageCache.delete(src);
+    resolve(null);
 }
 
 /**
@@ -47,16 +92,56 @@ async function processManifestNode(node, onProgress) {
  * Processes an array node of image sources.
  * @param {Array<string>} list Image source list.
  * @param {Function} [onProgress] Optional progress callback.
- * @returns {Promise<Array<HTMLImageElement>>}
+ * @returns {Promise<Array<HTMLImageElement>>} Loaded images.
  */
 async function processArrayNode(list, onProgress) {
-    const results = [];
-    for (const src of list) {
-        const img = await loadImage(src, onProgress);
-        if (img) results.push(img);
-        await new Promise(r => requestIdleCallback(r, { timeout: 16 }));
+    const concurrency = 4;
+    const state = { list, onProgress, results: new Array(list.length), nextIndex: 0, };
+    const workers = createWorkers(
+        Math.min(concurrency, list.length),
+        () => workerLoop(state)
+    );
+    await Promise.all(workers);
+    return state.results.filter(Boolean);
+}
+
+/**
+ * Worker loop that loads images from the list.
+ * @param {{list:Array<string>, onProgress:Function, results:Array, nextIndex:number}} state Worker state object.
+ */
+async function workerLoop(state) {
+    while (true) {
+        const currentIndex = getNextIndex(state);
+        if (currentIndex === null) break;
+        try {
+            state.results[currentIndex] = await loadImage(
+                state.list[currentIndex],
+                state.onProgress
+            );
+        } catch {
+            state.results[currentIndex] = null;
+        }
     }
-    return results;
+}
+
+/**
+ * Returns the next index to process from the state.
+ * @param {{list:Array, nextIndex:number}} state Worker state object.
+ * @returns {number|null} Next index or null if finished.
+ */
+function getNextIndex(state) {
+    if (state.nextIndex >= state.list.length) return null;
+    return state.nextIndex++;
+}
+
+/**
+ * Creates multiple worker promises.
+ * @param {number} count Number of workers.
+ * @param {Function} createWorker Function that returns a worker promise.
+ * @returns {Array<Promise>} Array of worker promises.
+ */
+function createWorkers(count, createWorker) {
+    return Array.from({ length: count }, () => createWorker());
 }
 
 /**
@@ -110,18 +195,52 @@ async function loadSequenceEntry(entry, onProgress) {
 }
 
 /**
- * Processes an object node within a manifest.
- * @param {Object} obj Manifest object node.
+ * Processes an object node of image sources or nested nodes.
+ * @param {Object} obj Object with values to process.
  * @param {Function} [onProgress] Optional progress callback.
- * @returns {Promise<Object>}
+ * @returns {Promise<Object>} Processed results object.
  */
 async function processObjectNode(obj, onProgress) {
+    const entries = Object.entries(obj);
+    const settled = await processEntries(entries, onProgress);
+    return buildResultFromSettled(settled);
+}
+
+/**
+ * Processes multiple object entries concurrently.
+ * @param {Array<[string, *]>} entries Key-value pairs to process.
+ * @param {Function} [onProgress] Optional progress callback.
+ * @returns {Promise<Array<PromiseSettledResult>>} Settled results.
+ */
+async function processEntries(entries, onProgress) {
+    return Promise.allSettled(
+        entries.map(([key, value]) => processEntry(key, value, onProgress))
+    );
+}
+
+/**
+ * Processes a single object entry.
+ * @param {string} key Entry key.
+ * @param {*} value Entry value.
+ * @param {Function} [onProgress] Optional progress callback.
+ * @returns {Promise<[string, *]>} Key and processed value.
+ */
+async function processEntry(key, value, onProgress) {
+    const processed = await processManifestNode(value, onProgress);
+    return [key, processed];
+}
+
+/**
+ * Builds a result object from settled promise entries.
+ * @param {Array<PromiseSettledResult>} settled Settled promise results.
+ * @returns {Object} Processed results object.
+ */
+function buildResultFromSettled(settled) {
     const result = {};
-    for (const [key, value] of Object.entries(obj)) {
-        const processed = await processManifestNode(value, onProgress);
-        if (processed !== null && processed !== undefined) {
-            result[key] = processed;
-        }
+    for (const entry of settled) {
+        if (entry.status !== "fulfilled") continue;
+        const [key, processed] = entry.value;
+        if (processed != null) result[key] = processed;
     }
     return result;
 }
@@ -154,18 +273,42 @@ function isSheetSequenceNode(node) {
 }
 
 /**
- * Loads and parses a JSON resource.
- * @param {string} src JSON source path.
- * @returns {Promise<Object|null>}
+ * Loads a JSON file, caching the result.
+ * @param {string} src JSON file source URL.
+ * @returns {Promise<*>} Parsed JSON data.
  */
 async function loadJSON(src) {
+    if (jsonCache.has(src)) return jsonCache.get(src);
+
+    const promise = fetchJSON(src);
+    jsonCache.set(src, promise);
+    return promise;
+}
+
+/**
+ * Fetches and parses a JSON file safely.
+ * @param {string} src JSON file source URL.
+ * @returns {Promise<*>} Parsed JSON data or failure.
+ */
+async function fetchJSON(src) {
     try {
         const res = await fetch(src);
-        if (!res.ok) return null;
-        return await parseJSONSafe(res);
+        if (!res.ok) return cacheFail(src);
+        const data = await parseJSONSafe(res);
+        return data || cacheFail(src);
     } catch {
-        return null;
+        return cacheFail(src);
     }
+}
+
+/**
+ * Handles a failed JSON load by clearing the cache entry.
+ * @param {string} src JSON file source URL.
+ * @returns {null}
+ */
+function cacheFail(src) {
+    jsonCache.delete(src);
+    return null;
 }
 
 /**

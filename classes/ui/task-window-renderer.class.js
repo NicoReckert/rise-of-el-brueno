@@ -2,6 +2,7 @@
  * Renderer responsible for drawing a task window.
  */
 export class TaskWindowRenderer {
+
     /**
      * Draws the task window and its tasks.
      * @param {Object} taskWindow TaskWindow instance.
