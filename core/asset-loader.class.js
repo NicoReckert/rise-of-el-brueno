@@ -18,9 +18,8 @@ import { smartMerge } from "../utils/asset-merge.util.js";
  * Handles loading and management of game assets.
  */
 export class AssetLoader {
-    // FIXME: JSDoc stimmt nicht mehr
     /**
-     * Creates a new instance and initializes asset state.
+     * Initializes a new media cache manager with separate caches for images, audio, and video.
      */
     constructor() {
         this.characterImages = {};
@@ -72,17 +71,12 @@ export class AssetLoader {
         });
     }
 
-    // FIXME: JSDoc stimmt nicht mehr
     /**
-     * Preloads intro assets.
-     * @returns {Promise<void>}
+     * Preloads intro audio assets from the manifest.
      */
     async preloadIntroAssets() {
-        // await initScriptVisuals();
         const introAudios = await preloadManifestAudio(introAudioManifest);
         this.introAudios = introAudios;
-        //TODO
-        // initScriptAudioIntro(introAudios);
     }
 
     /**
@@ -161,24 +155,15 @@ export class AssetLoader {
         ]);
     }
 
-    // FIXME: JSDoc stimmt nicht mehr
     /**
-     * Applies results of immediate asset loading.
-     * @param {Array<PromiseSettledResult>} results Settled load results.
+     * Applies immediately loaded assets to the caches.
+     * @param {Array<PromiseSettledResult>} results Array of settled promises for characters, entities, and farm audio.
      */
     applyImmediateResults([charsRes, entitiesRes, farmAudioRes]) {
         const chars = this.getSettledValue(charsRes, {});
         const entities = this.getSettledValue(entitiesRes, {});
         const farmAudios = this.getSettledValue(farmAudioRes, {});
-        if (farmAudioRes.status === 'rejected') {
-            console.warn(
-                '[AssetLoader] farmAudioManifestImmediate failed:',
-                farmAudioRes.reason
-            );
-        }
         this.immediateAudios = farmAudios;
-        //TODO
-        // initScriptAudio(farmAudios);
         Object.assign(this.characterImages, chars);
         smartMerge(this.entityImages, entities);
     }
@@ -267,63 +252,78 @@ export class AssetLoader {
         this.bar.style.width = `${this.progressValue}%`;
     }
 
-    // FIXME: JSDoc stimmt nicht mehr
     /**
-     * Loads deferred asset manifests.
-     * @returns {Promise<Object>}
+     * Loads all deferred image, audio, and video manifests using a unified loader.
+     * Updates deferred caches and returns loaded assets.
+     * @returns {Promise<{charDeferred: Object, entityDeferred: Object, deferredAudios: Object, deferredVideos: Object}>}
      */
     async loadDeferredManifests() {
-        const [charRes, entityRes, audioRes, videoRes] = await Promise.allSettled([
-            preloadManifestImages(characterManifestDeferred),
-            preloadManifestImages(farmEntityManifestDeferred),
-            preloadManifestAudio(farmAudioManifestDeferred),
-            preloadManifestVideos(farmVideoManifestDeferred)
+        const results = await this.loadAllDeferred([
+            { fn: () => preloadManifestImages(characterManifestDeferred), defaultValue: {} },
+            { fn: () => preloadManifestImages(farmEntityManifestDeferred), defaultValue: {} },
+            { fn: () => preloadManifestAudio(farmAudioManifestDeferred), defaultValue: {} },
+            { fn: () => preloadManifestVideos(farmVideoManifestDeferred), defaultValue: {} }
         ]);
-        if (audioRes.status === 'rejected') {
-            console.warn('[loadDeferredAssets] farmAudioManifestDeferred failed:', audioRes.reason);
-        }
-        if (videoRes.status === 'rejected') {
-            console.warn('[loadDeferredAssets] farmVideoManifestDeferred failed:', videoRes.reason);
-        }
-        const charDeferred = this.getSettledValue(charRes, {});
-        const entityDeferred = this.getSettledValue(entityRes, {});
-        const deferredAudios = this.getSettledValue(audioRes, {});
-        const deferredVideos = this.getSettledValue(videoRes, {});
+        const [charDeferred, entityDeferred, deferredAudios, deferredVideos] = results;
         this.deferredAudios = deferredAudios;
         this.deferredVideos = deferredVideos;
-        return {
-            charDeferred,
-            entityDeferred,
-            deferredAudios,
-            deferredVideos
-        }
+        return { charDeferred, entityDeferred, deferredAudios, deferredVideos };
     }
 
-    // FIXME: JSDoc stimmt nicht mehr
     /**
-     * Loads lazy asset manifests after idle time.
-     * @returns {Promise<Object>}
+     * Loads multiple deferred tasks and returns their resolved values or defaults.
+     * @param {Array<{fn: Function, defaultValue: *}>} tasks Deferred tasks to load.
+     * @returns {Promise<Array<*>>} Resolved values for each task.
+     */
+    async loadAllDeferred(tasks) {
+        const settled = await Promise.allSettled(tasks.map(t => t.fn()));
+        return settled.map((res, i) => this.getSettledValue(res, tasks[i].defaultValue));
+    }
+
+    /**
+     * Loads lazy image and audio manifests after an optional wait, updating the lazy caches.
+     * @returns {Promise<{charLazy: Object, entityLazy: Object, lazyAudios: Object}>} Loaded lazy assets.
      */
     async loadLazyManifests() {
+        await this._waitBeforeLoad();
+        const [charRes, entityRes, audioRes] = await this._loadLazyManifests();
+        const { charLazy, entityLazy, lazyAudios } = this._processLazyResults(charRes, entityRes, audioRes);
+        this.lazyAudios = lazyAudios;
+        return { charLazy, entityLazy, lazyAudios };
+    }
+
+    /**
+     * Waits for a short idle period before starting lazy loading.
+     */
+    async _waitBeforeLoad() {
         await this.waitForIdle(1500);
-        const [charRes, entityRes, audioRes] = await Promise.allSettled([
+    }
+
+    /**
+     * Loads lazy image and audio manifests concurrently.
+     * @returns {Promise<Array<PromiseSettledResult>>} Settled results for characters, entities, and audio.
+     */
+    async _loadLazyManifests() {
+        return Promise.allSettled([
             preloadManifestImages(otherLevelCharacterManifestLazy),
             preloadManifestImages(otherLevelEntityManifestLazy),
             preloadManifestAudio(otherLevelAudioManifestLazy)
         ]);
-        if (audioRes.status === 'rejected') {
-            console.warn('[loadLazyAssets] otherLevelAudioManifestLazy failed:', audioRes.reason);
-        }
+    }
+
+    /**
+     * Processes settled lazy manifest results and returns the resolved values.
+     * @param {PromiseSettledResult} charRes Character manifest result.
+     * @param {PromiseSettledResult} entityRes Entity manifest result.
+     * @param {PromiseSettledResult} audioRes Audio manifest result.
+     * @returns {{charLazy: Object, entityLazy: Object, lazyAudios: Object}} Processed lazy assets.
+     */
+    _processLazyResults(charRes, entityRes, audioRes) {
         const charLazy = this.getSettledValue(charRes, {});
         const entityLazy = this.getSettledValue(entityRes, {});
         const lazyAudios = this.getSettledValue(audioRes, {});
-        this.lazyAudios = lazyAudios;
-        return {
-            charLazy,
-            entityLazy,
-            lazyAudios
-        };
-    };
+        return { charLazy, entityLazy, lazyAudios };
+    }
 
     /**
      * Waits until the browser is idle or a timeout is reached.
