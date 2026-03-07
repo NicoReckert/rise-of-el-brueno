@@ -125,7 +125,7 @@ export class World {
                 "1. Erreiche die Stadt",
             ];
         }
-        this.taskWindow = new TaskWindow(this.canvas, this.tasks);
+        this.taskWindow = new TaskWindow(this.canvas, this.entityImages, this.tasks);
         this.tKeyPressed = false;
     }
 
