@@ -23,7 +23,7 @@ export class TownLevelController {
         this.sandstorm = new SandstormEffect(this.canvas, this.setup.entityImages);
         this.sandstormNear = new SandstormEffect(this.canvas, this.setup.entityImages); // schneller, heller
         this.sandstormFar = new SandstormEffect(this.canvas, this.setup.entityImages); // langsamer, dunkler
-
+        this.dialogManager = this.setup.dialogManager;
 
         // this.sandstormFar.setAlpha(0.04);
         // this.sandstormFar.setSpeed(0.20);
@@ -101,7 +101,8 @@ export class TownLevelController {
         this.darkEnergyEffect.update(timestamp, this.renderCameraX, this.canvas.width);
         // immer pro frame:
         this.stormHazards.update(timestamp);
-
+        this.dialogManager.update(timestamp);
+        this.dialogManager.draw(this.ctx);
     }
 
     updateCamera() {

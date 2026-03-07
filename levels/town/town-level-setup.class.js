@@ -9,6 +9,8 @@ import { EndbossAttack } from '../../classes/effects/endboss-attack.class.js';
 import { ComicPanel } from '../../classes/ui/comic-panel.class.js';
 import { townEvents } from '../../events/town-level-events.js';
 import { createTownLevel } from './town-level.js';
+import { DialogManager } from '../../classes/ui/dialog-manager.class.js';
+import { bubbleStep, pauseStep, callbackStep } from '../../utils/dialog-step-helpers.js';
 
 export class TownLevelSetup {
     constructor(world) {
@@ -27,6 +29,7 @@ export class TownLevelSetup {
         this.bottleBar = new BottleBar(this.entityImages);
         this.throwableObjects = [];
         const endboss = new Endboss(this.entityImages, this.allAudios, this.world);
+        this.dialogManager = new DialogManager(this.world, this.world.keyboard)
         const soul = new AnimatedEntity(
             this.entityImages,
             'soul',
@@ -201,5 +204,75 @@ export class TownLevelSetup {
         this._tadeoPanicNearIdx = 0;
         this._tadeoAfraidIdx = 0;
         this.tadeoPanicUntil = 0;
+
+
+        this.dialogManager.addDialog([
+            bubbleStep({
+                bubble: this.speechBubbles[0],
+                duration: 4500
+            }),
+            bubbleStep({
+                bubble: this.speechBubbles[1],
+                duration: 4500
+            }),
+            bubbleStep({
+                bubble: this.speechBubbles[2],
+                duration: 4500
+            }),
+            bubbleStep({
+                bubble: this.speechBubbles[3],
+                duration: 4500
+            })
+        ]);
+
+        this.dialogManager.addDialog([
+            bubbleStep({
+                bubble: this.speechBubblesNayeli[0],
+                duration: 1000,
+                yOffset: -40
+            }),
+            bubbleStep({
+                bubble: this.speechBubblesNayeli[1],
+                duration: 2000,
+                yOffset: -40
+            }),
+            bubbleStep({
+                bubble: this.speechBubblesNayeli[2],
+                duration: 1500,
+                yOffset: -40
+            }),
+            pauseStep(1000),
+            callbackStep(() => {
+                this.sounds.nayelisSpiritSpeakSound_B.play();
+            }),
+            bubbleStep({
+                bubble: this.speechBubblesNayeli[3],
+                duration: 1500,
+                yOffset: -40
+            }),
+            bubbleStep({
+                bubble: this.speechBubblesNayeli[4],
+                duration: 2500,
+                yOffset: -40
+            })
+        ]);
+
+        this.dialogManager.addDialog([
+            bubbleStep({
+                bubble: this.speechBubblesTadeo[0],
+                duration: 1000,
+                yOffset: -40
+            }),
+            bubbleStep({
+                bubble: this.speechBubblesTadeo[1],
+                duration: 600,
+                yOffset: -40
+            }),
+            bubbleStep({
+                bubble: this.speechBubblesTadeo[2],
+                duration: 1500,
+                yOffset: -40
+            })
+        ]);
     }
 }

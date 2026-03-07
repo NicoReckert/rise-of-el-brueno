@@ -621,4 +621,43 @@ export class MovableObject extends DrawableObject {
 
         return 0;
     }
+
+    applyFirstFrameOfSource(anim, animName = this.currentAnimation) {
+        if (!anim) return;
+
+        if (Array.isArray(anim)) {
+            if (!anim.length) return;
+            this.img = anim[0];
+            this.frameSource = null;
+            return;
+        }
+
+        if (anim.type === 'sheet') {
+            this.applySheetFrameAt(anim, 0, anim.anim ?? animName);
+            return;
+        }
+
+        if (anim.type === 'sheetSequence') {
+            const firstSheet = anim.sheets?.[0];
+            if (!firstSheet) return;
+            this.applySheetFrameAt(firstSheet, 0, firstSheet.anim ?? animName);
+        }
+    }
+
+    applySheetFrameAt(sheet, localFrameIndex = 0, animName = this.currentAnimation) {
+        if (!sheet?.meta) return;
+
+        const def = this.getSheetDef(sheet.meta, animName);
+        const from = def.from ?? 0;
+        const to = def.to ?? (sheet.meta.frames - 1);
+        const count = to - from + 1;
+
+        const safeIndex = Math.max(0, Math.min(localFrameIndex, count - 1));
+        const frame = from + safeIndex;
+
+        const col = frame % sheet.meta.columns;
+        const row = Math.floor(frame / sheet.meta.columns);
+
+        this.setSheetFrameSource(sheet.image, sheet.meta, col, row);
+    }
 }

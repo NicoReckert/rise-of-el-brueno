@@ -109,8 +109,8 @@ export class CharacterConfig {
      * Sets the character's collision or interaction offset values.
      */
     setOffset() {
-        this.char.offset.top = 130;
-        this.char.offset.left = 20;
+        this.char.offset.top = 150;
+        this.char.offset.left = 28;
         this.char.offset.right = 40;
         this.char.offset.bottom = 15;
     }

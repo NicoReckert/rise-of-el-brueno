@@ -207,7 +207,7 @@ export class Character extends MovableObject { //FIX 412 Zeilen
         return {
             width: 158,
             height: 183,
-            offset: { top: 13, left: 33, right: 55, bottom: 15 }
+            offset: { top: 33, left: 33, right: 55, bottom: 15 }
         };
     }
 
@@ -234,7 +234,7 @@ export class Character extends MovableObject { //FIX 412 Zeilen
         return {
             width: 240,
             height: 280,
-            offset: { top: 110, left: 30, right: 115, bottom: 10 }
+            offset: { top: 130, left: 40, right: 140, bottom: 15 }
         };
     }
 
@@ -246,7 +246,7 @@ export class Character extends MovableObject { //FIX 412 Zeilen
         return {
             width: 270,
             height: 300,
-            offset: { top: 135, left: 35, right: 175, bottom: 15 }
+            offset: { top: 155, left: 35, right: 175, bottom: 15 }
         };
     }
 
@@ -303,7 +303,7 @@ export class Character extends MovableObject { //FIX 412 Zeilen
         return {
             width: 158,
             height: 183,
-            offset: { top: 20, left: 45, right: 40, bottom: 15 }
+            offset: { top: 40, left: 45, right: 40, bottom: 15 }
         };
     }
 

@@ -1,5 +1,5 @@
 export class HollowHint {
-    constructor(text, target, yOffset = 80, theme = "desert", sound = null) {
+    constructor(text, target, yOffset = 60, theme = "desert", sound = null) {
         this.text = text.toUpperCase();
         this.target = target;
         this.yOffset = yOffset;
@@ -139,8 +139,11 @@ export class HollowHint {
         const now = performance.now();
         const breathing = 0.97 + Math.sin(now / 1000) * 0.03;
         const shimmer = 0.5 + 0.5 * Math.sin(now / 600);
-        const x = this.target.x + this.target.width / 2 - cameraX;
-        const y = this.target.y - this.yOffset;
+        const anchor = this.getTargetAnchor();
+        if (!anchor) return;
+
+        const x = anchor.headX - cameraX;
+        const y = anchor.headY - this.yOffset;
         const { hue, highlight, mid, shadow, ornament, glow } = this.getThemeColors();
 
         ctx.save();
@@ -186,5 +189,16 @@ export class HollowHint {
         this.drawOrnament(ctx, 0, 26, textWidth, this.opacity, ornament);
 
         ctx.restore();
+    }
+
+    getTargetAnchor() {
+        if (!this.target) return null;
+
+        const hb = this.target.getHitboxRect?.();
+
+        return {
+            headX: hb ? hb.cx : (this.target.x + this.target.width * 0.5),
+            headY: hb ? hb.top : this.target.y
+        };
     }
 }

@@ -28,87 +28,9 @@ export const townEvents =
             objectB: 'houseDestroyed',
             toleranceB: { x: 200, width: 200 },
             action: (setup) => {
-                setup.speechBubbles[0].start(4500);
-                setup.world.townLevelController.eventManager.emitNow("bubbleReset_0");
+                setup.dialogManager.startDialog(0, setup.world.timestamp);
             }
         },
-
-        {
-            type: "time",
-            resetOn: "bubbleReset_0",
-            from: 0,
-            to: 5000,
-            manual: true,
-            once: false,
-            action: (setup) => {
-                setup.speechBubbles[0].render(
-                    setup.world.ctx,
-                    setup.world.townLevelController.renderCameraX,
-                    40);
-            },
-            onEnd: (setup) => {
-                setup.speechBubbles[1].start(4500);
-                setup.world.townLevelController.eventManager.emitNow("bubbleReset_1");
-            }
-        },
-
-
-        {
-            type: "time",
-            resetOn: "bubbleReset_1",
-            from: 0,
-            to: 5000,
-            manual: true,
-            once: false,
-            action: (setup) => {
-                setup.speechBubbles[1].render(
-                    setup.world.ctx,
-                    setup.world.townLevelController.renderCameraX,
-                    40);
-            },
-            onEnd: (setup) => {
-                setup.speechBubbles[2].start(4500);
-                setup.world.townLevelController.eventManager.emitNow("bubbleReset_2");
-            }
-
-        },
-
-        {
-            type: "time",
-            resetOn: "bubbleReset_2",
-            from: 0,
-            to: 5000,
-            manual: true,
-            once: false,
-            action: (setup) => {
-                setup.speechBubbles[2].render(
-                    setup.world.ctx,
-                    setup.world.townLevelController.renderCameraX,
-                    40);
-            },
-            onEnd: (setup) => {
-                setup.speechBubbles[3].start(4500);
-                setup.world.townLevelController.eventManager.emitNow("bubbleReset_3");
-            }
-        },
-
-        {
-            type: "time",
-            resetOn: "bubbleReset_3",
-            from: 0,
-            to: 5000,
-            manual: true,
-            once: false,
-            action: (setup) => {
-                setup.speechBubbles[3].render(
-                    setup.world.ctx,
-                    setup.world.townLevelController.renderCameraX,
-                    40);
-            },
-        },
-
-
-
 
         {
             type: 'quest',
@@ -348,7 +270,7 @@ export const townEvents =
                 setup.world.character.isMovingRight = false
                 setup.world.isKeysStopp = true;
                 setup.environment.nayeliSpirit.fadeIn(setup.world.timestamp, 2000);
-                setup.world.audioManager.fadeOutAudio(setup.sounds.stormHazardMusic, 1000);
+                setup.world.audioManager.fadeOutAudio(setup.sounds.finalStormHazardMusic, 1000);
                 setup.sounds.nayelisMusic.loop = true;
                 setup.world.audioManager.fadeInAudio(setup.sounds.nayelisMusic, 2000, 0.3);
                 setup.sounds.spiritAppearsSound.play();
@@ -376,111 +298,12 @@ export const townEvents =
             type: "quest",
             step: 8,
             action: (setup) => {
-                setup.speechBubblesNayeli[0].start(1000);
-                setup.world.townLevelController.eventManager.emitNow("bubbleNayeliReset_0");
-            }
-        },
-
-        {
-            type: "time",
-            resetOn: "bubbleNayeliReset_0",
-            from: 0,
-            to: 1500,
-            manual: true,
-            step: 8,
-            once: false,
-            action: (setup) => {
-                setup.speechBubblesNayeli[0].render(
-                    setup.world.ctx,
-                    setup.world.townLevelController.renderCameraX,
-                    -40);
-            },
-            onEnd: (setup) => {
-                setup.speechBubblesNayeli[1].start(2000);
-                setup.world.townLevelController.eventManager.emitNow("bubbleNayeliReset_1");
-            }
-        },
-
-        {
-            type: "time",
-            resetOn: "bubbleNayeliReset_1",
-            from: 0,
-            to: 2500,
-            manual: true,
-            step: 8,
-            once: false,
-            action: (setup) => {
-                setup.speechBubblesNayeli[1].render(
-                    setup.world.ctx,
-                    setup.world.townLevelController.renderCameraX,
-                    -40);
-            },
-            onEnd: (setup) => {
-                setup.speechBubblesNayeli[2].start(1500);
-                setup.world.townLevelController.eventManager.emitNow("bubbleNayeliReset_2");
-            }
-        },
-
-        {
-            type: "time",
-            resetOn: "bubbleNayeliReset_2",
-            from: 0,
-            to: 3000,
-            manual: true,
-            step: 8,
-            once: false,
-            action: (setup) => {
-                setup.speechBubblesNayeli[2].render(
-                    setup.world.ctx,
-                    setup.world.townLevelController.renderCameraX,
-                    -40);
-            },
-            onEnd: (setup) => {
-                setup.speechBubblesNayeli[3].start(1500);
-                setup.sounds.nayelisSpiritSpeakSound_B.play();
-                setup.world.townLevelController.eventManager.emitNow("bubbleNayeliReset_3");
-            }
-        },
-
-        {
-            type: "time",
-            resetOn: "bubbleNayeliReset_3",
-            from: 0,
-            to: 2000,
-            manual: true,
-            step: 8,
-            once: false,
-            action: (setup) => {
-                setup.speechBubblesNayeli[3].render(
-                    setup.world.ctx,
-                    setup.world.townLevelController.renderCameraX,
-                    -40);
-            },
-            onEnd: (setup) => {
-                setup.speechBubblesNayeli[4].start(2000);
-                setup.world.townLevelController.eventManager.emitNow("bubbleNayeliReset_4");
-            }
-        },
-
-        {
-            type: "time",
-            resetOn: "bubbleNayeliReset_4",
-            from: 0,
-            to: 2500,
-            manual: true,
-            step: 8,
-            once: false,
-            action: (setup) => {
-                setup.speechBubblesNayeli[4].render(
-                    setup.world.ctx,
-                    setup.world.townLevelController.renderCameraX,
-                    -40);
-            },
-            onEnd: (setup) => {
-                setup.environment.nayeliSpirit.updateAnimationState('blessing', 1000 / 6);
-                setup.sounds.spiritAppearsSound.play();
-                setup.environment.nayeliSpirit.fadeOut(setup.world.timestamp, 1600);
-                setup.world.townLevelController.questManager.advance(9);
+                setup.dialogManager.startDialog(1, setup.world.timestamp, () => {
+                    setup.environment.nayeliSpirit.updateAnimationState('blessing', 1000 / 6);
+                    setup.sounds.spiritAppearsSound.play();
+                    setup.environment.nayeliSpirit.fadeOut(setup.world.timestamp, 1600);
+                    setup.world.townLevelController.questManager.advance(9);
+                })
             }
         },
 
@@ -557,53 +380,11 @@ export const townEvents =
             }
         },
 
-        // {
-        //     type: "time",
-        //     from: 0,
-        //     to: 5000,
-        //     step: 3,
-        //     once: false,
-        //     action: (setup) => setup.speechBubbles[0].render(setup.world.ctx, setup.world.townLevelController.renderCameraX, 0)
-        // },
-
-        // {
-        //     type: "time",
-        //     delay: 5000,
-        //     step: 3,
-        //     action: (setup) => setup.speechBubbles[1].start(4500)
-        // },
-
-        // {
-        //     type: "time",
-        //     from: 5000,
-        //     to: 10000,
-        //     step: 3,
-        //     once: false,
-        //     action: (setup) => setup.speechBubbles[1].render(setup.world.ctx, setup.world.townLevelController.renderCameraX)
-        // },
-
-        // {
-        //     type: "time",
-        //     delay: 10000,
-        //     step: 3,
-        //     action: (setup) => setup.speechBubbles[2].start(4500)
-        // },
-
-        // {
-        //     type: "time",
-        //     from: 10000,
-        //     to: 15000,
-        //     step: 3,
-        //     once: false,
-        //     action: (setup) => setup.speechBubbles[2].render(setup.world.ctx, setup.world.townLevelController.renderCameraX, 0)
-        // }
-
         {
             type: "time",
             delay: 3000,
             step: 10,
             action: (setup) => {
-                // setup.sounds.tadeoHoldStoneMusic.currentTime = 35;
                 setup.sounds.tadeoHoldStoneMusic.loop = true;
                 setup.world.audioManager.fadeInAudio(setup.sounds.tadeoHoldStoneMusic, 2000, 0.6);
                 setup.world.audioManager.fadeOutAudio(setup.sounds.tadeosMusic, 1000);
@@ -613,78 +394,9 @@ export const townEvents =
                 setup.world.townLevelController.magicShield.start();
                 setup.world.audioManager.playOneShot("shieldLoadingSound", 0.7);
                 setup.speechBubblesTadeo[0].start(1000);
-                setup.world.townLevelController.eventManager.emitNow("bubbleTadeoReset_0");
+                setup.dialogManager.startDialog(2, setup.world.timestamp);
             }
         },
-
-        {
-            type: "time",
-            resetOn: "bubbleTadeoReset_0",
-            from: 0,
-            to: 1500,
-            manual: true,
-            step: 10,
-            once: false,
-            action: (setup) => {
-                setup.speechBubblesTadeo[0].render(
-                    setup.world.ctx,
-                    setup.world.townLevelController.renderCameraX,
-                    -40);
-            },
-            onEnd: (setup) => {
-                setup.speechBubblesTadeo[1].start(600);
-                setup.world.townLevelController.eventManager.emitNow("bubbleTadeoReset_1");
-            }
-        },
-
-        {
-            type: "time",
-            resetOn: "bubbleTadeoReset_1",
-            from: 0,
-            to: 1100,
-            manual: true,
-            step: 10,
-            once: false,
-            action: (setup) => {
-                setup.speechBubblesTadeo[1].render(
-                    setup.world.ctx,
-                    setup.world.townLevelController.renderCameraX,
-                    -40);
-            },
-            onEnd: (setup) => {
-                setup.speechBubblesTadeo[2].start(1500);
-                setup.world.townLevelController.eventManager.emitNow("bubbleTadeoReset_2");
-            }
-        },
-
-        {
-            type: "time",
-            resetOn: "bubbleTadeoReset_2",
-            from: 0,
-            to: 2000,
-            manual: true,
-            step: 10,
-            once: false,
-            action: (setup) => {
-                setup.speechBubblesTadeo[2].render(
-                    setup.world.ctx,
-                    setup.world.townLevelController.renderCameraX,
-                    -40);
-            },
-        },
-
-
-
-
-
-        // {
-        //     type: "time",
-        //     delay: 6000,
-        //     step: 7,
-        //     action: (setup) => {
-        //         setup.world.character.isCollapse = true;
-        //     }
-        // },
 
         {
             type: "time",
@@ -697,32 +409,10 @@ export const townEvents =
                 setup.world.character.isWalkInStorm = false;
                 setup.world.character.speedX = 5;
                 setup.characters.tadeo.updateAnimationState('walkWithStone');
-                // setup.characters.tadeo.speedX = 0.5;
                 setup.characters.tadeo.isFlipped = false;
                 setup.world.townLevelController.questManager.advance(11);
             }
         },
-
-        // {
-        //     type: "time",
-        //     delay: 3000,
-        //     step: 8,
-        //     once: false,
-        //     action: (setup) => {
-        //         if (setup.characters.tadeo.x <= 10275 /*&& setup.world.character.x >= setup.characters.tadeo.x - 170 && setup.world.character.x <= setup.characters.tadeo.x + 170*/) {
-        //             setup.characters.tadeo.isMovingRight = true;
-        //             setup.characters.tadeo.updateAnimationState('walkWithStone');
-        //             // setup.world.character.level_start_x = setup.characters.tadeo.x - 170;
-        //             // setup.world.level_end_x = setup.characters.tadeo.x + 170;
-        //         } else {
-        //             setup.characters.tadeo.isMovingRight = false;
-        //             setup.characters.tadeo.updateAnimationState('idleWithStone');
-        //             // setup.world.character.level_start_x = setup.characters.tadeo.x - 170;
-        //             // setup.world.level_end_x = setup.characters.tadeo.x + 170;
-        //             // setup.world.townLevelController.questManager.advance(9);
-        //         }
-        //     }
-        // },
 
         {
             type: 'collision',

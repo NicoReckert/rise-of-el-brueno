@@ -366,4 +366,16 @@ export class CharacterAnimationController {
         this.char.lastUpdateTime = null;
         this.char.lastFrameTime = null;
     }
+
+    /**
+     * Syncs the current animation visual state.
+     * @returns {void}
+     */
+    syncCurrentAnimationVisual() {
+        const anim = this.char.getAnimationImages(this.char.currentAnimation);
+        if (!anim) return;
+
+        this.char.applyFirstFrameOfSource(anim, this.char.currentAnimation);
+        this.char.handleDeferredSizeUpdate();
+    }
 }

@@ -36,11 +36,13 @@ export class CharacterAnimationTransitions {
         }
         if (anim === 'duck-exit') {
             this.char.duckState = null;
+            this.setTransition('idle', 2.5)
+            this.animCtrl.syncCurrentAnimationVisual();
             return true;
         }
-
         return false;
     }
+
     /**
      * Handles determined-related animation transitions.
      * @param {string} anim Animation state identifier.
