@@ -1,3 +1,6 @@
+/**
+ * Manages timers and scaled time updates.
+ */
 export class TimerManager {
     /**
      * Creates a new time manager instance.
