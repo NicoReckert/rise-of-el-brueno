@@ -1,5 +1,11 @@
 import { HollowHint } from "../../classes/ui/hollow-hint.class.js";
 
+/**
+ * Creates the farm hint instances.
+ * @param {Object} character Main character instance.
+ * @param {Object} characters Collection of character instances.
+ * @returns {Array<Object>} List of hint objects.
+ */
 export function createFarmHints(character, characters) {
   return [
     new HollowHint("Betreten", character, 80, 'desert'),
