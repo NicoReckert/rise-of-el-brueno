@@ -19,7 +19,7 @@ import { smartMerge } from "../utils/asset-merge.util.js";
  */
 export class AssetLoader {
     /**
-     * Initializes a new media cache manager with separate caches for images, audio, and video.
+     * Creates a new asset loader instance and initializes asset state containers.
      */
     constructor() {
         this.characterImages = {};

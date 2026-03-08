@@ -149,9 +149,6 @@ canvas {
   height: 45px;
 }
 
-
-
-
 .bottom-button-box {
   display: flex;
   justify-content: center;
@@ -160,6 +157,21 @@ canvas {
   /* padding: 3px 0; */
 }
 
+.bottom-under-button-box {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  gap: 3px;
+}
+
+#jump-button {
+  margin-right: -32px;
+}
+
+#protect-button {
+  margin-right: -72px;
+}
 
 .move-button {
   display: flex;

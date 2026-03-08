@@ -86,6 +86,17 @@ export class Keyboard {
         document.getElementById('attack-button').addEventListener('touchend', () => {
             this.A = false;
         });
-
+        document.getElementById('protect-button').addEventListener('touchstart', () => {
+            this.S = true;
+        });
+        document.getElementById('protect-button').addEventListener('touchend', () => {
+            this.S = false;
+        });
+        document.getElementById('duck-button').addEventListener('touchstart', () => {
+            this.DOWN = true;
+        });
+        document.getElementById('duck-button').addEventListener('touchend', () => {
+            this.DOWN = false;
+        });
     }
 }
