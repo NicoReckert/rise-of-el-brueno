@@ -944,7 +944,7 @@ export const townEvents =
                         element.explode();
                         char.combatCtrl.hit(setup.world.timestamp, dmg);
                         setup.statusBar.setPercentage(char.energy);
-                        setup.damageTexts.push(new DamageText(char.x + char.width / 2, char.y - 10, dmg));
+                        setup.damageTexts.push(new DamageText(char, dmg));
 
                     }
                 });
@@ -972,7 +972,7 @@ export const townEvents =
                     if (did) {
                         setup.statusBar.setPercentage(char.energy);
                         setup.damageTexts.push(
-                            new DamageText(char.x + char.width / 2, char.y - 10, char.isProtect ? 2 : 10)
+                            new DamageText(char, char.isProtect ? 2 : 10)
                         );
                     }
                 });
@@ -996,7 +996,7 @@ export const townEvents =
                             const dmg = char.isProtect ? 2 : 10;
                             char.combatCtrl.hit(setup.world.timestamp, dmg);
                             setup.statusBar.setPercentage(char.energy);
-                            setup.damageTexts.push(new DamageText(char.x + char.width / 2, char.y - 10, dmg));
+                            setup.damageTexts.push(new DamageText(char, dmg));
                             enemy.hasHitPlayerThisAttack = true;
                         }
                     }
@@ -1087,7 +1087,7 @@ export const townEvents =
                             const dmg = char.isProtect ? 2 : 10;
                             char.combatCtrl.hit(setup.world.timestamp, dmg);
                             setup.statusBar.setPercentage(char.energy);
-                            setup.damageTexts.push(new DamageText(char.x + char.width / 2, char.y - 10, dmg));
+                            setup.damageTexts.push(new DamageText(char, dmg));
                             enemy.hasHitPlayerThisAttack = true;
                         }
                     }
