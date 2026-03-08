@@ -95,6 +95,4 @@ export class FarmRenderer {
             this.ctx.restore();
         }
     }
-
-
 }

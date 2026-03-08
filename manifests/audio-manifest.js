@@ -6,13 +6,6 @@ export const introAudioManifest = {
 };
 
 export const farmAudioManifestImmediate = {
-    //Menü
-    // titleMusic: './assets/audio/title-music.opus',
-    // titleMusic2: './assets/audio/title-music2.opus',
-    // titleSound: './assets/audio/title-sound5.opus',
-    // welcomeButtonHoverSound: './assets/audio/ui-tuping-391160.opus',
-
-    //Menü Characters
     nayelisMusic: './assets/audio/nayelis-music.opus',
     sollitasMusic: './assets/audio/sollitas-music.opus',
     tadeosMusic: './assets/audio/tadeo-music.opus',
@@ -27,8 +20,6 @@ export const farmAudioManifestImmediate = {
     nayeliTextSpeechSound: './assets/audio/nayeli-character-text-speech.opus',
     tadeoTextSpeechSound: './assets/audio/tadeo-character-text-speech.opus',
     storyTextSpeechSound: './assets/audio/story-text-speech.opus',
-
-    //Game
     farmMusic: './assets/audio/farm-music.opus',
     footStepSound: './assets/audio/footstep-sound.opus',
     jumpSound: './assets/audio/jump-sound2.opus',
@@ -46,8 +37,6 @@ export const farmAudioManifestDeferred = {
     doorClosingSound: './assets/audio/door-closing.opus',
     chickSound: './assets/audio/chick-sound2.opus',
     chickenSound: './assets/audio/chicken-sound.opus',
-
-
     nightMusic: './assets/audio/night-music.opus',
     drohneSound: './assets/audio/drohne-sound.opus',
     drohneControlledSound: './assets/audio/drohne-sound2.opus',
@@ -112,5 +101,5 @@ export const otherLevelAudioManifestLazy = {
     vo_tadeo_help_02: './assets/audio/tadeo_help_02.mp3',
     vo_tadeo_help_03: './assets/audio/tadeo_help_03.mp3',
     stormHazardMusic: './assets/audio/storm-hazard-music.mp3',
-    finalStormHazardMusic: './assets/audio/final-storm-hazard-music.mp3',
+    finalStormHazardMusic: './assets/audio/final-storm-hazard-music.mp3'
 }
