@@ -1,31 +1,74 @@
+/**
+ * Creates the farm sound map.
+ * @param {Object} allAudios Audio sources.
+ * @returns {Object} Farm sound map.
+ */
 export function createFarmSounds(allAudios) {
-    const sounds = {
+    return {
+        ...createFarmMusicSounds(allAudios),
+        ...createFarmAmbientSounds(allAudios),
+        ...createFarmActionSounds(allAudios),
+        ...createFarmAnimalSounds(allAudios)
+    };
+}
+
+/**
+ * Creates the farm music sound map.
+ * @param {Object} allAudios Audio sources.
+ * @returns {Object} Music sound map.
+ */
+function createFarmMusicSounds(allAudios) {
+    return {
         farmMusic: allAudios.farmMusic,
         nightMusic: allAudios.nightMusic,
-        drohneSound: allAudios.drohneSound,
-        drohneControlledSound: allAudios.drohneControlledSound,
+        sadMusic: allAudios.sadMusic,
+        happyTogetherMusic: allAudios.happyTogetherMusic,
+        determinedMusic: allAudios.determinedMusic,
+        sadSoulMusic: allAudios.sadSoulMusic
+    };
+}
+
+/**
+ * Creates the farm ambient sound map.
+ * @param {Object} allAudios Audio sources.
+ * @returns {Object} Ambient sound map.
+ */
+function createFarmAmbientSounds(allAudios) {
+    return {
+        droneSound: allAudios.droneSound,
+        droneControlledSound: allAudios.droneControlledSound,
         eveningSound: allAudios.eveningSound,
         yawningSound: allAudios.yawningSound,
         snoringSound: allAudios.snoringSound,
         earthquakeSound: allAudios.earthquakeSound,
-        sadMusic: allAudios.sadMusic,
+        windSound: allAudios.windSound
+    };
+}
+
+/**
+ * Creates the farm action sound map.
+ * @param {Object} allAudios Audio sources.
+ * @returns {Object} Action sound map.
+ */
+function createFarmActionSounds(allAudios) {
+    return {
         newTaskSound: allAudios.newTaskSound,
         taskCompletedSound: allAudios.taskCompletedSound,
         taskCompletedSound2: allAudios.taskCompletedSound.cloneNode(),
-        cowSound: allAudios.cowSound,
-        cowSound2: allAudios.cowSound2,
         doorOpeningSound: allAudios.doorOpeningSound,
         doorClosingSound: allAudios.doorClosingSound,
-        happyTogetherMusic: allAudios.happyTogetherMusic,
-        determinedMusic: allAudios.determinedMusic,
-        windSound: allAudios.windSound,
-        sadSoulMusic: allAudios.sadSoulMusic,
         attackSound: allAudios.attackSound
     };
+}
 
-    // 🎚️ Initiale Sound-Konfiguration gehört ins Setup
-    sounds.farmMusic.loop = true;
-    sounds.farmMusic.volume = 0.6;
-
-    return sounds;
+/**
+ * Creates the farm animal sound map.
+ * @param {Object} allAudios Audio sources.
+ * @returns {Object} Animal sound map.
+ */
+function createFarmAnimalSounds(allAudios) {
+    return {
+        cowSound: allAudios.cowSound,
+        cowSound2: allAudios.cowSound2
+    };
 }

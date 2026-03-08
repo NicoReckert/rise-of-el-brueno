@@ -169,8 +169,8 @@ export const farmEvents_part3 = [
         step: 15,
         action: (setup) => {
             setup.sounds.farmMusic.pause();
-            setup.sounds.drohneSound.loop = true;
-            setup.sounds.drohneSound.play();
+            setup.sounds.droneSound.loop = true;
+            setup.sounds.droneSound.play();
             setup.sounds.nightMusic.loop = true;
             setup.sounds.nightMusic.volume = 0.6;
             setup.sounds.nightMusic.play();
@@ -186,9 +186,9 @@ export const farmEvents_part3 = [
         delay: 4000,
         step: 16,
         action: (setup) => {
-            setup.sounds.drohneSound.pause();
-            setup.sounds.drohneControlledSound.loop = true;
-            setup.sounds.drohneControlledSound.play();
+            setup.sounds.droneSound.pause();
+            setup.sounds.droneControlledSound.loop = true;
+            setup.sounds.droneControlledSound.play();
             setup.characters.drone.updateAnimationState('controlled', 1000 / 7);
             setup.cutsceneActors.chickenTranced.updateAnimationState('walk', 1000 / 7);
             setup.cutsceneActors.cowTranced.updateAnimationState('walk', 1000 / 5);
@@ -223,8 +223,8 @@ export const farmEvents_part3 = [
         type: 'quest',
         step: 17,
         action: (setup) => {
-            setup.sounds.drohneControlledSound.pause();
-            setup.sounds.drohneSound.play();
+            setup.sounds.droneControlledSound.pause();
+            setup.sounds.droneSound.play();
             setup.characters.drone.updateAnimationState('idle', 1000 / 7);
         }
     },
@@ -255,7 +255,7 @@ export const farmEvents_part3 = [
         action: (setup) => {
             if (setup.state.volumeLevel2 > setup.state.minVolumeLevel) {
                 setup.state.volumeLevel2 = Math.max(setup.state.volumeLevel2 - 0.002, setup.state.minVolumeLevel);
-                setup.sounds.drohneSound.volume = setup.state.volumeLevel2;
+                setup.sounds.droneSound.volume = setup.state.volumeLevel2;
                 setup.sounds.nightMusic.volume = setup.state.volumeLevel2;
                 setup.sounds.eveningSound.volume = setup.state.volumeLevel2;
             }
@@ -285,7 +285,7 @@ export const farmEvents_part3 = [
         step: 18,
         action: (setup) => {
             setup.sounds.eveningSound.pause();
-            setup.sounds.drohneSound.pause();
+            setup.sounds.droneSound.pause();
             setup.sounds.nightMusic.pause();
         }
     },

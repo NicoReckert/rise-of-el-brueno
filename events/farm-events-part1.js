@@ -15,6 +15,8 @@ export const farmEvents_part1 = [
             setup.world.camera_x = setup.world.character.x - 500;
             setup.world.level_end_x = 6409;
             setup.world.character.level_start_x = 440;
+            setup.sounds.farmMusic.loop = true;
+            setup.sounds.farmMusic.volume = 0.6;
             setup.sounds.farmMusic.play();
             setup.state.comeFromStable = false;
         }
