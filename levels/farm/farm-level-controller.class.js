@@ -77,7 +77,7 @@ export class FarmLevelController {
     }
 
     renderStatusBar() {
-        if (this.setup.state.isGamecharacterInHouse) {
+        if (this.setup.state.isGameCharacterInHouse) {
             return;
         }
         this.addToWorld(this.setup.statusBar);

@@ -8,7 +8,7 @@ import { CharacterAudioController } from '../systems/character-audio-controller.
 /**
  * Represents the playable character.
  */
-export class Character extends MovableObject { //FIX 412 Zeilen
+export class Character extends MovableObject {
     /**
      * Creates a new character instance.
      * @param {Object} characterImages Character image assets.
@@ -49,7 +49,7 @@ export class Character extends MovableObject { //FIX 412 Zeilen
             this.getDeterminedImages(state) ??
             this.getMusicImages(state) ??
             this.getCombatImages(state) ??
-            this.getSpecialImages(state) ??
+            (state === 'idle' ? this.idleWalkSheet : null) ??
             this.idleWalkSheet
         );
     }
@@ -150,18 +150,6 @@ export class Character extends MovableObject { //FIX 412 Zeilen
     }
 
     /**
-     * Returns special-case animation images for the given state.
-     * @param {string} state Animation state identifier.
-     * @returns {*|null} Animation images or null if not found.
-     */
-    getSpecialImages(state) {
-        switch (state) {
-            case 'idle': return this.idleWalkSheet;
-        }
-        return null;
-    }
-
-    /**
      * Applies deferred size update for the current animation.
      */
     handleDeferredSizeUpdate() {
@@ -212,17 +200,13 @@ export class Character extends MovableObject { //FIX 412 Zeilen
     }
 
     /**
-     * Returns size configuration for large animations.
-     * @param {string} anim Animation state identifier.
-     * @returns {Object|null} Size configuration or null if not applicable.
+     * Returns the large size configuration for a given animation.
+     * @param {string} anim Animation name.
+     * @returns {Object|null} Size configuration or null if not defined.
      */
     getLargeSizeConfig(anim) {
-        if (this.isLargeAnimationA(anim)) {
-            return this.getLargeASizeConfig();
-        }
-        if (this.isLargeAnimationB(anim)) {
-            return this.getLargeBSizeConfig();
-        }
+        if (anim === 'attack-staff') return this.getLargeASizeConfig();
+        if (anim === 'attack-sword') return this.getLargeBSizeConfig();
         return null;
     }
 
@@ -376,24 +360,6 @@ export class Character extends MovableObject { //FIX 412 Zeilen
      */
     isVoidlessAnimation(anim) {
         return this.VOIDLESS_ANIMS.has(anim);
-    }
-
-    /**
-     * Checks whether the animation is of large type A.
-     * @param {string} anim Animation state identifier.
-     * @returns {boolean} True if large type A animation, otherwise false.
-     */
-    isLargeAnimationA(anim) {
-        return ['attack-staff'].includes(anim);
-    }
-
-    /**
-     * Checks whether the animation is of large type B.
-     * @param {string} anim Animation state identifier.
-     * @returns {boolean} True if large type B animation, otherwise false.
-     */
-    isLargeAnimationB(anim) {
-        return ['attack-sword'].includes(anim);
     }
 
     /**
