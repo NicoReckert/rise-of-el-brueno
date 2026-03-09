@@ -2,29 +2,54 @@ import { AnimatedEntity } from '../../classes/entities/animated-entity.class.js'
 import { createNayelisHouseLevel } from './nayelis-house-level.js';
 import { nayelisHouseEvents } from '../../events/nayelis-house-level-events.js';
 
+/**
+ * Sets up the Nayeli's house level including characters, sounds, video, and state.
+ */
 export class NayelisHouseLevelSetup {
+    /**
+     * Creates a new house level setup instance.
+     * @param {Object} world World reference.
+     */
     constructor(world) {
         this.world = world;
-        this.entityImages = this.world.entityImages;
-        this.allAudios = this.world.allAudios;
-        this.allVideos = this.world.allVideos;
+        this.entityImages = world.entityImages;
+        this.allAudios = world.allAudios;
+        this.allVideos = world.allVideos;
+        this.initHouseData();
+        this.characters = this.createCharacters();
+        this.speechBubbles = {};
+        this.sounds = this.createSounds();
+        this.video = this.allVideos.nayelis_house_video || null;
+    }
+
+    /**
+     * Initializes house level data and state.
+     * @returns {void}
+     */
+    initHouseData() {
         this.nayelisHouseLevel = createNayelisHouseLevel();
         this.nayelisHouseEvents = nayelisHouseEvents;
-        this.isNotificationPlay = false;
         this.popupTexts = [];
-        this.characters = {
+    }
+
+    /**
+     * Creates the house level character instances.
+     * @returns {Object} Character map.
+     */
+    createCharacters() {
+        return {
             nayeli: new AnimatedEntity(this.entityImages, 'nayeli', 180, 180, 800, 485)
         };
-        this.speechBubbles = {
-            // bubbleStable1: new SpeechBubble("Den Hühnerstall verlassen? {F} drücken!", this.world.character, 'info'),
-            // bubbleStable2: new SpeechBubble("Yordi streicheln {F} drücken", 'canvas', 'speech')
-        };
-        this.sounds = {
-            notificationSound: this.allAudios.notificationSound,
+    }
+
+    /**
+     * Creates the house level sound references.
+     * @returns {Object} Sound map.
+     */
+    createSounds() {
+        return {
             nayelisMusic: this.allAudios.nayelisMusic,
             nayelisSpeakSound: this.allAudios.nayelisSpeakSound
         };
-
-        this.video = this.allVideos.nayelis_house_video || null;
     }
 }
