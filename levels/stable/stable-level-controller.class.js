@@ -1,35 +1,47 @@
 import { EventManager } from '../../classes/systems/event-manager.class.js';
 import { QuestManager } from '../../classes/systems/quest-manager.class.js';
 
+/**
+ * Controls stable level logic including events, quests, and rendering integration.
+ */
 export class StableLevelController {
+    /**
+     * Creates a new stable level controller instance.
+     * @param {Object} setup Level setup reference.
+     */
     constructor(setup) {
         this.setup = setup;
         this.world = setup.world;
         this.ctx = this.world.ctx;
         this.canvas = this.world.canvas;
-        this.addObject = this.world.renderer.addObject.bind(this.world.renderer);
-        this.addToWorld = this.world.renderer.addToWorld.bind(this.world.renderer);
+        this.bindRendererMethods();
         this.character = this.world.character;
         this.inputManager = this.world.inputManager;
-        this.keyboard = this.world.keyboard;
-        this.lastCowSoundTime = 0;
         this.eventManager = new EventManager(this.setup);
         this.questManager = new QuestManager(this.setup, this.eventManager, this.setup.stableEvents);
         this.eventManager.questManager = this.questManager;
-        this.init();
     }
 
-    init() {
-
+    /**
+     * Binds renderer helper methods from the world renderer.
+     * @returns {void}
+     */
+    bindRendererMethods() {
+        this.addObject = this.world.renderer.addObject.bind(this.world.renderer);
+        this.addToWorld = this.world.renderer.addToWorld.bind(this.world.renderer);
     }
 
+    /**
+     * Updates the stable level controller state and rendering.
+     * @param {number} timestamp Current timestamp.
+     * @returns {void}
+     */
     update(timestamp) {
         this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
         this.updateCamera();
         this.renderBackgrounds();
         this.renderStatusBar();
-        this.renderNPCsAndCharacter();
-        // this.handleSpeechBubble();
+        this.renderCharacterAndEntities();
         this.updateCharacter(timestamp);
         this.updateEntities(timestamp);
         this.handleHint();
@@ -38,11 +50,19 @@ export class StableLevelController {
         this.eventManager.debug = true;
     }
 
+    /**
+     * Updates the camera position for rendering.
+     * @returns {void}
+     */
     updateCamera() {
         this.camera_x = this.setup.world.camera_x;
         this.renderCameraX = Math.round(this.camera_x);
     }
 
+    /**
+     * Renders background elements for the stable level.
+     * @returns {void}
+     */
     renderBackgrounds() {
         this.ctx.save();
         this.ctx.translate(-this.renderCameraX, 0);
@@ -51,74 +71,65 @@ export class StableLevelController {
         this.ctx.restore();
     }
 
+    /**
+     * Renders the status bar UI element.
+     * @returns {void}
+     */
     renderStatusBar() {
         this.addToWorld(this.setup.statusBar);
     }
 
-    renderNPCsAndCharacter() {
+    /**
+     * Renders characters and entities for the stable level.
+     * @returns {void}
+     */
+    renderCharacterAndEntities() {
+        const step = this.setup.world.farmLevelController.questManager.step;
         this.ctx.save();
         this.ctx.translate(-this.renderCameraX, 0);
-        if (this.character.isCaress) {
-            this.addToWorld(this.character);
-            if (this.setup.world.farmLevelController.questManager.step < 8) {
-                this.addToWorld(this.setup.characters.juanito);
-                this.addToWorld(this.setup.characters.pollito);
-            }
-        } else {
-            if (this.setup.world.farmLevelController.questManager.step < 8) {
-                this.addToWorld(this.setup.characters.juanito);
-                this.addToWorld(this.setup.characters.pollito);
-            }
-            if (this.setup.world.farmLevelController.questManager.step >= 20) this.addToWorld(this.setup.environment.memoryLight);
-            this.addToWorld(this.character);
-        }
+        if (this.character.isCaress) this.renderCaressScene(step);
+        else this.renderNormalScene(step);
         this.ctx.restore();
     }
 
-    handleSpeechBubble() {
-        this.ctx.save();
-        this.ctx.translate(-this.renderCameraX, 0);
-        if (this.character.x > 280 && this.character.x < 430) {
-            if (!this.setup.speechBubbles.bubbleStable1.startTime) {
-                this.setup.speechBubbles.bubbleStable1.start();
-            }
-            this.setup.speechBubbles.bubbleStable1.update(performance.now());
-            this.setup.speechBubbles.bubbleStable1.draw(this.ctx);
-            if (!this.setup.isNotificationPlay) {
-                this.setup.sounds.notificationSound.currentTime = 0;
-                this.setup.sounds.notificationSound.play();
-                this.setup.isNotificationPlay = true;
-            }
-        } else {
-            this.setup.isNotificationPlay = false;
-            this.setup.speechBubbles.bubbleStable1.startTime = null;
-        }
-        if (this.character.isColliding(this.setup.characters.juanito, 0, 0)) {
-            this.ctx.save();
-            this.ctx.translate(-this.renderCameraX, 0);
-            // if (!this.setup.speechBubbles.bubbleStable2.startTime) {
-            //     this.setup.speechBubbles.bubbleStable2.start();
-            // }
-            // this.setup.speechBubbles.bubbleStable2.update(performance.now());
-            // this.setup.speechBubbles.bubbleStable2.draw(this.ctx, 0);
-        }
-        if (this.character.isColliding(this.setup.characters.pollito, 0, 0)) {
-            this.ctx.save();
-            this.ctx.translate(-this.renderCameraX, 0);
-            // if (!this.setup.speechBubbles.bubbleStable2.startTime) {
-            //     this.setup.speechBubbles.bubbleStable2.start();
-            // }
-            // this.setup.speechBubbles.bubbleStable2.update(performance.now());
-            // this.setup.speechBubbles.bubbleStable2.draw(this.ctx, 0);
-        }
-        this.ctx.restore();
+    /**
+     * Renders characters during the caress scene.
+     * @param {number} step Current quest step.
+     * @returns {void}
+     */
+    renderCaressScene(step) {
+        this.addToWorld(this.character);
+        if (step < 8) this.addToWorld(this.setup.characters.juanito);
+        if (step < 8) this.addToWorld(this.setup.characters.pollito);
     }
 
+    /**
+     * Renders the normal stable scene characters and entities.
+     * @param {number} step Current quest step.
+     * @returns {void}
+     */
+    renderNormalScene(step) {
+        if (step < 8) this.addToWorld(this.setup.characters.juanito);
+        if (step < 8) this.addToWorld(this.setup.characters.pollito);
+        if (step >= 20) this.addToWorld(this.setup.environment.memoryLight);
+        this.addToWorld(this.character);
+    }
+
+    /**
+     * Updates the main character state.
+     * @param {number} timestamp Current timestamp.
+     * @returns {void}
+     */
     updateCharacter(timestamp) {
         this.inputManager.processGameInput(this.world, timestamp);
         this.character.updateAll(timestamp);
     }
 
+    /**
+     * Updates character and environment entities.
+     * @param {number} timestamp Current timestamp.
+     * @returns {void}
+     */
     updateEntities(timestamp) {
         Object.values(this.setup.characters).forEach(element => {
             element.updateState(timestamp);
@@ -128,16 +139,21 @@ export class StableLevelController {
         });
     }
 
-
+    /**
+     * Renders and updates popup texts.
+     * @returns {void}
+     */
     handlePopup() {
         const now = performance.now();
         this.setup.popupTexts.forEach(p => p.draw(this.ctx, now));
         this.setup.popupTexts = this.setup.popupTexts.filter(p => p.active);
     }
 
+    /**
+     * Renders hint elements.
+     * @returns {void}
+     */
     handleHint() {
         this.setup.hints.forEach(hint => hint.draw(this.ctx, this.renderCameraX));
-
     }
-
 }
