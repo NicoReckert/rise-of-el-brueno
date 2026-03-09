@@ -60,10 +60,10 @@ export class StormHazard extends MovableObject {
         const canvasW = world.canvas?.width ?? 1280;
 
         const size = def.size;
-        const anim = def.getAnim(setup.entityImages);
-        const finalSpeedX = speedX ?? (def.laneSpeed ? def.laneSpeed(lane) : -10);
+        const anim = def.getAnim?.({ images: setup.entityImages }) ?? null;
+        const finalSpeedX = speedX ?? (def.laneSpeed ? def.laneSpeed({ lane }) : -10);
         const finalX = x ?? (camX + canvasW + (def.spawnOffsetX ?? 240));
-        const finalY = y ?? (def.laneY ? def.laneY(setup, lane, size) : (world.character?.y ?? 0));
+        const finalY = y ?? (def.laneY ? def.laneY({ setup, lane, size }) : (world.character?.y ?? 0));
 
         let lifeMs = def.timing?.lifeMs ?? 4000;
         if (typeof def.lifeFromTravel === 'function') {
@@ -156,7 +156,7 @@ export class StormHazard extends MovableObject {
         const knock = hit.knockback ?? 0;
         character.knockbackVelocityX = (this.speedX < 0 ? -1 : 1) * knock;
 
-        const impactAnim = hit.getImpactAnim?.(setup.entityImages);
+        const impactAnim = hit.getImpactAnim?.({ images: setup.entityImages }) ?? null;
         if (impactAnim) {
             const cx = (this.getRenderX?.() ?? this.x) + this.width * 0.5;
             const factorY = hit.impactOffsetFactorY ?? 0.5;

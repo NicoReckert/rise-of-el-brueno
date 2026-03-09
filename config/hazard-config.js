@@ -1,39 +1,54 @@
-// config/hazard-config.js
+/**
+ * @typedef {Object} HazardAnimParams
+ * @property {*} images Bild-Registry der Entities.
+ */
 
-// Zentrale Definitionen für alle Storm-Hazards
+/**
+ * @typedef {Object} HazardLaneYParams
+ * @property {*} setup Hazard-Setup.
+ * @property {string} lane Ziel-Lane.
+ * @property {{width:number,height:number,offsetBottom?:number}} size Hazard-Größe.
+ */
+
+/**
+ * @typedef {Object} HazardLaneSpeedParams
+ * @property {string} lane Ziel-Lane.
+ */
+
+/**
+ * @typedef {Object} HazardLifeParams
+ * @property {number} canvasW Canvas-Breite in Pixeln.
+ * @property {number} speedX Horizontale Hazard-Geschwindigkeit.
+ */
+
 export const HAZARD_DEFS = {
     tumbleweed: {
         kind: 'tumbleweed',
-        // Sprite-Größe & Boden-Offset
         size: { width: 220, height: 220, offsetBottom: 50 },
-        // Hitbox-Offsets (Collision)
         offset: { top: 55, left: 58, right: 43, bottom: 50 },
-
         fps: 16,
-        defaultLane: 'jump', // jump | duck | safe
-        spawnOffsetX: 200,   // wie weit rechts vom Screen gespawnt wird
+        defaultLane: 'jump',
+        spawnOffsetX: 200,
 
-        getAnim(images) {
-            return images.tumbleweed?.idle ?? images.tumbleweed?.roll;
+        /** @param {HazardAnimParams} params */
+        getAnim({ images }) {
+            return images.tumbleweed?.idle ?? null;
         },
 
-        laneY(setup, lane, size) {
+        /** @param {HazardLaneYParams} params */
+        laneY({ setup, size }) {
             const c = setup.world.character;
-            if (!c) return 485; // Fallback wie vorher
-
-            // stabile Boden-Referenz, unabhängig von Pose/Hitbox
+            if (!c) return 485;
             const groundBottom =
                 (typeof c.getGroundTopY === 'function')
                     ? (c.getGroundTopY() + c.height)
                     : (c.groundBottom ?? (c.y + c.height));
-
             const onGroundY = groundBottom - (size.height - (size.offsetBottom ?? 0));
-
-            // Tumbleweed wird im System nur als LOW/jump benutzt -> immer Boden-Y
             return onGroundY;
         },
 
-        laneSpeed(lane) {
+        /** @param {HazardLaneSpeedParams} params */
+        laneSpeed({ lane }) {
             if (lane === 'jump') return -16;
             if (lane === 'duck') return -14;
             return -12;
@@ -51,7 +66,9 @@ export const HAZARD_DEFS = {
             impactSize: { width: 220, height: 220 },
             impactFps: 18,
             impactOffsetFactorY: 0.5,
-            getImpactAnim(images) {
+
+            /** @param {HazardAnimParams} params */
+            getImpactAnim({ images }) {
                 return images.projectile?.fireball?.idleExplodeSheet ?? null;
             },
         },
@@ -66,21 +83,20 @@ export const HAZARD_DEFS = {
         defaultLane: 'duck',
         spawnOffsetX: 240,
 
-        getAnim(images) {
-            return images.woodenPlank?.idle;
+        /** @param {HazardAnimParams} params */
+        getAnim({ images }) {
+            return images.woodenPlank?.idle ?? null;
         },
 
-        laneY(setup, lane, size) {
+        /** @param {HazardLaneYParams} params */
+        laneY({ setup, size }) {
             const c = setup.world.character;
             const hb = c?.getHitboxRect?.();
-            if (!hb) return 395; // dein walk-Test
-
+            if (!hb) return 395;
             const DUCK_H = 110;
             const CLEAR = 10;
-
             const duckTop = hb.bottom - DUCK_H;
             const plankBottom = duckTop - CLEAR;
-
             return plankBottom - size.height + (size.offsetBottom ?? 0);
         },
 
@@ -88,6 +104,7 @@ export const HAZARD_DEFS = {
             return -14;
         },
 
+        /** @param {HazardLifeParams} params */
         lifeFromTravel({ canvasW, speedX }) {
             const sx = Math.abs(speedX || -14);
             const dist = canvasW + 800;
@@ -107,7 +124,9 @@ export const HAZARD_DEFS = {
             impactSize: { width: 220, height: 220 },
             impactFps: 18,
             impactOffsetFactorY: 0.55,
-            getImpactAnim(images) {
+
+            /** @param {HazardAnimParams} params */
+            getImpactAnim({ images }) {
                 return images.projectile?.fireball?.idleExplodeSheet ?? null;
             },
         },
@@ -117,24 +136,23 @@ export const HAZARD_DEFS = {
         kind: 'sandTornado',
         size: { width: 160, height: 160, offsetBottom: 22 },
         offset: { top: 22, left: 28, right: 30, bottom: 22 },
-
         fps: 12,
         defaultLane: 'jump',
         spawnOffsetX: 260,
 
-        getAnim(images) {
-            return images.sandTornado?.idle;
+        /** @param {HazardAnimParams} params */
+        getAnim({ images }) {
+            return images.sandTornado?.idle ?? null;
         },
 
-        laneY(setup, lane, size) {
+        /** @param {HazardLaneYParams} params */
+        laneY({ setup, size }) {
             const c = setup.world.character;
             if (!c) return 520;
-
             const groundBottom =
                 (typeof c.getGroundTopY === 'function')
                     ? (c.getGroundTopY() + c.height)
                     : (c.groundBottom ?? (c.y + c.height));
-
             return groundBottom - (size.height - (size.offsetBottom ?? 0));
         },
 
@@ -142,6 +160,7 @@ export const HAZARD_DEFS = {
             return -12;
         },
 
+        /** @param {HazardLifeParams} params */
         lifeFromTravel({ canvasW, speedX }) {
             const sx = Math.abs(speedX || -12);
             const dist = canvasW + 900;
@@ -161,7 +180,9 @@ export const HAZARD_DEFS = {
             impactSize: { width: 220, height: 220 },
             impactFps: 18,
             impactOffsetFactorY: 0.55,
-            getImpactAnim(images) {
+
+            /** @param {HazardAnimParams} params */
+            getImpactAnim({ images }) {
                 return images.projectile?.fireball?.idleExplodeSheet ?? null;
             },
         },
@@ -171,39 +192,35 @@ export const HAZARD_DEFS = {
         kind: 'featherSwirl',
         size: { width: 180, height: 180, offsetBottom: 40 },
         offset: { top: 30, left: 35, right: 30, bottom: 40 },
-
         fps: 14,
         defaultLane: 'duck',
         spawnOffsetX: 240,
 
-        getAnim(images) {
-            return images.featherSwirl?.idle;
+        /** @param {HazardAnimParams} params */
+        getAnim({ images }) {
+            return images.featherSwirl?.idle ?? null;
         },
 
-        laneY(setup, lane, size) {
+        /** @param {HazardLaneYParams} params */
+        laneY({ setup, lane, size }) {
             const c = setup.world.character;
             const hb = c?.getHitboxRect?.();
-            if (!hb) {
-                if (lane === 'safe') return 375 - 180;
-                return 375;
-            }
-
+            if (!hb) return lane === 'safe' ? 375 - 180 : 375;
             const DUCK_H = 110;
             const CLEAR = 10;
-
             const duckTop = hb.bottom - DUCK_H;
             const hazardHitBottom = duckTop - CLEAR;
             const y = hazardHitBottom - size.height + (size.offsetBottom ?? 0);
-
-            if (lane === 'safe') return y - 180;
-            return y;
+            return lane === 'safe' ? y - 180 : y;
         },
 
-        laneSpeed(lane) {
+        /** @param {HazardLaneSpeedParams} params */
+        laneSpeed({ lane }) {
             if (lane === 'safe') return -14;
             return -18;
         },
 
+        /** @param {HazardLifeParams} params */
         lifeFromTravel({ canvasW, speedX }) {
             const sx = Math.abs(speedX || -18);
             const dist = canvasW + 800;
@@ -223,7 +240,9 @@ export const HAZARD_DEFS = {
             impactSize: { width: 220, height: 220 },
             impactFps: 18,
             impactOffsetFactorY: 0.5,
-            getImpactAnim(images) {
+
+            /** @param {HazardAnimParams} params */
+            getImpactAnim({ images }) {
                 return images.projectile?.fireball?.idleExplodeSheet ?? null;
             },
         },
@@ -233,42 +252,36 @@ export const HAZARD_DEFS = {
         kind: 'eagle',
         size: { width: 300, height: 300, offsetBottom: 82 },
         offset: { top: 150, left: 85, right: 65, bottom: 82 },
-
         fps: 12,
         defaultLane: 'duck',
         spawnOffsetX: 260,
 
-        getAnim(images) {
-            return images.eagle?.idle;
+        /** @param {HazardAnimParams} params */
+        getAnim({ images }) {
+            return images.eagle?.idle ?? null;
         },
 
-        laneY(setup, lane, size) {
+        /** @param {HazardLaneYParams} params */
+        laneY({ setup, lane, size }) {
             const c = setup.world.character;
             const hb = c?.getHitboxRect?.();
-            if (!hb) {
-                if (lane === 'duck') return 318;
-                if (lane === 'jump') return 295 - 40;
-                return 295 - 120;
-            }
-
+            if (!hb) return lane === 'duck' ? 318 : lane === 'jump' ? 255 : 175;
             const DUCK_H = 110;
             const CLEAR = 10;
-
-            const duckTop = hb.bottom - DUCK_H;
-            const bottom = duckTop - CLEAR;
-            const y = bottom - size.height + (size.offsetBottom ?? 0);
-
+            const y = hb.bottom - DUCK_H - CLEAR - size.height + (size.offsetBottom ?? 0);
             if (lane === 'safe') return y - 140;
             if (lane === 'jump') return y + 60;
-            return y; // duck
+            return y;
         },
 
-        laneSpeed(lane) {
+        /** @param {HazardLaneSpeedParams} params */
+        laneSpeed({ lane }) {
             if (lane === 'safe') return -10;
             if (lane === 'jump') return -12;
             return -14;
         },
 
+        /** @param {HazardLifeParams} params */
         lifeFromTravel({ canvasW, speedX }) {
             const sx = Math.abs(speedX || -14);
             const dist = canvasW + 800;
@@ -288,7 +301,9 @@ export const HAZARD_DEFS = {
             impactSize: { width: 220, height: 220 },
             impactFps: 18,
             impactOffsetFactorY: 0.5,
-            getImpactAnim(images) {
+
+            /** @param {HazardAnimParams} params */
+            getImpactAnim({ images }) {
                 return images.projectile?.fireball?.idleExplodeSheet ?? null;
             },
         },
@@ -297,45 +312,37 @@ export const HAZARD_DEFS = {
         kind: 'coat',
         size: { width: 180, height: 180, offsetBottom: 50 },
         offset: { top: 10, left: 30, right: 18, bottom: 50 },
-
         fps: 12,
         defaultLane: 'safe',
-        // LOW (jump) + HIGH (walk/safe)
         allowedLanes: ['duck', 'safe'],
         spawnOffsetX: 220,
 
-        getAnim(images) {
-            // ggf. Namen anpassen (coat / jacket / trenchCoat ...)
-            return images.coat?.idle ?? images.coat?.float ?? null;
+        /** @param {HazardAnimParams} params */
+        getAnim({ images }) {
+            return images.coat?.idle ?? null;
         },
 
-        laneY(setup, lane, size) {
-            // Basis-Werte aus deinem Test
-            const WALK_Y = 385; // safe / walk
-            const DUCK_Y = 406; // duck
-
-            // Wie weit der Mantel maximal höher fliegen darf
-            const MAX_UP_SAFE = 40; // px über WALK_Y
-            const MAX_UP_DUCK = 24; // px über DUCK_Y
-
+        /** @param {HazardLaneYParams} params */
+        laneY({ lane }) {
+            const WALK_Y = 385;
+            const DUCK_Y = 406;
+            const MAX_UP_SAFE = 40;
+            const MAX_UP_DUCK = 24;
             if (lane === 'duck') {
-                // Basis: 406, gelegentlich etwas höher (kleinere Y)
                 const up = Math.random() * MAX_UP_DUCK;
-                return DUCK_Y - up;      // 406 bis 382
+                return DUCK_Y - up;
             }
-
-            // safe / walk:
-            // Basis: 385, gelegentlich etwas höher
             const up = Math.random() * MAX_UP_SAFE;
-            return WALK_Y - up;          // 385 bis 345
+            return WALK_Y - up;
         },
 
-        laneSpeed(lane) {
-            // etwas langsamer als tumbleweed, damit "flatteriger" wirkt
+        /** @param {HazardLaneSpeedParams} params */
+        laneSpeed({ lane }) {
             if (lane === 'safe') return -10;
             return -12;
         },
 
+        /** @param {HazardLifeParams} params */
         lifeFromTravel({ canvasW, speedX }) {
             const sx = Math.abs(speedX || -12);
             const dist = canvasW + 800;
@@ -355,11 +362,11 @@ export const HAZARD_DEFS = {
             impactSize: { width: 220, height: 220 },
             impactFps: 18,
             impactOffsetFactorY: 0.5,
-            getImpactAnim(images) {
-                // du kannst auch eine eigene kleine Staubwolke nehmen
+
+            /** @param {HazardAnimParams} params */
+            getImpactAnim({ images }) {
                 return images.projectile?.fireball?.idleExplodeSheet ?? null;
             },
         },
     }
-
 };
