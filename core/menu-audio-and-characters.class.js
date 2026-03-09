@@ -1,11 +1,11 @@
 import { buildCharacters } from "../config/character-data.js";
 import { loadVideo } from "../loader/video-loader.js";
-import { template1, template2 } from "../ui/menu-templates.js";
-import { template3 } from "../ui/menu-templates.js";
+import { characterDialogTemplate, largeCharacterDialogTemplate } from "../ui/menu-templates.js";
+import { storyTextTemplate } from "../ui/menu-templates.js";
 import { storyText } from "../config/story-text.js";
-import { template4 } from "../ui/menu-templates.js";
+import { controlsTemplate } from "../ui/menu-templates.js";
 import { controls } from "../config/controls-config.js";
-import { template5 } from "../ui/menu-templates.js";
+import { legalNoticeTemplate } from "../ui/menu-templates.js";
 
 export class MenuAudioAndCharacters {
     constructor(audioManager, videoManager, uiManager) {
@@ -55,14 +55,14 @@ export class MenuAudioAndCharacters {
     renderCharacters() {
         let smallCardBox = document.getElementById('small-card-box');
         smallCardBox.innerHTML = "";
-        this.characters.forEach(character => smallCardBox.innerHTML += template1(character.name, character.text));
+        this.characters.forEach(character => smallCardBox.innerHTML += characterDialogTemplate(character.name, character.text));
     }
 
     renderBigCard(nameCharacter) {
         let bigCardBox = document.getElementById('big-card-box');
         this.openBigBox();
         const character = this.characters.find(element => element.name === nameCharacter);
-        if (character) bigCardBox.innerHTML = template2(character.name, character.text2);
+        if (character) bigCardBox.innerHTML = largeCharacterDialogTemplate(character.name, character.text2);
         character.music.currentTime = 0;
         this.audioManager.fadeOutAudio(this.audioManager.audios.infoScreenMusic, 1000);
         this.audioManager.fadeInAudio(character.music, 2000, 0.2);
@@ -208,7 +208,7 @@ export class MenuAudioAndCharacters {
 
     renderStoryCard() {
         let storyBox = document.getElementById('story-box');
-        storyBox.innerHTML = template3(storyText);
+        storyBox.innerHTML = storyTextTemplate(storyText);
     }
 
     closeStoryOverlay() {
@@ -240,7 +240,7 @@ export class MenuAudioAndCharacters {
 
     renderControlsCard() {
         let controlsBox = document.getElementById('controls-box');
-        controlsBox.innerHTML = template4(controls);
+        controlsBox.innerHTML = controlsTemplate(controls);
     }
 
     closeControlsOverlay() {
@@ -271,7 +271,7 @@ export class MenuAudioAndCharacters {
 
     renderCreditsCard() {
         let creditsBox = document.getElementById('credits-box');
-        creditsBox.innerHTML = template5();
+        creditsBox.innerHTML = legalNoticeTemplate();
     }
 
     closeCreditsOverlay() {
