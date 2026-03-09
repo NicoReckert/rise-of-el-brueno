@@ -337,11 +337,11 @@ export const farmEvents_part3 = [
         action: (setup) => {
             setup.world.ctx.save();
             setup.world.ctx.translate(-setup.world.farmLevelController.renderCameraX, 0);
-            if (!setup.speechBubbles.bubbleFarm3.startTime) {
-                setup.speechBubbles.bubbleFarm3.start();
+            if (!setup.speechBubbles[2].startTime) {
+                setup.speechBubbles[2].start();
             }
-            setup.speechBubbles.bubbleFarm3.update(performance.now());
-            setup.speechBubbles.bubbleFarm3.draw(setup.world.ctx);
+            setup.speechBubbles[2].update(performance.now());
+            setup.speechBubbles[2].draw(setup.world.ctx);
             setup.world.ctx.restore();
         }
     },
@@ -359,11 +359,11 @@ export const farmEvents_part3 = [
         action: (setup) => {
             setup.world.ctx.save();
             setup.world.ctx.translate(-setup.world.farmLevelController.renderCameraX, 0);
-            if (!setup.speechBubbles.bubbleFarm4.startTime) {
-                setup.speechBubbles.bubbleFarm4.start();
+            if (!setup.speechBubbles[3].startTime) {
+                setup.speechBubbles[3].start();
             }
-            setup.speechBubbles.bubbleFarm4.update(performance.now());
-            setup.speechBubbles.bubbleFarm4.draw(setup.world.ctx);
+            setup.speechBubbles[3].update(performance.now());
+            setup.speechBubbles[3].draw(setup.world.ctx);
             setup.world.ctx.restore();
         }
     },
@@ -381,11 +381,11 @@ export const farmEvents_part3 = [
         action: (setup) => {
             setup.world.ctx.save();
             setup.world.ctx.translate(-setup.world.farmLevelController.renderCameraX, 0);
-            if (!setup.speechBubbles.bubbleFarm5.startTime) {
-                setup.speechBubbles.bubbleFarm5.start();
+            if (!setup.speechBubbles[4].startTime) {
+                setup.speechBubbles[4].start();
             }
-            setup.speechBubbles.bubbleFarm5.update(performance.now());
-            setup.speechBubbles.bubbleFarm5.draw(setup.world.ctx, 40);
+            setup.speechBubbles[4].update(performance.now());
+            setup.speechBubbles[4].draw(setup.world.ctx, 40);
             setup.world.ctx.restore();
         }
     }

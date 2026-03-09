@@ -42,11 +42,11 @@ export const farmEvents_part4 = [
         action: (setup) => {
             setup.world.ctx.save();
             setup.world.ctx.translate(-setup.world.farmLevelController.renderCameraX, 0);
-            if (!setup.speechBubbles.bubbleFarm6.startTime) {
-                setup.speechBubbles.bubbleFarm6.start();
+            if (!setup.speechBubbles[5].startTime) {
+                setup.speechBubbles[5].start();
             }
-            setup.speechBubbles.bubbleFarm6.update(performance.now());
-            setup.speechBubbles.bubbleFarm6.draw(setup.world.ctx, 0);
+            setup.speechBubbles[5].update(performance.now());
+            setup.speechBubbles[5].draw(setup.world.ctx, 0);
             setup.world.ctx.restore();
         }
     },
@@ -64,11 +64,11 @@ export const farmEvents_part4 = [
         action: (setup) => {
             setup.world.ctx.save();
             setup.world.ctx.translate(-setup.world.farmLevelController.renderCameraX, 0);
-            if (!setup.speechBubbles.bubbleFarm7.startTime) {
-                setup.speechBubbles.bubbleFarm7.start();
+            if (!setup.speechBubbles[6].startTime) {
+                setup.speechBubbles[6].start();
             }
-            setup.speechBubbles.bubbleFarm7.update(performance.now());
-            setup.speechBubbles.bubbleFarm7.draw(setup.world.ctx, 0);
+            setup.speechBubbles[6].update(performance.now());
+            setup.speechBubbles[6].draw(setup.world.ctx, 0);
             setup.world.ctx.restore();
         }
     },
@@ -84,8 +84,8 @@ export const farmEvents_part4 = [
         step: 19,
         once: false,
         action: (setup) => {
-            setup.speechBubbles.bubbleFarm8.start(5000)
-            setup.speechBubbles.bubbleFarm8.render(setup.world.ctx, setup.world.farmLevelController.renderCameraX, 0);
+            setup.speechBubbles[7].start(5000)
+            setup.speechBubbles[7].render(setup.world.ctx, setup.world.farmLevelController.renderCameraX, 0);
         }
     },
 
@@ -251,7 +251,7 @@ export const farmEvents_part4 = [
         type: 'time',
         delay: 500,
         step: 22,
-        action: (setup) => setup.speechBubbles.bubbleFarm9.start(4500)
+        action: (setup) => setup.speechBubbles[8].start(4500)
     },
 
     /**
@@ -266,7 +266,7 @@ export const farmEvents_part4 = [
         step: 22,
         action: (setup) => {
             farmHelper.renderPortraitWithRadialFade(setup, setup.characters.portraits.pollito)
-            setup.speechBubbles.bubbleFarm9.render(setup.world.ctx, setup.world.farmLevelController.renderCameraX, 0);
+            setup.speechBubbles[8].render(setup.world.ctx, setup.world.farmLevelController.renderCameraX, 0);
         }
     },
 
@@ -277,7 +277,7 @@ export const farmEvents_part4 = [
         type: 'time',
         delay: 5500,
         step: 22,
-        action: (setup) => setup.speechBubbles.bubbleFarm10.start(4500)
+        action: (setup) => setup.speechBubbles[9].start(4500)
     },
 
     /**
@@ -292,7 +292,7 @@ export const farmEvents_part4 = [
         step: 22,
         action: (setup) => {
             farmHelper.renderPortraitWithRadialFade(setup, setup.characters.portraits.juanito);
-            setup.speechBubbles.bubbleFarm10.render(setup.world.ctx, setup.world.farmLevelController.renderCameraX, 0);
+            setup.speechBubbles[9].render(setup.world.ctx, setup.world.farmLevelController.renderCameraX, 0);
         }
     },
 
@@ -303,7 +303,7 @@ export const farmEvents_part4 = [
         type: 'time',
         delay: 10500,
         step: 22,
-        action: (setup) => setup.speechBubbles.bubbleFarm11.start(4500)
+        action: (setup) => setup.speechBubbles[10].start(4500)
     },
 
     /**
@@ -318,7 +318,7 @@ export const farmEvents_part4 = [
         step: 22,
         action: (setup) => {
             farmHelper.renderPortraitWithRadialFade(setup, setup.characters.portraits.cow);
-            setup.speechBubbles.bubbleFarm11.render(setup.world.ctx, setup.world.farmLevelController.renderCameraX, 0);
+            setup.speechBubbles[10].render(setup.world.ctx, setup.world.farmLevelController.renderCameraX, 0);
         }
     },
 
@@ -329,7 +329,7 @@ export const farmEvents_part4 = [
         type: 'time',
         delay: 15500,
         step: 22,
-        action: (setup) => setup.speechBubbles.bubbleFarm8.start(4500)
+        action: (setup) => setup.speechBubbles[7].start(4500)
     },
 
     /**
@@ -342,7 +342,7 @@ export const farmEvents_part4 = [
         to: 20500,
         once: false,
         step: 22,
-        action: (setup) => setup.speechBubbles.bubbleFarm8.render(setup.world.ctx, setup.world.farmLevelController.renderCameraX, -20)
+        action: (setup) => setup.speechBubbles[7].render(setup.world.ctx, setup.world.farmLevelController.renderCameraX, -20)
     },
 
     /**
