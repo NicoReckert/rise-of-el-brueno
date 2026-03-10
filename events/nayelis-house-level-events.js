@@ -48,7 +48,9 @@ export const nayelisHouseEvents =
             step: 2,
             action: (setup) => {
                 setup.world.currentScene = 'newWeaponLevel';
-                setup.world.character.x = 400;
+                setup.world.character.x = 400; //550
+                setup.world.character.y = 250;
+                setup.world.camera_x = 0;
                 setup.world.character.level_start_x = 290;
                 setup.world.level_end_x = 845;
                 setup.world.character.isNewWeapon = true;

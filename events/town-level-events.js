@@ -109,16 +109,16 @@ export const townEvents =
             toleranceB: { x: -400, width: -400 },
             once: false,
             action: (setup) => {
-                if (!setup.isNearDestroyedHouse) {
-                    setup.isNearDestroyedHouse = true;
+                if (!setup.state.isNearDestroyedHouse) {
+                    setup.state.isNearDestroyedHouse = true;
                     setup.sounds.houseFireSound.currentTime = 0;
                     setup.sounds.houseFireSound.loop = true;
                     setup.world.audioManager.fadeInAudio(setup.sounds.houseFireSound, 2000, 0.3);
                 }
             },
             onLeave: (setup) => {
-                if (setup.isNearDestroyedHouse) {
-                    setup.isNearDestroyedHouse = false;
+                if (setup.state.isNearDestroyedHouse) {
+                    setup.state.isNearDestroyedHouse = false;
                     setup.world.audioManager.fadeOutAudio(setup.sounds.houseFireSound, 1000);
                 }
             }
@@ -172,7 +172,7 @@ export const townEvents =
             step: 1,
             action: (setup) => {
                 setup.sounds.newTaskSound.play();
-                setup.popupTexts.push(new PopupText("Neue Aufgaben im Log!", setup.world.canvas.width / 2, 400));
+                setup.state.popupTexts.push(new PopupText("Neue Aufgaben im Log!", setup.world.canvas.width / 2, 400));
             }
 
         },
@@ -193,13 +193,14 @@ export const townEvents =
             step: 2,
             once: false,
             action: (setup, elapsed, progress) => {
-                const ctrl = setup.world.townLevelController;
+                const sandstormCtrl = setup.world.townLevelController.sandstormCtrl;
                 const intensity = Math.min(1, progress * 0.5);
-                ctrl.setSandstorm(intensity);
+                sandstormCtrl.setSandstorm(intensity);
             },
             onEnd: (setup) => {
                 const ctrl = setup.world.townLevelController;
-                ctrl.setSandstorm(0.5);
+                const sandstormCtrl = setup.world.townLevelController.sandstormCtrl;
+                sandstormCtrl.setSandstorm(0.5);
                 ctrl.questManager.advance(3);
             }
         },
@@ -220,13 +221,14 @@ export const townEvents =
             step: 4,
             once: false,
             action: (setup, elapsed, progress) => {
-                const ctrl = setup.world.townLevelController;
+                const sandstormCtrl = setup.world.townLevelController.sandstormCtrl;
                 const intensity = Math.min(1, 0.5 + progress * 0.5);
-                ctrl.setSandstorm(intensity);
+                sandstormCtrl.setSandstorm(intensity);
             },
             onEnd: (setup) => {
                 const ctrl = setup.world.townLevelController;
-                ctrl.setSandstorm(1.0);
+                const sandstormCtrl = setup.world.townLevelController.sandstormCtrl;
+                sandstormCtrl.setSandstorm(1.0);
                 // setup.world.character.isWalkInStorm = true;
                 setup.world.character.speedX = 5; //2
                 ctrl.questManager.advance(5);
@@ -424,7 +426,7 @@ export const townEvents =
             action: (setup) => {
                 const tadeo = setup.characters.tadeo;
                 const arriveX = tadeo.moveToX(17775, { speed: 0.8 });
-                if (setup.isTadeoAfraid || setup.isTadeoPanic) {
+                if (setup.state.isTadeoAfraid || setup.state.isTadeoPanic) {
                     tadeo.isMovingRight = false;
                     return;
                 }
@@ -432,7 +434,7 @@ export const townEvents =
                 if (arriveX) setup.characters.tadeo.updateAnimationState('idleWithStone');
             },
             onLeave: (setup) => {
-                if (setup.isTadeoAfraid || setup.isTadeoPanic) return;
+                if (setup.state.isTadeoAfraid || setup.state.isTadeoPanic) return;
                 setup.characters.tadeo.isMovingRight = false;
                 setup.characters.tadeo.updateAnimationState('idleWithStone');
             }
@@ -446,9 +448,9 @@ export const townEvents =
             step: 11,
             once: false,
             action: (setup, tadeo) => {
-                const wasAfraid = !!setup.isTadeoAfraid;
-                setup.isTadeoAfraid = true;
-                if (setup.isTadeoPanic) return
+                const wasAfraid = !!setup.state.isTadeoAfraid;
+                setup.state.isTadeoAfraid = true;
+                if (setup.state.isTadeoPanic) return
                 if (!wasAfraid) {
                     tadeo.updateAnimationState('afraid', 1000 / 6);
                 } else {
@@ -456,7 +458,7 @@ export const townEvents =
                 }
             },
             onLeave: (setup) => {
-                if (!setup.isTadeoPanic) {
+                if (!setup.state.isTadeoPanic) {
                     setup.characters.tadeo.updateAnimationState('standUp', 1000 / 6);
                 }
                 setup.world.townLevelController.eventManager.emitNow("afraidReset");
@@ -471,7 +473,7 @@ export const townEvents =
             step: 11,
             once: true,
             action: (setup) => {
-                setup.isTadeoAfraid = false;
+                setup.state.isTadeoAfraid = false;
             }
         },
 
@@ -485,17 +487,17 @@ export const townEvents =
             cooldown: 10000,
             condition: (setup) => {
                 const now = performance.now();
-                const speechOk = now >= (setup.tadeoSpeechLockUntil ?? 0);
-                const panicGraceOk = now >= (setup.tadeoPanicUntil ?? 0);
-                return speechOk && panicGraceOk && setup.isTadeoAfraid && !setup.isTadeoPanic;
+                const speechOk = now >= (setup.state.tadeoSpeechLockUntil ?? 0);
+                const panicGraceOk = now >= (setup.state.tadeoPanicUntil ?? 0);
+                return speechOk && panicGraceOk && setup.state.isTadeoAfraid && !setup.state.isTadeoPanic;
             },
             action: (setup) => {
                 const now = performance.now();
                 const lockUntil = now + 2200;
-                setup.tadeoSpeechLockUntil = Math.max(setup.tadeoSpeechLockUntil ?? 0, lockUntil);
+                setup.state.tadeoSpeechLockUntil = Math.max(setup.state.tadeoSpeechLockUntil ?? 0, lockUntil);
                 const bubbles = setup.speechBubblesTadeoAfraid;
                 const idx = (Math.random() * bubbles.length) | 0;
-                setup._tadeoAfraidIdx = idx;
+                setup.state.tadeoAfraidIdx = idx;
                 bubbles[idx].start();
                 setup.world.audioManager.playOneShot(`vo_tadeo_afraid_0${idx + 1}`, { volume: 0.9 });
                 setup.world.townLevelController.eventManager.emitNow("tadeoAfraidBubbleRender");
@@ -511,7 +513,7 @@ export const townEvents =
             to: 2600,
             step: 11,
             action: (setup) => {
-                const i = setup._tadeoAfraidIdx ?? 0;
+                const i = setup.state.tadeoAfraidIdx ?? 0;
                 setup.speechBubblesTadeoAfraid[i].render(
                     setup.world.ctx,
                     setup.world.townLevelController.renderCameraX,
@@ -529,8 +531,8 @@ export const townEvents =
             step: 11,
             once: false,
             action: (setup, tadeo) => {
-                setup.isTadeoPanic = true;
-                setup.tadeoPanicUntil = performance.now() + 1200;
+                setup.state.isTadeoPanic = true;
+                setup.state.tadeoPanicUntil = performance.now() + 1200;
                 tadeo.updateAnimationState('panic', 1000 / 6);
             },
             onLeave: (setup, tadeo) => {
@@ -547,8 +549,8 @@ export const townEvents =
             step: 11,
             once: false,
             action: (setup, tadeo) => {
-                setup.isTadeoPanic = true;
-                setup.tadeoPanicUntil = performance.now() + 1200;
+                setup.state.isTadeoPanic = true;
+                setup.state.tadeoPanicUntil = performance.now() + 1200;
                 tadeo.updateAnimationState('panic', 1000 / 6);
             },
             onLeave: (setup, tadeo) => {
@@ -565,8 +567,8 @@ export const townEvents =
             step: 11,
             once: true,
             action: (setup) => {
-                setup.isTadeoPanic = false;
-                setup.tadeoPanicUntil = Math.max(setup.tadeoPanicUntil ?? 0, performance.now() + 200); if (setup.isTadeoAfraid) {
+                setup.state.isTadeoPanic = false;
+                setup.state.tadeoPanicUntil = Math.max(setup.state.tadeoPanicUntil ?? 0, performance.now() + 200); if (setup.state.isTadeoAfraid) {
                     setup.characters.tadeo.updateAnimationState('afraidLoop', 1000 / 6);
                 }
             }
@@ -582,17 +584,17 @@ export const townEvents =
             cooldown: 7000,
             condition: (setup) => {
                 const now = performance.now();
-                if (!setup.isTadeoPanic) return false;
-                if (now < (setup.tadeoSpeechLockUntil ?? 0)) return false;
+                if (!setup.state.isTadeoPanic) return false;
+                if (now < (setup.state.tadeoSpeechLockUntil ?? 0)) return false;
                 return true;
             },
             action: (setup) => {
                 const now = performance.now();
                 const lockUntil = now + 2200;
-                setup.tadeoSpeechLockUntil = Math.max(setup.tadeoSpeechLockUntil ?? 0, lockUntil);
+                setup.state.tadeoSpeechLockUntil = Math.max(setup.state.tadeoSpeechLockUntil ?? 0, lockUntil);
                 const bubbles = setup.speechBubblesTadeoPanic;
                 const idx = (Math.random() * bubbles.length) | 0;
-                setup._tadeoPanicProjIdx = idx;
+                setup.state.tadeoPanicProjIdx = idx;
                 bubbles[idx].start();
                 setup.world.audioManager.playOneShot(`vo_tadeo_panic_0${idx + 1}`, { volume: 1.0 });
                 setup.world.townLevelController.eventManager.emitNow("tadeoPanicProjBubbleRender");
@@ -609,17 +611,17 @@ export const townEvents =
             cooldown: 7000,
             condition: (setup) => {
                 const now = performance.now();
-                if (!setup.isTadeoPanic) return false;
-                if (now < (setup.tadeoSpeechLockUntil ?? 0)) return false;
+                if (!setup.state.isTadeoPanic) return false;
+                if (now < (setup.state.tadeoSpeechLockUntil ?? 0)) return false;
                 return true;
             },
             action: (setup) => {
                 const now = performance.now();
                 const lockUntil = now + 2200;
-                setup.tadeoSpeechLockUntil = Math.max(setup.tadeoSpeechLockUntil ?? 0, lockUntil);
+                setup.state.tadeoSpeechLockUntil = Math.max(setup.state.tadeoSpeechLockUntil ?? 0, lockUntil);
                 const bubbles = setup.speechBubblesTadeoPanic;
                 const idx = (Math.random() * bubbles.length) | 0;
-                setup._tadeoPanicNearIdx = idx;
+                setup.state.tadeoPanicNearIdx = idx;
                 bubbles[idx].start();
                 setup.world.audioManager.playOneShot(`vo_tadeo_panic_0${idx + 1}`, { volume: 1.0 });
                 setup.world.townLevelController.eventManager.emitNow("tadeoPanicNearBubbleRender");
@@ -635,7 +637,7 @@ export const townEvents =
             to: 2000,
             step: 11,
             action: (setup) => {
-                const i = setup._tadeoPanicProjIdx ?? 0;
+                const i = setup.state.tadeoPanicProjIdx ?? 0;
                 setup.speechBubblesTadeoPanic[i].render(
                     setup.world.ctx,
                     setup.world.townLevelController.renderCameraX,
@@ -653,7 +655,7 @@ export const townEvents =
             to: 2000,
             step: 11,
             action: (setup) => {
-                const i = setup._tadeoPanicNearIdx ?? 0;
+                const i = setup.state.tadeoPanicNearIdx ?? 0;
                 setup.speechBubblesTadeoPanic[i].render(
                     setup.world.ctx,
                     setup.world.townLevelController.renderCameraX,
@@ -677,15 +679,15 @@ export const townEvents =
                 if (!char || !tadeo) return false;
 
                 // pro empty phase nur einmal
-                if (setup._tadeoHelpGivenEmpty) return false;
+                if (setup.state.tadeoHelpGivenEmpty) return false;
 
                 // nur wenn wirklich empty
                 if ((char.throwableBottles ?? 0) > 0) return false;
 
                 // nicht während panic
-                if (setup.isTadeoPanic) return false;
+                if (setup.state.isTadeoPanic) return false;
                 const now = performance.now();
-                if (now < (setup.tadeoSpeechLockUntil ?? 0)) return false;
+                if (now < (setup.state.tadeoSpeechLockUntil ?? 0)) return false;
 
                 const list = setup.townLevel?.enemies ?? [];
 
@@ -709,19 +711,19 @@ export const townEvents =
 
             action: (setup) => {
                 const now = performance.now();
-                setup.tadeoHelpUntil = Math.max(setup.tadeoHelpUntil ?? 0, now + 2000);
+                setup.state.tadeoHelpUntil = Math.max(setup.state.tadeoHelpUntil ?? 0, now + 2000);
                 const char = setup.world.character;
                 const audio = setup.world.audioManager;
 
                 const give = 2;
 
                 // Flag setzen -> diese Empty-Phase ist erledigt
-                setup._tadeoHelpGivenEmpty = true;
+                setup.state.tadeoHelpGivenEmpty = true;
 
                 // Speech lock: verhindert afraid/panic barks kurzzeitig
                 const lockUntil = now + 2200;
-                setup.tadeoSpeechLockUntil = Math.max(setup.tadeoSpeechLockUntil ?? 0, lockUntil);
-                setup.tadeoPanicUntil = Math.max(setup.tadeoPanicUntil ?? 0, lockUntil); // <-- NEU
+                setup.state.tadeoSpeechLockUntil = Math.max(setup.state.tadeoSpeechLockUntil ?? 0, lockUntil);
+                setup.state.tadeoPanicUntil = Math.max(setup.state.tadeoPanicUntil ?? 0, lockUntil); // <-- NEU
                 // Inventar + UI-Bar
                 char.throwableBottles = (char.throwableBottles ?? 0) + give;
 
@@ -757,7 +759,7 @@ export const townEvents =
                 const c = setup.world.character;
                 if (!c) return;
                 if ((c.throwableBottles ?? 0) > 0) {
-                    setup._tadeoHelpGivenEmpty = false;
+                    setup.state.tadeoHelpGivenEmpty = false;
                 }
             }
         },
@@ -773,7 +775,7 @@ export const townEvents =
             step: 11,
             action: (setup) => {
                 const now = performance.now();
-                if (now > (setup.tadeoHelpUntil ?? 0)) return;
+                if (now > (setup.state.tadeoHelpUntil ?? 0)) return;
                 const i = setup._tadeoHelpIdx ?? 0;
                 setup.speechBubblesTadeoHelp[i].render(
                     setup.world.ctx,
@@ -806,16 +808,16 @@ export const townEvents =
             once: false,
             cooldown: 500,
             action: (setup) => {
-                if (!setup.isNearMusician) {
-                    setup.isNearMusician = true;
+                if (!setup.state.isNearMusician) {
+                    setup.state.isNearMusician = true;
                     setup.sounds.musicianTownMusic.currentTime = 0;
                     setup.world.audioManager.fadeOutAudio(setup.sounds.backgroundMusic, 1000);
                     setup.world.audioManager.fadeInAudio(setup.sounds.musicianTownMusic, 2000, 0.6);
                 }
             },
             onLeave: (setup) => {
-                if (setup.isNearMusician) {
-                    setup.isNearMusician = false;
+                if (setup.state.isNearMusician) {
+                    setup.state.isNearMusician = false;
                     setup.sounds.backgroundMusic.currentTime = 0;
                     setup.world.audioManager.fadeOutAudio(setup.sounds.musicianTownMusic, 1000);
                     setup.world.audioManager.fadeInAudio(setup.sounds.backgroundMusic, 2000, 0.6);
@@ -831,16 +833,16 @@ export const townEvents =
             once: false,
             cooldown: 500,
             action: (setup) => {
-                if (!setup.isNearSollita) {
-                    setup.isNearSollita = true;
+                if (!setup.state.isNearSollita) {
+                    setup.state.isNearSollita = true;
                     setup.sounds.sollitasMusic.currentTime = 0;
                     setup.world.audioManager.fadeOutAudio(setup.sounds.backgroundMusic, 1000);
                     setup.world.audioManager.fadeInAudio(setup.sounds.sollitasMusic, 2000, 0.6);
                 }
             },
             onLeave: (setup) => {
-                if (setup.isNearSollita) {
-                    setup.isNearSollita = false;
+                if (setup.state.isNearSollita) {
+                    setup.state.isNearSollita = false;
                     setup.sounds.backgroundMusic.currentTime = 0;
                     setup.world.audioManager.fadeOutAudio(setup.sounds.sollitasMusic, 1000);
                     setup.world.audioManager.fadeInAudio(setup.sounds.backgroundMusic, 2000, 0.6);
@@ -934,7 +936,7 @@ export const townEvents =
             action: (setup) => {
                 const char = setup.world.character
                 if (char.isHurt) return;
-                setup.townLevel.projectiles.forEach(element => {
+                setup.state.projectiles.forEach(element => {
                     if (!element.isActive) return;
                     if (element.currentAnimation === "explode") return;
                     const colliding = element.isColliding(char, { x: 0, width: 0 }, { x: 50, width: 50 });
@@ -944,7 +946,7 @@ export const townEvents =
                         element.explode();
                         char.combatCtrl.hit(setup.world.timestamp, dmg);
                         setup.statusBar.setPercentage(char.energy);
-                        setup.damageTexts.push(new DamageText(char, dmg));
+                        setup.state.damageTexts.push(new DamageText(char, dmg));
 
                     }
                 });
@@ -971,7 +973,7 @@ export const townEvents =
                     });
                     if (did) {
                         setup.statusBar.setPercentage(char.energy);
-                        setup.damageTexts.push(
+                        setup.state.damageTexts.push(
                             new DamageText(char, char.isProtect ? 2 : 10)
                         );
                     }
@@ -996,7 +998,7 @@ export const townEvents =
                             const dmg = char.isProtect ? 2 : 10;
                             char.combatCtrl.hit(setup.world.timestamp, dmg);
                             setup.statusBar.setPercentage(char.energy);
-                            setup.damageTexts.push(new DamageText(char, dmg));
+                            setup.state.damageTexts.push(new DamageText(char, dmg));
                             enemy.hasHitPlayerThisAttack = true;
                         }
                     }
@@ -1086,7 +1088,7 @@ export const townEvents =
                             const dmg = char.isProtect ? 2 : 10;
                             char.combatCtrl.hit(setup.world.timestamp, dmg);
                             setup.statusBar.setPercentage(char.energy);
-                            setup.damageTexts.push(new DamageText(char, dmg));
+                            setup.state.damageTexts.push(new DamageText(char, dmg));
                             enemy.hasHitPlayerThisAttack = true;
                         }
                     }
@@ -1177,7 +1179,7 @@ export const townEvents =
             action: (setup) => {
                 const world = setup.world;
                 const char = world.character;
-                const bottles = setup.throwableObjects;
+                const bottles = setup.state.throwableObjects;
                 const enemies = setup.townLevel.enemies;
                 const boss = setup.characters.endboss;
                 for (let i = bottles.length - 1; i >= 0; i--) {
@@ -1481,7 +1483,7 @@ export const townEvents =
                 if (!c) return;
                 if ((c.throwableBottles ?? 0) <= 0) return;
                 if (world.keyboard.LEFT || world.keyboard.RIGHT) return;
-                const p = setup.throwHoldProgress ?? 0;
+                const p = setup.state.throwHoldProgress ?? 0;
                 if (p <= 0) return;
 
                 const ctx = setup.world.ctx;

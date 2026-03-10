@@ -32,7 +32,6 @@ export class StableLevelSetup {
      */
     initStableData() {
         this.stableLevel = stableLevel;
-        this.isNotificationPlay = false;
         this.popupTexts = [];
         this.stableEvents = stableEvents;
     }

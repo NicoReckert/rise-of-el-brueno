@@ -13,19 +13,8 @@ export class NewWeaponLevelController {
         this.canvas = this.world.canvas;
         this.addToWorld = this.world.renderer.addToWorld.bind(this.world.renderer);
         this.character = this.world.character;
-        this.initCharacterState();
         this.initHeroTextState();
         this.initCharacterCanvas();
-    }
-
-    /**
-     * Initializes the character position and camera state.
-     * @returns {void}
-     */
-    initCharacterState() {
-        this.world.character.x = 550;
-        this.world.character.y = 250;
-        this.world.camera_x = 0;
     }
 
     /**

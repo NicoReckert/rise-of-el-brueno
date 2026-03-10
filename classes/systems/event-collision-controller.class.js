@@ -295,7 +295,7 @@ export class EventCollisionController {
         const elapsed = now - e.holdStart;
         const dur = Math.max(1, e.duration ?? 1);
         e.progress = Math.min(elapsed / dur, 1);
-        if (e.name === "town_throw_bottle_hold") this.setup.throwHoldProgress = e.progress;
+        if (e.name === "town_throw_bottle_hold") this.setup.state.throwHoldProgress = e.progress;
         if (elapsed >= dur && canTrigger && !e._holdFired) {
             this.fireHoldAction(e, now, a, b);
         }
@@ -361,7 +361,7 @@ export class EventCollisionController {
         e._moveHoldStart = null;
         e._moveHoldDir = 0;
         if (e.name === "town_throw_bottle_hold") {
-            this.setup.throwHoldProgress = 0;
+            this.setup.state.throwHoldProgress = 0;
         }
     }
 }

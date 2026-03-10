@@ -22,7 +22,7 @@ export class EnemyCombatController {
         const setup = this.enemy.world.townLevelSetup;
         const projectile = this.createProjectileForType(type, direction);
         this.ensureProjectileArray(setup);
-        setup.townLevel.projectiles.push(projectile);
+        setup.state.projectiles.push(projectile);
     }
 
     /**
@@ -49,8 +49,8 @@ export class EnemyCombatController {
      * @returns {void}
      */
     ensureProjectileArray(setup) {
-        if (!setup.townLevel.projectiles) {
-            setup.townLevel.projectiles = [];
+        if (!setup.state.projectiles) {
+            setup.state.projectiles = [];
         }
     }
 

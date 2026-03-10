@@ -131,7 +131,7 @@ export class StormHazardSystem {
      * @returns {boolean} True if max hazards are active.
      */
     isMaxHazards() {
-        return this.setup.effects.filter(
+        return this.setup.state.effects.filter(
             (e) => e instanceof StormHazard && !e.markedForRemoval
         ).length >= this.maxActiveHazards;
     }

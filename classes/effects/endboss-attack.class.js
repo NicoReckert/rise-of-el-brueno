@@ -279,7 +279,7 @@ export class EndbossAttack extends MovableObject {
         tornado.setTarget(setup.world.character);
         tornado.setBuildTargetX(23380);
         setup.world.tornado = tornado;
-        setup.effects.push(tornado);
+        setup.state.effects.push(tornado);
     }
 
     /**

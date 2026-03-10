@@ -30,7 +30,7 @@ export class EndbossCombatController {
         const beakY = this.endboss.y + this.endboss.height * 0.20;
         const fireball = new EndbossFireball(this.endboss.entityImages, beakX, beakY, targetX, targetY, this.endboss.allAudios);
         fireball.world = this.endboss.world;
-        this.endboss.world.townLevelSetup.townLevel.projectiles.push(fireball);
+        this.endboss.world.townLevelSetup.state.projectiles.push(fireball);
     }
 
     /**
@@ -87,9 +87,9 @@ export class EndbossCombatController {
      */
     maybeStartSpiritEssenceSequence(setup, timestamp) {
         const character = setup.world.character;
-        const seq = setup.spiritEssenceSeq;
+        const seq = setup.state.spiritEssenceSeq;
         if (!seq?.active && character.isAirHitStun) {
-            setup.world.townLevelController.startSpiritEssenceSequence(timestamp);
+            setup.world.townLevelController.spiritEssenceCtrl.startSpiritEssenceSequence(timestamp);
         }
     }
 
@@ -102,7 +102,7 @@ export class EndbossCombatController {
         if (this.endboss.fireBreathBeam) return;
         const beam = new EndbossFireBeam(setup.entityImages, this.endboss.allAudios);
         beam.world = setup.world;
-        setup.effects.push(beam);
+        setup.state.effects.push(beam);
         this.endboss.fireBreathBeam = beam;
     }
 

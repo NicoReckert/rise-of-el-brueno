@@ -3,7 +3,7 @@
  */
 export class TimerManager {
     /**
-     * Creates a new time manager instance.
+     * Creates a new timer manager instance.
      */
     constructor() {
         this.timers = new Map();
@@ -93,7 +93,7 @@ export class TimerManager {
      */
     updateTimers(deltaTime) {
         for (const [id, timer] of this.timers.entries()) {
-            if (!this.tickTimer(id, timer, deltaTime)) continue;
+            if (!this.tickTimer(timer, deltaTime)) continue;
             timer.callback();
             this.resolveTimerAfterCallback(id, timer);
         }
