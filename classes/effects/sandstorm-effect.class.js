@@ -54,7 +54,7 @@ export class SandstormEffect {
         if (this.pressure < 0.01) this.pressure = 0;
         const p = Math.min(1, Math.max(0, this.pressure));
         const targetAlpha = this.alpha * (1 - p);
-        const smoothing = 0.2; // 0.1–0.3 ist gut
+        const smoothing = 0.2;
         this.currentAlpha += (targetAlpha - this.currentAlpha) * smoothing;
     }
 

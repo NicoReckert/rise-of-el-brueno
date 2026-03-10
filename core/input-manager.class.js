@@ -228,7 +228,7 @@ export class InputManager {
         const kb = this.keyboard;
         const char = game.character;
 
-        // normaler Jump
+        
         if (kb.UP && !char.isAboveGround() && !char.isFlying && !char.isJumping) {
             if (char.isAttack || char.isProtect) {
                 char.isAttack = false;
@@ -239,12 +239,12 @@ export class InputManager {
             game.audioManager.playOneShot('jumpSound');
         }
 
-        // Jetpack hoch
+        
         if (kb.UP && char.isAboveGround() && char.isFlying) {
             char.moveUp();
         }
 
-        // Jetpack runter / landen
+        
         if (kb.DOWN && char.isAboveGround() && char.isFlying) {
             if (char.y + 10 == 130) {
                 this.stopJetpack(game);
@@ -253,7 +253,7 @@ export class InputManager {
             }
         }
 
-        // Jetpack aktivieren
+        
         if (kb.J) {
             char.moveFly();
             game.backgroundMusic.pause();

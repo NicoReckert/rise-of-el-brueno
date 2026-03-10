@@ -19,7 +19,7 @@ export class MovableObject extends DrawableObject {
         super();
         this.lastGravityUpdate = 0;
         this.gravityInterval = 1000 / 25;
-        this.groundBottom = 370 + 300; // 670
+        this.groundBottom = 370 + 300;
         this.lastUpdateTime = 0;
         this.deltaTime = 0;
         this.deltaSeconds = 0;
@@ -86,12 +86,10 @@ export class MovableObject extends DrawableObject {
     }
 
     getGroundTopY() {
-        // Standard: alter Boden
         if (!this.groundBottom) return 370;
         return this.groundBottom - this.height;
     }
 
-    // neuste Version für Event Manager mit atttack hitbox
     isColliding(
         object,
         toleranceA = { x: 0, y: 0, width: 0, height: 0 },
@@ -103,7 +101,6 @@ export class MovableObject extends DrawableObject {
         const ax = typeof this.getRenderX === "function" ? this.getRenderX() : this.x;
         const bx = typeof object.getRenderX === "function" ? object.getRenderX() : object.x;
 
-        // hitbox wählen (normal offset oder override)
         const hbA =
             options.hitboxA ??
             (options.useAttackHitboxA && this.attackHitbox?.active ? this.attackHitbox : null) ??
@@ -114,19 +111,19 @@ export class MovableObject extends DrawableObject {
             (options.useAttackHitboxB && object.attackHitbox?.active ? object.attackHitbox : null) ??
             object.offset;
 
-        // A
+        
         const aLeft = this.isFlipped ? ax + hbA.right + toleranceA.x : ax + hbA.left + toleranceA.x;
         const aRight = this.isFlipped ? ax + this.width - hbA.left - toleranceA.width : ax + this.width - hbA.right - toleranceA.width;
         const aTop = this.y + hbA.top + toleranceA.y;
         const aBottom = this.y + this.height - hbA.bottom - toleranceA.height;
 
-        // B
+        
         const bLeft = object.isFlipped ? bx + hbB.right + toleranceB.x : bx + hbB.left + toleranceB.x;
         const bRight = object.isFlipped ? bx + object.width - hbB.left - toleranceB.width : bx + object.width - hbB.right - toleranceB.width;
         const bTop = object.y + hbB.top + toleranceB.y;
         const bBottom = object.y + object.height - hbB.bottom - toleranceB.height;
 
-        // Normalisieren (verhindert Flip/Offset Edgecases)
+     
         const aL = Math.min(aLeft, aRight), aR = Math.max(aLeft, aRight);
         const aT = Math.min(aTop, aBottom), aB = Math.max(aTop, aBottom);
         const bL = Math.min(bLeft, bRight), bR = Math.max(bLeft, bRight);
@@ -143,7 +140,7 @@ export class MovableObject extends DrawableObject {
         const ax = this.getRenderX ? this.getRenderX() : this.x;
         const bx = object.getRenderX ? object.getRenderX() : object.x;
 
-        // --- Hitbox von "this" (A) ---
+       
         const aLeft = this.isFlipped
             ? ax + this.offset.right + toleranceA.x
             : ax + this.offset.left + toleranceA.x;
@@ -155,7 +152,7 @@ export class MovableObject extends DrawableObject {
         const aTop = this.y + this.offset.top + toleranceA.y;
         const aBottom = this.y + this.height - this.offset.bottom - toleranceA.height;
 
-        // --- Hitbox von "object" (B) ---
+       
         const bLeft = object.isFlipped
             ? bx + object.offset.right + toleranceB.x
             : bx + object.offset.left + toleranceB.x;
@@ -172,7 +169,7 @@ export class MovableObject extends DrawableObject {
 
 
 
-    // version vor event manager - für normal und isFlipped
+    
     isCollidingBefore(object, collidingToleranceTop = 0, collidingToleranceLeft = 0) {
         const a_left = this.isFlipped
             ? this.x + this.offset.right
@@ -204,7 +201,7 @@ export class MovableObject extends DrawableObject {
         const ax = this.getRenderX ? this.getRenderX() : this.x;
         const bx = object.getRenderX ? object.getRenderX() : object.x;
 
-        // === A-Seiten (dieses Objekt) ===
+       
         const a_left = this.isFlipped
             ? ax + hb.right
             : ax + hb.left;
@@ -216,7 +213,7 @@ export class MovableObject extends DrawableObject {
         const a_top = this.y + hb.top;
         const a_bottom = this.y + this.height - hb.bottom;
 
-        // === B-Seiten (Zielobjekt) ===
+       
         const b_left = object.isFlipped
             ? bx + object.offset.right
             : bx + object.offset.left;
@@ -244,7 +241,7 @@ export class MovableObject extends DrawableObject {
         const ax = this.getRenderX ? this.getRenderX() : this.x;
         const bx = object.getRenderX ? object.getRenderX() : object.x;
 
-        // --- Hitbox A (Character) wie in isColliding, aber ohne Toleranzen ---
+       
         const aLeft = this.isFlipped
             ? ax + this.offset.right
             : ax + this.offset.left;
@@ -256,10 +253,10 @@ export class MovableObject extends DrawableObject {
         const aTop = this.y + this.offset.top;
         const aBottom = this.y + this.height - this.offset.bottom;
 
-        // Bottom aus vorherigem Frame (falls noch nicht gesetzt → aktueller)
+       
         const prevBottom = this.prevBottom ?? aBottom;
 
-        // --- Hitbox B (Enemy) wie in isColliding ---
+       
         const bLeft = object.isFlipped
             ? bx + object.offset.right
             : bx + object.offset.left;
@@ -271,32 +268,32 @@ export class MovableObject extends DrawableObject {
         const bTop = object.y + object.offset.top;
         const bBottom = object.y + object.height - object.offset.bottom;
 
-        // 1) Horizontal muss sich überhaupt was überschneiden
+       
         const horizontallyAligned =
             aRight > bLeft &&
             aLeft < bRight;
 
         if (!horizontallyAligned) return false;
 
-        // 2) Character muss FALLEN (bei dir: speedY < 0 = nach unten)
+       
         const fallingDown = this.speedY < 0;
         if (!fallingDown) return false;
 
-        // 3) Im letzten Frame waren die Füße noch ÜBER dem Kopf des Gegners
+        
         const wasAboveHead = prevBottom <= bTop;
 
-        // 4) Jetzt sind die Füße auf / knapp unter Kopfhöhe → von oben eingeschlagen
-        const V_TOL = 10; // vertikale Toleranz in px
+        
+        const V_TOL = 10; 
         const nowCrossFromTop =
             aBottom >= bTop - V_TOL &&
-            aTop < bBottom; // nicht komplett vorbei schießen
+            aTop < bBottom; 
 
         if (!(wasAboveHead && nowCrossFromTop)) return false;
 
-        // 5) Seitlichen Versatz begrenzen → keine „seitlichen“ stomp-Hits
+       
         const aCenterX = (aLeft + aRight) / 2;
         const bCenterX = (bLeft + bRight) / 2;
-        const maxSideOffset = object.width * 0.6; // 0.5–0.7 je nach Gefühl
+        const maxSideOffset = object.width * 0.6; 
 
         const horizontalOk = Math.abs(aCenterX - bCenterX) <= maxSideOffset;
         if (!horizontalOk) return false;
@@ -327,7 +324,7 @@ export class MovableObject extends DrawableObject {
 
     getRenderX() {
         const d = this.drawOffset || { x: 0, flipX: 0 };
-        // flipX soll nur beim Spiegeln wirken
+       
         const flipShift = this.isFlipped ? (d.flipX || 0) : 0;
         return this.x + (d.x || 0) + flipShift;
     }
@@ -515,7 +512,7 @@ export class MovableObject extends DrawableObject {
      */
     stepArrayAnimation(images, { isOneShot, onFinished }) {
         this.applyNextFrame(images);
-        // falls Object eine deferredSizeUpdate-Logik hat (Character z.B.)
+     
         if (typeof this.handleDeferredSizeUpdate === 'function') {
             this.handleDeferredSizeUpdate();
         }
@@ -545,7 +542,7 @@ export class MovableObject extends DrawableObject {
         const count = this.getFrameCount(def, anim.meta.frames);
 
         if (this.frameIndex >= count) {
-            const loopDef = def.loop !== false; // default: loop wenn nicht explizit false
+            const loopDef = def.loop !== false; 
 
             if (!isOneShot && allowLoop && loopDef) {
                 this.frameIndex = 0;
@@ -596,20 +593,20 @@ export class MovableObject extends DrawableObject {
         }
     }
 
-    // MovableObject
+  
     getFrameCountForSource(anim, animName = this.currentAnimation) {
         if (!anim) return 0;
 
-        // Arrays
+       
         if (Array.isArray(anim)) return anim.length;
 
-        // Einzel-Sheet
+       
         if (anim.type === 'sheet') {
             const def = this.getSheetDef(anim.meta, anim.anim ?? animName);
             return this.getFrameCount(def, anim.meta.frames);
         }
 
-        // SheetSequence
+      
         if (anim.type === 'sheetSequence') {
             let total = 0;
             for (const sheet of anim.sheets ?? []) {

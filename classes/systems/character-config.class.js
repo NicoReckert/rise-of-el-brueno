@@ -99,10 +99,10 @@ export class CharacterConfig {
      * Sets the character's size and initial position on the screen.
      */
     setSizeAndPosition() {
-        this.char.height = 300; // 183 für voidless.dev sprite - 300 * 0.61
-        this.char.width = 130; // 158 für voidless.dev sprite - 130 * 1.216
+        this.char.height = 300; 
+        this.char.width = 130; 
         this.char.x = 1000;
-        this.char.y = 370; // 487 für voidless.dev sprite - 370 * 1.9
+        this.char.y = 370;
     }
 
     /**
@@ -191,7 +191,7 @@ export class CharacterConfig {
     initBasicStates() {
         this.char.isFlipped = false;
         this.char.isMoving = false;
-        this.char.throwableBottels = 0;
+        this.char.throwableBottles = 0;
     }
 
     /**

@@ -680,7 +680,7 @@ export const townEvents =
                 if (setup._tadeoHelpGivenEmpty) return false;
 
                 // nur wenn wirklich empty
-                if ((char.throwableBottels ?? 0) > 0) return false;
+                if ((char.throwableBottles ?? 0) > 0) return false;
 
                 // nicht während panic
                 if (setup.isTadeoPanic) return false;
@@ -723,7 +723,7 @@ export const townEvents =
                 setup.tadeoSpeechLockUntil = Math.max(setup.tadeoSpeechLockUntil ?? 0, lockUntil);
                 setup.tadeoPanicUntil = Math.max(setup.tadeoPanicUntil ?? 0, lockUntil); // <-- NEU
                 // Inventar + UI-Bar
-                char.throwableBottels = (char.throwableBottels ?? 0) + give;
+                char.throwableBottles = (char.throwableBottles ?? 0) + give;
 
                 const bar = setup.bottleBar;
                 if (bar) {
@@ -756,7 +756,7 @@ export const townEvents =
             action: (setup) => {
                 const c = setup.world.character;
                 if (!c) return;
-                if ((c.throwableBottels ?? 0) > 0) {
+                if ((c.throwableBottles ?? 0) > 0) {
                     setup._tadeoHelpGivenEmpty = false;
                 }
             }
@@ -1051,7 +1051,6 @@ export const townEvents =
                         enemy.isMovingLeft = false;
                         enemy.isMovingRight = false;
                         enemy.removeAt = setup.world.timestamp + 2000;
-                        console.log(enemy.removeAt)
                         enemy.isHurt = false; // optional: kein HURT-Anim bei Tod durch Sprung
                         setup.world.audioManager.playOneShot('chickenDeathSound', { volume: 0.6 });
                         char.movementCtrl.bounce();
@@ -1144,8 +1143,8 @@ export const townEvents =
                         bar.percentage = Math.min(bar.percentage + 20, 100);
                         bar.setPercentage(bar.percentage);
 
-                        if (char.throwableBottels < 5) {
-                            char.throwableBottels += 1;
+                        if (char.throwableBottles < 5) {
+                            char.throwableBottles += 1;
                         }
                     }
                 }
@@ -1382,7 +1381,7 @@ export const townEvents =
         //         const canThrow =
         //             !char.isThrowing &&
         //             noMoveInput &&
-        //             char.throwableBottels > 0 &&
+        //             char.throwableBottles > 0 &&
         //             !char.isAttack &&
         //             !char.isProtect &&
         //             throwIsIdle;
@@ -1403,10 +1402,10 @@ export const townEvents =
         //             bar.percentage = Math.min(bar.percentage - 20, 100);
         //             bar.setPercentage(bar.percentage);
 
-        //             if (char.throwableBottels > 0) {
-        //                 char.throwableBottels -= 1;
+        //             if (char.throwableBottles > 0) {
+        //                 char.throwableBottles -= 1;
         //             }
-        //         } else if (char.throwableBottels === 0) {
+        //         } else if (char.throwableBottles === 0) {
         //             // Keine Flaschen mehr → leeres "Klick" Geräusch
         //             world.audioManager.playOneShot('bottleEmptySound', { volume: 0.6 });
         //         }
@@ -1433,13 +1432,13 @@ export const townEvents =
                 const canThrow =
                     !c.isThrowing &&
                     noMoveInput &&
-                    (c.throwableBottels ?? 0) > 0 &&
+                    (c.throwableBottles ?? 0) > 0 &&
                     !c.isAttack &&
                     !c.isProtect &&
                     throwIsIdle;
 
                 if (!canThrow) {
-                    if ((c.throwableBottels ?? 0) === 0) {
+                    if ((c.throwableBottles ?? 0) === 0) {
                         world.audioManager.playOneShot("bottleEmptySound", { volume: 0.6 });
                     }
                     return;
@@ -1466,7 +1465,7 @@ export const townEvents =
                 }
 
                 // inventar -1
-                c.throwableBottels = Math.max((c.throwableBottels ?? 0) - 1, 0);
+                c.throwableBottles = Math.max((c.throwableBottles ?? 0) - 1, 0);
             }
         },
 
@@ -1480,7 +1479,7 @@ export const townEvents =
                 const c = setup.world.character;
                 const world = setup.world;
                 if (!c) return;
-                if ((c.throwableBottels ?? 0) <= 0) return;
+                if ((c.throwableBottles ?? 0) <= 0) return;
                 if (world.keyboard.LEFT || world.keyboard.RIGHT) return;
                 const p = setup.throwHoldProgress ?? 0;
                 if (p <= 0) return;
@@ -1580,7 +1579,7 @@ export const townEvents =
             condition: (setup) => {
                 const c = setup.world.character;
                 if (!c) return false;
-                return (c.throwableBottels ?? 0) <= 0;
+                return (c.throwableBottles ?? 0) <= 0;
             },
             action: (setup) => {
                 setup.world.audioManager.playOneShot("bottleEmptySound", { volume: 0.6 });

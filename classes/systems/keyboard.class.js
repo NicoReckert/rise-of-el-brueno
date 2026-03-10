@@ -21,7 +21,6 @@ export class Keyboard {
         if (key === 'ArrowUp') this.UP = false;
         if (key === 'ArrowDown') this.DOWN = false;
         if (key === 'd') this.D = false;
-        // if (key === 'j') this.J = false;
         if (key === 's') this.S = false;
         if (key === 'f') this.F = false;
         if (key === 't') this.T = false;
@@ -35,7 +34,6 @@ export class Keyboard {
         if (key === 'ArrowUp') this.UP = true;
         if (key === 'ArrowDown') this.DOWN = true;
         if (key === 'd') this.D = true;
-        // if (key === 'j') this.J = true;
         if (key === 's') this.S = true;
         if (key === 'f') this.F = true;
         if (key === 't') this.T = true;

@@ -262,8 +262,8 @@ export class GameApp {
             if (this.audioManager.isMuted) {
                 this.audioManager.applyMuteToAllAudios(this.audioManager.audios);
             }
-        } catch (e) {
-            console.warn('[loadLazyAssets] unexpected error:', e);
+        } catch {
+            return;
         }
     }
 

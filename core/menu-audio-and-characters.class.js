@@ -44,12 +44,12 @@ export class MenuAudioAndCharacters {
             loadVideo(submenuBg);
         }
         submenuBg.play();
-        document.getElementById('overlay-characters').classList.remove('d-none'); //ui
-        this.renderCharacters(); //ui
-        this.audioManager.fadeOutAudio(this.audioManager.audios.titleMusicIntro, 1000); //audio
-        this.audioManager.fadeOutAudio(this.audioManager.audios.titleMusicLoop, 1000); // audio
-        this.audioManager.audios.infoScreenMusic.currentTime = 0; // audio
-        this.audioManager.fadeInAudio(this.audioManager.audios.infoScreenMusic, 2000); // audio
+        document.getElementById('overlay-characters').classList.remove('d-none'); 
+        this.renderCharacters(); 
+        this.audioManager.fadeOutAudio(this.audioManager.audios.titleMusicIntro, 1000); 
+        this.audioManager.fadeOutAudio(this.audioManager.audios.titleMusicLoop, 1000); 
+        this.audioManager.audios.infoScreenMusic.currentTime = 0; 
+        this.audioManager.fadeInAudio(this.audioManager.audios.infoScreenMusic, 2000); 
     }
 
     renderCharacters() {
