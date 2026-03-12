@@ -1,3 +1,11 @@
+import {
+    characterDialogTemplate,
+    largeCharacterDialogTemplate,
+    storyTextTemplate,
+    controlsTemplate,
+    legalNoticeTemplate
+} from "../ui/menu-templates.js";
+
 export class UIManager {
     constructor() {
         this.dom = {};
@@ -9,6 +17,7 @@ export class UIManager {
             ...this.cacheLoadingElements(),
             ...this.cacheStartScreenElements(),
             ...this.cacheControlElements(),
+            ...this.cacheOverlayElements()
         };
     }
 
@@ -26,7 +35,6 @@ export class UIManager {
             nextLevelButton: document.getElementById('next-level-button'),
             levelCompleteButtonBox: document.getElementById('level-complete-button-box'),
             pauseResumeButton: document.getElementById('pause-resume-button'),
-            overlayStartInitialisation: document.getElementById('overlay-start-initialisation'),
             h1: document.getElementById('h1'),
             menuStoryButton: document.getElementById('menu-story-button'),
             menuControlsButton: document.getElementById('menu-controls-button'),
@@ -61,6 +69,20 @@ export class UIManager {
         };
     }
 
+    cacheOverlayElements() {
+        return {
+            overlayCharacters: document.getElementById('overlay-characters'),
+            overlayBigCard: document.getElementById('overlay-big-card'),
+            overlayStory: document.getElementById('overlay-story'),
+            overlayControls: document.getElementById('overlay-controls'),
+            overlayCredits: document.getElementById('overlay-credits'),
+            bigCardBox: document.getElementById('big-card-box'),
+            storyBox: document.getElementById('story-box'),
+            controlsBox: document.getElementById('controls-box'),
+            creditsBox: document.getElementById('credits-box'),
+        };
+    }
+
     updateMuteButtonUI(isMuted) {
         if (!this.dom.muteToggleButton) return;
         this.dom.muteToggleButton.textContent = isMuted ? "🔇" : "🔊";
@@ -82,10 +104,6 @@ export class UIManager {
         this.dom.levelCompleteButtonBox.classList.add('d-none');
     }
 
-    hidePauseOverlayAndMoveButtonBox() {
-        this.dom.levelCompleteButtonBox.classList.add('d-none');
-    }
-
     isOpenPauseOverlay() {
         return !this.dom.pauseOverlay.classList.contains('d-none');
     }
@@ -96,10 +114,6 @@ export class UIManager {
 
     hidePauseOverlay() {
         this.dom.pauseOverlay.classList.add('d-none');
-    }
-
-    setMoveButtonsActive(active) {
-        this.dom.moveButtonBox.classList.toggle('move-button-box-active', active);
     }
 
     fadeInIntroVideo() {
@@ -156,5 +170,107 @@ export class UIManager {
         if (this.dom.overlayStartInitialisation) {
             this.dom.overlayStartInitialisation.style.display = 'none';
         }
+    }
+
+    showElement(element) {
+        if (!element) return;
+        element.classList.remove('d-none');
+    }
+
+    hideElement(element) {
+        if (!element) return;
+        element.classList.add('d-none');
+    }
+
+    setBodyScrollLocked(active) {
+        if (!this.dom.body) return;
+        this.dom.body.classList.toggle('overflow-hidden', active);
+    }
+
+    setCharactersOverlayBlur(active) {
+        const overlay = this.dom.overlayCharacters;
+        if (!overlay) return;
+        overlay.classList.toggle('blur-effect', active);
+    }
+
+    attachVideoToOverlay(overlay, video) {
+        if (!overlay || !video) return;
+        overlay.prepend(video);
+    }
+
+    showCharactersOverlay() {
+        this.showElement(this.dom.overlayCharacters);
+    }
+
+    hideCharactersOverlay() {
+        this.hideElement(this.dom.overlayCharacters);
+    }
+
+    showBigCardOverlay() {
+        this.showElement(this.dom.overlayBigCard);
+        this.setBodyScrollLocked(true);
+        this.setCharactersOverlayBlur(true);
+    }
+
+    hideBigCardOverlay() {
+        this.hideElement(this.dom.overlayBigCard);
+        this.setBodyScrollLocked(false);
+        this.setCharactersOverlayBlur(false);
+    }
+
+    showStoryOverlay() {
+        this.showElement(this.dom.overlayStory);
+    }
+
+    hideStoryOverlay() {
+        this.hideElement(this.dom.overlayStory);
+    }
+
+    showControlsOverlay() {
+        this.showElement(this.dom.overlayControls);
+    }
+
+    hideControlsOverlay() {
+        this.hideElement(this.dom.overlayControls);
+    }
+
+    showCreditsOverlay() {
+        this.showElement(this.dom.overlayCredits);
+    }
+
+    hideCreditsOverlay() {
+        this.hideElement(this.dom.overlayCredits);
+    }
+
+    renderCharacterCards(characters) {
+        const box = this.dom.smallCardBox;
+        if (!box) return;
+        box.innerHTML = characters
+            .map(character => characterDialogTemplate(character.name, character.text))
+            .join('');
+    }
+
+    renderBigCharacterCard(character) {
+        const box = this.dom.bigCardBox;
+        if (!box || !character) return;
+        box.innerHTML = largeCharacterDialogTemplate(character.name, character.text2);
+    }
+
+    renderStoryCard(text) {
+        const box = this.dom.storyBox;
+        if (!box) return;
+        box.innerHTML = storyTextTemplate(text);
+    }
+
+    renderControlsCard(controls) {
+        const box = this.dom.controlsBox;
+        if (!box) return;
+        box.innerHTML = controlsTemplate(controls);
+    }
+
+    renderCreditsCard() {
+        const box = this.dom.creditsBox;
+        if (!box) return;
+        box.innerHTML = legalNoticeTemplate();
     }
 }
