@@ -1,100 +1,133 @@
+const KEY_MAP = {
+    ArrowLeft: 'LEFT',
+    ArrowRight: 'RIGHT',
+    ArrowUp: 'UP',
+    ArrowDown: 'DOWN',
+    d: 'D',
+    s: 'S',
+    f: 'F',
+    t: 'T',
+    a: 'A'
+};
+
+const MOBILE_BUTTON_MAP = {
+    'left-button': 'LEFT',
+    'right-button': 'RIGHT',
+    'jump-button': 'UP',
+    'duck-button': 'DOWN',
+    'throw-button': 'D',
+    'action-button': 'F',
+    'log-button': 'T',
+    'attack-button': 'A',
+    'protect-button': 'S'
+};
+
+/**
+ * Handles keyboard and mobile input state.
+ */
 export class Keyboard {
-    LEFT = false;
-    RIGHT = false;
-    UP = false;
-    DOWN = false
-    D = false;
-    J = false;
-    S = false;
-    F = false;
-    T = false;
-    A = false;
-    S = false;
-
+    /**
+     * Creates a new Keyboard instance.
+     */
     constructor() {
-        this.mobileButtonMakeTrueOrFalse();
+        this.initDirectionKeys();
+        this.initActionKeys();
+        this.bindMobileButtons();
     }
 
-    setKeyFalse(key) {
-        if (key === 'ArrowLeft') this.LEFT = false;
-        if (key === 'ArrowRight') this.RIGHT = false;
-        if (key === 'ArrowUp') this.UP = false;
-        if (key === 'ArrowDown') this.DOWN = false;
-        if (key === 'd') this.D = false;
-        if (key === 's') this.S = false;
-        if (key === 'f') this.F = false;
-        if (key === 't') this.T = false;
-        if (key === 'a') this.A = false;
-        if (key === 's') this.S = false;
+    /**
+     * Initializes direction key states.
+     * @returns {void}
+     */
+    initDirectionKeys() {
+        this.LEFT = false;
+        this.RIGHT = false;
+        this.UP = false;
+        this.DOWN = false;
     }
 
+    /**
+     * Initializes action key states.
+     * @returns {void}
+     */
+    initActionKeys() {
+        this.D = false;
+        this.J = false;
+        this.S = false;
+        this.F = false;
+        this.T = false;
+        this.A = false;
+    }
+
+    /**
+     * Sets the specified key state to true.
+     * @param {string} key Key identifier.
+     * @returns {void}
+     */
     setKeyTrue(key) {
-        if (key === 'ArrowLeft') this.LEFT = true;
-        if (key === 'ArrowRight') this.RIGHT = true;
-        if (key === 'ArrowUp') this.UP = true;
-        if (key === 'ArrowDown') this.DOWN = true;
-        if (key === 'd') this.D = true;
-        if (key === 's') this.S = true;
-        if (key === 'f') this.F = true;
-        if (key === 't') this.T = true;
-        if (key === 'a') this.A = true;
-        if (key === 's') this.S = true;
+        this.setKeyState(key, true);
     }
 
-    mobileButtonMakeTrueOrFalse() {
-        document.getElementById('left-button').addEventListener('touchstart', () => {
-            this.LEFT = true;
+    /**
+     * Sets the specified key state to false.
+     * @param {string} key Key identifier.
+     * @returns {void}
+     */
+    setKeyFalse(key) {
+        this.setKeyState(key, false);
+    }
+
+    /**
+     * Updates the state of a mapped key.
+     * @param {string} key Input key identifier.
+     * @param {boolean} value Key state.
+     * @returns {void}
+     */
+    setKeyState(key, value) {
+        const mappedKey = this.getMappedKey(key);
+        if (!mappedKey) return;
+        this[mappedKey] = value;
+    }
+
+    /**
+     * Resolves the mapped key identifier from an input key.
+     * @param {string} key Input key identifier.
+     * @returns {string|null} Mapped key name or null if not mapped.
+     */
+    getMappedKey(key) {
+        if (typeof key !== 'string') return null;
+        const normalizedKey = key.length === 1 ? key.toLowerCase() : key;
+        return KEY_MAP[normalizedKey] ?? null;
+    }
+
+    /**
+     * Binds mobile button elements to their corresponding key states.
+     * @returns {void}
+     */
+    bindMobileButtons() {
+        Object.entries(MOBILE_BUTTON_MAP).forEach(([id, key]) => {
+            this.bindMobileButton(id, key);
         });
-        document.getElementById('left-button').addEventListener('touchend', () => {
-            this.LEFT = false;
+    }
+
+    /**
+     * Binds a mobile button element to a key state.
+     * @param {string} id DOM element id of the mobile button.
+     * @param {string} key Key state property name.
+     * @returns {void}
+     */
+    bindMobileButton(id, key) {
+        const element = document.getElementById(id);
+        if (!element) return;
+        element.addEventListener('touchstart', (event) => {
+            event.preventDefault();
+            this[key] = true;
+        }, { passive: false });
+        element.addEventListener('touchend', () => {
+            this[key] = false;
         });
-        document.getElementById('right-button').addEventListener('touchstart', () => {
-            this.RIGHT = true;
-        });
-        document.getElementById('right-button').addEventListener('touchend', () => {
-            this.RIGHT = false;
-        });
-        document.getElementById('jump-button').addEventListener('touchstart', () => {
-            this.UP = true;
-        });
-        document.getElementById('jump-button').addEventListener('touchend', () => {
-            this.UP = false;
-        });
-        document.getElementById('throw-button').addEventListener('touchstart', () => {
-            this.D = true;
-        });
-        document.getElementById('throw-button').addEventListener('touchend', () => {
-            this.D = false;
-        });
-        document.getElementById('action-button').addEventListener('touchstart', () => {
-            this.F = true;
-        });
-        document.getElementById('action-button').addEventListener('touchend', () => {
-            this.F = false;
-        });
-        document.getElementById('log-button').addEventListener('touchstart', () => {
-            this.T = true;
-        });
-        document.getElementById('log-button').addEventListener('touchend', () => {
-            this.T = false;
-        });
-        document.getElementById('attack-button').addEventListener('touchstart', () => {
-            this.A = true;
-        });
-        document.getElementById('attack-button').addEventListener('touchend', () => {
-            this.A = false;
-        });
-        document.getElementById('protect-button').addEventListener('touchstart', () => {
-            this.S = true;
-        });
-        document.getElementById('protect-button').addEventListener('touchend', () => {
-            this.S = false;
-        });
-        document.getElementById('duck-button').addEventListener('touchstart', () => {
-            this.DOWN = true;
-        });
-        document.getElementById('duck-button').addEventListener('touchend', () => {
-            this.DOWN = false;
+        element.addEventListener('touchcancel', () => {
+            this[key] = false;
         });
     }
 }
