@@ -14,12 +14,12 @@ export class EventCollisionController {
     }
 
     /**
-     * Handles a collision event check between objects.
+     * Handles a collision-type event between objects.
      * @param {Object} e Event configuration.
      * @param {number} now Current timestamp.
      * @param {boolean} canTrigger Whether the event can trigger.
-     * @param {Object} a Source object.
-     * @param {Object|Array<Object>} b Target object or list.
+     * @param {Object} a Primary object.
+     * @param {Object|Object[]} b Collision target object or array.
      * @returns {void}
      */
     handleCollisionEvent(e, now, canTrigger, a, b) {
@@ -27,10 +27,27 @@ export class EventCollisionController {
         const state = this.buildCollisionState(e);
         if (Array.isArray(b)) return this.handleArrayCollisionEvent(e, now, canTrigger, a, b, state);
         if (!b) return;
+        if (this.shouldSkipCollisionTarget(e, now, a, b, state)) return;
         const hit = a.isColliding(b, state.tolA, state.tolB, state.collOpts);
         if (hit && state.key && canTrigger) this.triggerCollision(e, now, a, b);
         else if (!hit) this.triggerCollisionLeave(e, now, a, b);
         if (this.debug) this.drawSingleCollisionDebug(a, b, state, hit);
+    }
+
+    /**
+     * Checks whether a collision target should be skipped.
+     * @param {Object} e Event configuration.
+     * @param {number} now Current timestamp.
+     * @param {Object} a Primary object.
+     * @param {Object} b Collision target object.
+     * @param {Object} state Collision state configuration.
+     * @returns {boolean} True if the target should be skipped.
+     */
+    shouldSkipCollisionTarget(e, now, a, b, state) {
+        if (!e.targetFilter || e.targetFilter(b, this.setup, a, e)) return false;
+        this.triggerCollisionLeave(e, now, a, b);
+        if (this.debug) this.drawSingleCollisionDebug(a, b, state, false);
+        return true;
     }
 
     /**
@@ -67,28 +84,30 @@ export class EventCollisionController {
      * @param {number} now Current timestamp.
      * @param {boolean} canTrigger Whether the event can trigger.
      * @param {Object} a Source object.
-     * @param {Array<Object>} b Target objects.
+     * @param {Object[]} b Target objects.
      * @param {Object} state Collision state configuration.
      * @returns {void}
      */
     handleArrayCollisionEvent(e, now, canTrigger, a, b, state) {
-        const hitObj = this.findFirstCollisionInArray(a, b, state);
+        const hitObj = this.findFirstCollisionInArray(e, a, b, state);
         const hit = !!hitObj;
         if (hit && state.key && canTrigger) this.triggerArrayCollision(e, now, a, hitObj);
         else if (!hit) this.triggerArrayCollisionLeave(e, now, a);
-        if (this.debug) this.drawArrayCollisionDebug(a, b, state, hit);
+        if (this.debug) this.drawArrayCollisionDebug(e, a, b, state, hit);
     }
 
     /**
      * Finds the first object in an array that collides with the source object.
+     * @param {Object} e Event configuration.
      * @param {Object} a Source object.
-     * @param {Array<Object>} b Target objects.
+     * @param {Object[]} b Target objects.
      * @param {Object} state Collision state configuration.
      * @returns {Object|null} Colliding object or null if none found.
      */
-    findFirstCollisionInArray(a, b, state) {
+    findFirstCollisionInArray(e, a, b, state) {
         for (const item of b) {
             if (!item) continue;
+            if (e.targetFilter && !e.targetFilter(item, this.setup, a, e)) continue;
             if (a.isColliding(item, state.tolA, state.tolB, state.collOpts)) return item;
         }
         return null;
@@ -142,33 +161,39 @@ export class EventCollisionController {
 
     /**
      * Draws debug visualization for collisions against an array of targets.
+     * @param {Object} e Event configuration.
      * @param {Object} a Source object.
      * @param {Object[]} b Array of potential target objects.
      * @param {Object} state Collision state configuration.
      * @param {boolean} hit Whether any collision occurred.
      * @returns {void}
      */
-    drawArrayCollisionDebug(a, b, state, hit) {
+    drawArrayCollisionDebug(e, a, b, state, hit) {
         const ctx = this.setup.world.ctx;
         ctx.save();
         const boxA = this.getDebugBox(a, state.tolA, state.collOpts.hitboxA, state.collOpts.useAttackHitboxA);
         this.geometryCtrl.drawBox(ctx, boxA, hit ? this.geometryCtrl.debugColors.active : this.geometryCtrl.debugColors.hitA);
-        for (const item of b) this.drawArrayCollisionDebugItem(ctx, a, item, state);
+        for (const item of b) this.drawArrayCollisionDebugItem(ctx, e, a, item, state);
         ctx.restore();
     }
 
     /**
      * Draws debug visualization for a single item in an array collision check.
      * @param {CanvasRenderingContext2D} ctx Rendering context.
+     * @param {Object} e Event configuration.
      * @param {Object} a Source object.
      * @param {Object} item Target object from the array.
      * @param {Object} state Collision state configuration.
      * @returns {void}
      */
-    drawArrayCollisionDebugItem(ctx, a, item, state) {
+    drawArrayCollisionDebugItem(ctx, e, a, item, state) {
         if (!item) return;
-        const h = a.isColliding(item, state.tolA, state.tolB, state.collOpts);
         const boxB = this.getDebugBox(item, state.tolB, state.collOpts.hitboxB, state.collOpts.useAttackHitboxB);
+        if (e.targetFilter && !e.targetFilter(item, this.setup, a, e)) {
+            this.geometryCtrl.drawBox(ctx, boxB, this.geometryCtrl.debugColors.inactive);
+            return;
+        }
+        const h = a.isColliding(item, state.tolA, state.tolB, state.collOpts);
         const color = h ? this.geometryCtrl.debugColors.active : this.geometryCtrl.debugColors.hitB;
         this.geometryCtrl.drawBox(ctx, boxB, color);
     }

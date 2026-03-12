@@ -90,6 +90,6 @@ export class EndbossFireBeam extends MovableObject {
      * @returns {boolean} True if hitting, otherwise false.
      */
     isHitting(target) {
-        return this.isCollidingBefore(target, 0, 0);
+        return this.isColliding(target);
     }
 }

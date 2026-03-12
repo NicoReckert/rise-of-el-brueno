@@ -72,7 +72,7 @@ export class EndbossTornado extends MovableObject {
         const dx = this.getHorizontalDistanceToTarget();
         const step = this.getHorizontalStep(dx, dt60);
         this.x += Math.sign(dx) * step;
-        if (this.isCollidingBefore(this.target, 0, 0)) {
+        if (this.isColliding(this.target)) {
             this.captureTarget();
         }
     }
