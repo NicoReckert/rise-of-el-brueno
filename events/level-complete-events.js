@@ -7,6 +7,8 @@ export const levelCompleteEvents =
         {
             type: 'quest',
             action: (setup) => {
+                setup.characters.levelCompleteCharacter.x = 290;
+                setup.world.camera_x = 0;
                 setup.sounds.levelCompleteMusic.loop = true;
                 setup.sounds.levelCompleteMusic.play();
                 setup.sounds.levelCompleteSound.play();
