@@ -82,8 +82,6 @@ export class LevelCompleteController {
      * @returns {void}
      */
     updateCamera() {
-        this.camera_x = this.setup.world.camera_x;
-        this.renderCameraX = Math.round(this.camera_x);
         this.renderCameraX = 0;
     }
 
@@ -108,11 +106,10 @@ export class LevelCompleteController {
      * @returns {Object|null} Background render data or null if not ready.
      */
     getLevelCompleteBackgroundData() {
-        const { ctx, canvas, setup } = this;
+        const { ctx, canvas, setup, character } = this;
         const { width: w, height: h } = canvas;
-        const { video, characters } = setup;
-        const character = characters.levelCompleteCharacter;
-        if (video.readyState < 2) return null;
+        const { video } = setup;
+        if (!video || video.readyState < 2) return null;
         const minSide = Math.min(w, h);
         const cx = character.x + character.width * 0.5;
         const cy = character.y + character.height * 0.6;
@@ -197,8 +194,7 @@ export class LevelCompleteController {
      * @returns {{ctx:CanvasRenderingContext2D, charCtx:CanvasRenderingContext2D, charCanvas:HTMLCanvasElement, character:Object}} Entity render data.
      */
     getLevelCompleteEntityData() {
-        const { ctx, charCtx, charCanvas } = this;
-        const character = this.setup.characters.levelCompleteCharacter;
+        const { ctx, charCtx, charCanvas, character } = this;
         return { ctx, charCtx, charCanvas, character };
     }
 
