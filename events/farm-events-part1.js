@@ -9,16 +9,24 @@ export const farmEvents_part1 = [
     {
         type: 'quest',
         name: 'initialize',
-        once: true,
         action: (setup) => {
             setup.state.comeFromStable ? setup.world.character.x = 1700 : setup.world.character.x = 1000;
             setup.world.camera_x = setup.world.character.x - 500;
             setup.world.level_end_x = 6409;
             setup.world.character.level_start_x = 440;
+            setup.state.comeFromStable = false;
+        }
+    },
+
+    /**
+     * Quest event that starts the farm background music.
+     */
+    {
+        type: 'quest',
+        action: (setup) => {
             setup.sounds.farmMusic.loop = true;
             setup.sounds.farmMusic.volume = 0.6;
             setup.sounds.farmMusic.play();
-            setup.state.comeFromStable = false;
         }
     },
 

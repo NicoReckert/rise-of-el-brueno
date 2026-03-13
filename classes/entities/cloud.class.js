@@ -11,12 +11,12 @@ export class Cloud extends MovableObject {
    * @param {number} [options.minDistance=200] Minimum distance between clouds.
    * @param {number} [options.levelWidth=6500] Width of the level.
    * @param {*} [options.spriteSheet=null] Optional sprite sheet source.
-   * @param {?Object} [options.entityImages=null] Optional image definitions.
+   * @param {?Object} [options.levelImages=null] Optional image definitions.
    */
-  constructor({ existingClouds = [], minDistance = 200, levelWidth = 6500, spriteSheet = null, entityImages = null } = {}) {
+  constructor({ existingClouds = [], minDistance = 200, levelWidth = 6500, spriteSheet = null, levelImages = null } = {}) {
     super();
     this.initConfig(existingClouds, minDistance, levelWidth, spriteSheet);
-    this.initImages(entityImages);
+    this.initImages(levelImages);
     this.frameIndex = 0;
     this.cloudVariantIndex = null;
     this.randomizeSizeAndY();
@@ -40,10 +40,10 @@ export class Cloud extends MovableObject {
 
   /**
    * Initializes cloud image resources.
-   * @param {Object} entityImages Image definitions.
+   * @param {Object} levelImages Image definitions.
    */
-  initImages(entityImages) {
-    this.cloudImages = entityImages?.cloud?.variants || [];
+  initImages(levelImages) {
+    this.cloudImages = levelImages?.shared?.cloud?.variants || [];
     this.frameSource = null;
   }
 

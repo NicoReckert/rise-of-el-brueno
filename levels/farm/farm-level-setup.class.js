@@ -24,9 +24,10 @@ export class FarmLevelSetup {
     constructor(world) {
         this.world = world;
         this.entityImages = this.world.entityImages;
+        this.levelImages = this.world.levelImages;
         this.allAudios = this.world.allAudios;
         this.allVideos = this.world.allVideos;
-        this.farmLevel = createFarmLevel({ entityImages: this.entityImages });
+        this.farmLevel = createFarmLevel({ levelImages: this.levelImages });
         this.farmEvents = farmEvents;
         this.state = createFarmState();
         this.init();

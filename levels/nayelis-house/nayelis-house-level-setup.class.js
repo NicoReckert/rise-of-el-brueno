@@ -12,9 +12,10 @@ export class NayelisHouseLevelSetup {
      */
     constructor(world) {
         this.world = world;
-        this.entityImages = world.entityImages;
-        this.allAudios = world.allAudios;
-        this.allVideos = world.allVideos;
+        this.entityImages = this.world.entityImages;
+        this.levelImages = this.world.levelImages;
+        this.allAudios = this.world.allAudios;
+        this.allVideos = this.world.allVideos;
         this.initHouseData();
         this.characters = this.createCharacters();
         this.speechBubbles = {};
@@ -27,7 +28,7 @@ export class NayelisHouseLevelSetup {
      * @returns {void}
      */
     initHouseData() {
-        this.nayelisHouseLevel = createNayelisHouseLevel();
+        this.nayelisHouseLevel = createNayelisHouseLevel({ levelImages: this.levelImages });
         this.nayelisHouseEvents = nayelisHouseEvents;
         this.popupTexts = [];
     }

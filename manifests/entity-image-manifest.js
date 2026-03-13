@@ -1,6 +1,4 @@
 export const farmEntityManifestImmediate = {
-  sky: Array.from({ length: 1 }, _ => `./assets/img/5_background/layers/air.png`),
-  cloud: { variants: Array.from({ length: 2 }, (_, i) => `./assets/img/5_background/layers/4_clouds/${i + 1}.webp`) },
   taskWindowBackground: ["./assets/img/shared_visuals/task_window_background.webp"],
   cow: {
     idle: {

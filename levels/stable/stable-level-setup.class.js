@@ -1,7 +1,7 @@
 import { LifeEnergyCharacterBar } from '../../classes/ui/life-energy-character-bar.class.js';
 import { AnimatedEntity } from '../../classes/entities/animated-entity.class.js';
 import { HollowHint } from '../../classes/ui/hollow-hint.class.js';
-import { stableLevel } from './stable-level.js';
+import { createStableLevel } from './stable-level.js'
 import { stableEvents } from '../../events/stable-level-events.js';
 
 /**
@@ -14,9 +14,10 @@ export class StableLevelSetup {
      */
     constructor(world) {
         this.world = world;
-        this.entityImages = world.entityImages;
-        this.allAudios = world.allAudios;
-        this.allVideos = world.allVideos;
+        this.entityImages = this.world.entityImages;
+        this.levelImages = this.world.levelImages;
+        this.allAudios = this.world.allAudios;
+        this.allVideos = this.world.allVideos;
         this.initStableData();
         this.statusBar = new LifeEnergyCharacterBar(this.entityImages);
         this.characters = this.createCharacters();
@@ -31,7 +32,7 @@ export class StableLevelSetup {
      * @returns {void}
      */
     initStableData() {
-        this.stableLevel = stableLevel;
+        this.stableLevel = createStableLevel({ levelImages: this.levelImages });
         this.popupTexts = [];
         this.stableEvents = stableEvents;
     }

@@ -17,12 +17,13 @@ export class World {
      * @param {Object} keyboard Keyboard input handler.
      * @param {Object} characterImages Character image assets.
      * @param {Object} entityImages Entity image assets.
+     * @param {Object} levelImages Level image assets.
      * @param {Object} audioManager Audio manager instance.
      * @param {Object} videoManager Video manager instance.
-     * @param {Object} inputManager Input manager instance.
+     * @param {Object} gameplayInputController Gameplay input controller instance.
      */
-    constructor(canvas, keyboard, characterImages, entityImages, audioManager, videoManager, inputManager) {
-        this.initCore(canvas, keyboard, characterImages, entityImages, audioManager, videoManager, inputManager);
+    constructor(canvas, keyboard, characterImages, entityImages, levelImages, audioManager, videoManager, gameplayInputController) {
+        this.initCore(canvas, keyboard, characterImages, entityImages, levelImages, audioManager, videoManager, gameplayInputController);
         this.initCharacterAndAudio();
         this.initSystems();
         this.initThrowAndCameraState();
@@ -38,21 +39,23 @@ export class World {
      * @param {Object} keyboard Keyboard input handler.
      * @param {Object} characterImages Character image assets.
      * @param {Object} entityImages Entity image assets.
+     * @param {Object} levelImages Level image assets.
      * @param {Object} audioManager Audio manager instance.
      * @param {Object} videoManager Video manager instance.
      * @param {Object} gameplayInputController Gameplay input controller instance.
      */
-    initCore(canvas, keyboard, characterImages, entityImages, audioManager, videoManager, gameplayInputController) {
+    initCore(canvas, keyboard, characterImages, entityImages, levelImages, audioManager, videoManager, gameplayInputController) {
         this.canvas = canvas;
         this.ctx = canvas.getContext('2d');
         this.renderer = new WorldRenderer(this.ctx);
         this.keyboard = keyboard;
         this.characterImages = characterImages;
         this.entityImages = entityImages;
+        this.levelImages = levelImages;
         this.audioManager = audioManager;
         this.videoManager = videoManager;
         this.gameplayInputController = gameplayInputController;
-        this.currentScene = 'townLevel';
+        this.currentScene = 'farmLevel';
     }
 
     /**
@@ -133,6 +136,7 @@ export class World {
      * Starts the game.
      */
     startGame() {
+        this.currentScene = 'farmLevel';
         this.levelManager.initLevels();
         this.draw();
     }

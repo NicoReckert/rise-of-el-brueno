@@ -5,132 +5,151 @@ import { SceneryObject } from '../../classes/entities/scenery-object.class.js';
 import { Sky } from '../../classes/entities/sky.class.js';
 import { Bottle } from '../../classes/entities/bottle.class.js';
 
-const groundSrc =
-    [
-        './assets/img/5_background/layers/3_third_layer/1.webp',
-        './assets/img/5_background/layers/2_second_layer/1.webp',
-        './assets/img/5_background/layers/1_first_layer/1.webp',
-        './assets/img/5_background/layers/3_third_layer/2.webp',
-        './assets/img/5_background/layers/2_second_layer/2.webp',
-        './assets/img/5_background/layers/1_first_layer/2.webp',
-        './assets/img/5_background/layers/ground-town.webp',
-        './assets/img/5_background/layers/ground-town2.webp'
-    ]
+const TOWN_LEVEL_WIDTH = 26640;
+const CLOUD_DENSITY = 1 / 700;
+const PARALLAX_STEP = 720;
+const PARALLAX_START_X = -720;
+const PARALLAX_COUNT = 38;
+const TOWN_TILE_START_X = 18676;
+const TOWN_TILE_COUNT = 41;
+const TOWN_TILE_STEP = 100;
 
-const scenerySrc =
-    [
-        './assets/img/town1.webp',
-        './assets/img/town2.webp',
-        './assets/img/town3.webp',
-        './assets/img/town4.webp',
-        './assets/img/town5.webp',
-        './assets/img/town6.webp',
-        './assets/img/house_nayeli.png'
+/**
+ * Creates and returns the town level instance.
+ * @param {Object} params Level creation parameters.
+ * @param {Object} params.entityImages Entity image assets.
+ * @param {Object} params.levelImages Level image assets.
+ * @returns {Level} Configured town level instance.
+ */
+export function createTownLevel({ entityImages, levelImages }) {
+    const townLevel = new Level(createTownLevelConfig(entityImages, levelImages));
+    addTownForegroundTiles(townLevel, levelImages);
+    return townLevel;
+}
 
-    ]
+/**
+ * Creates the configuration object for the town level.
+ * @param {Object} entityImages Entity image assets.
+ * @param {Object} levelImages Level image assets.
+ * @returns {Object} Town level configuration.
+ */
+function createTownLevelConfig(entityImages, levelImages) {
+    return {
+        clouds: createClouds(levelImages, TOWN_LEVEL_WIDTH),
+        grounds: createTownGrounds(levelImages),
+        sceneryObjects: createTownScenery(levelImages),
+        sky: new Sky({ width: 1280, height: 720, preset: "tragicDay" }),
+        coins: [],
+        bottles: createTownBottles(entityImages)
+    };
+}
 
-export function createTownLevel({ entityImages, allAudios }) {
-    const levelWidth = 26640;
-    const CLOUD_DENSITY = 1 / 700;
-    const cloudArray = [];
+/**
+ * Adds foreground ground tiles to the town level.
+ * @param {Level} townLevel Town level instance.
+ * @param {Object} levelImages Level image assets.
+ */
+function addTownForegroundTiles(townLevel, levelImages) {
+    pushTownForegroundTiles(
+        townLevel.grounds.foreGrounds,
+        levelImages.town.ground.town2[0]
+    );
+}
+
+/**
+ * Creates cloud objects for the level.
+ * @param {Object} levelImages Level image assets.
+ * @param {number} levelWidth Width of the level.
+ * @returns {Array} Array of cloud instances.
+ */
+function createClouds(levelImages, levelWidth) {
+    const clouds = [];
     const cloudCount = Math.round(levelWidth * CLOUD_DENSITY);
     for (let i = 0; i < cloudCount; i++) {
-        cloudArray.push(new Cloud({ existingClouds: cloudArray, minDistance: 280, levelWidth: levelWidth, entityImages: entityImages })); // 100px Mindestabstand
-    }
-    const townLevel = new Level(
-        {
-            enemies:
-                [
-                    // new Chicken('chickenMutatesSmall', entityImages, 120, 120, 545, null, allAudios),
-                    // new Chicken('chickenMutatesSmall', entityImages, 120, 120, 545, null,  allAudios),
-                    // new Chicken('chickenMutatesSmall', entityImages, 120, 120, 545, null,  allAudios),
-                    // new Chicken('chickenMutatesBig', entityImages, 160, 160, 505, null,  allAudios),
-                    // new Chicken('chickenMutatesBig', entityImages, 160, 160, 505, null, allAudios),
-                    // new Chicken('chickenMutatesBig', entityImages, 160, 160, 505, null, allAudios)
-                ],
-            clouds: cloudArray,
-
-            grounds: {
-
-                backGrounds: [
-                ],
-
-                // MITTELGRUND (mittlere Bewegung)
-                midGrounds: [
-                ],
-
-                // VORDERGRUND (schnellste Bewegung)
-                foreGrounds: [
-                ]
-            },
-            sceneryObjects:
-                [
-                    new SceneryObject(scenerySrc[6], 10000, 275, 550, 450),
-                    new SceneryObject(scenerySrc[0], 18676, 5, 1000, 800),
-                    new SceneryObject(scenerySrc[1], 19618, -105, 1000, 1000),
-                    // new SceneryObject(scenerySrc[2], 3160, 25, 800, 800),
-                    new SceneryObject(scenerySrc[3], 20523, -35, 800, 800),
-                    new SceneryObject(scenerySrc[4], 21338, -18, 800, 800),
-                    new SceneryObject(scenerySrc[5], 22038, -17, 1000, 800)
-                ],
-            sky:
-                new Sky({ width: 1280, height: 720, preset: "tragicDay" }),
-            coins:
-                [
-                    // new Coin(entityImages),
-                    // new Coin(entityImages),
-                    // new Coin(entityImages),
-                    // new Coin(entityImages),
-                    // new Coin(entityImages),
-                    // new Coin(entityImages)
-                ],
-            bottles:
-                [
-                    new Bottle(entityImages, 1500),
-                    new Bottle(entityImages, 1550),
-                    // new Bottle(entityImages, 530),
-                    // new Bottle(entityImages, 550),
-                    // new Bottle(entityImages, 560),
-                    // new Bottle(entityImages, 580),
-                    // new Bottle(entityImages, 590),
-                    // new Bottle(entityImages, 600)
-                ]
-        }
-
-
-    );
-
-    const step = 720;
-    const count = 38;
-    const startX = -720;
-
-
-    for (let i = 0; i < count; i++) {
-        const xPos = startX + i * step;
-
-        // BACKGROUND: 3 ↔ 0
-        const backFrame = i % 2 === 0 ? 3 : 0;
-        townLevel.grounds.backGrounds.push(
-            new Ground(groundSrc[backFrame], xPos)
-        );
-
-        // MIDGROUND: 4 ↔ 1
-        const midFrame = i % 2 === 0 ? 4 : 1;
-        townLevel.grounds.midGrounds.push(
-            new Ground(groundSrc[midFrame], xPos)
-        );
-
-        // FOREGROUND: 5 ↔ 2
-        const foreFrame = i % 2 === 0 ? 5 : 2;
-        townLevel.grounds.foreGrounds.push(
-            new Ground(groundSrc[foreFrame], xPos)
+        clouds.push(
+            new Cloud({ existingClouds: clouds, minDistance: 280, levelWidth, levelImages })
         );
     }
+    return clouds;
+}
 
-    let calculationX = 18676
-    for (let index = 0; index < 41; index++) {
-        townLevel.grounds.foreGrounds.push(new Ground(groundSrc[7], calculationX, 572, 300, 150));
-        calculationX = calculationX + 100;
+/**
+ * Creates ground layers for the town level.
+ * @param {Object} levelImages Level image assets.
+ * @returns {Object} Ground layer configuration.
+ */
+function createTownGrounds(levelImages) {
+    const { shared } = levelImages;
+    return createTownGroundLayers(shared);
+}
+
+/**
+ * Creates the base ground layer sets for the town level.
+ * @param {Object} shared Shared level image assets.
+ * @returns {Object} Object containing background, midground, and foreground layers.
+ */
+function createTownGroundLayers(shared) {
+    return {
+        backGrounds: createAlternatingGrounds(shared.desert.backB[0], shared.desert.backA[0]),
+        midGrounds: createAlternatingGrounds(shared.desert.midB[0], shared.desert.midA[0]),
+        foreGrounds: createAlternatingGrounds(shared.desert.foreB[0], shared.desert.foreA[0])
+    };
+}
+
+/**
+ * Creates a sequence of alternating ground elements.
+ * @param {string} firstSrc Source of the first ground image.
+ * @param {string} secondSrc Source of the second ground image.
+ * @returns {Array} Array of ground instances.
+ */
+function createAlternatingGrounds(firstSrc, secondSrc) {
+    const grounds = [];
+    for (let i = 0; i < PARALLAX_COUNT; i++) {
+        const src = i % 2 === 0 ? firstSrc : secondSrc;
+        const x = PARALLAX_START_X + i * PARALLAX_STEP;
+        grounds.push(new Ground(src, x));
     }
-    return townLevel;
+    return grounds;
+}
+
+/**
+ * Adds tiled foreground ground elements for the town level.
+ * @param {Array} foreGrounds Foreground ground elements.
+ * @param {string} tileSrc Source of the tile image.
+ */
+function pushTownForegroundTiles(foreGrounds, tileSrc) {
+    let x = TOWN_TILE_START_X;
+    for (let i = 0; i < TOWN_TILE_COUNT; i++) {
+        foreGrounds.push(new Ground(tileSrc, x, 572, 300, 150));
+        x += TOWN_TILE_STEP;
+    }
+}
+
+/**
+ * Creates scenery objects for the town level.
+ * @param {Object} levelImages Level image assets.
+ * @returns {Array} Array of scenery object instances.
+ */
+function createTownScenery(levelImages) {
+    const { scenery } = levelImages.town;
+    return [
+        new SceneryObject(scenery.nayeliHouse[0], 10000, 275, 550, 450),
+        new SceneryObject(scenery.town1[0], 18676, 5, 1000, 800),
+        new SceneryObject(scenery.town2[0], 19618, -105, 1000, 1000),
+        new SceneryObject(scenery.town4[0], 20523, -35, 800, 800),
+        new SceneryObject(scenery.town5[0], 21338, -18, 800, 800),
+        new SceneryObject(scenery.town6[0], 22038, -17, 1000, 800)
+    ];
+}
+
+/**
+ * Creates bottle entities for the town level.
+ * @param {Object} entityImages Entity image assets.
+ * @returns {Array} Array of bottle instances.
+ */
+function createTownBottles(entityImages) {
+    return [
+        new Bottle(entityImages, 1500),
+        new Bottle(entityImages, 1550)
+    ];
 }

@@ -120,6 +120,7 @@ export class GameApp {
             this.keyboard,
             this.assetLoader.characterImages,
             this.assetLoader.entityImages,
+            this.assetLoader.levelImages,
             this.audioManager,
             this.videoManager,
             this.gameplayInputController

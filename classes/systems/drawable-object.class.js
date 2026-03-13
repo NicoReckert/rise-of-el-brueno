@@ -15,12 +15,18 @@ export class DrawableObject {
     }
 
     /**
-     * Loads an image and assigns it to the object.
-     * @param {string} path Image source path.
+     * Loads or assigns an image and sets it on the object.
+     * @param {string|HTMLImageElement} source Image path or preloaded image.
      */
-    loadImage(path) {
+    loadImage(source) {
+        if (!source) return;
+        if (source instanceof HTMLImageElement) {
+            this.img = source;
+            this.frameSource = null;
+            return;
+        }
         const img = new Image();
-        img.src = path;
+        img.src = source;
         this.img = img;
         this.frameSource = null;
     }

@@ -19,8 +19,9 @@ export class TownLevelSetup {
     constructor(world) {
         this.world = world;
         this.entityImages = this.world.entityImages;
+        this.levelImages = this.world.levelImages;
         this.allAudios = this.world.allAudios;
-        this.townLevel = createTownLevel({ entityImages: this.world.entityImages, allAudios: this.world.allAudios });
+        this.townLevel = createTownLevel({ entityImages: this.entityImages, levelImages: this.levelImages });
         this.state = createTownState();
         this.init();
         applyTownRuntime(this);
