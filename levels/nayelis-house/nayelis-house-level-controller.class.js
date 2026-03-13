@@ -16,7 +16,7 @@ export class NayelisHouseLevelController {
         this.canvas = this.world.canvas;
         this.addToWorld = this.world.renderer.addToWorld.bind(this.world.renderer);
         this.character = this.world.character;
-        this.inputManager = this.world.inputManager;
+        this.gameplayInputController = this.world.gameplayInputController;
         this.initManagers();
         this.houseRenderCache = null;
     }
@@ -197,7 +197,7 @@ export class NayelisHouseLevelController {
      * @returns {void}
      */
     updateCharacter(timestamp) {
-        this.inputManager.processGameInput(this.world, timestamp);
+        this.gameplayInputController.processGameInput(this.world, timestamp);
         this.character.updateAll(timestamp);
     }
 

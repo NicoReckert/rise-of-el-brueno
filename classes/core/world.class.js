@@ -40,9 +40,9 @@ export class World {
      * @param {Object} entityImages Entity image assets.
      * @param {Object} audioManager Audio manager instance.
      * @param {Object} videoManager Video manager instance.
-     * @param {Object} inputManager Input manager instance.
+     * @param {Object} gameplayInputController Gameplay input controller instance.
      */
-    initCore(canvas, keyboard, characterImages, entityImages, audioManager, videoManager, inputManager) {
+    initCore(canvas, keyboard, characterImages, entityImages, audioManager, videoManager, gameplayInputController) {
         this.canvas = canvas;
         this.ctx = canvas.getContext('2d');
         this.renderer = new WorldRenderer(this.ctx);
@@ -51,7 +51,7 @@ export class World {
         this.entityImages = entityImages;
         this.audioManager = audioManager;
         this.videoManager = videoManager;
-        this.inputManager = inputManager;
+        this.gameplayInputController = gameplayInputController;
         this.currentScene = 'townLevel';
     }
 

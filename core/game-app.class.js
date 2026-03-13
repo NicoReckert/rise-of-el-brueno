@@ -3,6 +3,7 @@ import { World } from '../classes/core/world.class.js';
 import { AudioManager } from './audio-manager.class.js';
 import { UIManager } from './ui-manager.class.js';
 import { InputManager } from './input-manager.class.js';
+import { GameplayInputController } from './gameplay-input-controller.class.js';
 import { Keyboard } from '../classes/systems/keyboard.class.js';
 import { FullscreenManager } from './fullscreen-manager.class.js';
 import { PauseManager } from './pause-manager.class.js';
@@ -49,6 +50,7 @@ export class GameApp {
     initInputManagers() {
         this.keyboard = new Keyboard();
         this.inputManager = new InputManager(this.keyboard, this.uiManager);
+        this.gameplayInputController = new GameplayInputController(this.keyboard);
         this.videoManager = new VideoManager();
     }
 
@@ -120,7 +122,7 @@ export class GameApp {
             this.assetLoader.entityImages,
             this.audioManager,
             this.videoManager,
-            this.inputManager
+            this.gameplayInputController
         );
     }
 }
