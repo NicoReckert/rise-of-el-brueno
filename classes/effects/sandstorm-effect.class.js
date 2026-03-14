@@ -25,11 +25,13 @@ export class SandstormEffect {
     }
 
     /**
-     * Initializes texture resources for the effect.
+     * Initializes the sandstorm texture and related render properties.
      */
     initTexture() {
         this.texture = this.entityImages?.sandstorm?.texture ?? [];
         this.image = this.texture[0];
+        this.scaledImage = null;
+        this.scaledHeight = 0;
     }
 
     /**
@@ -59,13 +61,14 @@ export class SandstormEffect {
     }
 
     /**
-     * Draws the sandstorm effect.
-     * @param {CanvasRenderingContext2D} ctx Rendering context.
-     * @param {number} [cameraX=0] Camera x-offset.
-     * @param {?Object} [shield=null] Optional shield data for clipping and glow.
+     * Draws the sandstorm effect with optional shield clipping.
+     * @param {CanvasRenderingContext2D} ctx Canvas rendering context.
+     * @param {number} [cameraX=0] Camera x-position.
+     * @param {Object|null} [shield=null] Shield object used for clipping.
      */
     draw(ctx, cameraX = 0, shield = null) {
-        if (!this.enabled || !this.image.complete) return;
+        if (!this.enabled || !this.image?.complete) return;
+        this.prepareScaledTexture();
         ctx.save();
         if (shield) {
             this.applyShieldClip(ctx, shield);
@@ -151,12 +154,13 @@ export class SandstormEffect {
     }
 
     /**
-     * Calculates tiling parameters for the sand texture.
-     * @param {number} cameraX Camera x-offset.
-     * @returns {{imgWidth:number, startX:number, repeats:number}} Tiling configuration.
+     * Calculates tiling parameters for rendering the sand texture.
+     * @param {number} cameraX Camera x-position.
+     * @returns {{imgWidth:number, startX:number, repeats:number}} Sand tiling parameters.
      */
     getSandTiling(cameraX) {
-        const imgWidth = this.image.width;
+        const img = this.scaledImage ?? this.image;
+        const imgWidth = img.width;
         const offset = (cameraX + this.scrollX) % imgWidth;
         const startX = -offset;
         const repeats = Math.ceil(this.canvas.width / imgWidth) + 1;
@@ -164,21 +168,16 @@ export class SandstormEffect {
     }
 
     /**
-     * Draws repeated sand tiles based on tiling configuration.
-     * @param {CanvasRenderingContext2D} ctx Rendering context.
-     * @param {{imgWidth:number, startX:number, repeats:number}} tiling Tiling configuration.
+     * Draws tiled sand textures across the canvas.
+     * @param {CanvasRenderingContext2D} ctx Canvas rendering context.
+     * @param {{imgWidth:number, startX:number, repeats:number}} tiling Sand tiling parameters.
      */
     drawSandTiles(ctx, tiling) {
         const { imgWidth, startX, repeats } = tiling;
+        const img = this.scaledImage ?? this.image;
         for (let i = 0; i < repeats; i++) {
             const drawX = startX + i * imgWidth;
-            ctx.drawImage(
-                this.image,
-                drawX,
-                0,
-                imgWidth,
-                this.canvas.height
-            );
+            ctx.drawImage(img, drawX, 0);
         }
     }
 
@@ -205,5 +204,33 @@ export class SandstormEffect {
      */
     setSpeed(speed) {
         this.scrollSpeed = speed;
+    }
+
+    /**
+     * Prepares a scaled version of the texture for the current canvas height.
+     */
+    prepareScaledTexture() {
+        if (!this.image?.complete) return;
+        const targetHeight = this.canvas.height;
+        if (this.scaledImage && this.scaledHeight === targetHeight) return;
+        this.buildScaledTexture(targetHeight);
+    }
+
+    /**
+     * Builds a scaled texture canvas based on the target height.
+     * @param {number} targetHeight Target height for the scaled texture.
+     */
+    buildScaledTexture(targetHeight) {
+        const { width: sourceWidth, height: sourceHeight } = this.image;
+        if (!sourceWidth || !sourceHeight) return;
+        const targetWidth = Math.max(1, Math.round(sourceWidth * (targetHeight / sourceHeight)));
+        const canvas = document.createElement('canvas');
+        canvas.width = targetWidth;
+        canvas.height = targetHeight;
+        const ctx = canvas.getContext('2d');
+        ctx.imageSmoothingEnabled = true;
+        ctx.drawImage(this.image, 0, 0, targetWidth, targetHeight);
+        this.scaledImage = canvas;
+        this.scaledHeight = targetHeight;
     }
 }

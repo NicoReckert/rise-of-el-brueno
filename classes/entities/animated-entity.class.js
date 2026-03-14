@@ -1,6 +1,7 @@
 import { MovableObject } from '../systems/movable-object.class.js';
 import { EntityAnimationController } from '../systems/entity-animation-controller.class.js';
 import { EntityAnimationSequenceController } from '../systems/entity-animation-sequence-controller.class.js';
+import { getCachedEntityAnimation } from '../../utils/entity-animation-cache.util.js';
 
 /**
  * Represents an animated entity.
@@ -186,22 +187,31 @@ export class AnimatedEntity extends MovableObject {
     }
 
     /**
-     * Returns the animation images for the given state.
-     * @param {string} state Animation state.
-     * @returns {Array<string>|null} Animation images or null if not available.
+     * Retrieves animation frames for the given state.
+     * @param {string} state Animation state name.
+     * @returns {Array|null} Array of animation frames or null if unavailable.
      */
     getAnimationImages(state) {
         const entityDef = this.entityImages?.[this.currentEntity];
         if (!entityDef) return null;
-        if (Array.isArray(entityDef)) {
-            if (!state || state === 'idle') return entityDef;
-            return null;
-        }
+        return this.resolveAnimationImages(entityDef, state);
+    }
+
+    /**
+     * Resolves animation frames for a specific state from the entity definition.
+     * @param {Object|Array} entityDef Entity definition or frame array.
+     * @param {string} state Animation state name.
+     * @returns {Array|null} Array of animation frames or null if unavailable.
+     */
+    resolveAnimationImages(entityDef, state) {
+        if (Array.isArray(entityDef)) return !state || state === 'idle' ? entityDef : null;
+        const cached = getCachedEntityAnimation(this.entityImages, this.currentEntity, state);
+        if (cached) return cached;
         const anim = entityDef[state];
-        if (!anim && state !== 'idle') {
-            return entityDef.idle ?? null;
-        }
-        return anim ?? null;
+        if (anim || state === 'idle') return anim ?? null;
+        const cachedIdle = getCachedEntityAnimation(this.entityImages, this.currentEntity, 'idle');
+        if (cachedIdle) return cachedIdle;
+        return entityDef.idle ?? null;
     }
 
     /**

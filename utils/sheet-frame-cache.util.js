@@ -14,6 +14,10 @@ export function buildCachedSheetFrames(sheet, animName, targetWidth, targetHeigh
         frames.push(buildCachedSheetFrameCanvas(sheet, state.meta, frame, targetWidth, targetHeight));
     }
     frames._animMeta = buildCachedSheetAnimMeta(state);
+    frames._sourceType = 'sheet';
+    frames._sourceSheet = sheet;
+    frames._sourceMeta = state.meta;
+    frames._sourceAnimName = state.resolvedAnimName;
     return frames;
 }
 
@@ -87,14 +91,17 @@ function getCachedSheetFrameSource(meta, frame) {
  * @param {number} params.from Start frame index.
  * @param {number} params.to End frame index.
  * @param {Object} params.animDef Animation definition.
+ * @param {Object} params.meta Sprite sheet metadata.
  * @returns {Object} Animation metadata object.
  */
-function buildCachedSheetAnimMeta({ resolvedAnimName, from, to, animDef }) {
+function buildCachedSheetAnimMeta({ resolvedAnimName, from, to, animDef, meta }) {
     return {
         type: 'cached-sheet-frames',
         animName: resolvedAnimName,
         from,
         to,
-        loop: animDef.loop !== false
+        loop: animDef.loop !== false,
+        meta,
+        frames: to - from + 1
     };
 }

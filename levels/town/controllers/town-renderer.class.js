@@ -99,13 +99,17 @@ export class TownRenderer {
     }
 
     /**
-     * Renders destroyed building environment objects.
-     * @returns {void}
+     * Renders destroyed town buildings when they are within the visible camera range.
      */
     renderTownDestroyedBuildings() {
-        this.addToWorld(this.setup.environment.houseDestroyed);
-        this.addToWorld(this.setup.environment.stableDestroyed);
-        this.addToWorld(this.setup.environment.millDestroyed);
+        const cameraX = this.world.camera_x;
+        const canvasWidth = this.world.canvas.width;
+        const house = this.setup.environment.houseDestroyed;
+        const stable = this.setup.environment.stableDestroyed;
+        const mill = this.setup.environment.millDestroyed;
+        if (this.isVisible(house, cameraX, canvasWidth, 400)) this.addToWorld(house);
+        if (this.isVisible(stable, cameraX, canvasWidth, 400)) this.addToWorld(stable);
+        if (this.isVisible(mill, cameraX, canvasWidth, 400)) this.addToWorld(mill);
     }
 
     /**
@@ -233,5 +237,21 @@ export class TownRenderer {
         if (this.questManager.step >= 10) this.addToWorld(this.setup.statusBar2);
         this.addToWorld(this.setup.coinBar);
         this.addToWorld(this.setup.bottleBar);
+    }
+
+    /**
+     * Checks whether an object is within the visible camera range.
+     * @param {Object} obj Renderable object with position and width.
+     * @param {number} cameraX Current camera x-position.
+     * @param {number} canvasWidth Canvas width.
+     * @param {number} [margin=300] Additional margin outside the viewport.
+     * @returns {boolean} True if the object is visible, otherwise false.
+     */
+    isVisible(obj, cameraX, canvasWidth, margin = 300) {
+        if (!obj) return false;
+        return (
+            obj.x + obj.width >= cameraX - margin &&
+            obj.x <= cameraX + canvasWidth + margin
+        );
     }
 }

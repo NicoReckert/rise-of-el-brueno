@@ -1,4 +1,5 @@
 import { MovableObject } from '../systems/movable-object.class.js';
+import { getCachedEffectAnimation } from '../../utils/effect-animation-cache.util.js';
 
 /**
  * Visual impact effect that plays an animation at a position.
@@ -18,22 +19,22 @@ export class ImpactEffect extends MovableObject {
     }
 
     /**
-     * Initializes explosion animation configuration.
-     * @param {*} anim Animation resource.
-     * @param {number} x X position.
-     * @param {number} y Y position.
-     * @param {{animName?: string, fps?: number}} [opts={}] Optional configuration.
+     * Initializes the explosion animation configuration.
+     * @param {Object} anim Effect animation definition.
+     * @param {number} x Explosion x-position.
+     * @param {number} y Explosion y-position.
+     * @param {Object} [opts={}] Explosion options.
      */
     initExplosionConfig(anim, x, y, opts = {}) {
-        const { animName = "explode", fps = 18 } = opts;
-        this.anim = anim;
+        const { animName = "explode", fps = 18, width = 220, height = 220 } = opts;
+        this.anim = getCachedEffectAnimation(anim, animName, width, height);
         this.currentAnimation = animName;
         this.frameInterval = 1000 / fps;
         this.frameIndex = 0;
         this.sheetIndex = 0;
         this.lastFrameTime = 0;
         this.animationFinished = false;
-        this.initExplosionTransform(x, y, opts);
+        this.initExplosionTransform(x, y, { ...opts, width, height });
     }
 
     /**

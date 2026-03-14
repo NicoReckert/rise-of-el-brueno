@@ -239,19 +239,42 @@ export class TownLevelController {
     }
 
     /**
-     * Updates characters, environment objects, and enemies.
+     * Updates characters, environment entities, and enemies in the town level.
      * @param {number} timestamp Frame timestamp.
-     * @returns {void}
      */
     updateEntities(timestamp) {
         Object.values(this.setup.characters)
             .filter(c => c !== this.setup.characters.endboss)
             .forEach(c => c.updateState(timestamp));
         Object.values(this.setup.environment)
-            .forEach(c => c.updateState(timestamp));
+            .forEach(c => {
+                if (!this.shouldUpdateEnvironmentEntity(c)) return;
+                c.updateState(timestamp);
+            });
         this.setup.townLevel.enemies.forEach(enemy => {
             enemy.updateState(timestamp);
         });
+    }
+
+    /**
+     * Determines whether an environment entity should be updated.
+     * @param {Object} c Environment entity.
+     * @returns {boolean} True if the entity should be updated, otherwise false.
+     */
+    shouldUpdateEnvironmentEntity(c) {
+        if (!this.isHeavyDestroyedBuilding(c)) return true;
+        return this.renderer.isVisible(c, this.renderCameraX, this.canvas.width, 400);
+    }
+
+    /**
+     * Checks whether the environment entity is a heavy destroyed building.
+     * @param {Object} c Environment entity.
+     * @returns {boolean} True if the entity is a destroyed building, otherwise false.
+     */
+    isHeavyDestroyedBuilding(c) {
+        return c === this.setup.environment.houseDestroyed ||
+            c === this.setup.environment.stableDestroyed ||
+            c === this.setup.environment.millDestroyed;
     }
 
     /**

@@ -1,6 +1,7 @@
 import { MovableObject } from '../systems/movable-object.class.js';
 import { ImpactEffect } from './impact-effect.class.js';
 import { HAZARD_DEFS } from '../../config/hazard-config.js';
+import { getCachedEntityAnimation } from '../../utils/entity-animation-cache.util.js';
 
 /**
  * Represents a storm hazard entity.
@@ -95,7 +96,7 @@ export class StormHazard extends MovableObject {
         const def = HAZARD_DEFS[type];
         if (!def) return null;
         const lane = this.resolveSpawnLane(def, opts.lane ?? 'safe');
-        const data = this.buildSpawnData(setup, def, lane, opts);
+        const data = this.buildSpawnData(setup, type, def, lane, opts);
         const hazard = new StormHazard(setup, this.buildHazardConfig(type, def, data));
         setup.state.effects.push(hazard);
         return hazard;
@@ -113,23 +114,37 @@ export class StormHazard extends MovableObject {
     }
 
     /**
-     * Builds spawn data for a hazard instance.
-     * @param {Object} setup Setup reference.
+     * Resolves the animation frames for a hazard entity.
+     * @param {Object} setup Setup context object.
+     * @param {string} type Hazard entity type.
      * @param {Object} def Hazard definition.
-     * @param {string} lane Spawn lane.
-     * @param {Object} [options={}] Spawn overrides.
-     * @param {number} [options.x] X position override.
-     * @param {number} [options.y] Y position override.
-     * @param {number} [options.speedX] Speed override.
-     * @param {*} [options.seed] Optional seed value.
-     * @returns {{lane:string,seed:*,size:Object,anim:Object|null,finalSpeedX:number,finalX:number,finalY:number,lifeMs:number}} Spawn data.
+     * @returns {Array|null} Array of animation frames or null if unavailable.
      */
-    static buildSpawnData(setup, def, lane, { x, y, speedX, seed } = {}) {
+    static resolveHazardAnimation(setup, type, def) {
+        const cached = getCachedEntityAnimation(setup.entityImages, type, 'idle');
+        if (cached) return cached;
+        return def.getAnim?.({ images: setup.entityImages }) ?? null;
+    }
+
+    /**
+     * Builds spawn data for a hazard entity.
+     * @param {Object} setup Setup context object.
+     * @param {string} type Hazard entity type.
+     * @param {Object} def Hazard definition.
+     * @param {number} lane Spawn lane index.
+     * @param {Object} [options={}] Spawn configuration overrides.
+     * @param {number} [options.x] Custom spawn x-position.
+     * @param {number} [options.y] Custom spawn y-position.
+     * @param {number} [options.speedX] Custom horizontal speed.
+     * @param {number} [options.seed] Random seed value.
+     * @returns {{lane:number, seed:number, size:Object, anim:Array|null, finalSpeedX:number, finalX:number, finalY:number, lifeMs:number}} Spawn data.
+     */
+    static buildSpawnData(setup, type, def, lane, { x, y, speedX, seed } = {}) {
         const world = setup.world;
         const camX = world.townLevelController?.renderCameraX ?? 0;
         const canvasW = world.canvas?.width ?? 1280;
         const size = def.size;
-        const anim = def.getAnim?.({ images: setup.entityImages }) ?? null;
+        const anim = this.resolveHazardAnimation(setup, type, def) ?? null;
         const finalSpeedX = speedX ?? this.getLaneSpeed(def, lane);
         const finalX = x ?? this.getSpawnX(def, camX, canvasW);
         const finalY = y ?? this.getSpawnY(def, setup, lane, size, world);

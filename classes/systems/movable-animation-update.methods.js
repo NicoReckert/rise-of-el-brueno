@@ -68,20 +68,49 @@ export const movableAnimationUpdateMethods = {
 
     /**
      * Advances an array-based animation by one frame.
-     * @param {HTMLImageElement[]} images Animation frames.
-     * @param {{isOneShot:boolean, onFinished:Function|null}} options Animation options.
-     * @returns {void}
+     * Supports normal frame arrays and cached frame arrays with _animMeta.
+     * @param {Array} images Array of animation frames.
+     * @param {Object} options Animation options.
      */
-    stepArrayAnimation(images, { isOneShot, onFinished }) {
+    stepArrayAnimation(images, options) {
+        if (!images?.length) return;
+        this.prepareNextArrayFrame(images);
+        this.frameIndex++;
+        if (this.frameIndex < images.length) return;
+        this.resolveArrayAnimationEnd(images, options);
+    },
+
+    /**
+     * Prepares the next frame for an array-based animation.
+     * @param {Array} images Array of animation frames.
+     */
+    prepareNextArrayFrame(images) {
         this.applyNextFrame(images);
         if (typeof this.handleDeferredSizeUpdate === 'function') {
             this.handleDeferredSizeUpdate();
         }
-        this.frameIndex++;
-        if (isOneShot && this.frameIndex >= images.length) {
-            this.animationFinished = true;
-            onFinished?.();
+    },
+
+    /**
+     * Handles the end of an array-based animation and determines
+     * whether to loop or finish the animation.
+     * Cached frame arrays may carry loop metadata in images._animMeta.
+     * @param {Array} images Array of animation frames.
+     * @param {Object} options Animation options.
+     * @param {boolean} options.isOneShot Whether the animation plays only once.
+     * @param {Function} [options.onFinished] Callback triggered when the animation ends.
+     * @param {boolean} [options.allowLoop=true] Whether looping is allowed.
+     */
+    resolveArrayAnimationEnd(images, { isOneShot, onFinished, allowLoop = true }) {
+        const meta = images._animMeta ?? null;
+        const loopFromMeta = meta?.loop ?? true;
+        if (!isOneShot && allowLoop && loopFromMeta) {
+            this.frameIndex = 0;
+            return;
         }
+        this.frameIndex = Math.max(0, images.length - 1);
+        this.animationFinished = true;
+        onFinished?.();
     },
 
     /**
