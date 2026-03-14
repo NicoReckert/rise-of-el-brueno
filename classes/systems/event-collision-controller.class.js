@@ -146,49 +146,61 @@ export class EventCollisionController {
     }
 
     /**
-     * Draws debug visualization for a single-object collision check.
-     * @param {Object} a Source object.
-     * @param {Object} b Target object.
-     * @param {Object} state Collision state configuration.
-     * @param {boolean} hit Whether the collision occurred.
-     * @returns {void}
+     * Draws collision debug visuals for a single collision check.
+     * @param {Object} a First object.
+     * @param {Object} b Second object.
+     * @param {Object} state Collision state.
+     * @param {boolean} hit Collision state result.
      */
     drawSingleCollisionDebug(a, b, state, hit) {
-        const dbgA = this.getDebugProxy(a, state.collOpts.hitboxA, state.collOpts.useAttackHitboxA);
-        const dbgB = this.getDebugProxy(b, state.collOpts.hitboxB, state.collOpts.useAttackHitboxB);
-        this.geometryCtrl.drawCollisionDebug(dbgA, dbgB, state.tolA, state.tolB, hit);
+        const optsA = {
+            hitbox: state.collOpts.hitboxA,
+            useAttackHitbox: state.collOpts.useAttackHitboxA
+        };
+        const optsB = {
+            hitbox: state.collOpts.hitboxB,
+            useAttackHitbox: state.collOpts.useAttackHitboxB
+        };
+        this.geometryCtrl.drawCollisionDebug(
+            a, b, state.tolA, state.tolB, hit, optsA, optsB
+        );
     }
 
     /**
-     * Draws debug visualization for collisions against an array of targets.
-     * @param {Object} e Event configuration.
-     * @param {Object} a Source object.
-     * @param {Object[]} b Array of potential target objects.
-     * @param {Object} state Collision state configuration.
-     * @param {boolean} hit Whether any collision occurred.
-     * @returns {void}
+     * Draws collision debug visuals for array-based collision checks.
+     * @param {Object} e Event object.
+     * @param {Object} a First object.
+     * @param {Array} b Array of target objects.
+     * @param {Object} state Collision state.
+     * @param {boolean} hit Collision state result.
      */
     drawArrayCollisionDebug(e, a, b, state, hit) {
         const ctx = this.setup.world.ctx;
+        const optsA = { hitbox: state.collOpts.hitboxA, useAttackHitbox: state.collOpts.useAttackHitboxA };
+        const colorA = hit
+            ? this.geometryCtrl.debugColors.active
+            : this.geometryCtrl.debugColors.hitA;
         ctx.save();
-        const boxA = this.getDebugBox(a, state.tolA, state.collOpts.hitboxA, state.collOpts.useAttackHitboxA);
-        this.geometryCtrl.drawBox(ctx, boxA, hit ? this.geometryCtrl.debugColors.active : this.geometryCtrl.debugColors.hitA);
+        const boxA = this.geometryCtrl.getBox(a, state.tolA, optsA);
+        this.geometryCtrl.drawBox(ctx, boxA, colorA);
         for (const item of b) this.drawArrayCollisionDebugItem(ctx, e, a, item, state);
         ctx.restore();
     }
 
     /**
-     * Draws debug visualization for a single item in an array collision check.
+     * Draws debug visuals for a single item in an array-based collision check.
      * @param {CanvasRenderingContext2D} ctx Rendering context.
-     * @param {Object} e Event configuration.
-     * @param {Object} a Source object.
-     * @param {Object} item Target object from the array.
-     * @param {Object} state Collision state configuration.
-     * @returns {void}
+     * @param {Object} e Event object.
+     * @param {Object} a First object.
+     * @param {Object} item Target item.
+     * @param {Object} state Collision state.
      */
     drawArrayCollisionDebugItem(ctx, e, a, item, state) {
         if (!item) return;
-        const boxB = this.getDebugBox(item, state.tolB, state.collOpts.hitboxB, state.collOpts.useAttackHitboxB);
+        const boxB = this.geometryCtrl.getBox(item, state.tolB, {
+            hitbox: state.collOpts.hitboxB,
+            useAttackHitbox: state.collOpts.useAttackHitboxB
+        });
         if (e.targetFilter && !e.targetFilter(item, this.setup, a, e)) {
             this.geometryCtrl.drawBox(ctx, boxB, this.geometryCtrl.debugColors.inactive);
             return;
@@ -196,34 +208,6 @@ export class EventCollisionController {
         const h = a.isColliding(item, state.tolA, state.tolB, state.collOpts);
         const color = h ? this.geometryCtrl.debugColors.active : this.geometryCtrl.debugColors.hitB;
         this.geometryCtrl.drawBox(ctx, boxB, color);
-    }
-
-    /**
-     * Returns the debug collision box of an object.
-     * @param {Object} obj Source object.
-     * @param {Object} tol Tolerance value.
-     * @param {Object} hitbox Hitbox offset data.
-     * @param {boolean} useAttack Whether to use the attack hitbox.
-     * @returns {Object} Calculated debug box.
-     */
-    getDebugBox(obj, tol, hitbox, useAttack) {
-        const dbg = this.getDebugProxy(obj, hitbox, useAttack);
-        return this.geometryCtrl.getBox(dbg, tol);
-    }
-
-    /**
-     * Returns a debug proxy for an object based on the provided hitbox.
-     * @param {Object} obj Source object.
-     * @param {Object} hitbox Hitbox offset data.
-     * @param {boolean} useAttack Whether to use the attack hitbox if active.
-     * @returns {Object} Debug proxy or original object.
-     */
-    getDebugProxy(obj, hitbox, useAttack) {
-        if (useAttack && obj.attackHitbox?.active) {
-            return this.geometryCtrl.makeHitboxDebugProxy(obj, obj.attackHitbox);
-        }
-        if (hitbox) return this.geometryCtrl.makeHitboxDebugProxy(obj, hitbox);
-        return obj;
     }
 
     /**
@@ -291,18 +275,25 @@ export class EventCollisionController {
     }
 
     /**
-     * Draws debug information for a hold event.
-     * @param {Object} e Event configuration.
-     * @param {Object} a Primary object.
-     * @param {Object} b Secondary object.
-     * @param {Object} state Collision state configuration.
-     * @param {boolean} hit Whether a collision was detected.
-     * @returns {void}
+     * Draws debug visuals for hold-based collision events.
+     * @param {Object} e Event object.
+     * @param {Object} a First object.
+     * @param {Object} b Second object.
+     * @param {Object} state Collision state.
+     * @param {boolean} hit Collision state result.
      */
     drawHoldEventDebug(e, a, b, state, hit) {
-        const dbgA = this.getDebugProxy(a, state.collOpts.hitboxA, state.collOpts.useAttackHitboxA);
-        const dbgB = this.getDebugProxy(b, state.collOpts.hitboxB, state.collOpts.useAttackHitboxB);
-        this.geometryCtrl.drawHoldDebug(e, dbgA, dbgB, state.tolA, state.tolB, hit);
+        const optsA = {
+            hitbox: state.collOpts.hitboxA,
+            useAttackHitbox: state.collOpts.useAttackHitboxA
+        };
+        const optsB = {
+            hitbox: state.collOpts.hitboxB,
+            useAttackHitbox: state.collOpts.useAttackHitboxB
+        };
+        this.geometryCtrl.drawHoldDebug(
+            e, a, b, state.tolA, state.tolB, hit, optsA, optsB
+        );
     }
 
     /**

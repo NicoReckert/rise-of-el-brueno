@@ -125,7 +125,10 @@ export const farmEvents_part1 = [
         type: 'quest',
         step: 1,
         once: false,
-        condition: (setup) => setup.world.taskWindow.tasks[0].done && setup.world.taskWindow.tasks[1].done,
+        condition: (setup) => {
+            const tasks = setup.world?.taskWindow?.tasks;
+            return !!(tasks?.[0]?.done && tasks?.[1]?.done);
+        },
         action: (setup) => setup.world.farmLevelController.questManager.advance(2)
     },
 

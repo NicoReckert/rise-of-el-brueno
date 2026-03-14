@@ -1,9 +1,14 @@
 import { PopupText } from "../classes/ui/popup-text.class.js";
 import { Enemy } from "../classes/entities/enemy.class.js";
 import { DamageText } from "../classes/ui/damage-text.class.js";
+import { townHelper } from "./town-helper.js";
 
 export const townEvents =
     [
+        /**
+         * Quest event that initializes the town level state, music,
+         * character position, and task window setup.
+         */
         {
             type: 'quest',
             action: (setup) => {
@@ -22,6 +27,10 @@ export const townEvents =
             }
         },
 
+        /**
+         * Collision event that triggers a dialog when the character
+         * interacts with the destroyed house area.
+         */
         {
             type: "collision",
             objectA: 'character',
@@ -32,6 +41,10 @@ export const townEvents =
             }
         },
 
+        /**
+         * Quest event that starts the smoke animation sequence
+         * for the destroyed stable environment object.
+         */
         {
             type: 'quest',
             action: (setup) => {
@@ -47,6 +60,10 @@ export const townEvents =
             }
         },
 
+        /**
+         * Quest event that starts the animation sequence
+         * for the destroyed mill environment object.
+         */
         {
             type: 'quest',
             action: (setup) => {
@@ -62,6 +79,10 @@ export const townEvents =
             }
         },
 
+        /**
+         * Position event that fades out the background music
+         * and starts the sad moment music when entering the area.
+         */
         {
             type: "position",
             area: { x: 1300, width: 100 },
@@ -72,6 +93,10 @@ export const townEvents =
             }
         },
 
+        /**
+         * Collision event that enables stable smoke audio while the character
+         * is within the destroyed stable area and disables it on leave.
+         */
         {
             type: "collision",
             objectA: 'character',
@@ -87,6 +112,10 @@ export const townEvents =
             }
         },
 
+        /**
+         * Collision event that enables mill audio while the character
+         * is within the destroyed mill area and disables it on leave.
+         */
         {
             type: "collision",
             objectA: 'character',
@@ -102,6 +131,10 @@ export const townEvents =
             }
         },
 
+        /**
+         * Collision event that fades in the house fire sound while the character
+         * is near the destroyed house and fades it out on leave.
+         */
         {
             type: "collision",
             objectA: 'character',
@@ -124,6 +157,10 @@ export const townEvents =
             }
         },
 
+        /**
+         * Collision event that adjusts character movement
+         * while walking on the destroyed house area.
+         */
         {
             type: "collision",
             objectA: 'character',
@@ -155,6 +192,10 @@ export const townEvents =
         //     }
         // },
 
+        /**
+         * Position event that switches to Nayeli's house level
+         * when the interaction key is pressed within the area.
+         */
         {
             type: "position",
             area: { x: 10275, width: 95 },
@@ -166,6 +207,9 @@ export const townEvents =
             }
         },
 
+        /**
+         * Time event that notifies the player about new tasks in the log.
+         */
         {
             type: 'time',
             delay: 2000,
@@ -177,6 +221,10 @@ export const townEvents =
 
         },
 
+        /**
+         * Position-based quest event that advances the quest
+         * when the character enters the defined area.
+         */
         {
             type: "position",
             area: { x: 4000, width: 100 },
@@ -186,6 +234,10 @@ export const townEvents =
             }
         },
 
+        /**
+         * Time-based quest event that gradually increases sandstorm intensity
+         * and advances the quest when the sequence ends.
+         */
         {
             type: "time",
             from: 0,
@@ -205,6 +257,10 @@ export const townEvents =
             }
         },
 
+        /**
+         * Position-based quest event that advances the quest
+         * when the character enters the defined area.
+         */
         {
             type: "position",
             area: { x: 5000, width: 100 },
@@ -214,6 +270,10 @@ export const townEvents =
             }
         },
 
+        /**
+         * Time-based quest event that increases sandstorm intensity
+         * and updates character speed when the sequence ends.
+         */
         {
             type: "time",
             from: 0,
@@ -235,6 +295,10 @@ export const townEvents =
             }
         },
 
+        /**
+         * Position-based quest event that enables storm hazards,
+         * switches background music, and advances the quest.
+         */
         {
             type: "position",
             area: { x: 6000, width: 100 },
@@ -248,6 +312,10 @@ export const townEvents =
             }
         },
 
+        /**
+         * Position-based quest event that increases storm hazard difficulty
+         * and switches to the final storm music.
+         */
         {
             type: "position",
             area: { x: 10500, width: 100 },
@@ -260,17 +328,27 @@ export const townEvents =
             }
         },
 
+        /**
+         * Position-based quest event that triggers the Nayeli spirit cutscene.
+         */
         {
             type: "position",
             area: { x: 15000, width: 100 },
             step: 6,
             action: (setup) => {
-                setup.world.townLevelController.stormHazards.enabled = false;
-                setup.characters.tadeo.updateAnimationState('walk');
-                setup.world.character.isCollapse = true;
-                setup.world.character.isMovingLeft = false
-                setup.world.character.isMovingRight = false
-                setup.world.isKeysStopp = true;
+                townHelper.startNayeliSpiritCutscene(setup)
+            }
+        },
+
+        /**
+         * Position-based quest event that triggers Nayeli spirit appearance,
+         * switches music, and advances the quest.
+         */
+        {
+            type: "position",
+            area: { x: 15000, width: 100 },
+            step: 6,
+            action: (setup) => {
                 setup.environment.nayeliSpirit.fadeIn(setup.world.timestamp, 2000);
                 setup.world.audioManager.fadeOutAudio(setup.sounds.finalStormHazardMusic, 1000);
                 setup.sounds.nayelisMusic.loop = true;
@@ -281,6 +359,10 @@ export const townEvents =
             }
         },
 
+        /**
+         * Quest event that moves Nayeli's spirit to a target position,
+         * triggers dialogue audio, and advances the quest.
+         */
         {
             type: "quest",
             step: 7,
@@ -296,6 +378,10 @@ export const townEvents =
             }
         },
 
+        /**
+         * Quest event that starts a dialog with Nayeli's spirit and
+         * triggers the blessing sequence after the dialog ends.
+         */
         {
             type: "quest",
             step: 8,
@@ -309,6 +395,10 @@ export const townEvents =
             }
         },
 
+        /**
+         * Position event that spawns enemy chickens when the character
+         * enters the defined area.
+         */
         {
             type: "position",
             area: { x: 16000, width: 100 },
@@ -321,6 +411,10 @@ export const townEvents =
             }
         },
 
+        /**
+         * Position event that spawns additional enemy chickens
+         * when the character enters the defined area.
+         */
         {
             type: "position",
             area: { x: 17000, width: 100 },
@@ -333,6 +427,10 @@ export const townEvents =
             }
         },
 
+        /**
+         * Position event that spawns additional enemy chickens
+         * when the character enters the defined area.
+         */
         {
             type: "position",
             area: { x: 18000, width: 100 },
@@ -345,6 +443,10 @@ export const townEvents =
             }
         },
 
+        /**
+         * Position event that spawns additional enemy chickens
+         * when the character enters the defined area.
+         */
         {
             type: "position",
             area: { x: 19000, width: 100 },
@@ -357,6 +459,10 @@ export const townEvents =
             }
         },
 
+        /**
+         * Quest event that moves Tadeo to a target position
+         * and advances the quest when the destination is reached.
+         */
         {
             type: "quest",
             step: 9,
@@ -372,6 +478,10 @@ export const townEvents =
             }
         },
 
+        /**
+         * Time event that transitions the background music
+         * from Nayeli's theme to Tadeo's theme.
+         */
         {
             type: "time",
             delay: 2000,
@@ -382,6 +492,10 @@ export const townEvents =
             }
         },
 
+        /**
+         * Time event that triggers Tadeo's stone activation sequence,
+         * including music changes, animations, shield activation, and dialog.
+         */
         {
             type: "time",
             delay: 3000,
@@ -400,6 +514,10 @@ export const townEvents =
             }
         },
 
+        /**
+         * Time event that restores player control and updates Tadeo's state
+         * after the stone activation sequence.
+         */
         {
             type: "time",
             delay: 13000,
@@ -416,6 +534,10 @@ export const townEvents =
             }
         },
 
+        /**
+         * Collision event that controls Tadeo's movement and animation
+         * while the character is within the defined interaction range.
+         */
         {
             type: 'collision',
             objectA: 'character',
@@ -440,6 +562,10 @@ export const townEvents =
             }
         },
 
+        /**
+         * Collision event that triggers Tadeo's fear reaction
+         * when enemies approach and resets the state on leave.
+         */
         {
             type: 'collision',
             objectA: 'tadeo',
@@ -465,6 +591,10 @@ export const townEvents =
             }
         },
 
+        /**
+         * Time event that resets Tadeo's fear state after a delay
+         * when the "afraidReset" event is triggered.
+         */
         {
             type: "time",
             resetOn: "afraidReset",
@@ -477,6 +607,10 @@ export const townEvents =
             }
         },
 
+        /**
+         * Collision event that triggers Tadeo's afraid speech and audio
+         * when enemies are nearby under specific conditions.
+         */
         {
             type: 'collision',
             objectA: 'tadeo',
@@ -504,6 +638,10 @@ export const townEvents =
             }
         },
 
+        /**
+         * Time event that renders Tadeo's afraid speech bubble
+         * during the active speech interval.
+         */
         {
             type: "time",
             resetOn: "tadeoAfraidBubbleRender",
@@ -522,8 +660,11 @@ export const townEvents =
             }
         },
 
+        /**
+         * Collision event that triggers Tadeo's panic reaction
+         * when hit by projectiles and resets the state on leave.
+         */
         {
-
             type: 'collision',
             objectA: 'tadeo',
             objectB: 'projectiles',
@@ -541,6 +682,10 @@ export const townEvents =
             }
         },
 
+        /**
+         * Collision event that triggers Tadeo's panic reaction
+         * when enemies are very close and resets the state on leave.
+         */
         {
             type: 'collision',
             objectA: 'tadeo',
@@ -559,6 +704,10 @@ export const townEvents =
             }
         },
 
+        /**
+         * Time event that resets Tadeo's panic state after a delay
+         * and restores the afraid animation if applicable.
+         */
         {
             type: "time",
             resetOn: "panicReset",
@@ -574,6 +723,10 @@ export const townEvents =
             }
         },
 
+        /**
+         * Collision event that triggers Tadeo's panic speech and audio
+         * when projectiles are nearby under specific conditions.
+         */
         {
             type: 'collision',
             objectA: 'tadeo',
@@ -601,6 +754,10 @@ export const townEvents =
             }
         },
 
+        /**
+         * Collision event that triggers Tadeo's panic speech and audio
+         * when enemies are very close under specific conditions.
+         */
         {
             type: 'collision',
             objectA: 'tadeo',
@@ -628,6 +785,10 @@ export const townEvents =
             }
         },
 
+        /**
+         * Time event that renders Tadeo's panic speech bubble
+         * for projectile-related panic during the active interval.
+         */
         {
             type: "time",
             resetOn: "tadeoPanicProjBubbleRender",
@@ -646,6 +807,10 @@ export const townEvents =
             }
         },
 
+        /**
+         * Time event that renders Tadeo's panic speech bubble
+         * for nearby-enemy panic during the active interval.
+         */
         {
             type: "time",
             resetOn: "tadeoPanicNearBubbleRender",
@@ -664,6 +829,10 @@ export const townEvents =
             }
         },
 
+        /**
+         * Collision-based quest event that triggers Tadeo giving bottles
+         * when enemies are nearby and the warning conditions are met.
+         */
         {
             name: "tadeo_help_give_bottles",
             type: "collision",
@@ -672,84 +841,17 @@ export const townEvents =
             toleranceA: { x: -600, width: -600 },
             step: 11,
             once: false,
-            cooldown: 1000, // klein lassen, weil wir mit Flag "pro empty phase" begrenzen
-            condition: (setup) => {
-                const char = setup.world.character;
-                const tadeo = setup.characters.tadeo;
-                if (!char || !tadeo) return false;
-
-                // pro empty phase nur einmal
-                if (setup.state.tadeoHelpGivenEmpty) return false;
-
-                // nur wenn wirklich empty
-                if ((char.throwableBottles ?? 0) > 0) return false;
-
-                // nicht während panic
-                if (setup.state.isTadeoPanic) return false;
-                const now = performance.now();
-                if (now < (setup.state.tadeoSpeechLockUntil ?? 0)) return false;
-
-                const list = setup.townLevel?.enemies ?? [];
-
-                // innerhalb 300 -> keine Hilfe mehr
-                const tolB0 = { x: 0, y: 0, width: 0, height: 0 };
-                const tol300 = { x: -300, width: -300 };
-                const enemyIn300 = list.some(e =>
-                    e && !e.isDead && !e.isRemoved &&
-                    tadeo.isColliding(e, tol300, tolB0)
-                );
-                if (enemyIn300) return false;
-
-                // innerhalb 600 -> ja, Hilfe
-                const tol600 = { x: -600, width: -600 };
-                const enemyIn600 = list.some(e =>
-                    e && !e.isDead && !e.isRemoved &&
-                    tadeo.isColliding(e, tol600, tolB0)
-                );
-                return enemyIn600;
-            },
-
+            cooldown: 1000,
+            condition: (setup) => townHelper.shouldTriggerTadeoWarning(setup),
             action: (setup) => {
-                const now = performance.now();
-                setup.state.tadeoHelpUntil = Math.max(setup.state.tadeoHelpUntil ?? 0, now + 2000);
-                const char = setup.world.character;
-                const audio = setup.world.audioManager;
-
-                const give = 2;
-
-                // Flag setzen -> diese Empty-Phase ist erledigt
-                setup.state.tadeoHelpGivenEmpty = true;
-
-                // Speech lock: verhindert afraid/panic barks kurzzeitig
-                const lockUntil = now + 2200;
-                setup.state.tadeoSpeechLockUntil = Math.max(setup.state.tadeoSpeechLockUntil ?? 0, lockUntil);
-                setup.state.tadeoPanicUntil = Math.max(setup.state.tadeoPanicUntil ?? 0, lockUntil); // <-- NEU
-                // Inventar + UI-Bar
-                char.throwableBottles = (char.throwableBottles ?? 0) + give;
-
-                const bar = setup.bottleBar;
-                if (bar) {
-                    for (let i = 0; i < give; i++) {
-                        bar.percentage = Math.min((bar.percentage ?? 0) + 20, 100);
-                        bar.setPercentage(bar.percentage);
-                    }
-                }
-
-                // Sounds
-                audio.playOneShot("bottleClinkSound", { volume: 0.9 });
-                setTimeout(() => audio.playOneShot("bottleClinkSound", { volume: 0.9 }), 150);
-
-                // Bubble + VO
-                const bubbles = setup.speechBubblesTadeoHelp;
-                const idx = (Math.random() * bubbles.length) | 0;
-                setup._tadeoHelpIdx = idx;
-
-                bubbles[idx].start();
-                audio.playOneShot(`vo_tadeo_help_0${idx + 1}`, { volume: 0.95 });
-                setup.world.townLevelController.eventManager.emitNow("tadeoHelpBubbleRender");
+                townHelper.triggerTadeoHelp(setup)
             }
         },
 
+        /**
+         * Quest event that resets the empty help state
+         * when the character has throwable bottles again.
+         */
         {
             name: "tadeo_help_reset_empty_phase",
             type: "quest",
@@ -764,6 +866,10 @@ export const townEvents =
             }
         },
 
+        /**
+         * Time event that renders Tadeo's help speech bubble
+         * during the active help interval.
+         */
         {
             name: "tadeo_help_bubble_render",
             type: "time",
@@ -785,6 +891,10 @@ export const townEvents =
             }
         },
 
+        /**
+         * Quest event that restricts the character's horizontal position
+         * within a radius around Tadeo.
+         */
         {
             type: 'quest',
             step: 11,
@@ -800,6 +910,10 @@ export const townEvents =
             }
         },
 
+        /**
+         * Collision event that switches background music
+         * when the character approaches or leaves the musician.
+         */
         {
             type: 'collision',
             objectA: 'character',
@@ -825,6 +939,10 @@ export const townEvents =
             }
         },
 
+        /**
+         * Collision event that switches background music
+         * when the character approaches or leaves Sollita.
+         */
         {
             type: 'collision',
             objectA: 'character',
@@ -912,6 +1030,11 @@ export const townEvents =
         //         fadeInAudio(setup.sounds.airHitStunMusic, 2000, 1.0);
         //     }
         // },
+
+        /**
+         * Quest event that moves the endboss to the target position
+         * and starts the air eggs phase when the destination is reached.
+         */
         {
             type: "quest",
             step: 12,
@@ -1238,8 +1361,8 @@ export const townEvents =
 
                         const hit = bottle.isColliding(
                             enemy,
-                            { y: 50 },
-                            {}
+                            {},
+                            { y: 50 }
                         );
 
                         if (!hit) continue;

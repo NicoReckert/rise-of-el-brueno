@@ -1,5 +1,5 @@
 export const movableCollisionMethods = {
-    
+
     /**
      * Checks whether this object collides with another object.
      * @param {Object} object Target object.
@@ -8,33 +8,47 @@ export const movableCollisionMethods = {
      * @param {Object} [options] Collision options.
      * @returns {boolean} True if the objects collide.
      */
-    isColliding(
-        object,
-        toleranceA = { x: 0, y: 0, width: 0, height: 0 },
-        toleranceB = { x: 0, y: 0, width: 0, height: 0 },
-        options = {}
-    ) {
+    isColliding(object, toleranceA = { x: 0, y: 0, width: 0, height: 0 }, toleranceB = { x: 0, y: 0, width: 0, height: 0 }, options = {}) {
         if (!object) return false;
-        const boxA = this.getCollisionBox(this, toleranceA, options.hitboxA, options.useAttackHitboxA);
-        const boxB = this.getCollisionBox(object, toleranceB, options.hitboxB, options.useAttackHitboxB);
+        const boxA = this.getCollisionBox(this, toleranceA, {
+            hitbox: options.hitboxA,
+            useAttackHitbox: options.useAttackHitboxA
+        });
+        const boxB = this.getCollisionBox(object, toleranceB, {
+            hitbox: options.hitboxB,
+            useAttackHitbox: options.useAttackHitboxB
+        });
         return this.boxesOverlap(boxA, boxB);
     },
 
     /**
      * Calculates the collision box for an entity.
      * @param {Object} entity Entity used for collision calculation.
-     * @param {Object} tolerance Collision tolerance values.
-     * @param {Object} customHitbox Custom hitbox override.
-     * @param {boolean} useAttackHitbox Whether to use the attack hitbox.
+     * @param {Object} [tolerance={}] Collision tolerance values.
+     * @param {Object} [options={}] Collision options.
      * @returns {{left:number, right:number, top:number, bottom:number}} Collision box.
      */
-    getCollisionBox(entity, tolerance, customHitbox, useAttackHitbox) {
-        const x = typeof entity.getRenderX === "function" ? entity.getRenderX() : entity.x;
-        const hb = this.getCollisionHitbox(entity, customHitbox, useAttackHitbox);
-        const left = entity.isFlipped ? x + hb.right + tolerance.x : x + hb.left + tolerance.x;
-        const right = entity.isFlipped ? x + entity.width - hb.left - tolerance.width : x + entity.width - hb.right - tolerance.width;
-        const top = entity.y + hb.top + tolerance.y;
-        const bottom = entity.y + entity.height - hb.bottom - tolerance.height;
+    getCollisionBox(entity, tolerance = {}, options = {}) {
+        const hb = this.getCollisionHitbox(entity, options.hitbox, options.useAttackHitbox);
+        const x = this.getCollisionX(entity, options.useAttackHitbox);
+        return this.buildCollisionBox(entity, hb, x, tolerance);
+    },
+
+    /**
+     * Builds a normalized collision box using hitbox and tolerance values.
+     * @param {Object} entity Entity used for collision calculation.
+     * @param {Object} hb Hitbox definition.
+     * @param {number} x Base x-position used for collision calculation.
+     * @param {Object} tolerance Collision tolerance values.
+     * @returns {{left:number, right:number, top:number, bottom:number}} Collision box.
+     */
+    buildCollisionBox(entity, hb, x, tolerance) {
+        const tx = tolerance.x ?? 0, ty = tolerance.y ?? 0;
+        const tw = tolerance.width ?? 0, th = tolerance.height ?? 0;
+        const left = entity.isFlipped ? x + hb.right + tx : x + hb.left + tx;
+        const right = entity.isFlipped ? x + entity.width - hb.left - tw : x + entity.width - hb.right - tw;
+        const top = entity.y + hb.top + ty;
+        const bottom = entity.y + entity.height - hb.bottom - th;
         return this.normalizeCollisionBox(left, right, top, bottom);
     },
 
@@ -48,7 +62,22 @@ export const movableCollisionMethods = {
     getCollisionHitbox(entity, customHitbox, useAttackHitbox) {
         return customHitbox ??
             (useAttackHitbox && entity.attackHitbox?.active ? entity.attackHitbox : null) ??
-            entity.offset;
+            entity.offset ??
+            { top: 0, left: 0, right: 0, bottom: 0 };
+    },
+
+    /**
+     * Resolves the x-position used for collision calculations.
+     * @param {Object} entity Entity used for collision calculation.
+     * @param {boolean} useAttackHitbox Whether to use the attack hitbox if active.
+     * @returns {number} X position used for collision checks.
+     */
+    getCollisionX(entity, useAttackHitbox) {
+        const shouldUseRenderX = !!(useAttackHitbox && entity.attackHitbox?.active);
+        if (shouldUseRenderX && typeof entity.getRenderX === "function") {
+            return entity.getRenderX();
+        }
+        return entity.x ?? 0;
     },
 
     /**
@@ -75,7 +104,12 @@ export const movableCollisionMethods = {
      * @returns {boolean} True if the boxes overlap.
      */
     boxesOverlap(a, b) {
-        return !(a.right < b.left || a.left > b.right || a.bottom < b.top || a.top > b.bottom);
+        return (
+            a.right > b.left &&
+            a.left < b.right &&
+            a.bottom > b.top &&
+            a.top < b.bottom
+        );
     },
 
     /**
@@ -98,11 +132,16 @@ export const movableCollisionMethods = {
      * @returns {{left:number, right:number, top:number, bottom:number}} Jump collision box.
      */
     getJumpBox(entity) {
-        const x = entity.getRenderX ? entity.getRenderX() : entity.x;
-        const left = entity.isFlipped ? x + entity.offset.right : x + entity.offset.left;
-        const right = entity.isFlipped ? x + entity.width - entity.offset.left : x + entity.width - entity.offset.right;
-        const top = entity.y + entity.offset.top;
-        const bottom = entity.y + entity.height - entity.offset.bottom;
+        const x = entity.x ?? 0;
+        const offset = entity.offset ?? { top: 0, left: 0, right: 0, bottom: 0 };
+        const left = entity.isFlipped
+            ? x + offset.right
+            : x + offset.left;
+        const right = entity.isFlipped
+            ? x + entity.width - offset.left
+            : x + entity.width - offset.right;
+        const top = entity.y + offset.top;
+        const bottom = entity.y + entity.height - offset.bottom;
         return { left, right, top, bottom };
     },
 
@@ -156,28 +195,30 @@ export const movableCollisionMethods = {
      * @returns {{left:number, right:number, top:number, bottom:number, cx:number, cy:number}} Hitbox rectangle.
      */
     getHitboxRect() {
-        const x = this.getRenderX ? this.getRenderX() : this.x;
+        const x = this.x ?? 0;
         const { left, right } = this.getHitboxXBounds(x);
-        const top = this.y + this.offset.top;
-        const bottom = this.y + this.height - this.offset.bottom;
+        const offset = this.offset ?? { top: 0, left: 0, right: 0, bottom: 0 };
+        const top = this.y + offset.top;
+        const bottom = this.y + this.height - offset.bottom;
         return { left, right, top, bottom, cx: (left + right) * 0.5, cy: (top + bottom) * 0.5 };
     },
 
     /**
-     * Calculates horizontal hitbox bounds.
-     * @param {number} x Render X position.
-     * @returns {{left:number, right:number}} Hitbox X bounds.
+     * Calculates the horizontal hitbox bounds for the entity.
+     * @param {number} x Base x-position of the entity.
+     * @returns {{left:number, right:number}} Horizontal hitbox bounds.
      */
     getHitboxXBounds(x) {
+        const offset = this.offset ?? { top: 0, left: 0, right: 0, bottom: 0 };
         if (this.isFlipped) {
             return {
-                left: x + this.offset.right,
-                right: x + this.width - this.offset.left
+                left: x + offset.right,
+                right: x + this.width - offset.left
             };
         }
         return {
-            left: x + this.offset.left,
-            right: x + this.width - this.offset.right
+            left: x + offset.left,
+            right: x + this.width - offset.right
         };
     }
 }

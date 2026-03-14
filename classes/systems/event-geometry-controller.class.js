@@ -100,15 +100,14 @@ export class EventGeometryController {
 
     /**
      * Creates a normalized bounding box.
-     * @param {object} obj - The target object.
-     * @param {object} [tol={}] - The tolerance values.
-     * @returns {object} The normalized box.
+     * @param {Object} obj Target object.
+     * @param {Object} [tol={}] Tolerance values.
+     * @param {Object} [options={}] Bounding box options.
+     * @returns {{x:number, y:number, width:number, height:number}} Normalized box.
      */
-    getBox(obj, tol = {}) {
-        const off = obj.offset ?? { left: 0, right: 0, top: 0, bottom: 0 };
-        const t = this.getDefaultTolerance(tol);
-        const { left, right, top, bottom } = this.calculateRawBox(obj, off, t);
-        const norm = this.normalizeBox({ left, right, top, bottom });
+    getBox(obj, tol = {}, options = {}) {
+        const raw = this.calculateRawBox(obj, tol, options);
+        const norm = this.normalizeBox(raw);
         const camX = this.getCameraX();
         return {
             x: norm.left - camX,
@@ -133,24 +132,63 @@ export class EventGeometryController {
     }
 
     /**
-     * Calculates raw box coordinates.
-     * @param {object} obj - The object.
-     * @param {object} off - The offset.
-     * @param {object} t - The tolerance.
-     * @returns {object} The raw box coordinates.
+     * Calculates the raw collision box for an object.
+     * @param {Object} obj Target object.
+     * @param {Object} [tol={}] Tolerance values.
+     * @param {Object} [options={}] Collision options.
+     * @returns {{left:number, right:number, top:number, bottom:number}} Raw collision box.
      */
-    calculateRawBox(obj, off, t) {
-        const x = this.getObjX(obj);
-        const isFlipped = !!(obj.isFlipped);
-        const left = isFlipped ? x + off.right + t.x : x + off.left + t.x;
-        const right = isFlipped
-            ? x + obj.width - off.left - t.width
-            : x + obj.width - off.right - t.width;
-        const top = obj.y + off.top + t.y;
-        const bottom = obj.y + obj.height - off.bottom - t.height;
+    calculateRawBox(obj, tol = {}, options = {}) {
+        const hb = this.getCollisionHitbox(obj, options.hitbox, options.useAttackHitbox);
+        const x = this.getCollisionX(obj, options.useAttackHitbox);
+        const t = this.getDefaultTolerance(tol);
+        return this.buildRawCollisionBox(obj, hb, x, t);
+    }
+
+    /**
+     * Builds a raw collision box from hitbox and tolerance values.
+     * @param {Object} obj Target object.
+     * @param {Object} hb Hitbox definition.
+     * @param {number} x Base x-position used for collision calculation.
+     * @param {Object} t Normalized tolerance values.
+     * @returns {{left:number, right:number, top:number, bottom:number}} Raw collision box.
+     */
+    buildRawCollisionBox(obj, hb, x, t) {
+        const isFlipped = !!obj?.isFlipped;
+        const left = isFlipped ? x + hb.right + t.x : x + hb.left + t.x;
+        const right = isFlipped ? x + obj.width - hb.left - t.width : x + obj.width - hb.right - t.width;
+        const top = obj.y + hb.top + t.y;
+        const bottom = obj.y + obj.height - hb.bottom - t.height;
         return { left, right, top, bottom };
     }
 
+    /**
+     * Resolves the hitbox used for collision calculation.
+     * @param {Object} obj Target object.
+     * @param {Object} customHitbox Custom hitbox override.
+     * @param {boolean} useAttackHitbox Whether to use the attack hitbox if active.
+     * @returns {Object} Resolved hitbox.
+     */
+    getCollisionHitbox(obj, customHitbox, useAttackHitbox) {
+        return customHitbox ??
+            (useAttackHitbox && obj.attackHitbox?.active ? obj.attackHitbox : null) ??
+            obj.offset ??
+            { top: 0, left: 0, right: 0, bottom: 0 };
+    }
+
+    /**
+     * Resolves the x-position used for collision calculations.
+     * @param {Object} obj Target object.
+     * @param {boolean} useAttackHitbox Whether to use the attack hitbox if active.
+     * @returns {number} X position used for collision checks.
+     */
+    getCollisionX(obj, useAttackHitbox) {
+        const shouldUseRenderX = !!(useAttackHitbox && obj.attackHitbox?.active);
+        if (shouldUseRenderX && typeof obj.getRenderX === "function") {
+            return obj.getRenderX();
+        }
+        return obj?.x ?? 0;
+    }
 
     /**
      * Normalizes box coordinates.
@@ -189,44 +227,20 @@ export class EventGeometryController {
     }
 
     /**
-     * Returns the render x-position of an object.
-     * @param {Object} obj Object with position data.
-     * @returns {number} X position of the object.
-     */
-    getObjX(obj) {
-        if (!obj) return 0;
-        if (typeof obj.getRenderX === "function") return obj.getRenderX();
-        return obj.x ?? 0;
-    }
-
-    /**
-     * Creates a proxy object for hitbox debugging.
-     * @param {Object} obj Source object.
-     * @param {Object} hitbox Hitbox offset data.
-     * @returns {Object} Proxy object with overridden offset and render position.
-     */
-    makeHitboxDebugProxy(obj, hitbox) {
-        if (!obj || !hitbox) return obj;
-        return {
-            ...obj,
-            offset: hitbox,
-            getRenderX: obj.getRenderX?.bind(obj) || (() => obj.x),
-        };
-    }
-
-    /**
      * Draws collision debug boxes.
-     * @param {object} a - First object.
-     * @param {object} b - Second object.
-     * @param {object} tolA - Tolerance A.
-     * @param {object} tolB - Tolerance B.
-     * @param {boolean} hit - Collision state.
+     * @param {Object} a First object.
+     * @param {Object} b Second object.
+     * @param {Object} tolA Tolerance for object A.
+     * @param {Object} tolB Tolerance for object B.
+     * @param {boolean} hit Collision state.
+     * @param {Object} [optionsA={}] Collision options for object A.
+     * @param {Object} [optionsB={}] Collision options for object B.
      */
-    drawCollisionDebug(a, b, tolA, tolB, hit) {
+    drawCollisionDebug(a, b, tolA, tolB, hit, optionsA = {}, optionsB = {}) {
         const ctx = this.setup.world.ctx;
         ctx.save();
-        const boxA = this.getBox(a, tolA);
-        const boxB = this.getBox(b, tolB);
+        const boxA = this.getBox(a, tolA, optionsA);
+        const boxB = this.getBox(b, tolB, optionsB);
         this.drawBox(ctx, boxA, hit ? this.debugColors.active : this.debugColors.hitA);
         this.drawBox(ctx, boxB, hit ? this.debugColors.active : this.debugColors.hitB);
         ctx.restore();
@@ -234,34 +248,41 @@ export class EventGeometryController {
 
     /**
      * Draws hold event debug visuals.
-     * @param {object} e - The event.
-     * @param {object} a - First object.
-     * @param {object} b - Second object.
-     * @param {object} tolA - Tolerance A.
-     * @param {object} tolB - Tolerance B.
-     * @param {boolean} hit - Collision state.
+     * @param {Object} e Event object.
+     * @param {Object} a First object.
+     * @param {Object} b Second object.
+     * @param {Object} tolA Tolerance for object A.
+     * @param {Object} tolB Tolerance for object B.
+     * @param {boolean} hit Collision state.
+     * @param {Object} [optionsA={}] Collision options for object A.
+     * @param {Object} [optionsB={}] Collision options for object B.
      */
-    drawHoldDebug(e, a, b, tolA, tolB, hit) {
+    drawHoldDebug(e, a, b, tolA, tolB, hit, optionsA = {}, optionsB = {}) {
         const ctx = this.setup.world.ctx;
         ctx.save();
-        const boxA = this.getBox(a, tolA);
-        const boxB = this.getBox(b, tolB);
+        const boxA = this.getBox(a, tolA, optionsA);
+        const boxB = this.getBox(b, tolB, optionsB);
         this.drawBox(ctx, boxA, hit ? this.debugColors.active : this.debugColors.hitA);
         this.drawBox(ctx, boxB, hit ? this.debugColors.active : this.debugColors.hitB);
-        if (e.progress > 0) this.drawHoldProgressCircle(ctx, e, b);
+        if (e.progress > 0) {
+            this.drawHoldProgressCircle(ctx, e, b, tolB, optionsB);
+        }
         ctx.restore();
     }
 
     /**
-     * Draws hold progress circle.
-     * @param {CanvasRenderingContext2D} ctx - The canvas context.
-     * @param {object} e - The event.
-     * @param {object} objB - The target object.
+     * Draws the hold progress circle above the target collision box.
+     * @param {CanvasRenderingContext2D} ctx Canvas rendering context.
+     * @param {Object} e Event object containing progress state.
+     * @param {Object} objB Target object.
+     * @param {Object} [tolB={}] Tolerance for object B.
+     * @param {Object} [optionsB={}] Collision options for object B.
      */
-    drawHoldProgressCircle(ctx, e, objB) {
-        const bx = this.getObjX(objB);
-        const x = bx - this.getCameraX() + objB.width / 2;
-        const y = objB.y - 40;
+    drawHoldProgressCircle(ctx, e, objB, tolB = {}, optionsB = {}) {
+        if (!objB) return;
+        const box = this.getBox(objB, tolB, optionsB);
+        const x = box.x + box.width / 2;
+        const y = box.y - 40;
         const r = 20;
         ctx.beginPath();
         ctx.arc(x, y, r, -Math.PI / 2, -Math.PI / 2 + e.progress * 2 * Math.PI);
