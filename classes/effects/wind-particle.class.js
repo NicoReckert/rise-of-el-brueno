@@ -89,12 +89,12 @@ export class WindParticleEffect {
     }
 
     /**
-     * Draws all particles.
-     * @param {CanvasRenderingContext2D} ctx Rendering context.
-     * @param {number} renderCameraX Camera x-offset.
+     * Draws all particles managed by this system.
+     * @param {CanvasRenderingContext2D} ctx Canvas rendering context.
+     * @param {number} renderCameraX Current camera x-position used for rendering offset.
      */
     draw(ctx, renderCameraX) {
-        const canvasWidth = ctx.canvas.width * 38;
+        const canvasWidth = ctx.canvas.width;
         const canvasHeight = ctx.canvas.height;
         this.particles.forEach(p => p.draw(ctx, renderCameraX, canvasWidth, canvasHeight));
     }

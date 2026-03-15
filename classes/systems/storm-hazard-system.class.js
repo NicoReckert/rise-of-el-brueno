@@ -1,5 +1,6 @@
 import { StormHazard } from '../effects/storm-hazard.class.js';
 import { STORM_HAZARD_DIFFICULTY_PROFILES } from '../../config/storm-hazard-difficulty-config.js';
+import { getCachedEntityAnimation } from '../../utils/entity-animation-cache.util.js';
 
 /**
  * System managing storm hazards, including spawn lanes, pools, and difficulty.
@@ -19,6 +20,7 @@ export class StormHazardSystem {
         this.initLanes();
         this.initPool();
         this.initStateTracking();
+        this.prewarmHazardAnimations();
     }
 
     /**
@@ -78,6 +80,33 @@ export class StormHazardSystem {
         this.dangerLockUntil = 0;
         this.dangerLockMs = 1100;
         this.nextSpawnAt = 0;
+    }
+
+    /**
+     * Preloads hazard animations.
+     * @returns {void}
+     */
+    prewarmHazardAnimations() {
+        const images = this.setup?.entityImages;
+        if (!images) return;
+        this.getHazardCacheTargets().forEach(({ entity, anim }) => {
+            getCachedEntityAnimation(images, entity, anim);
+        });
+    }
+
+    /**
+     * Returns hazard animation cache targets.
+     * @returns {Array<Object>} Hazard animation cache targets.
+     */
+    getHazardCacheTargets() {
+        return [
+            { entity: 'tumbleweed', anim: 'idle' },
+            { entity: 'sandTornado', anim: 'idle' },
+            { entity: 'featherSwirl', anim: 'idle' },
+            { entity: 'eagle', anim: 'idle' },
+            { entity: 'woodenPlank', anim: 'idle' },
+            { entity: 'coat', anim: 'idle' }
+        ];
     }
 
     /**

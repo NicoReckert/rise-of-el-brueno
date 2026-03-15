@@ -1,3 +1,5 @@
+import { getCachedEntityAnimation } from '../../utils/entity-animation-cache.util.js';
+
 /**
  * Configuration object for an enemy instance.
  */
@@ -251,16 +253,16 @@ export class EnemyConfig {
     }
 
     /**
-     * Initializes base enemy image sets.
-     * @param {object} src Image source collection.
-     * @returns {void}
+     * Initializes base animation image sets for the current enemy.
+     * @param {Object} src Source animation definitions.
      */
     initBaseImages(src) {
-        this.enemy.idle = src.idle ?? [];
-        this.enemy.walk = src.walk ?? [];
+        const enemyName = this.currentEnemy;
+        this.enemy.idle = getCachedEntityAnimation(this.entityImages, enemyName, 'idle') ?? src.idle ?? [];
+        this.enemy.walk = getCachedEntityAnimation(this.entityImages, enemyName, 'walk') ?? src.walk ?? [];
         this.enemy.hurt = src.hurt ?? [];
         this.enemy.dead = src.dead ?? [];
-        this.enemy.attack = src.attack ?? [];
+        this.enemy.attack = getCachedEntityAnimation(this.entityImages, enemyName, 'attack') ?? src.attack ?? [];
         this.enemy.airApproach = src.airApproach ?? [];
     }
 

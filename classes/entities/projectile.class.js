@@ -1,4 +1,5 @@
 import { MovableObject } from '../systems/movable-object.class.js';
+import { getCachedAnimationByConfigKey } from '../../utils/entity-animation-cache.util.js';
 
 /**
  * Movable projectile entity.
@@ -54,8 +55,7 @@ export class Projectile extends MovableObject {
   }
 
   /**
-   * Initializes the projectile animation properties.
-   * @returns {void}
+   * Initializes the projectile animation state and cached animation frames.
    */
   initProjectileAnimation() {
     this.currentAnimation = 'idle';
@@ -65,16 +65,23 @@ export class Projectile extends MovableObject {
     this.lastFrameTime = 0;
     this.animationFinished = false;
     this.lastUpdateTime = 0;
-    this.idleExplodeSheet =
-      this.entityImages?.projectile?.[this.type]?.idleExplodeSheet ?? null;
+    const source = this.entityImages?.projectile?.[this.type]?.idleExplodeSheet ?? null;
+    this.idleExplodeSheetIdle =
+      getCachedAnimationByConfigKey(source, 'projectile', `${this.type}_idle`, 'idle') ?? source;
+    this.idleExplodeSheetExplode =
+      getCachedAnimationByConfigKey(source, 'projectile', `${this.type}_explode`, 'explode') ?? source;
   }
 
   /**
-   * Returns the animation images.
-   * @returns {Array|null} Animation images or null.
+   * Retrieves animation frames for the given projectile state.
+   * @param {string} [state=this.currentAnimation] Animation state name.
+   * @returns {Array|null} Array of animation frames or null if unavailable.
    */
-  getAnimationImages() {
-    return this.idleExplodeSheet ?? null;
+  getAnimationImages(state = this.currentAnimation) {
+    if (state === 'explode') {
+      return this.idleExplodeSheetExplode ?? null;
+    }
+    return this.idleExplodeSheetIdle ?? null;
   }
 
   /**

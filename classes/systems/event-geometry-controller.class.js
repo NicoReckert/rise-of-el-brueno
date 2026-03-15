@@ -132,17 +132,30 @@ export class EventGeometryController {
     }
 
     /**
-     * Calculates the raw collision box for an object.
+     * Calculates the raw collision box of an object.
      * @param {Object} obj Target object.
      * @param {Object} [tol={}] Tolerance values.
-     * @param {Object} [options={}] Collision options.
-     * @returns {{left:number, right:number, top:number, bottom:number}} Raw collision box.
+     * @param {Object} [options={}] Calculation options.
+     * @returns {Object} Raw collision box.
      */
     calculateRawBox(obj, tol = {}, options = {}) {
         const hb = this.getCollisionHitbox(obj, options.hitbox, options.useAttackHitbox);
-        const x = this.getCollisionX(obj, options.useAttackHitbox);
+        const x = this.getDebugX(obj);
         const t = this.getDefaultTolerance(tol);
         return this.buildRawCollisionBox(obj, hb, x, t);
+    }
+
+    /**
+     * Returns the debug x position of an object.
+     * @param {Object} obj Target object.
+     * @returns {number} Debug x position.
+     */
+    getDebugX(obj) {
+        if (!obj) return 0;
+        if (typeof obj.getRenderX === "function") {
+            return obj.getRenderX();
+        }
+        return obj.x ?? 0;
     }
 
     /**
@@ -205,11 +218,13 @@ export class EventGeometryController {
     }
 
     /**
-     * Returns the camera X position.
-     * @returns {number} The camera X value.
+     * Returns the current camera x position.
+     * @returns {number} Current camera x position.
      */
     getCameraX() {
-        return this.setup?.world?.camera_x ?? 0;
+        return this.setup?.world?.getCurrentController?.()?.renderCameraX
+            ?? this.setup?.world?.camera_x
+            ?? 0;
     }
 
     /**

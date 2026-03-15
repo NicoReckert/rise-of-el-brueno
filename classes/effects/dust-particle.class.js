@@ -32,46 +32,46 @@ export class DustParticle {
     }
 
     /**
-     * Updates and renders all particles.
-     * @param {*} ctx Rendering context.
-     * @param {number} cameraX Current camera x position.
+     * Updates all particles.
+     * @param {CanvasRenderingContext2D} ctx Rendering context.
+     * @param {number} cameraX Camera x position.
+     * @returns {void}
      */
     update(ctx, cameraX) {
         ctx.save();
         ctx.globalCompositeOperation = 'lighter';
-        const time = Date.now() * 0.002;
-        this.particles.forEach(p => {
+        const time = performance.now() * 0.002;
+        for (const p of this.particles) {
             this.updateParticle(ctx, cameraX, time, p);
-        });
+        }
         ctx.restore();
     }
 
     /**
-     * Updates and renders a single particle.
-     * @param {*} ctx Rendering context.
-     * @param {number} cameraX Current camera x position.
-     * @param {number} time Current time value.
-     * @param {{x: number, y: number, r: number, speedX: number, speedY: number, alpha: number}} particle Particle data.
+     * Updates and draws a particle if visible.
+     * @param {CanvasRenderingContext2D} ctx Rendering context.
+     * @param {number} cameraX Camera x position.
+     * @param {number} time Time value.
+     * @param {Object} particle Particle data.
+     * @returns {void}
      */
     updateParticle(ctx, cameraX, time, particle) {
-        const x = particle.x - cameraX * 0.9;
-        if (!this.isParticleVisible(x)) return;
+        this.moveParticle(particle);
+        const screenX = particle.x - cameraX * 0.9;
+        if (!this.isParticleVisible(screenX)) return;
         const flicker = this.getParticleFlicker(time, particle.x);
         const alpha = particle.alpha * flicker;
         ctx.globalAlpha = alpha;
-        this.drawParticle(ctx, x, particle.y, particle.r, alpha);
-        this.moveParticle(particle);
+        this.drawParticle(ctx, screenX, particle.y, particle.r, alpha);
     }
 
     /**
-     * Checks whether a particle is visible on the canvas.
-     * @param {number} x Horizontal position.
-     * @returns {boolean} True if visible, otherwise false.
+     * Checks whether a particle is visible.
+     * @param {number} x Particle x position.
+     * @returns {boolean} True if the particle is visible, otherwise false.
      */
     isParticleVisible(x) {
-        if (x < -50) return false;
-        if (x > this.canvas.width + 50) return false;
-        return true;
+        return x >= -20 && x <= this.canvas.width + 20;
     }
 
     /**

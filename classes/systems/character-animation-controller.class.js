@@ -14,109 +14,34 @@ export class CharacterAnimationController {
     }
 
     /**
-     * Updates the current animation frame.
+     * Updates the character animation.
      * @param {number} timestamp Frame timestamp.
+     * @returns {void}
      */
     updateAnimation(timestamp) {
         if (!this.char.lastFrameTime) this.char.lastFrameTime = timestamp;
         const dt = timestamp - this.char.lastFrameTime;
         if (dt <= this.char.frameInterval) return;
+        this.stepCharacterAnimation(timestamp);
+    }
+
+    /**
+     * Advances the character animation by one step.
+     * @param {number} timestamp Frame timestamp.
+     * @returns {void}
+     */
+    stepCharacterAnimation(timestamp) {
         const anim = this.char.getAnimationImages(this.char.currentAnimation);
-        if (!anim) {
-            this.char.lastFrameTime = timestamp;
-            return;
+        if (!anim) return void (this.char.lastFrameTime = timestamp);
+        this.char.updateAnimationFromSourceGeneric(anim);
+        this.char.handleDeferredSizeUpdate();
+        const frameCount = this.char.getFrameCountForSource(anim);
+        if (this.char.frameIndex >= frameCount) {
+            this.char.animationFinished = true;
+            this.transitions.handleAnimationTransition(this.char.currentAnimation);
         }
-        this.updateAnimationFromSource(anim);
         this.updateAttackHitboxState();
         this.char.lastFrameTime = timestamp;
-    }
-
-    /**
-     * Updates animation based on the provided source.
-     * @param {*} anim Animation source definition.
-     */
-    updateAnimationFromSource(anim) {
-        if (Array.isArray(anim)) {
-            if (!anim.length) return;
-            this.handleArrayAnimation(anim);
-            return;
-        }
-        if (anim.type === 'sheetSequence') {
-            this.handleSheetSequence(anim);
-            return;
-        }
-        if (anim.type === 'sheet') {
-            this.handleSheet(anim);
-        }
-    }
-
-    /**
-     * Handles animation defined as an image array.
-     * @param {Array} images Animation frame images.
-     */
-    handleArrayAnimation(images) {
-        this.char.applyNextFrame(images);
-        this.char.handleDeferredSizeUpdate();
-        this.char.frameIndex++;
-        this.checkAnimationEnd(images);
-    }
-
-    /**
-     * Handles animation defined as a sheet sequence.
-     * @param {Object} anim Animation definition.
-     */
-    handleSheetSequence(anim) {
-        const sheet = anim.sheets[this.char.sheetIndex];
-        if (!sheet) return;
-        this.char.applyNextSheetFrame(sheet);
-        this.char.frameIndex++;
-        const def = this.getSheetDef(sheet.meta, this.char.currentAnimation);
-        const count = this.getFrameCount(def, sheet.meta.frames);
-        if (this.char.frameIndex >= count) {
-            this.advanceSheetSequence(anim);
-        }
-    }
-
-    /**
-     * Returns the sprite sheet animation definition.
-     * @param {Object} meta Sprite sheet metadata.
-     * @param {string} animName Animation state identifier.
-     * @returns {Object} Animation definition.
-     */
-    getSheetDef(meta, animName) {
-        const anims = meta.animations ?? {};
-        return anims[animName] ?? anims.default ?? {
-            from: 0,
-            to: meta.frames - 1
-        };
-    }
-
-    /**
-     * Calculates the frame count for a sprite sheet animation.
-     * @param {Object} def Animation definition.
-     * @param {number} totalFrames Total number of frames in the sheet.
-     * @returns {number} Frame count.
-     */
-    getFrameCount(def, totalFrames) {
-        const from = def.from ?? 0;
-        const to = def.to ?? (totalFrames - 1);
-        return to - from + 1;
-    }
-
-    /**
-     * Advances the sprite sheet sequence or finalizes the animation.
-     * @param {Object} anim Animation definition.
-     */
-    advanceSheetSequence(anim) {
-        this.char.frameIndex = 0;
-        this.char.sheetIndex++;
-        if (this.char.sheetIndex < anim.sheets.length) return;
-        if (anim.loop) {
-            this.char.sheetIndex = 0;
-            return;
-        }
-        this.char.animationFinished = true;
-        this.transitions.handlePostAnimation(this.char.currentAnimation);
     }
 
     /**
@@ -133,19 +58,6 @@ export class CharacterAnimationController {
         if (this.char.frameIndex >= count) {
             this.handleSheetLoopOrEnd(def);
         }
-    }
-
-    /**
-     * Handles looping or ending behavior for a sprite sheet animation.
-     * @param {Object} def Animation definition.
-     */
-    handleSheetLoopOrEnd(def) {
-        if (def.loop) {
-            this.char.frameIndex = 0;
-            return;
-        }
-        this.char.animationFinished = true;
-        this.transitions.handleAnimationTransition(this.char.currentAnimation);
     }
 
     /**
@@ -333,16 +245,6 @@ export class CharacterAnimationController {
         return true;
     }
 
-    /**
-     * Checks whether the current animation has ended.
-     * @param {Array} images Animation frame images.
-     */
-    checkAnimationEnd(images) {
-        if (this.char.frameIndex < images.length) return;
-        if (!this.char.TRANSITIONABLE_ANIMS.has(this.char.currentAnimation)) return;
-        this.char.animationFinished = true;
-        this.transitions.handleAnimationTransition(this.char.currentAnimation);
-    }
 
     /**
      * Sets the current animation and resets animation state.
