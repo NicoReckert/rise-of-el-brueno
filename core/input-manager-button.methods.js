@@ -142,8 +142,8 @@ export const inputManagerButtonMethods = {
      * Registers the repeat level button click handler.
      * @param {Function} onClick Callback triggered when the repeat level button is clicked.
      */
-    listenRepeatLevelButton(onClick) {
-        this.bindClick(this.uiManager.dom.repeatLevelButton, onClick);
+    listenRestartLevelButton(onClick) {
+        this.bindClick(this.uiManager.dom.restartLevelButton, onClick);
     },
 
     /**
@@ -158,8 +158,8 @@ export const inputManagerButtonMethods = {
      * Registers the level menu button click handler.
      * @param {Function} onClick Callback triggered when the level menu button is clicked.
      */
-    listenMenuLevelButton(onClick) {
-        this.bindClick(this.uiManager.dom.menuLevelButton, onClick);
+    listenMenuButton(onClick) {
+        this.bindClick(this.uiManager.dom.menuButton, onClick);
     },
 
     /**

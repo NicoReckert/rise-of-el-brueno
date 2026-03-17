@@ -85,7 +85,7 @@ export const gameAppUiBindingMethods = {
             this.world.startNextLevel();
             const music = this.world.levelCompleteSetup?.sounds?.levelCompleteMusic;
             if (music) this.audioManager.fadeOutAudio(music);
-            this.uiManager.hideLevelCompleteButtonBox();
+            this.uiManager.hideLevelCompleteActions();
         });
     },
 
@@ -253,7 +253,7 @@ export const gameAppUiBindingMethods = {
      */
     bindRestartButtons() {
         const handler = () => this.restartGameFromCurrentLevel();
-        this.inputManager.listenRepeatLevelButton(handler);
+        this.inputManager.listenRestartLevelButton(handler);
         this.inputManager.listenPauseRestartButton(handler);
     },
 
@@ -263,7 +263,7 @@ export const gameAppUiBindingMethods = {
      */
     bindReturnToMenuButtons() {
         const handler = () => this.returnToMainMenu();
-        this.inputManager.listenMenuLevelButton(handler);
+        this.inputManager.listenMenuButton(handler);
         this.inputManager.listenPauseMenuMainButton(handler);
     },
 

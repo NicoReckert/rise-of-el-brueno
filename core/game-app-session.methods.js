@@ -6,7 +6,7 @@ export const gameAppSessionMethods = {
      */
     restartGameFromCurrentLevel() {
         if (!this.world) return;
-        this.uiManager.hideLevelCompleteButtonBox();
+        this.uiManager.hideLevelCompleteActions();
         this.uiManager.hidePauseOverlay();
         this.uiManager.showGameControls();
         this.audioManager.resetAllAudios(this.audioManager.audios);
@@ -19,7 +19,7 @@ export const gameAppSessionMethods = {
      */
     returnToMainMenu() {
         if (!this.world) return;
-        this.uiManager.hideLevelCompleteButtonBox();
+        this.uiManager.hideLevelCompleteActions();
         this.uiManager.hidePauseOverlay();
         this.uiManager.hideGameControls();
         this.stopLevelCompleteMusic();

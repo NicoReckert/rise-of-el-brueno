@@ -16,13 +16,235 @@ body {
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  overflow-x: hidden;
-
+  /* overflow-x: hidden; */
 }
 
 .overflow-hidden {
   overflow: hidden;
 }
+
+.all-content {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  flex: 1;
+}
+
+.game-stage {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 24px;
+  width: 100%;
+  min-height: 100dvh;
+  overflow: hidden;
+}
+
+.touch-controls {
+  position: absolute;
+  bottom: 0px;
+  display: none;
+  justify-content: space-between;
+  align-items: flex-end;
+  width: 100%;
+}
+
+.touch-controls__movement {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 6px;
+  gap: 8px;
+  border-radius: 25px;
+  opacity: 0.9;
+}
+
+.touch-controls__actions {
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
+  padding: 6px;
+  flex-direction: column;
+  border-radius: 25px;
+  opacity: 0.9;
+  gap: 3px;
+}
+
+.touch-controls__primary-actions {
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
+  gap: 3px;
+}
+
+.touch-controls__secondary-actions {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.touch-button {
+  position: relative;
+  overflow: visible;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.4);
+  font-size: 22px;
+  color: white;
+  border: 2px solid rgba(255, 255, 255, 0.2);
+  transition: transform 0.1s ease;
+  -webkit-user-select: none;
+  -webkit-touch-callout: none;
+  user-select: none;
+}
+
+.touch-button:active {
+  transform: scale(0.9);
+}
+
+.touch-button::after {
+  content: "";
+  position: absolute;
+  inset: -3px;
+  border-radius: 50%;
+  border: 2px solid transparent;
+  pointer-events: none;
+  opacity: 0;
+}
+
+.touch-button.pulse::after {
+  animation: ringPulse 0.7s ease-out forwards;
+}
+
+.touch-button.hold {
+  transform: scale(0.9);
+  background: rgba(255, 255, 255, 0.25);
+  box-shadow: 0 0 10px rgba(255, 200, 100, 0.4);
+}
+
+@keyframes ringPulse {
+  0% {
+    opacity: .9;
+    transform: scale(1);
+    border-color: #ffd070;
+    box-shadow: 0 0 12px #ffd070;
+  }
+
+  50% {
+    opacity: .5;
+    transform: scale(1.5);
+    border-color: #ff9933;
+    box-shadow: 0 0 18px #ff9933;
+  }
+
+  100% {
+    opacity: 0;
+    transform: scale(2.0);
+    border-color: transparent;
+    box-shadow: none;
+  }
+}
+
+.touch-button--small {
+  width: 45px;
+  height: 45px;
+}
+
+.touch-button--attack {
+  width: 80px;
+  height: 80px;
+  border-color: orangered;
+}
+
+.touch-button--offset-sm {
+  margin-right: -32px;
+}
+
+.touch-button--offset-lg {
+  margin-right: -72px;
+}
+
+.touch-button__icon {
+  width: 25px;
+  object-fit: cover;
+  opacity: 0.8;
+  pointer-events: none;
+  -webkit-user-select: none;
+  -webkit-touch-callout: none;
+  user-select: none;
+}
+
+.touch-button__icon--attack {
+  width: 40px;
+}
+
+.touch-button__icon--throw {
+  width: 45px;
+}
+
+.level-complete-actions {
+  position: absolute;
+  display: flex;
+  bottom: 0px;
+  justify-content: flex-end;
+  align-items: center;
+  width: 100%;
+  gap: 64px;
+  padding-right: 64px;
+  padding-bottom: 48px;
+}
+
+.level-complete-actions__secondary {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 16px;
+}
+
+.next-level-button {
+  font-size: 32px;
+  width: fit-content;
+}
+
+.next-level-button:hover {
+  box-shadow: 0 0 12px gold;
+  transform: scale(1.05);
+  transition: all 0.2s ease;
+}
+
+canvas {
+  background-color: black;
+  display: none;
+  width: 100%;
+  height: 100dvh;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 .title {
   font-family: 'Adventure', sans-serif;
@@ -37,7 +259,6 @@ body {
     0 0 8px rgba(255, 200, 0, 0.8),
     3px 3px 0 #712400;
   filter: drop-shadow(8px 4px 0 #2a0000);
-  width: 900px;
 }
 
 .before-animation {
@@ -69,251 +290,20 @@ body {
   }
 }
 
-.all-content {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex-direction: column;
-  /* background-image: url("./assets/img/game-background.jpg"); */
-  background-position: center center;
-  background-repeat: no-repeat;
-  background-size: cover;
-  width: 100%;
-  height: 100%;
-  overflow-x: hidden;
-  flex: 1;
-}
-
-canvas {
-  background-color: black;
-  display: none;
-  width: 100%;
-  height: 100dvh;
-  /* border-radius: 20px; */
-  /* aspect-ratio: 16 / 9; */
-}
-
-.canvas-button-box {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 24px;
-  width: 100%;
-  height: 100%;
-  position: relative;
-}
-
-.move-button-box {
-  position: absolute;
-  bottom: 0px;
-  display: none;
-  justify-content: space-between;
-  align-items: flex-end;
-  width: 100%;
-}
-
-.left-button-box {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  padding: 6px;
-  gap: 8px;
-  border-radius: 25px;
-  opacity: 0.9;
-}
-
-.right-button-box {
-  display: flex;
-  justify-content: center;
-  align-items: flex-end;
-  padding: 6px;
-  flex-direction: column;
-  border-radius: 25px;
-  opacity: 0.9;
-  gap: 3px;
-}
-
-#action-button {
-  width: 45px;
-  height: 45px;
-}
-
-#attack-button {
-  width: 80px;
-  height: 80px;
-  border-color: orangered;
-}
-
-#log-button {
-  width: 45px;
-  height: 45px;
-}
-
-.bottom-button-box {
-  display: flex;
-  justify-content: center;
-  align-items: flex-end;
-  gap: 3px;
-  /* padding: 3px 0; */
-}
-
-.bottom-under-button-box {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex-direction: column;
-  gap: 3px;
-}
-
-#jump-button {
-  margin-right: -32px;
-}
-
-#protect-button {
-  margin-right: -72px;
-}
-
-.move-button {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  width: 45px;
-  /* etwas kleiner als vorher */
-  height: 45px;
-  border-radius: 50%;
-  background: rgba(255, 255, 255, 0.15);
-  /* transparenter Hintergrund */
-  backdrop-filter: blur(6px);
-  /* Glass-Effekt */
-  -webkit-backdrop-filter: blur(6px);
-  /* für Safari */
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
-  /* leichter Schatten */
-  font-size: 22px;
-  color: white;
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  /* dezente Umrandung */
-  -webkit-user-select: none;
-  -webkit-touch-callout: none;
-  user-select: none;
-}
-
-/* .move-button:active { */
-/* background: rgba(255, 255, 255, 0.3); */
-/* beim Drücken heller */
-/* transform: scale(0.95); */
-/* kleineres "Klick"-Feedback */
-/* transition: transform 0.1s, background 0.1s; */
-/* } */
-
-.move-button {
-  position: relative;
-  overflow: visible;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  width: 60px;
-  height: 60px;
-  border-radius: 50%;
-  background: rgba(255, 255, 255, 0.15);
-  backdrop-filter: blur(6px);
-  border: 2px solid rgba(255, 255, 255, 0.2);
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.4);
-  color: white;
-  font-size: 22px;
-  transition: transform 0.1s ease;
-}
-
-.move-button:active {
-  transform: scale(0.9);
-}
-
-/* ---- der animierte Glow-Ring ---- */
-.move-button::after {
-  content: "";
-  position: absolute;
-  inset: -3px;
-  /* etwas größer als der Button */
-  border-radius: 50%;
-  border: 2px solid transparent;
-  pointer-events: none;
-  opacity: 0;
-}
 
 
-/* ---- Animation beim Drücken ---- */
-.move-button.pulse::after {
-  animation: ringPulse 0.7s ease-out forwards;
-}
 
-.move-button.hold {
-  transform: scale(0.9);
-  background: rgba(255, 255, 255, 0.25);
-  box-shadow: 0 0 10px rgba(255, 200, 100, 0.4);
-}
-
-@keyframes ringPulse {
-  0% {
-    opacity: .9;
-    transform: scale(1);
-    border-color: #ffd070;
-    box-shadow: 0 0 12px #ffd070;
-  }
-
-  50% {
-    opacity: .5;
-    transform: scale(1.5);
-    border-color: #ff9933;
-    box-shadow: 0 0 18px #ff9933;
-  }
-
-  100% {
-    opacity: 0;
-    transform: scale(2.0);
-    border-color: transparent;
-    box-shadow: none;
-  }
-}
-
-
-.mobile-button-icon {
-  width: 25px;
-  object-fit: cover;
-  opacity: 0.8;
-  pointer-events: none;
-  -webkit-user-select: none;
-  -webkit-touch-callout: none;
-  user-select: none;
-}
-
-#attack-button img {
-  width: 40px;
-}
-
-.mobile-button-throw {
-  width: 45px;
-  object-fit: cover;
-  opacity: 0.8;
-  pointer-events: none;
-  -webkit-user-select: none;
-  -webkit-touch-callout: none;
-  user-select: none;
-}
 
 .overlay-start-screen {
   position: absolute;
-  top: 0;
-  /* bottom: 0; */
-  left: 0;
-  /* right: 0; */
+  inset: 0;
   display: flex;
   justify-content: center;
   align-items: center;
   flex-direction: column;
   width: 100%;
+  min-height: 100dvh;
   /* overflow: hidden; */
-  /* padding-right: 65px; */
-  /* padding-top: 37px; */
   z-index: 2;
 }
 
@@ -373,34 +363,25 @@ canvas {
   opacity: 0.4;
 }
 
-.background-video {
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  min-width: 100%;
-  /* min-height: 100%; */
-  width: 100%;
-  /* height: 100%; */
-  z-index: -1;
-  transform: translate(-50%, -50%);
-  object-fit: cover;
-  /* filter: brightness(0.6); */
 
-  /* filter: contrast(170%) saturate(160%) sepia(10%) grayscale(5%); */
-  /* image-rendering: pixelated;  */
-  opacity: 1.0;
-  /* filter: drop-shadow(50px 50px 50px 50px black); */
-  /* filter: hue-rotate(-30deg) saturate(80%) brightness(110%); */
+.background-video {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center center;
+  z-index: -1;
+  pointer-events: none;
 }
 
 .img-div-box {
   display: flex;
-  justify-content: center;
+  justify-content: flex-end;
   align-items: center;
   flex-direction: column;
   width: 100%;
   height: 100%;
-  ;
 }
 
 .img-box {
@@ -415,14 +396,14 @@ canvas {
   display: flex;
   justify-content: center;
   align-items: flex-end;
-  z-index: 2;
+  z-index: 3;
 }
 
 .bruno-img {
   width: 320px;
   object-fit: cover;
   margin-bottom: -25px;
-  z-index: 2;
+  z-index: 3;
   pointer-events: none;
 }
 
@@ -430,8 +411,8 @@ canvas {
   width: 100px;
   object-fit: cover;
   /* transform: translateX(30px); */
-  margin-bottom: -11px;
-  z-index: 2;
+  margin-bottom: -10px;
+  z-index: 3;
 }
 
 .chicken-img {
@@ -439,7 +420,7 @@ canvas {
   object-fit: cover;
   /* padding-left: 10px; */
   margin-bottom: -7px;
-  z-index: 2;
+  z-index: 3;
 }
 
 .start-button {
@@ -507,6 +488,15 @@ canvas {
   transform: scale(1.2);
 } */
 
+.dragon-thunder-box {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  justify-content: flex-end;
+  overflow: hidden;
+  /* display: none; */
+}
+
 .thunder-video {
   position: absolute;
   opacity: 1.0;
@@ -543,12 +533,9 @@ canvas {
 .dragon2 {
   position: absolute;
   opacity: 0.6;
-  /* border-radius: 40%; */
   width: 1500px;
   height: 100%;
   object-fit: cover;
-  /* mix-blend-mode: darken; */
-  /* clip-path: circle(50% at 50% 50%); */
   filter: brightness(1.4) contrast(1.3);
   right: -690px;
   top: 0px;
@@ -575,6 +562,8 @@ canvas {
   filter: drop-shadow(0 0 20px rgba(255, 200, 100, 0.5));
 }
 
+
+
 .red-glow {
   z-index: -1;
   /* Glow-Ebene */
@@ -582,51 +571,6 @@ canvas {
   filter: blur(2px) saturate(3) brightness(2) hue-rotate(-10deg);
   opacity: 0.7;
 }
-
-
-
-
-
-
-
-/* .start-screen {
-  background: rgba(20, 15, 10, 0.8); 
-  border-top: 2px solid #a67c00;    
-  border-bottom: 2px solid #a67c00;
-  padding: 10px 0;
-  display: flex;
-  justify-content: center;
-  gap: 20px;
-} */
-
-/* .start-screen .start-button {
-  background: linear-gradient(to bottom, #2b2b2b, #1a1a1a);
-  border: 2px solid #d4af37; 
-  border-radius: 12px;
-  color: #f5e6a3;
-  font-family: "Cinzel", serif; 
-  font-size: 20px;
-  padding: 10px 25px;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  box-shadow: 0 0 10px rgba(212,175,55,0.5);
-}
-
-.start-screen .start-button:hover {
-  background: linear-gradient(to bottom, #3b2b00, #1a0f00);
-  box-shadow: 0 0 20px rgba(255, 215, 0, 0.8);
-  transform: scale(1.05);
-}
-
-.start-screen .start-button:active {
-  transform: scale(0.95);
-  box-shadow: 0 0 10px rgba(255, 150, 0, 0.6);
-} */
-
-
-
-
-
 
 :root {
   --gold-1: #fff1a6;
@@ -692,27 +636,6 @@ canvas {
     0 2px 6px rgba(0, 0, 0, .45);
 }
 
-
-
-
-
-
-
-/* h1 {
-  font-family: 'Adventure', cursive;
-  font-size: 160px;
-  font-weight: bolder;
-  color: #FFB700;
-  -webkit-text-stroke: 2px #5a2000;
-  text-shadow:
-    0 0 16px rgba(255, 200, 50, 0.6),
-    0 0 32px rgba(255, 140, 20, 0.4);
-  letter-spacing: 5px;
-  line-height: 1.12;
-  margin-top: 48px;
-  display: inline-block;
-} */
-
 .dragon {
   filter: drop-shadow(0 0 6px rgba(255, 60, 0, 0.9)) drop-shadow(0 0 12px rgba(255, 0, 0, 0.6));
   transition: filter 0.4s ease-in-out;
@@ -720,26 +643,6 @@ canvas {
   transition: filter 0.4s ease-in-out;
 
 }
-
-/* .bruno-img {
-  filter: drop-shadow(0 0 6px gold)
-          drop-shadow(0 0 12px rgba(255, 0, 0, 0.6));
-  transition: filter 0.4s ease-in-out;
-}
-
-.chicken-img {
-  filter: drop-shadow(0 0 6px gold)
-          drop-shadow(0 0 12px rgba(255, 0, 0, 0.6));
-  transition: filter 0.4s ease-in-out;
-}
-
-.chick-img {
-  filter: drop-shadow(0 0 6px gold)
-          drop-shadow(0 0 12px rgba(255, 0, 0, 0.6));
-  transition: filter 0.4s ease-in-out;
-} */
-
-
 
 .bruno-img {
   filter: drop-shadow(12px 16px 16px rgba(0, 0, 0, 0.9));
@@ -1655,39 +1558,6 @@ canvas {
   /* overflow: hidden; */
 }
 
-.level-complete-button-box {
-  position: absolute;
-  /* top: 0;
-    left: 0;
-    right: 0; */
-  display: flex;
-  bottom: 0px;
-  justify-content: flex-end;
-  align-items: center;
-  width: 100%;
-  gap: 64px;
-  padding-right: 64px;
-  padding-bottom: 48px;
-}
-
-.menu-repeat-button-box {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 16px;
-}
-
-.next-level-button {
-  font-size: 32px;
-  width: fit-content;
-}
-
-.next-level-button:hover {
-  box-shadow: 0 0 12px gold;
-  transform: scale(1.05);
-  transition: all 0.2s ease;
-}
-
 #loading-overlay {
   position: fixed;
   inset: 0;
@@ -1791,12 +1661,21 @@ body.fullscreen-active .portal-video {
 
 @media only screen and (max-width: 1700px) {
   .dragon2 {
-    width: 1200px;
+    /* width: 1200px; */
   }
 
   .title {
     font-size: 120px;
   }
+}
+
+@media only screen and (max-width: 1600px) {
+.earth-video {
+  width: 650px;
+}
+  .portal-video {
+  width: 650px;
+}
 }
 
 @media only screen and (max-width: 1530px) {
@@ -1836,12 +1715,12 @@ body.fullscreen-active .portal-video {
     height: 100dvh;
   }
 
-  .canvas-button-box {
+  .game-stage {
     gap: 6px;
     height: 100dvh !important;
   }
 
-  .move-button-box-active {
+  .touch-controls-active {
     display: flex;
     gap: 6px;
   }
@@ -1967,7 +1846,6 @@ body.fullscreen-active .portal-video {
   }
 
   .img-div-box {
-    justify-content: flex-end;
     height: calc(100dvh - 140px);
   }
 

@@ -6,7 +6,7 @@ export const inputManagerVisualMethods = {
      */
     initMoveButtonVisuals(container) {
         if (!container) return;
-        const buttons = container.querySelectorAll('.move-button');
+        const buttons = container.querySelectorAll('.touch-button');
         buttons.forEach(btn => this.bindMoveButtonVisuals(btn));
     },
 

@@ -107,7 +107,7 @@ export class GameApp {
             this.uiManager.dom.body,
             (active) => this.uiManager.updateFullscreenButtonUI(active)
         );
-        this.inputManager.initMoveButtonVisuals(this.uiManager.dom.moveButtonBox);
+        this.inputManager.initMoveButtonVisuals(this.uiManager.dom.touchControls);
     }
 
     /**

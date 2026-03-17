@@ -61,12 +61,12 @@ export const uiManagerDomMethods = {
      */
     cacheGameControlElements() {
         return {
-            moveButtonBox: document.getElementById('move-button-box'),
+            touchControls: document.getElementById('touch-controls'),
             pauseToggleButton: document.getElementById('pause-toggle-button'),
             fullscreenToggleButton: document.getElementById('fullscreen-toggle-button'),
             muteToggleButton: document.getElementById('mute-toggle-button'),
             nextLevelButton: document.getElementById('next-level-button'),
-            levelCompleteButtonBox: document.getElementById('level-complete-button-box'),
+            LevelCompleteActions: document.getElementById('level-complete-actions'),
         };
     },
 
@@ -78,9 +78,9 @@ export const uiManagerDomMethods = {
         return {
             pauseOverlay: document.getElementById('pause-overlay'),
             pauseResumeButton: document.getElementById('pause-resume-button'),
-            repeatLevelButton: document.getElementById('repeat-level-button'),
+            restartLevelButton: document.getElementById('restart-level-button'),
             pauseRestartButton: document.getElementById('pause-restart-button'),
-            menuLevelButton: document.getElementById('menu-level-button'),
+            menuButton: document.getElementById('menu-button'),
             pauseMenuMainButton: document.getElementById('pause-menu-main-button'),
         };
     },

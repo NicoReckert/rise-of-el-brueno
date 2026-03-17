@@ -55,38 +55,5 @@ export const EntityFrameCacheConfig = {
     projectile: {
         fireball_idle: { width: 60, height: 60 },
         fireball_explode: { width: 60, height: 60 }
-    },
-
-    character: {
-        idleWalkSheet: { width: 130, height: 300 },
-        jumpSheet: { width: 130, height: 300 },
-        duckSheet: { width: 158, height: 183 },
-        duckWalkSheet: { width: 158, height: 183 },
-
-        hurtDeadSheet: { width: 130, height: 300 },
-
-        attackStaffSheet: { width: 240, height: 280 },
-        attackSwordSheet: { width: 270, height: 300 },
-
-        protectSheet: { width: 158, height: 183 },
-        throwSheet: { width: 158, height: 183 },
-        healSheet: { width: 158, height: 183 },
-
-        meditationSheet: { width: 158, height: 183 },
-        newWeaponStartSheet: { width: 300, height: 340 },
-        newWeaponLoopSheet: { width: 300, height: 340 },
-
-        kneelCryStandUpDeterminedSheet: { width: 158, height: 183 },
-        determinedRiseSheet: { width: 158, height: 183 },
-        walkStandDeterminedSheet: { width: 158, height: 183 },
-        walkInStormCollapseSheet: { width: 158, height: 183 },
-        standUpAfterCollapseSheet: { width: 158, height: 183 },
-        airHitPainStunSheet: { width: 158, height: 183 },
-
-        caressSheet: { width: 158, height: 183 },
-        sitDownAndPlayGuitarSheet: { width: 158, height: 183 },
-        playGuitarAndSingSheet: { width: 158, height: 183 },
-        playGuitarSheet: { width: 158, height: 183 },
-        lightCampfireStandUpSheet: { width: 158, height: 183 }
     }
 };

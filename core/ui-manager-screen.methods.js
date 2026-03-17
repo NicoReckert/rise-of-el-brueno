@@ -32,8 +32,8 @@ export const uiManagerScreenMethods = {
     /**
      * Hides the level complete button box.
      */
-    hideLevelCompleteButtonBox() {
-        this.dom.levelCompleteButtonBox.classList.add('d-none');
+    hideLevelCompleteActions() {
+        this.dom.LevelCompleteActions.classList.add('d-none');
     },
 
     /**
@@ -128,10 +128,10 @@ export const uiManagerScreenMethods = {
      * @param {boolean} active Whether the move buttons should be active.
      */
     setMoveButtonsActive(active) {
-        const box = this.dom.moveButtonBox;
+        const box = this.dom.touchControls;
         if (!box) return;
         box.classList.toggle('d-none', !active);
-        box.classList.toggle('move-button-box-active', active);
+        box.classList.toggle('touch-controls-active', active);
     },
 
     /**

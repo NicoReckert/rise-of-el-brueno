@@ -15,51 +15,48 @@
         <div id="loading-bar"></div>
         <span id="loading-text">Preparing experience…</span>
     </div>
-
     <div class="all-content" id="all-content">
-        <div class="canvas-button-box" id="canvas-button-box">
-            <div class="move-button-box" id="move-button-box">
-                <div class="left-button-box">
-                    <button class="move-button" id="left-button"><img class="mobile-button-icon"
+        <div class="game-stage">
+            <div class="touch-controls" id="touch-controls">
+                <div class="touch-controls__movement">
+                    <button class="touch-button" id="left-button"><img class="touch-button__icon"
                             src="./assets/icons/left2.png" alt=""></button>
-                    <button class="move-button" id="right-button"><img class="mobile-button-icon"
+                    <button class="touch-button" id="right-button"><img class="touch-button__icon"
                             src="./assets/icons/right2.png" alt=""></button>
                 </div>
-                <div class="right-button-box">
-                    <button class="move-button" id="action-button"><img class="mobile-button-icon"
+                <div class="touch-controls__actions">
+                    <button class="touch-button touch-button--small" id="action-button"><img class="touch-button__icon"
                             src="./assets/icons/use.png" alt=""></button>
 
-                    <button class="move-button" id="throw-button"><img class="mobile-button-throw"
+                    <button class="touch-button" id="throw-button"><img class="touch-button__icon touch-button__icon--throw"
                             src="./assets/icons/throw2.png" alt=""></button>
 
-                    <div class="bottom-button-box">
-                        <button class="move-button" id="log-button"><img class="mobile-button-icon"
+                    <div class="touch-controls__primary-actions">
+                        <button class="touch-button touch-button--small" id="log-button"><img class="touch-button__icon"
                                 src="./assets/icons/log.png" alt=""></button>
-                        <div class="bottom-under-button-box">
-                            <button class="move-button" id="protect-button"><img class="mobile-button-icon"
+                        <div class="touch-controls__secondary-actions">
+                            <button class="touch-button touch-button--offset-lg" id="protect-button"><img class="touch-button__icon"
                                     src="./assets/icons/protect.png" alt="protect"></button>
-                            <button class="move-button" id="jump-button"><img class="mobile-button-icon"
+                            <button class="touch-button .touch-button--offset-sm" id="jump-button"><img class="touch-button__icon"
                                     src="./assets/icons/jump.png" alt=""></button>
-                            <button class="move-button" id="duck-button"><img class="mobile-button-icon"
+                            <button class="touch-button" id="duck-button"><img class="touch-button__icon"
                                     src="./assets/icons/duck.png" alt="duck"></button>
                         </div>
-                        <button class="move-button" id="attack-button"><img class="mobile-button-icon"
+                        <button class="touch-button touch-button--attack" id="attack-button"><img class="touch-button__icon touch-button__icon--attack"
                                 src="./assets/icons/attack.png" alt=""></button>
                     </div>
                 </div>
             </div>
-            <div class="level-complete-button-box d-none" id="level-complete-button-box">
-                <div class="menu-repeat-button-box">
-                    <button class="start-button" id="menu-level-button">Menü</button>
-                    <button class="start-button" id="repeat-level-button">Wiederholen</button>
+            <div class="level-complete-actions d-none" id="level-complete-actions">
+                <div class="level-complete-actions__secondary">
+                    <button class="start-button" id="menu-button">Menü</button>
+                    <button class="start-button" id="restart-level-button">Wiederholen</button>
                 </div>
                 <button class="start-button next-level-button" id="next-level-button">Weiter</button>
             </div>
-            <!-- Pause-Toggle-Button im Spiel -->
             <button class="pause-toggle-button d-none" id="pause-toggle-button">II</button>
             <button class="mute-toggle-button d-none" id="mute-toggle-button">🔇</button>
             <button class="fullscreen-toggle-button d-none" id="fullscreen-toggle-button">⛶</button>
-            <!-- Pause-Overlay -->
             <div class="pause-overlay d-none" id="pause-overlay">
                 <div class="pause-menu">
                     <button class="start-button" id="pause-resume-button">Weiter</button>
@@ -67,7 +64,6 @@
                     <button class="start-button" id="pause-menu-main-button">Zurück zum Menü</button>
                 </div>
             </div>
-
             <canvas id="canvas" width="1280" height="720"></canvas>
         </div>
         <div>
@@ -98,10 +94,12 @@
                                 controlslist="nodownload nofullscreen noremoteplayback"></video>
                         </div>
                     </div>
-                    <video class="thunder-video" id="thunder-video" loop muted playsinline disablepictureinpicture
-                        controlslist="nodownload nofullscreen noremoteplayback"></video>
-                    <img class="dragon2" src="./assets/img/black_dragon.webp" alt="">
-                    <img class="dragon2 red-glow" src="./assets/img/black_dragon.webp" alt="">
+                    <div class="dragon-thunder-box">
+                        <video class="thunder-video" id="thunder-video" loop muted playsinline disablepictureinpicture
+                            controlslist="nodownload nofullscreen noremoteplayback"></video>
+                        <img class="dragon2" src="./assets/img/black_dragon.webp" alt="">
+                        <img class="dragon2 red-glow" src="./assets/img/black_dragon.webp" alt="">
+                    </div>
                     <div class="start-screen">
                         <button class="start-button" id="start-button">Start</button>
                         <button class="start-button" id="menu-story-button">Story</button>

@@ -190,7 +190,7 @@ export class LevelManager {
      * Hides the level complete UI.
      */
     hideLevelCompleteUI() {
-        const box = document.getElementById('level-complete-button-box');
+        const box = document.getElementById('level-complete-actions');
         if (box) box.classList.add('d-none');
     }
 
