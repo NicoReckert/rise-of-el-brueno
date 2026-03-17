@@ -17,7 +17,7 @@ const MOBILE_BUTTON_MAP = {
     'duck-button': 'DOWN',
     'throw-button': 'D',
     'action-button': 'F',
-    'log-button': 'T',
+    'quest-log-button': 'T',
     'attack-button': 'A',
     'protect-button': 'S'
 };

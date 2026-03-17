@@ -23,8 +23,8 @@ export const uiManagerScreenMethods = {
      * Displays the game screen and activates the game controls.
      */
     showGameScreen() {
-        this.dom.overlayStartScreen.style.display = 'none';
-        this.dom.overlayStartInitialisation.style.display = 'none';
+        this.dom.startScreenOverlay.style.display = 'none';
+        this.dom.introOverlay.style.display = 'none';
         this.dom.canvas.style.display = 'block';
         this.showGameControls();
     },
@@ -70,22 +70,22 @@ export const uiManagerScreenMethods = {
      * Transitions from the initialization overlay to the start screen.
      */
     transitionToStartScreen() {
-        this.dom.overlayStartInitialisation.classList.add('animation-overlay-fade-out');
-        this.dom.overlayStartScreen.classList.remove('opacity-none');
+        this.dom.introOverlay.classList.add('animation-overlay-fade-out');
+        this.dom.startScreenOverlay.classList.remove('opacity-none');
     },
 
     /**
-     * Hides the start initialization overlay.
+     * Hides the intro overlay.
      */
-    hideStartInitialisationOverlay() {
-        this.dom.overlayStartInitialisation.classList.add('opacity-none');
+    hideIntroOverlay() {
+        this.dom.introOverlay.classList.add('opacity-none');
     },
 
     /**
      * Plays the title animation and updates related CSS classes.
      */
     playTitleAnimation() {
-        const title = this.dom.h1;
+        const title = this.dom.gameTitle;
         if (!title) return;
         title.classList.add('animation');
         setTimeout(() => {
@@ -139,9 +139,9 @@ export const uiManagerScreenMethods = {
      */
     showMainMenuScreen() {
         this.dom.canvas.style.display = 'none';
-        this.dom.overlayStartScreen.style.display = 'flex';
-        if (this.dom.overlayStartInitialisation) {
-            this.dom.overlayStartInitialisation.style.display = 'none';
+        this.dom.startScreenOverlay.style.display = 'flex';
+        if (this.dom.introOverlay) {
+            this.dom.introOverlay.style.display = 'none';
         }
     }
 };

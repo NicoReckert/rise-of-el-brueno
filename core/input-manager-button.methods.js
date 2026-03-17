@@ -11,11 +11,12 @@ export const inputManagerButtonMethods = {
     },
 
     /**
-     * Registers the start button click handler.
-     * @param {Function} onStartGame Callback triggered when the start button is clicked.
+     * Registers a click listener for the start game button.
+     * @param {Function} onStartGame Click handler.
+     * @returns {void}
      */
-    listenStartButton(onStartGame) {
-        this.bindClick(this.uiManager.dom.startButton, onStartGame);
+    listenStartGameButton(onStartGame) {
+        this.bindClick(this.uiManager.dom.startGameButton, onStartGame);
     },
 
     /**
@@ -43,35 +44,39 @@ export const inputManagerButtonMethods = {
     },
 
     /**
-     * Registers the welcome button click handler.
-     * @param {Function} onStartIntro Callback triggered when the welcome button is clicked.
+     * Registers a click listener for the intro start button.
+     * @param {Function} onStartIntro Click handler.
+     * @returns {void}
      */
-    listenWelcomeButton(onStartIntro) {
-        this.bindClick(this.uiManager.dom.welcomeButton, onStartIntro);
+    listenIntroStartButton(onStartIntro) {
+        this.bindClick(this.uiManager.dom.introStartButton, onStartIntro);
     },
 
     /**
-     * Registers the characters menu button click handler.
-     * @param {Function} onClick Callback triggered when the characters menu button is clicked.
+     * Registers a click listener for the open characters button.
+     * @param {Function} onClick Click handler.
+     * @returns {void}
      */
-    listenMenuCharactersButton(onClick) {
-        this.bindClick(this.uiManager.dom.menuCharactersButton, onClick);
+    listenOpenCharactersButton(onClick) {
+        this.bindClick(this.uiManager.dom.openCharactersButton, onClick);
     },
 
     /**
-     * Registers the small card container click handler.
-     * @param {Function} onClick Callback triggered when the small card container is clicked.
+     * Registers a click listener for the character list.
+     * @param {Function} onClick Click handler.
+     * @returns {void}
      */
-    listenSmallCardBox(onClick) {
-        this.bindClick(this.uiManager.dom.smallCardBox, onClick);
+    listenCharacterList(onClick) {
+        this.bindClick(this.uiManager.dom.characterList, onClick);
     },
 
     /**
-     * Registers the close button click handler.
-     * @param {Function} onClick Callback triggered when the close button is clicked.
+     * Registers a click listener for the close detail overlay button.
+     * @param {Function} onClick Click handler.
+     * @returns {void}
      */
-    listenCloseButton(onClick) {
-        this.bindClick(this.uiManager.dom.closeButton, onClick);
+    listenCloseDetailOverlayButton(onClick) {
+        this.bindClick(this.uiManager.dom.closeDetailOverlayButton, onClick);
     },
 
     /**
@@ -83,11 +88,12 @@ export const inputManagerButtonMethods = {
     },
 
     /**
-     * Registers the story menu button click handler.
-     * @param {Function} onClick Callback triggered when the story menu button is clicked.
+     * Registers a click listener for the open story button.
+     * @param {Function} onClick Click handler.
+     * @returns {void}
      */
-    listenMenuStoryButton(onClick) {
-        this.bindClick(this.uiManager.dom.menuStoryButton, onClick);
+    listenOpenStoryButton(onClick) {
+        this.bindClick(this.uiManager.dom.openStoryButton, onClick);
     },
 
     /**
@@ -99,11 +105,12 @@ export const inputManagerButtonMethods = {
     },
 
     /**
-     * Registers the controls menu button click handler.
-     * @param {Function} onClick Callback triggered when the controls menu button is clicked.
+     * Registers a click listener for the open controls button.
+     * @param {Function} onClick Click handler.
+     * @returns {void}
      */
-    listenMenuControlsButton(onClick) {
-        this.bindClick(this.uiManager.dom.menuControlsButton, onClick);
+    listenOpenControlsButton(onClick) {
+        this.bindClick(this.uiManager.dom.openControlsButton, onClick);
     },
 
     /**
@@ -115,11 +122,12 @@ export const inputManagerButtonMethods = {
     },
 
     /**
-     * Registers the credits menu button click handler.
-     * @param {Function} onClick Callback triggered when the credits menu button is clicked.
+     * Registers a click listener for the open credits button.
+     * @param {Function} onClick Click handler.
+     * @returns {void}
      */
-    listenMenuCreditsButton(onClick) {
-        this.bindClick(this.uiManager.dom.menuCreditsButton, onClick);
+    listenOpenCreditsButton(onClick) {
+        this.bindClick(this.uiManager.dom.openCreditsButton, onClick);
     },
 
     /**
@@ -155,11 +163,12 @@ export const inputManagerButtonMethods = {
     },
 
     /**
-     * Registers the level menu button click handler.
-     * @param {Function} onClick Callback triggered when the level menu button is clicked.
+     * Registers a click listener for the level complete menu button.
+     * @param {Function} onClick Click handler.
+     * @returns {void}
      */
-    listenMenuButton(onClick) {
-        this.bindClick(this.uiManager.dom.menuButton, onClick);
+    levelCompleteMenuButton(onClick) {
+        this.bindClick(this.uiManager.dom.levelCompleteMenuButton, onClick);
     },
 
     /**

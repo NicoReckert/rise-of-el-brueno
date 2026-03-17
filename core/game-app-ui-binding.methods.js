@@ -16,13 +16,13 @@ export const gameAppUiBindingMethods = {
      * @returns {void}
      */
     bindMenuButtons() {
-        this.bindStartButton();
+        this.bindStartGameButton();
         this.bindNextLevelButton();
-        this.bindWelcomeButton();
-        this.bindMenuCharactersButton();
-        this.bindMenuStoryButton();
-        this.bindMenuControlsButton();
-        this.bindMenuCreditsButton();
+        this.bindIntroStartButton();
+        this.bindOpenCharactersButton();
+        this.bindOpenStoryButton();
+        this.bindOpenControlsButton();
+        this.bindOpenCreditsButton();
     },
 
     /**
@@ -30,8 +30,8 @@ export const gameAppUiBindingMethods = {
      * @returns {void}
      */
     bindOverlayButtons() {
-        this.bindSmallCardBox();
-        this.bindCloseButton();
+        this.bindCharacterList();
+        this.bindCloseDetailOverlayButton();
         this.bindCloseCharactersOverlayButton();
         this.bindCloseStoryOverlayButton();
         this.bindCloseControlsOverlayButton();
@@ -60,11 +60,11 @@ export const gameAppUiBindingMethods = {
     },
 
     /**
-     * Binds the start button to initialize and start the game.
+     * Binds the start game button click event.
      * @returns {void}
      */
-    bindStartButton() {
-        this.inputManager.listenStartButton(() => {
+    bindStartGameButton() {
+        this.inputManager.listenStartGameButton(() => {
             if (!this.world) {
                 this.initWorld();
             }
@@ -110,11 +110,11 @@ export const gameAppUiBindingMethods = {
     },
 
     /**
-     * Binds the welcome button to start the intro sequence.
+     * Binds the intro start button click event.
      * @returns {void}
      */
-    bindWelcomeButton() {
-        this.inputManager.listenWelcomeButton(() => {
+    bindIntroStartButton() {
+        this.inputManager.listenIntroStartButton(() => {
             this.audioManager.playClickSound()
             this.fullscreenManager.setFullscreen(this.uiManager.dom.body);
             this.menuVisuals.startIntro();
@@ -122,22 +122,22 @@ export const gameAppUiBindingMethods = {
     },
 
     /**
-     * Binds the characters menu button to open the characters overlay.
+     * Binds the open characters button click event.
      * @returns {void}
      */
-    bindMenuCharactersButton() {
-        this.inputManager.listenMenuCharactersButton(() => {
+    bindOpenCharactersButton() {
+        this.inputManager.listenOpenCharactersButton(() => {
             this.menuAudioAndCharacters.openCharactersOverlay();
         })
     },
 
     /**
-     * Binds click events for character cards in the small card box.
+     * Binds character list click events.
      * @returns {void}
      */
-    bindSmallCardBox() {
-        this.inputManager.listenSmallCardBox((event) => {
-            const card = event.target.closest(".img-text-box");
+    bindCharacterList() {
+        this.inputManager.listenCharacterList((event) => {
+            const card = event.target.closest(".character-card");
             if (!card) return;
             const characterName = card.dataset.character;
             this.menuAudioAndCharacters.renderBigCard(characterName);
@@ -145,11 +145,11 @@ export const gameAppUiBindingMethods = {
     },
 
     /**
-     * Binds the close button for the character detail overlay.
+     * Binds the close detail overlay button click event.
      * @returns {void}
      */
-    bindCloseButton() {
-        this.inputManager.listenCloseButton(() => {
+    bindCloseDetailOverlayButton() {
+        this.inputManager.listenCloseDetailOverlayButton(() => {
             this.menuAudioAndCharacters.closeBigBox();
         })
     },
@@ -165,11 +165,11 @@ export const gameAppUiBindingMethods = {
     },
 
     /**
-     * Binds the story menu button to open the story overlay.
+     * Binds the open story button click event.
      * @returns {void}
      */
-    bindMenuStoryButton() {
-        this.inputManager.listenMenuStoryButton(() => {
+    bindOpenStoryButton() {
+        this.inputManager.listenOpenStoryButton(() => {
             this.menuAudioAndCharacters.openStoryOverlay();
         })
     },
@@ -185,11 +185,11 @@ export const gameAppUiBindingMethods = {
     },
 
     /**
-     * Binds the controls menu button to open the controls overlay.
+     * Binds the open controls button click event.
      * @returns {void}
      */
-    bindMenuControlsButton() {
-        this.inputManager.listenMenuControlsButton(() => {
+    bindOpenControlsButton() {
+        this.inputManager.listenOpenControlsButton(() => {
             this.menuAudioAndCharacters.openControlsOverlay();
         })
     },
@@ -205,11 +205,11 @@ export const gameAppUiBindingMethods = {
     },
 
     /**
-     * Binds the credits menu button to open the credits overlay.
+     * Binds the open credits button click event.
      * @returns {void}
      */
-    bindMenuCreditsButton() {
-        this.inputManager.listenMenuCreditsButton(() => {
+    bindOpenCreditsButton() {
+        this.inputManager.listenOpenCreditsButton(() => {
             this.menuAudioAndCharacters.openCreditsOverlay();
         })
     },
@@ -263,7 +263,7 @@ export const gameAppUiBindingMethods = {
      */
     bindReturnToMenuButtons() {
         const handler = () => this.returnToMainMenu();
-        this.inputManager.listenMenuButton(handler);
+        this.inputManager.levelCompleteMenuButton(handler);
         this.inputManager.listenPauseMenuMainButton(handler);
     },
 

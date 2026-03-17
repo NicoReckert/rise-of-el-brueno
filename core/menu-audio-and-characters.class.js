@@ -64,7 +64,7 @@ export class MenuAudioAndCharacters {
      * @returns {void}
      */
     openCharactersOverlay() {
-        const submenuBg = this.prepareSubmenuBg(this.uiManager.dom.overlayCharacters);
+        const submenuBg = this.prepareSubmenuBg(this.uiManager.dom.charactersOverlay);
         if (!submenuBg) return;
         this.uiManager.showCharactersOverlay();
         this.uiManager.renderCharacterCards(this.characters);
@@ -102,7 +102,7 @@ export class MenuAudioAndCharacters {
      * @returns {void}
      */
     showBigCard(character) {
-        this.uiManager.showBigCardOverlay();
+        this.uiManager.showCharacterDetailOverlay();
         this.uiManager.renderBigCharacterCard(character);
     }
 
@@ -146,7 +146,7 @@ export class MenuAudioAndCharacters {
      * @returns {void}
      */
     closeBigBox() {
-        this.uiManager.hideBigCardOverlay();
+        this.uiManager.hideCharacterDetailOverlay();
         this.audioManager.fadeOutAudio(this.currentCharacterMusic, 1000);
         this.stopSpeech(this.currentCharacterSpeechSound, 'characterSpeechTimeout', 1000);
         this.returnToInfoScreenMusic();
@@ -179,7 +179,7 @@ export class MenuAudioAndCharacters {
      * @returns {{infoScreenMusic:Object, speech:Object}|null} Story overlay state or null.
      */
     getStoryOverlayState() {
-        const submenuBg = this.prepareSubmenuBg(this.uiManager.dom.overlayStory);
+        const submenuBg = this.prepareSubmenuBg(this.uiManager.dom.story-overlay);
         const infoScreenMusic = this.audioManager.get('infoScreenMusic');
         const speech = this.audioManager.get('storyTextSpeechSound');
         if (!submenuBg || !infoScreenMusic) return null;
@@ -236,7 +236,7 @@ export class MenuAudioAndCharacters {
      * @returns {void}
      */
     openControlsOverlay() {
-        const submenuBg = this.prepareSubmenuBg(this.uiManager.dom.overlayControls);
+        const submenuBg = this.prepareSubmenuBg(this.uiManager.dom.controlsOverlay);
         if (!submenuBg) return;
         this.uiManager.showControlsOverlay();
         this.uiManager.renderControlsCard(controls);
@@ -258,7 +258,7 @@ export class MenuAudioAndCharacters {
      * @returns {void}
      */
     openCreditsOverlay() {
-        const submenuBg = this.prepareSubmenuBg(this.uiManager.dom.overlayCredits);
+        const submenuBg = this.prepareSubmenuBg(this.uiManager.dom.creditsOverlay);
         if (!submenuBg) return;
         this.uiManager.showCreditsOverlay();
         this.uiManager.renderCreditsCard();

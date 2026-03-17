@@ -11,9 +11,9 @@
 </head>
 
 <body id="body">
-    <div id="loading-overlay">
-        <div id="loading-bar"></div>
-        <span id="loading-text">Preparing experience…</span>
+    <div class="loading-overlay" id="loading-overlay">
+        <div class="loading-bar" id="loading-bar"></div>
+        <span class="loading-text" id="loading-text">Preparing experience…</span>
     </div>
     <div class="all-content" id="all-content">
         <div class="game-stage">
@@ -28,160 +28,162 @@
                     <button class="touch-button touch-button--small" id="action-button"><img class="touch-button__icon"
                             src="./assets/icons/use.png" alt=""></button>
 
-                    <button class="touch-button" id="throw-button"><img class="touch-button__icon touch-button__icon--throw"
-                            src="./assets/icons/throw2.png" alt=""></button>
+                    <button class="touch-button" id="throw-button"><img
+                            class="touch-button__icon touch-button__icon--throw" src="./assets/icons/throw2.png"
+                            alt=""></button>
 
                     <div class="touch-controls__primary-actions">
-                        <button class="touch-button touch-button--small" id="log-button"><img class="touch-button__icon"
+                        <button class="touch-button touch-button--small" id="quest-log-button"><img class="touch-button__icon"
                                 src="./assets/icons/log.png" alt=""></button>
                         <div class="touch-controls__secondary-actions">
-                            <button class="touch-button touch-button--offset-lg" id="protect-button"><img class="touch-button__icon"
-                                    src="./assets/icons/protect.png" alt="protect"></button>
-                            <button class="touch-button .touch-button--offset-sm" id="jump-button"><img class="touch-button__icon"
-                                    src="./assets/icons/jump.png" alt=""></button>
+                            <button class="touch-button touch-button--offset-lg" id="protect-button"><img
+                                    class="touch-button__icon" src="./assets/icons/protect.png" alt="protect"></button>
+                            <button class="touch-button touch-button--offset-sm" id="jump-button"><img
+                                    class="touch-button__icon" src="./assets/icons/jump.png" alt=""></button>
                             <button class="touch-button" id="duck-button"><img class="touch-button__icon"
                                     src="./assets/icons/duck.png" alt="duck"></button>
                         </div>
-                        <button class="touch-button touch-button--attack" id="attack-button"><img class="touch-button__icon touch-button__icon--attack"
-                                src="./assets/icons/attack.png" alt=""></button>
+                        <button class="touch-button touch-button--attack" id="attack-button"><img
+                                class="touch-button__icon touch-button__icon--attack" src="./assets/icons/attack.png"
+                                alt=""></button>
                     </div>
                 </div>
             </div>
             <div class="level-complete-actions d-none" id="level-complete-actions">
                 <div class="level-complete-actions__secondary">
-                    <button class="start-button" id="menu-button">Menü</button>
-                    <button class="start-button" id="restart-level-button">Wiederholen</button>
+                    <button class="menu-button" id="level-complete-menu-button">Menü</button>
+                    <button class="menu-button" id="restart-level-button">Wiederholen</button>
                 </div>
-                <button class="start-button next-level-button" id="next-level-button">Weiter</button>
+                <button class="menu-button next-level-button" id="next-level-button">Weiter</button>
             </div>
             <button class="pause-toggle-button d-none" id="pause-toggle-button">II</button>
             <button class="mute-toggle-button d-none" id="mute-toggle-button">🔇</button>
             <button class="fullscreen-toggle-button d-none" id="fullscreen-toggle-button">⛶</button>
             <div class="pause-overlay d-none" id="pause-overlay">
                 <div class="pause-menu">
-                    <button class="start-button" id="pause-resume-button">Weiter</button>
-                    <button class="start-button" id="pause-restart-button">Level neu starten</button>
-                    <button class="start-button" id="pause-menu-main-button">Zurück zum Menü</button>
+                    <button class="menu-button" id="pause-resume-button">Weiter</button>
+                    <button class="menu-button" id="pause-restart-button">Level neu starten</button>
+                    <button class="menu-button" id="pause-menu-main-button">Zurück zum Menü</button>
                 </div>
             </div>
             <canvas id="canvas" width="1280" height="720"></canvas>
         </div>
-        <div>
-            <div class="overlay-start-screen opacity-none" id="overlay-start-screen">
-                <video muted playsinline class="background-video" id="background-video">
-                    Dein Browser unterstützt kein HTML5-Video.
-                </video>
+    </div>
+    <div class="start-screen-overlay opacity-none" id="start-screen-overlay">
+        <video muted playsinline class="background-video" id="background-video">
+            Dein Browser unterstützt kein HTML5-Video.
+        </video>
 
-                <div class="title-dragon-box">
-                    <div class="dragon-img-box">
-                        <img class="dragon" src="./assets/img/small_dragon.webp" alt="">
-                    </div>
-                    <h1 class="title" id="h1" class="before-animation">RISE OF<br>EL BRÜNÖ</h1>
+        <div class="start-screen-header">
+            <div class="dragon-img-box">
+                <img class="dragon" src="./assets/img/small_dragon.webp" alt="">
+            </div>
+            <h1 class="title before-animation" id="game-title">RISE OF<br>EL BRÜNÖ</h1>
+        </div>
+        <div class="start-screen-content">
+            <div class="start-screen-media">
+                <div class="earth-video-box">
+                    <video class="earth-video" id="earth-video" loop muted playsinline disablepictureinpicture
+                        controlslist="nodownload nofullscreen noremoteplayback"></video>
                 </div>
-                <div class="img-div-box">
-                    <div class="img-box">
-                        <div class="earth-video-box">
-                            <video class="earth-video" id="earth-video" loop muted playsinline disablepictureinpicture
-                                controlslist="nodownload nofullscreen noremoteplayback"></video>
-                        </div>
-                        <div class="img-box2">
-                            <img class="chick-img" src="./assets/img/chick.webp" alt="">
-                            <img class="bruno-img" src="./assets/img/Brünö.webp" alt="">
-                            <img class="chicken-img" src="./assets/img/chicken.webp" alt="">
-                        </div>
-                        <div class="portal-video-box">
-                            <video class="portal-video" id="portal-video" loop muted playsinline disablepictureinpicture
-                                controlslist="nodownload nofullscreen noremoteplayback"></video>
-                        </div>
-                    </div>
-                    <div class="dragon-thunder-box">
-                        <video class="thunder-video" id="thunder-video" loop muted playsinline disablepictureinpicture
-                            controlslist="nodownload nofullscreen noremoteplayback"></video>
-                        <img class="dragon2" src="./assets/img/black_dragon.webp" alt="">
-                        <img class="dragon2 red-glow" src="./assets/img/black_dragon.webp" alt="">
-                    </div>
-                    <div class="start-screen">
-                        <button class="start-button" id="start-button">Start</button>
-                        <button class="start-button" id="menu-story-button">Story</button>
-                        <button class="start-button" id="menu-characters-button">Characters</button>
-                        <button class="start-button" id="menu-controls-button">Steuerung</button>
-                        <button class="start-button" id="menu-credits-button">Credits</button>
-                    </div>
+                <div class="hero-character-group">
+                    <img class="chick-img" src="./assets/img/chick.webp" alt="">
+                    <img class="bruno-img" src="./assets/img/Brünö.webp" alt="">
+                    <img class="chicken-img" src="./assets/img/chicken.webp" alt="">
+                </div>
+                <div class="portal-video-box">
+                    <video class="portal-video" id="portal-video" loop muted playsinline disablepictureinpicture
+                        controlslist="nodownload nofullscreen noremoteplayback"></video>
                 </div>
             </div>
-            <div class="overlay-start-initialisation" id="overlay-start-initialisation">
-                <button class="welcome-button" id="welcome-button">Start Game</button>
-                <video muted loop playsinline class="opening-background-video" id="opening-background-video">
-                    Dein Browser unterstützt kein HTML5-Video.
-                </video>
-                <video muted playsinline class="intro-video opacity-none" id="intro-video">
-                    Dein Browser unterstützt kein HTML5-Video.
-                </video>
+            <div class="dragon-thunder-box">
+                <video class="thunder-video" id="thunder-video" loop muted playsinline disablepictureinpicture
+                    controlslist="nodownload nofullscreen noremoteplayback"></video>
+                <img class="dragon-silhouette" src="./assets/img/black_dragon.webp" alt="">
+                <img class="dragon-silhouette red-glow" src="./assets/img/black_dragon.webp" alt="">
             </div>
-            <video muted loop playsinline disablePictureInPicture controlsList="nodownload noremoteplayback"
-                class="submenu-video" id="submenu-video">
-                Dein Browser unterstützt kein HTML5-Video.
-            </video>
-            <div class="overlay-info d-none" id="overlay-characters">
-                <div class="back-box">
-                    <button class="start-button" id="close-characters-overlay-button">Back</button>
-                </div>
-                <h1 class="title-characters">Characters</h1>
-                <div class="ornament-box">
-                    <div class="ornament2"></div>
-                </div>
-                <div class="small-card-box" id="small-card-box">
-
-                </div>
+            <div class="start-menu">
+                <button class="menu-button" id="start-game-button">Start</button>
+                <button class="menu-button" id="open-story-button">Story</button>
+                <button class="menu-button" id="open-characters-button">Characters</button>
+                <button class="menu-button" id="open-controls-button">Steuerung</button>
+                <button class="menu-button" id="open-credits-button">Credits</button>
             </div>
-            <div class="overlay-big-card d-none" id="overlay-story">
-                <div class="back-box">
-                    <button class="start-button" id="close-story-overlay-button">Back</button>
-                </div>
-                <h1 class="title-characters">Story</h1>
-                <div class="ornament story-ornament-left"></div>
-                <div class="ornament story-ornament-right"></div>
-                <div class="story-card-box" id="story-box">
+        </div>
+    </div>
+    <div class="intro-overlay" id="intro-overlay">
+        <button class="intro-start-button" id="intro-start-button">Start Game</button>
+        <video muted loop playsinline class="opening-background-video" id="opening-background-video">
+            Dein Browser unterstützt kein HTML5-Video.
+        </video>
+        <video muted playsinline class="intro-video opacity-none" id="intro-video">
+            Dein Browser unterstützt kein HTML5-Video.
+        </video>
+    </div>
+    <video muted loop playsinline disablePictureInPicture controlsList="nodownload noremoteplayback"
+        class="submenu-video" id="submenu-video">
+        Dein Browser unterstützt kein HTML5-Video.
+    </video>
+    <div class="page-overlay d-none" id="characters-overlay">
+        <div class="overlay-back">
+            <button class="menu-button" id="close-characters-overlay-button">Back</button>
+        </div>
+        <h1 class="overlay-title">Characters</h1>
+        <div class="ornament-box">
+            <div class="ornament2"></div>
+        </div>
+        <div class="character-list" id="character-list">
 
-                </div>
-            </div>
+        </div>
+    </div>
+    <div class="detail-overlay d-none" id="story-overlay">
+        <div class="overlay-back">
+            <button class="menu-button" id="close-story-overlay-button">Back</button>
+        </div>
+        <h1 class="overlay-title">Story</h1>
+        <div class="ornament story-ornament-left"></div>
+        <div class="ornament story-ornament-right"></div>
+        <div class="overlay-section" id="story-section">
 
-            <div class="overlay-big-card d-none" id="overlay-controls">
-                <div class="back-box">
-                    <button class="start-button" id="close-controls-overlay-button">Back</button>
-                </div>
-                <h1 class="title-characters">Steuerung</h1>
-                <div class="ornament story-ornament-left"></div>
-                <div class="ornament story-ornament-right"></div>
-                <div class="controls-box" id="controls-box">
+        </div>
+    </div>
 
-                </div>
-            </div>
+    <div class="detail-overlay d-none" id="controls-overlay">
+        <div class="overlay-back">
+            <button class="menu-button" id="close-controls-overlay-button">Back</button>
+        </div>
+        <h1 class="overlay-title">Steuerung</h1>
+        <div class="ornament story-ornament-left"></div>
+        <div class="ornament story-ornament-right"></div>
+        <div class="controls-section" id="controls-section">
 
-            <div class="overlay-info d-none" id="overlay-credits">
-                <div class="back-box">
-                    <button class="start-button" id="close-credits-overlay-button">Back</button>
-                </div>
-                <h1 class="title-characters">Credits</h1>
-                <div class="ornament story-ornament-left"></div>
-                <div class="ornament story-ornament-right"></div>
-                <div class="story-card-box" id="credits-box">
+        </div>
+    </div>
 
-                </div>
-            </div>
+    <div class="page-overlay d-none" id="credits-overlay">
+        <div class="overlay-back">
+            <button class="menu-button" id="close-credits-overlay-button">Back</button>
+        </div>
+        <h1 class="overlay-title">Credits</h1>
+        <div class="ornament story-ornament-left"></div>
+        <div class="ornament story-ornament-right"></div>
+        <div class="overlay-section" id="credits-section">
 
-            <div class="overlay-big-card d-none" id="overlay-big-card">
-                <div class="ornament ornament-left"></div>
-                <div class="ornament ornament-right"></div>
-                <div class="big-card-box" id="big-card-box">
+        </div>
+    </div>
 
-                </div>
-                <div class="close-box">
-                    <button class="start-button" id="close-button">Close</button>
-                </div>
-            </div>
+    <div class="detail-overlay d-none" id="character-detail-overlay">
+        <div class="ornament ornament-left"></div>
+        <div class="ornament ornament-right"></div>
+        <div class="detail-card-container" id="detail-card-container">
 
-            <script type="module" src="main.js"></script>
+        </div>
+        <div class="detail-overlay__close">
+            <button class="menu-button" id="close-detail-overlay-button">Close</button>
+        </div>
+    </div>
+
+    <script type="module" src="main.js"></script>
 </body>
 
 </html>

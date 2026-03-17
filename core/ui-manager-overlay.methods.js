@@ -32,7 +32,7 @@ export const uiManagerOverlayMethods = {
      * @param {boolean} active Whether the blur effect should be active.
      */
     setCharactersOverlayBlur(active) {
-        const overlay = this.dom.overlayCharacters;
+        const overlay = this.dom.charactersOverlay;
         if (!overlay) return;
         overlay.classList.toggle('blur-effect', active);
     },
@@ -51,30 +51,32 @@ export const uiManagerOverlayMethods = {
      * Shows the characters overlay.
      */
     showCharactersOverlay() {
-        this.showElement(this.dom.overlayCharacters);
+        this.showElement(this.dom.charactersOverlay);
     },
 
     /**
      * Hides the characters overlay.
      */
     hideCharactersOverlay() {
-        this.hideElement(this.dom.overlayCharacters);
+        this.hideElement(this.dom.charactersOverlay);
     },
 
     /**
-     * Shows the big card overlay and enables related UI effects.
+     * Shows the detail overlay.
+     * @returns {void}
      */
-    showBigCardOverlay() {
-        this.showElement(this.dom.overlayBigCard);
+    showCharacterDetailOverlay() {
+        this.showElement(this.dom.characterDetailOverlay);
         this.setBodyScrollLocked(true);
         this.setCharactersOverlayBlur(true);
     },
 
     /**
-     * Hides the big card overlay and disables related UI effects.
+     * Hides the detail overlay.
+     * @returns {void}
      */
-    hideBigCardOverlay() {
-        this.hideElement(this.dom.overlayBigCard);
+    hideCharacterDetailOverlay() {
+        this.hideElement(this.dom.characterDetailOverlay);
         this.setBodyScrollLocked(false);
         this.setCharactersOverlayBlur(false);
     },
@@ -83,41 +85,41 @@ export const uiManagerOverlayMethods = {
      * Shows the story overlay.
      */
     showStoryOverlay() {
-        this.showElement(this.dom.overlayStory);
+        this.showElement(this.dom.story-overlay);
     },
 
     /**
      * Hides the story overlay.
      */
     hideStoryOverlay() {
-        this.hideElement(this.dom.overlayStory);
+        this.hideElement(this.dom.story-overlay);
     },
 
     /**
      * Shows the controls overlay.
      */
     showControlsOverlay() {
-        this.showElement(this.dom.overlayControls);
+        this.showElement(this.dom.controlsOverlay);
     },
 
     /**
      * Hides the controls overlay.
      */
     hideControlsOverlay() {
-        this.hideElement(this.dom.overlayControls);
+        this.hideElement(this.dom.controlsOverlay);
     },
 
     /**
      * Shows the credits overlay.
      */
     showCreditsOverlay() {
-        this.showElement(this.dom.overlayCredits);
+        this.showElement(this.dom.creditsOverlay);
     },
 
     /**
      * Hides the credits overlay.
      */
     hideCreditsOverlay() {
-        this.hideElement(this.dom.overlayCredits);
+        this.hideElement(this.dom.creditsOverlay);
     }
 };

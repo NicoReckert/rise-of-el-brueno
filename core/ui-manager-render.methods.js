@@ -1,7 +1,7 @@
 import {
-    characterDialogTemplate,
-    largeCharacterDialogTemplate,
-    storyTextTemplate,
+    characterCardTemplate,
+    characterDetailTemplate,
+    storyCardTemplate,
     controlsTemplate,
     legalNoticeTemplate
 } from "../ui/menu-templates.js";
@@ -9,14 +9,15 @@ import {
 export const uiManagerRenderMethods = {
 
     /**
-     * Renders character cards into the small card container.
-     * @param {Array} characters List of character data objects.
+     * Renders character cards.
+     * @param {Array<Object>} characters Character data.
+     * @returns {void}
      */
     renderCharacterCards(characters) {
-        const box = this.dom.smallCardBox;
+        const box = this.dom.characterList;
         if (!box) return;
         box.innerHTML = characters
-            .map(character => characterDialogTemplate(character.name, character.text))
+            .map(character => characterCardTemplate(character.name, character.text))
             .join('');
     },
 
@@ -25,9 +26,9 @@ export const uiManagerRenderMethods = {
      * @param {Object} character Character data object.
      */
     renderBigCharacterCard(character) {
-        const box = this.dom.bigCardBox;
+        const box = this.dom.detailCardContainer;
         if (!box || !character) return;
-        box.innerHTML = largeCharacterDialogTemplate(character.name, character.text2);
+        box.innerHTML = characterDetailTemplate(character.name, character.text2);
     },
 
     /**
@@ -35,9 +36,9 @@ export const uiManagerRenderMethods = {
      * @param {string} text Story text content.
      */
     renderStoryCard(text) {
-        const box = this.dom.storyBox;
+        const box = this.dom.storySection;
         if (!box) return;
-        box.innerHTML = storyTextTemplate(text);
+        box.innerHTML = storyCardTemplate(text);
     },
 
     /**
@@ -45,7 +46,7 @@ export const uiManagerRenderMethods = {
      * @param {Object} controls Controls configuration data.
      */
     renderControlsCard(controls) {
-        const box = this.dom.controlsBox;
+        const box = this.dom.controlsSection;
         if (!box) return;
         box.innerHTML = controlsTemplate(controls);
     },
@@ -54,7 +55,7 @@ export const uiManagerRenderMethods = {
      * Renders the credits card into the credits container.
      */
     renderCreditsCard() {
-        const box = this.dom.creditsBox;
+        const box = this.dom.creditsSection;
         if (!box) return;
         box.innerHTML = legalNoticeTemplate();
     }

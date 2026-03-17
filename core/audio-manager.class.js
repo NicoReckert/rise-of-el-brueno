@@ -294,12 +294,13 @@ export class AudioManager {
     }
 
     /**
-     * Plays the welcome button click sound.
+     * Plays the click sound.
+     * @returns {void}
      */
     playClickSound() {
-        const welcomeButtonClickSound = this.get('welcomeButtonClickSound');
-        welcomeButtonClickSound.currentTime = 0;
-        welcomeButtonClickSound.play();
+        const introStartButtonClickSound = this.get('introStartButtonClickSound');
+        introStartButtonClickSound.currentTime = 0;
+        introStartButtonClickSound.play();
     }
 
     /**

@@ -34,9 +34,9 @@ export const uiManagerDomMethods = {
             body: document.body,
             canvas: document.getElementById('canvas'),
             introVideo: document.getElementById('intro-video'),
-            h1: document.getElementById('h1'),
-            overlayStartScreen: document.getElementById('overlay-start-screen'),
-            overlayStartInitialisation: document.getElementById('overlay-start-initialisation')
+            gameTitle: document.getElementById('game-title'),
+            startScreenOverlay: document.getElementById('start-screen-overlay'),
+            introOverlay: document.getElementById('intro-overlay')
         };
     },
 
@@ -46,12 +46,12 @@ export const uiManagerDomMethods = {
      */
     cacheMenuButtonElements() {
         return {
-            welcomeButton: document.getElementById('welcome-button'),
-            startButton: document.getElementById('start-button'),
-            menuCharactersButton: document.getElementById('menu-characters-button'),
-            menuStoryButton: document.getElementById('menu-story-button'),
-            menuControlsButton: document.getElementById('menu-controls-button'),
-            menuCreditsButton: document.getElementById('menu-credits-button'),
+            introStartButton: document.getElementById('intro-start-button'),
+            startGameButton: document.getElementById('start-game-button'),
+            openCharactersButton: document.getElementById('open-characters-button'),
+            openStoryButton: document.getElementById('open-story-button'),
+            openControlsButton: document.getElementById('open-controls-button'),
+            openCreditsButton: document.getElementById('open-credits-button'),
         };
     },
 
@@ -80,7 +80,7 @@ export const uiManagerDomMethods = {
             pauseResumeButton: document.getElementById('pause-resume-button'),
             restartLevelButton: document.getElementById('restart-level-button'),
             pauseRestartButton: document.getElementById('pause-restart-button'),
-            menuButton: document.getElementById('menu-button'),
+            levelCompleteMenuButton: document.getElementById('level-complete-menu-button'),
             pauseMenuMainButton: document.getElementById('pause-menu-main-button'),
         };
     },
@@ -91,12 +91,12 @@ export const uiManagerDomMethods = {
      */
     cacheOverlayElements() {
         return {
-            overlayCharacters: document.getElementById('overlay-characters'),
-            overlayBigCard: document.getElementById('overlay-big-card'),
-            overlayStory: document.getElementById('overlay-story'),
-            overlayControls: document.getElementById('overlay-controls'),
-            overlayCredits: document.getElementById('overlay-credits'),
-            closeButton: document.getElementById('close-button'),
+            charactersOverlay: document.getElementById('characters-overlay'),
+            characterDetailOverlay: document.getElementById('character-detail-overlay'),
+            storyOverlay: document.getElementById('story-overlay'),
+            controlsOverlay: document.getElementById('controls-overlay'),
+            creditsOverlay: document.getElementById('credits-overlay'),
+            closeDetailOverlayButton: document.getElementById('close-detail-overlay-button'),
             closeCharactersOverlayButton: document.getElementById('close-characters-overlay-button'),
             closeStoryOverlayButton: document.getElementById('close-story-overlay-button'),
             closeControlsOverlayButton: document.getElementById('close-controls-overlay-button'),
@@ -110,11 +110,11 @@ export const uiManagerDomMethods = {
      */
     cacheOverlayContentElements() {
         return {
-            smallCardBox: document.getElementById('small-card-box'),
-            bigCardBox: document.getElementById('big-card-box'),
-            storyBox: document.getElementById('story-box'),
-            controlsBox: document.getElementById('controls-box'),
-            creditsBox: document.getElementById('credits-box'),
+            characterList: document.getElementById('character-list'),
+            detailCardContainer: document.getElementById('detail-card-container'),
+            storySection: document.getElementById('story-section'),
+            controlsSection: document.getElementById('controls-section'),
+            creditsSection: document.getElementById('credits-section'),
         };
     }
 };

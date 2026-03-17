@@ -1,46 +1,46 @@
 /**
- * Returns an HTML template for a character dialog.
+ * Creates a character card template.
  * @param {string} characterName Character name.
- * @param {string} characterText Dialog text.
- * @returns {string} HTML template string.
+ * @param {string} characterText Character description text.
+ * @returns {string} HTML string.
  */
-export function characterDialogTemplate(characterName, characterText) {
-    return ` <div class="img-text-box" data-character="${characterName}">
-                <div class="name-img-box">
-                    <span class="character-name">${characterName}</span>
-                    <img class="character-img" src="./assets/img/characters/${characterName}.webp" alt="">
+export function characterCardTemplate(characterName, characterText) {
+    return ` <div class="character-card" data-character="${characterName}">
+                <div class="character-card__media">
+                    <span class="character-card__title">${characterName}</span>
+                    <img class="character-card__image" src="./assets/img/characters/${characterName}.webp" alt="">
                 </div>
-                <span class="character-text">${characterText}</span>
+                <span class="character-card__text">${characterText}</span>
             </div>`
 }
 
 /**
- * Returns an HTML template for a large character dialog.
+ * Creates a character detail template.
  * @param {string} characterName Character name.
- * @param {string} characterText Dialog text.
- * @returns {string} HTML template string.
+ * @param {string} characterText Character description text.
+ * @returns {string} HTML string.
  */
-export function largeCharacterDialogTemplate(characterName, characterText) {
-    return ` <div class="big__img-text-box" id="big-${characterName}">
-                <div class="big__name-img-box">
-                    <span class="big__character-name">${characterName}</span>
-                    <img class="big__character-img" src="./assets/img/characters/${characterName}.webp" alt="">
+export function characterDetailTemplate(characterName, characterText) {
+    return ` <div class="detail-card" id="character-detail-${characterName}">
+                <div class="detail-card__media">
+                    <span class="detail-card__title">${characterName}</span>
+                    <img class="detail-card__image" src="./assets/img/characters/${characterName}.webp" alt="">
                 </div>
-                <div class="big__character-text-box">
-                    <span class="big__character-text">${characterText}</span>
+                <div class="detail-card__body">
+                    <span class="detail-card__text">${characterText}</span>
                 </div>
             </div>`
 }
 
 /**
- * Returns an HTML template for a story text block.
- * @param {string} storyText Story text content.
- * @returns {string} HTML template string.
+ * Creates a story card template.
+ * @param {string} storyText Story text.
+ * @returns {string} HTML string.
  */
-export function storyTextTemplate(storyText) {
-    return ` <div class="story-box">
-                <div class="story-text-box">
-                    <span class="story-text">${storyText}</span>
+export function storyCardTemplate(storyText) {
+    return ` <div class="content-card">
+                <div class="content-card__body">
+                    <span class="content-card__text">${storyText}</span>
                 </div>
             </div>`
 }
@@ -65,7 +65,7 @@ export function controlsTemplate(controls) {
                                 <img class="${mobileIconClass}" src="./assets/icons/${element.mobile}.png" alt=""></img>
                                </div>`
     });
-    return ` <div class="story-box">
+    return ` <div class="content-card">
                 <div class="controls-text-over-box">
                     <div class="controls-action-box">
                         <span >Action</span>
@@ -88,20 +88,21 @@ export function controlsTemplate(controls) {
  * @returns {string} HTML template string.
  */
 export function legalNoticeTemplate() {
-    return ` <div class="story-box">
-                <div class="story-text-box">               
-                    <div id="impressumContent">
+    return ` <div class="content-card">
+                <div class="content-card__body">               
+                    <div id="legal-notice-content">
                         <h2 class="credits-title"><strong>Impressum / Legal Notice - Rise of El Brünö</strong></h2>
                         <br>
                         <br>
-                        <p class="credits-sub-title"><strong>Angaben gemäß § 5 TMG:</strong><p>
+                        <p class="credits-sub-title"><strong>Angaben gemäß § 5 TMG:</strong></p>
                         <p class="credits-text">
                         Nico Reckert<br>
                         Am Park 4<br>
                         39326 Zielitz<br>
                         Deutschland</p>
                         <br>
-                        <p class="credits-sub-title"><strong>Kontakt / Contact:</strong><br>
+                        <p class="credits-sub-title"><strong>Kontakt / Contact:</strong></p>
+                        <br>
                         <p class="credits-text">
                         E-Mail: <a class="credits-links" href="mailto:n.r-86@gmx.de">n.r-86@gmx.de</a></p>
                         <br>

@@ -114,7 +114,7 @@ export class MenuVisuals {
             this.uiManager.transitionToStartScreen();
             this.preloadMenuBackgroundDetails();
             setTimeout(() => {
-                this.uiManager.hideStartInitialisationOverlay();
+                this.uiManager.hideIntroOverlay();
             }, 400);
         }, 0); //23000
     }
