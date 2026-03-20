@@ -72,11 +72,11 @@ export function controlsTemplate(controls) {
                         ${controlsActionHtml}
                     </div>
                     <div class="controls-key-box">
-                        <img class="controls-first-img" src="./assets/icons/keyboard.png" alt="">
+                        <img class="controls-keyboard-img" src="./assets/icons/keyboard.png" alt="">
                         ${controlsKeyHtml}
                     </div>
                     <div class="controls-mobile-box">
-                        <img class="controls-first-img2" src="./assets/icons/mobile.png" alt="">
+                        <img class="controls-mobile-img" src="./assets/icons/mobile.png" alt="">
                         ${controlsMobileHtml}
                     </div>
                 </div>
