@@ -49,6 +49,7 @@ export class NayelisHouseLevelController {
         this.updateCharacter(timestamp);
         this.updateEntities(timestamp);
         this.handlePopup();
+        this.handleHint();
         this.eventManager.update();
     }
 
@@ -220,5 +221,13 @@ export class NayelisHouseLevelController {
         const now = performance.now();
         this.setup.popupTexts.forEach(p => p.draw(this.ctx, now));
         this.setup.popupTexts = this.setup.popupTexts.filter(p => p.active);
+    }
+
+    /**
+     * Renders hint elements.
+     * @returns {void}
+     */
+    handleHint() {
+        this.setup.hints.forEach(hint => hint.draw(this.ctx, this.renderCameraX));
     }
 }

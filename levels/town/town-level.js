@@ -10,7 +10,7 @@ const CLOUD_DENSITY = 1 / 700;
 const PARALLAX_STEP = 720;
 const PARALLAX_START_X = -720;
 const PARALLAX_COUNT = 38;
-const TOWN_TILE_START_X = 18676;
+const TOWN_TILE_START_X = 22676;
 const TOWN_TILE_COUNT = 41;
 const TOWN_TILE_STEP = 100;
 
@@ -133,12 +133,12 @@ function pushTownForegroundTiles(foreGrounds, tileSrc) {
 function createTownScenery(levelImages) {
     const { scenery } = levelImages.town;
     return [
-        new SceneryObject(scenery.nayeliHouse[0], 10000, 275, 550, 450),
-        new SceneryObject(scenery.town1[0], 18676, 5, 1000, 800),
-        new SceneryObject(scenery.town2[0], 19618, -105, 1000, 1000),
-        new SceneryObject(scenery.town4[0], 20523, -35, 800, 800),
-        new SceneryObject(scenery.town5[0], 21338, -18, 800, 800),
-        new SceneryObject(scenery.town6[0], 22038, -17, 1000, 800)
+        new SceneryObject(scenery.nayeliHouse[0], 20000, 275, 550, 450),
+        new SceneryObject(scenery.town1[0], 22676, 5, 1000, 800),
+        new SceneryObject(scenery.town2[0], 23618, -105, 1000, 1000),
+        new SceneryObject(scenery.town4[0], 24523, -35, 800, 800),
+        new SceneryObject(scenery.town5[0], 25338, -18, 800, 800),
+        new SceneryObject(scenery.town6[0], 26038, -17, 1000, 800)
     ];
 }
 

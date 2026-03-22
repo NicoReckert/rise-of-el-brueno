@@ -55,7 +55,9 @@ function createTownSceneEnvironment(entityImages) {
         fire: new AnimatedEntity(entityImages, 'fire', 500, 500, 23455, 110),
         houseDestroyed: new AnimatedEntity(entityImages, 'houseDestroyed', 900, 800, 2000, -50),
         stableDestroyed: new AnimatedEntity(entityImages, 'stableDestroyed', 600, 600, 2720, 200),
-        millDestroyed: new AnimatedEntity(entityImages, 'millDestroyed', 1100, 800, 3200, -285)
+        millDestroyed: new AnimatedEntity(entityImages, 'millDestroyed', 1100, 800, 3200, -285),
+        claw: new AnimatedEntity(entityImages, 'claw', 170, 170, 3600, 450),
+        feather: new AnimatedEntity(entityImages, 'feather', 80, 80, 3450, 420)
     };
 }
 

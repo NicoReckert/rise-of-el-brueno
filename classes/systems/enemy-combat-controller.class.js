@@ -32,8 +32,8 @@ export class EnemyCombatController {
      * @returns {Projectile} Projectile instance.
      */
     createProjectileForType(type, direction) {
-        const offsetX = direction ? this.enemy.width - 25 : -45;
-        const offsetY = this.enemy.y + this.enemy.height * 0.22;
+        const offsetX = direction ? this.enemy.width - 140 : 80; 
+        const offsetY = this.enemy.y + this.enemy.height * 0.12;
         return new Projectile(
             this.enemy.entityImages,
             type,

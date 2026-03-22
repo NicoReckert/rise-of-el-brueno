@@ -1,0 +1,20 @@
+﻿{
+    "frameHeight":  512,
+    "columns":  4,
+    "frameWidth":  512,
+    "animations": {
+    "claw": {
+      "from": 0,
+      "to": 0,
+      "fps": 7
+    },
+    "feather": {
+      "from": 1,
+      "to": 9,
+      "fps": 8
+    }
+  },
+    "image":  "claw_and_feather_sheet.webp",
+    "frames":  10,
+    "rows":  3
+}

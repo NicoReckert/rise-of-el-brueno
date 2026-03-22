@@ -11,32 +11,29 @@ export class EnemyAnimationAttackController {
     }
 
     /**
-     * Handles attack-related animation logic.
+     * Handles attack logic for the current animation.
      * @param {number} prevFrame Previous frame index.
      * @param {number} frameCount Number of animation frames.
      * @returns {void}
      */
     handleAttackLogic(prevFrame, frameCount) {
         if (!frameCount || frameCount <= 0) return;
-        this.handleBigChickenAttack(prevFrame, frameCount);
-        this.handleSmallChickenAttack(prevFrame, frameCount);
+        this.handleBigChickenAttack(prevFrame);
+        this.handleSmallChickenAttack(prevFrame);
         this.handleDragonAttack(prevFrame, frameCount);
     }
 
     /**
-     * Handles big chicken attack logic during the animation.
+     * Handles big chicken attack logic.
      * @param {number} prevFrame Previous frame index.
-     * @param {number} frameCount Number of animation frames.
      * @returns {void}
      */
-    handleBigChickenAttack(prevFrame, frameCount) {
+    handleBigChickenAttack(prevFrame) {
         if (!this.shouldProcessBigChickenAttack()) return;
         const shootFrame = 8;
         if (this.shouldShootNow(prevFrame, shootFrame)) {
             this.fireBigChickenProjectile();
         }
-        if (this.enemy.frameIndex < frameCount) return;
-        this.resetBigChickenAttackState();
     }
 
     /**
@@ -76,31 +73,15 @@ export class EnemyAnimationAttackController {
     }
 
     /**
-     * Resets the big chicken attack state.
-     * @returns {void}
-     */
-    resetBigChickenAttackState() {
-        this.enemy.hasFiredThisAttack = false;
-        this.enemy.isAttack = false;
-        this.enemy.frameIndex = 0;
-    }
-
-    /**
-     * Handles small chicken attack logic during the animation.
+     * Handles small chicken attack logic.
      * @param {number} prevFrame Previous frame index.
-     * @param {number} frameCount Number of animation frames.
      * @returns {void}
      */
-    handleSmallChickenAttack(prevFrame, frameCount) {
+    handleSmallChickenAttack(prevFrame) {
         if (!this.enemy.isAttack || this.enemy.currentEnemy !== 'chickenMutatesSmall') return;
         if (this.enemy.isHurt || this.enemy.isDead) return;
         const hitFrame = 6;
         this.enemy.attackHitbox.active = prevFrame === hitFrame;
-        if (this.enemy.frameIndex < frameCount) return;
-        this.enemy.attackHitbox.active = false;
-        this.enemy.isAttack = false;
-        this.enemy.frameIndex = 0;
-        this.enemy.hasHitPlayerThisAttack = false;
     }
 
     /**

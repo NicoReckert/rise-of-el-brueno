@@ -6,7 +6,8 @@
     "hurt": {
       "from": 0,
       "to": 2,
-      "fps": 3
+      "fps": 3,
+      "loop": false
     },
     "dead": {
       "from": 3,

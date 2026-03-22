@@ -22,6 +22,8 @@ export function characterCardTemplate(characterName, characterText) {
  */
 export function characterDetailTemplate(characterName, characterText) {
     return ` <div class="detail-card" id="character-detail-${characterName}">
+                <div class="ornament ornament-left"></div>
+                <div class="ornament ornament-right"></div>
                 <div class="detail-card__media">
                     <span class="detail-card__title">${characterName}</span>
                     <img class="detail-card__image" src="./assets/img/characters/${characterName}.webp" alt="">

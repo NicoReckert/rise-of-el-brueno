@@ -136,7 +136,7 @@ export class World {
      * Starts the game.
      */
     startGame() {
-        this.currentScene = 'townLevel';
+        this.currentScene = 'nayelisHouseLevel';
         this.levelManager.initLevels();
         this.draw();
     }
@@ -330,11 +330,15 @@ export class World {
     }
 
     /**
-     * Restarts the specified level.
-     * @param {string} levelName Level identifier.
+     * Restarts a level based on the given name.
+     * @param {string} levelName Level name.
+     * @returns {void}
      */
     restartLevel(levelName) {
-        this.levelManager.restartLevel(levelName);
+        const name = ['townLevel', 'nayelisHouseLevel', 'newWeaponLevel'].includes(levelName)
+            ? 'townLevel'
+            : 'farmLevel';
+        this.levelManager.restartLevel(name);
     }
 
     /**

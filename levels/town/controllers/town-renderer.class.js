@@ -27,6 +27,7 @@ export class TownRenderer {
     render(cameraX) {
         this.renderBackgrounds(cameraX);
         this.renderCharacterAndEntities(cameraX);
+        this.handleHint(cameraX);
     }
 
     /**
@@ -74,28 +75,38 @@ export class TownRenderer {
     }
 
     /**
-     * Renders characters, entities, and front-layer effects.
-     * @param {number} cameraX Camera x-position used for rendering.
+     * Renders the character and entities with camera offset.
+     * @param {number} cameraX Camera x position.
      * @returns {void}
      */
     renderCharacterAndEntities(cameraX) {
         this.ctx.save();
         this.ctx.translate(-cameraX, 0);
         this.renderTownBaseActors();
+        this.renderTownEnemies();
         this.renderTownCollections();
+        this.renderTownCharacter();
         this.renderTownFrontActors();
         this.ctx.restore();
         this.renderShieldAndSandstorm(cameraX);
     }
 
     /**
-     * Renders base actors such as buildings, main characters, and spirits.
+     * Renders base actors in the town.
      * @returns {void}
      */
     renderTownBaseActors() {
         this.renderTownDestroyedBuildings();
-        this.renderTownMainActors();
+        this.renderTownTadeo();
         this.renderTownSpirits();
+    }
+
+    /**
+     * Renders enemies in the town.
+     * @returns {void}
+     */
+    renderTownEnemies() {
+        this.addObject(this.setup.townLevel.enemies);
     }
 
     /**
@@ -107,17 +118,28 @@ export class TownRenderer {
         const house = this.setup.environment.houseDestroyed;
         const stable = this.setup.environment.stableDestroyed;
         const mill = this.setup.environment.millDestroyed;
+        const claw = this.setup.environment.claw;
+        const feather = this.setup.environment.feather;
         if (this.isVisible(house, cameraX, canvasWidth, 400)) this.addToWorld(house);
         if (this.isVisible(stable, cameraX, canvasWidth, 400)) this.addToWorld(stable);
         if (this.isVisible(mill, cameraX, canvasWidth, 400)) this.addToWorld(mill);
+        if (this.isVisible(claw, cameraX, canvasWidth, 400)) this.addToWorld(claw);
+        if (this.isVisible(feather, cameraX, canvasWidth, 400)) this.addToWorld(feather);
     }
 
     /**
-     * Renders main actors including the character and related elements.
+     * Renders Tadeo in the town.
      * @returns {void}
      */
-    renderTownMainActors() {
+    renderTownTadeo() {
         this.addToWorld(this.setup.characters.tadeo);
+    }
+
+    /**
+     * Renders the main character and related elements in the town.
+     * @returns {void}
+     */
+    renderTownCharacter() {
         this.addToWorld(this.character);
         this.addToWorld(this.setup.throwBottleSystem.heldBottle);
         this.setup.state.damageTexts.forEach(dt => dt.draw(this.ctx));
@@ -138,14 +160,13 @@ export class TownRenderer {
     }
 
     /**
-     * Renders collectible items, enemies, projectiles, and effects.
+     * Renders collectible and interactive objects in the town.
      * @returns {void}
      */
     renderTownCollections() {
         this.addObject(this.setup.townLevel.coins);
         this.addObject(this.setup.townLevel.bottles);
         this.addObject(this.setup.endbossAttack.eggs);
-        this.addObject(this.setup.townLevel.enemies);
         this.addObject(this.setup.state.projectiles);
         this.addObject(this.setup.state.effects);
         this.addToWorld(this.setup.endbossAttack);
@@ -253,5 +274,13 @@ export class TownRenderer {
             obj.x + obj.width >= cameraX - margin &&
             obj.x <= cameraX + canvasWidth + margin
         );
+    }
+
+    /**
+     * Renders hint elements.
+     * @returns {void}
+     */
+    handleHint(cameraX) {
+        this.setup.hints.forEach(hint => hint.draw(this.ctx, cameraX));
     }
 }

@@ -807,10 +807,7 @@ canvas {
 
 .detail-overlay {
   position: fixed;
-  top: 0;
-  bottom: 0;
-  right: 0;
-  left: 0;
+  inset: 0;
   width: 100%;
   display: flex;
   justify-content: center;
@@ -851,8 +848,8 @@ canvas {
   background: url('./assets/img/ornament4.png') no-repeat center/contain;
   width: 280px;
   height: 280px;
-  top: 5%;
-  left: 4%;
+  top: -100px;
+  left: -90px;
   animation-delay: 0s;
 }
 
@@ -860,8 +857,8 @@ canvas {
   background: url('./assets/img/ornament2.png') no-repeat center/contain;
   width: 250px;
   height: 250px;
-  bottom: 5%;
-  right: 4%;
+  bottom: -110px;
+  right: -40px;
   animation-delay: 6s;
 }
 
@@ -1171,7 +1168,6 @@ canvas {
     inset 0 1px 6px rgba(255, 255, 255, 0.3),
     inset 0 -3px 8px rgba(0, 0, 0, 0.3),
     0 4px 15px rgba(0, 0, 0, 0.4);
-
   padding: 64px 96px;
   transition: all 0.3s ease;
 }
@@ -1876,6 +1872,120 @@ body.fullscreen-active .portal-video {
 
   .overlay-back {
     display: none;
+  }
+}
+
+
+@media only screen and (max-width: 1700px) {
+  .detail-card {
+    gap: 80px;
+  }
+
+  .ornament-right,
+  .ornament-left {
+    width: 200px;
+    height: 200px;
+  }
+
+  .ornament-left {
+    top: -60px;
+    left: -50px;
+  }
+
+  .ornament-right {
+    bottom: -80px;
+    right: 0;
+  }
+}
+
+@media only screen and (max-width: 1460px) {
+  .detail-card {
+    gap: 0px;
+    padding: 64px 32px;
+    margin: 0 48px;
+  }
+}
+
+@media only screen and (max-width: 1250px) {
+  .detail-card {
+    padding: 32px 16px;
+  }
+
+  .detail-card__title {
+    font-size: 32px;
+  }
+
+  .detail-card__text {
+    font-size: 28px;
+  }
+
+  .detail-card__image {
+    width: 350px;
+  }
+
+  .ornament-right,
+  .ornament-left {
+    width: 150px;
+    height: 150px;
+  }
+
+  .ornament-left {
+    top: -35px;
+    left: -25px;
+  }
+
+  .ornament-right {
+    bottom: -55px;
+    right: 25px;
+  }
+}
+
+@media only screen and (max-width: 900px) {
+  .detail-card {
+    padding: 6px 6px;
+  }
+
+  .detail-card__title {
+    font-size: 28px;
+  }
+
+  .detail-card__text {
+    font-size: 24px;
+  }
+
+  .detail-card__image {
+    width: 250px;
+  }
+}
+
+@media only screen and (max-width: 750px) {
+  .detail-card {
+    margin: 0 6px;
+  }
+  
+  .detail-card__title {
+    font-size: 20px;
+  }
+
+  .detail-card__text {
+    font-size: 16px;
+    padding: 0;
+  }
+
+  .detail-card__image {
+    width: 120px;
+  }
+
+  .detail-card__body {
+    padding: 6px 6px;
+  }
+
+    .ornament-left {
+    display: none;
+  }
+
+  .ornament-right {
+   display: none;
   }
 
 }

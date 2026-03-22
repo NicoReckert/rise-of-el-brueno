@@ -10,34 +10,53 @@ export const townEvents =
          * character position, and task window setup.
          */
         {
+            name: 'init',
             type: 'quest',
             action: (setup) => {
                 setup.sounds.backgroundMusic.loop = true;
                 setup.world.audioManager.fadeInAudio(setup.sounds.backgroundMusic, 2000, 0.6);
-                setup.world.character.x = 100; // 100 //18500//23000
-                setup.world.character.level_start_x = 0;
+                setup.world.character.x = setup.state.comeFromNayelisHouse ? 20265 : 100; // 100 //18500//23000
+                setup.world.character.level_start_x = setup.state.comeFromNayelisHouse ? 20265 : 0;
                 setup.world.level_end_x = 25000;
-                setup.world.camera_x = 0; //0 // 18400 //22900
-                setup.world.character.speedX = 10;
+                setup.world.camera_x = setup.state.comeFromNayelisHouse ? 20015 : 0; //0 // 18400 //22900
                 setup.world.character.isWalkDetermined = false;
                 setup.characters.tadeo.updateAnimationState('idle', 1000 / 5);
-                setup.world.character.speedX = 3; //2
+                setup.world.character.speedX = 5;
                 setup.world.initTasks();
                 setup.world.taskWindow.y = 180;
+                setup.state.comeFromNayelisHouse = false;
             }
         },
 
         /**
-         * Collision event that triggers a dialog when the character
-         * interacts with the destroyed house area.
+         * Position-based event that shows a hint on enter and hides it on leave.
          */
         {
-            type: "collision",
+            type: 'position',
+            area: { x: 20275, width: 95 },
             objectA: 'character',
-            objectB: 'houseDestroyed',
-            toleranceB: { x: 200, width: 200 },
+            once: false,
             action: (setup) => {
-                setup.dialogManager.startDialog(0, setup.world.timestamp);
+                setup.hints[0].show();
+            },
+            onLeave: (setup) => {
+                setup.hints[0].hide();
+            }
+        },
+
+        /**
+         * Position-based event that stops character movement and starts a dialog.
+         */
+        {
+            type: "position",
+            area: { x: 3320, width: 100 },
+            action: (setup) => {
+                setup.world.character.isMovingLeft = false
+                setup.world.character.isMovingRight = false
+                setup.world.isKeysStopp = true;
+                setup.dialogManager.startDialog(0, setup.world.timestamp, () => {
+                    setup.world.isKeysStopp = false;
+                });
             }
         },
 
@@ -173,37 +192,26 @@ export const townEvents =
             },
             onLeave: (setup) => {
                 setup.world.character.walkOnDestroyedHouse = false;
-                setup.world.character.speedX = 3;
+                setup.world.character.speedX = 5;
             }
         },
-
-
-        // {
-        //     type: "position",
-        //     area: { x: 200, width: 100 },
-        //     action: (setup) => {
-        //         setup.townLevel.enemies.push(
-        //             new Enemy('dragonSmall', setup.entityImages, 170, 170, 300, 1000, setup.allAudios),
-        //         )
-        //         setup.townLevel.enemies.forEach(enemy => {
-        //             enemy.curentAnimation = 'idle';
-        //             enemy.world = setup.world;
-        //         });
-        //     }
-        // },
 
         /**
          * Position event that switches to Nayeli's house level
          * when the interaction key is pressed within the area.
          */
         {
+            name: 'changeLevel',
             type: "position",
-            area: { x: 10275, width: 95 },
-            once: false,
+            area: { x: 20275, width: 95 },
             requireKey: "F",
             action: (setup) => {
+                setup.world.audioManager.fadeOutAudio(setup.sounds.tadeoHoldStoneMusic, 1000);
+                setup.world.audioManager.fadeOutAudio(setup.sounds.backgroundMusic, 1000);
+                setup.world.nayelisHouseLevelController.eventManager.resetEventByName('init');
+                setup.world.nayelisHouseLevelController.eventManager.resetEventByName('changeLevel');
+                setup.world.keyboard.F = false;
                 setup.world.currentScene = 'nayelisHouseLevel';
-                setup.sounds.backgroundMusic.pause();
             }
         },
 
@@ -412,17 +420,15 @@ export const townEvents =
         },
 
         /**
-         * Position event that spawns additional enemy chickens
-         * when the character enters the defined area.
+         * Position-based event that spawns enemies in the level.
          */
         {
             type: "position",
             area: { x: 17000, width: 100 },
             action: (setup) => {
                 setup.townLevel.enemies.push(
-                    new Enemy('chickenMutatesSmall', setup.entityImages, 120, 120, 545, 18000, setup.allAudios, setup.world),
-                    new Enemy('chickenMutatesSmall', setup.entityImages, 120, 120, 545, 18100, setup.allAudios, setup.world),
-                    new Enemy('chickenMutatesBig', setup.entityImages, 160, 160, 505, 18200, setup.allAudios, setup.world)
+                    new Enemy('dragonSmall', setup.entityImages, 170, 170, 300, 18000, setup.allAudios, setup.world),
+                    new Enemy('dragonSmall', setup.entityImages, 170, 170, 300, 18200, setup.allAudios, setup.world)
                 );
             }
         },
@@ -527,7 +533,6 @@ export const townEvents =
                 setup.world.isKeysStopp = false;
                 setup.world.character.isStandUpAfterCollapse = true;
                 setup.world.character.isWalkInStorm = false;
-                setup.world.character.speedX = 5;
                 setup.characters.tadeo.updateAnimationState('walkWithStone');
                 setup.characters.tadeo.isFlipped = false;
                 setup.world.townLevelController.questManager.advance(11);
@@ -547,7 +552,7 @@ export const townEvents =
             once: false,
             action: (setup) => {
                 const tadeo = setup.characters.tadeo;
-                const arriveX = tadeo.moveToX(17775, { speed: 0.8 });
+                const arriveX = tadeo.moveToX(20250, { speed: 0.8 });
                 if (setup.state.isTadeoAfraid || setup.state.isTadeoPanic) {
                     tadeo.isMovingRight = false;
                     return;
@@ -1135,7 +1140,6 @@ export const townEvents =
             objectA: "character",
             objectB: "enemies",
             useAttackHitboxA: true,
-            toleranceB: { y: 25 },
             condition: (setup) => {
                 const char = setup.world.character;
                 return !!char && char.isAttack && !char.hasHitEnemyThisAttack;

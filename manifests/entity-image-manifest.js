@@ -409,7 +409,6 @@ export const otherLevelEntityManifestLazy = {
     }
   },
 
-
   macuahuitl: {
     idle: {
       type: 'sheetSequence',
@@ -450,68 +449,91 @@ export const otherLevelEntityManifestLazy = {
   },
 
   chickenMutatesSmall: {
-    walk: Array.from({ length: 5 }, (_, i) => `./assets/img/3_enemies_chicken/chicken_mutates/walk/image_${2 + i}.webp`),
-    dead: Array.from({ length: 1 }, _ => `./assets/img/3_enemies_chicken/chicken_mutates/dead/image_1.webp`),
-    hurt: Array.from({ length: 6 }, (_, i) => `./assets/img/3_enemies_chicken/chicken_mutates/hurt/image_${i + 1}.webp`),
-    attack: Array.from({ length: 8 }, (_, i) => `./assets/img/3_enemies_chicken/chicken_mutates/attack/image_${i + 1}.png`)
-
+    walk: {
+      type: 'sheet',
+      json: './assets/img/3_enemies/chicken_mutates_small/walk_and_attack/walk_and_attack_sheet.json'
+    },
+    attack: {
+      type: 'sheet',
+      json: './assets/img/3_enemies/chicken_mutates_small/walk_and_attack/walk_and_attack_sheet.json'
+    },
+    hurt: {
+      type: 'sheet',
+      json: './assets/img/3_enemies/chicken_mutates_small/hurt_and_dead/hurt_and_dead_sheet.json'
+    },
+    dead: {
+      type: 'sheet',
+      json: './assets/img/3_enemies/chicken_mutates_small/hurt_and_dead/hurt_and_dead_sheet.json'
+    }
   },
 
   chickenMutatesBig: {
-    walk: Array.from({ length: 9 }, (_, i) => `./assets/img/3_enemies_chicken/chicken_mutates/walk2/image_${i + 1}.png`),
-    dead: Array.from({ length: 1 }, _ => `./assets/img/3_enemies_chicken/chicken_mutates/dead/image_1.webp`),
-    hurt: Array.from({ length: 8 }, (_, i) => `./assets/img/3_enemies_chicken/chicken_mutates/hurt2/image_${i + 1}.png`),
-    attack: Array.from({ length: 9 }, (_, i) => `./assets/img/3_enemies_chicken/chicken_mutates/attack2/image_${i + 1}.png`)
+    walk: {
+      type: 'sheet',
+      json: './assets/img/3_enemies/chicken_mutates_big/walk_and_attack/walk_and_attack_sheet.json'
+    },
+    attack: {
+      type: 'sheet',
+      json: './assets/img/3_enemies/chicken_mutates_big/walk_and_attack/walk_and_attack_sheet.json'
+    },
+    hurt: {
+      type: 'sheet',
+      json: './assets/img/3_enemies/chicken_mutates_big/hurt_and_dead/hurt_and_dead_sheet.json'
+    },
+    dead: {
+      type: 'sheet',
+      json: './assets/img/3_enemies/chicken_mutates_big/hurt_and_dead/hurt_and_dead_sheet.json'
+    }
   },
 
   dragonSmall: {
     idle: {
       type: 'sheet',
-      json: './assets/img/3_enemies_chicken/dragon_small/idle_hurt_attack_dead/idle_hurt_attack_dead_sheet.json'
+      json: './assets/img/3_enemies/dragon_small/idle_hurt_attack_dead/idle_hurt_attack_dead_sheet.json'
     },
     airApproach: {
       type: 'sheet',
-      json: './assets/img/3_enemies_chicken/dragon_small/air_approach_dive_start_and_fast/air_approach_dive_start_and_fast_sheet.json'
+      json: './assets/img/3_enemies/dragon_small/air_approach_dive_start_and_fast/air_approach_dive_start_and_fast_sheet.json'
     },
     diveStart: {
       type: 'sheet',
-      json: './assets/img/3_enemies_chicken/dragon_small/air_approach_dive_start_and_fast/air_approach_dive_start_and_fast_sheet.json'
+      json: './assets/img/3_enemies/dragon_small/air_approach_dive_start_and_fast/air_approach_dive_start_and_fast_sheet.json'
     },
     diveFast: {
       type: 'sheet',
-      json: './assets/img/3_enemies_chicken/dragon_small/air_approach_dive_start_and_fast/air_approach_dive_start_and_fast_sheet.json'
+      json: './assets/img/3_enemies/dragon_small/air_approach_dive_start_and_fast/air_approach_dive_start_and_fast_sheet.json'
     },
     attack: {
       type: 'sheet',
-      json: './assets/img/3_enemies_chicken/dragon_small/idle_hurt_attack_dead/idle_hurt_attack_dead_sheet.json'
+      json: './assets/img/3_enemies/dragon_small/idle_hurt_attack_dead/idle_hurt_attack_dead_sheet.json'
     },
     diveUpShallow: {
       type: 'sheet',
-      json: './assets/img/3_enemies_chicken/dragon_small/dive_up_shallow_medium_steep/dive_up_shallow_medium_steep_sheet.json'
+      json: './assets/img/3_enemies/dragon_small/dive_up_shallow_medium_steep/dive_up_shallow_medium_steep_sheet.json'
     },
     diveUpMedium: {
       type: 'sheet',
-      json: './assets/img/3_enemies_chicken/dragon_small/dive_up_shallow_medium_steep/dive_up_shallow_medium_steep_sheet.json'
+      json: './assets/img/3_enemies/dragon_small/dive_up_shallow_medium_steep/dive_up_shallow_medium_steep_sheet.json'
     },
     diveUpSteep: {
       type: 'sheet',
-      json: './assets/img/3_enemies_chicken/dragon_small/dive_up_shallow_medium_steep/dive_up_shallow_medium_steep_sheet.json'
+      json: './assets/img/3_enemies/dragon_small/dive_up_shallow_medium_steep/dive_up_shallow_medium_steep_sheet.json'
     },
     hurt: {
       type: 'sheet',
-      json: './assets/img/3_enemies_chicken/dragon_small/idle_hurt_attack_dead/idle_hurt_attack_dead_sheet.json'
+      json: './assets/img/3_enemies/dragon_small/idle_hurt_attack_dead/idle_hurt_attack_dead_sheet.json'
     },
     fallDown: {
       type: 'sheet',
-      json: './assets/img/3_enemies_chicken/dragon_small/fall_down_and_impact/fall_down_and_impact_sheet.json'
+      json: './assets/img/3_enemies/dragon_small/fall_down_and_impact/fall_down_and_impact_sheet.json'
     },
     impact: {
       type: 'sheet',
-      json: './assets/img/3_enemies_chicken/dragon_small/fall_down_and_impact/fall_down_and_impact_sheet.json'
+      json: './assets/img/3_enemies/dragon_small/fall_down_and_impact/fall_down_and_impact_sheet.json'
     },
     dead: {
       type: 'sheet',
-      json: './assets/img/3_enemies_chicken/dragon_small/idle_hurt_attack_dead/idle_hurt_attack_dead_sheet.json'
+      json: './assets/img/3_enemies/dragon_small/idle_hurt_attack_dead/idle_hurt_attack_dead_sheet.json'
     }
   },
 
@@ -697,6 +719,22 @@ export const otherLevelEntityManifestLazy = {
     idle: {
       type: 'sheet',
       json: './assets/img/entities/feather_swirl/idle/idle_sheet.json'
+    }
+  },
+
+  claw: {
+    idle: {
+      type: 'sheet',
+      json: './assets/img/entities/claw_and_feather/claw_and_feather_sheet.json',
+      anim: 'claw'
+    }
+  },
+
+  feather: {
+    idle: {
+      type: 'sheet',
+      json: './assets/img/entities/claw_and_feather/claw_and_feather_sheet.json',
+      anim: 'feather'
     }
   }
 }

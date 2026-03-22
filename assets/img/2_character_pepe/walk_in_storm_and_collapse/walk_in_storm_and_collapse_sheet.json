@@ -11,7 +11,8 @@
     "collapse": {
       "from": 8,
       "to": 17,
-      "fps": 8
+      "fps": 8,
+      "loop": false
     },
     "collapse-loop": {
       "from": 17,

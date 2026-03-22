@@ -1,4 +1,5 @@
 import { AnimatedEntity } from '../../classes/entities/animated-entity.class.js';
+import { newWeaponEvents } from '../../events/new-weapon-events.js';
 
 /**
  * Sets up the new weapon level environment, sounds, and state.
@@ -14,6 +15,7 @@ export class NewWeaponLevelSetup {
         this.environment = this.createEnvironment();
         this.sounds = this.createSounds();
         this.setupSceneState();
+        this.newWeaponEvents = newWeaponEvents;
     }
 
     /**

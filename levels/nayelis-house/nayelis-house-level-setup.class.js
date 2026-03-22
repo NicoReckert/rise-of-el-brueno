@@ -1,6 +1,7 @@
 import { AnimatedEntity } from '../../classes/entities/animated-entity.class.js';
 import { createNayelisHouseLevel } from './nayelis-house-level.js';
 import { nayelisHouseEvents } from '../../events/nayelis-house-level-events.js';
+import { HollowHint } from '../../classes/ui/hollow-hint.class.js';
 
 /**
  * Sets up the Nayeli's house level including characters, sounds, video, and state.
@@ -21,6 +22,8 @@ export class NayelisHouseLevelSetup {
         this.speechBubbles = {};
         this.sounds = this.createSounds();
         this.video = this.allVideos.nayelis_house_video || null;
+        this.comeFromNewWeapon = false;
+        this.hints = this.createHints();
     }
 
     /**
@@ -52,5 +55,15 @@ export class NayelisHouseLevelSetup {
             nayelisMusic: this.allAudios.nayelisMusic,
             nayelisSpeakSound: this.allAudios.nayelisSpeakSound
         };
+    }
+
+    /**
+     * Creates hint instances.
+     * @returns {Array<Object>} Hint instances.
+     */
+    createHints() {
+        return [
+            new HollowHint("Verlassen", this.world.character, 100, 'desert')
+        ];
     }
 }

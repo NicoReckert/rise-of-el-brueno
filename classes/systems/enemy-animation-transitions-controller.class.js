@@ -19,7 +19,7 @@ export class EnemyAnimationTransitionsController {
         const anim = this.enemy.dead;
         if (!anim) return;
         this.enemy.currentAnimation = null;
-        this.enemy.y = 565;
+        this.enemy.y = this.enemy.currentEnemy === 'chickenMutatesSmall' ? 565 : 555;
         this.applyDeathFirstFrame(anim);
     }
 
@@ -82,8 +82,8 @@ export class EnemyAnimationTransitionsController {
     }
 
     /**
-     * Handles animation end logic.
-     * @param {*} anim Animation source.
+     * Handles logic when an animation ends.
+     * @param {string} anim Animation name.
      * @param {number} frameCount Number of animation frames.
      * @param {number} timestamp Frame timestamp.
      * @returns {void}
@@ -92,6 +92,7 @@ export class EnemyAnimationTransitionsController {
         this.handleHurtAnimationEnd(anim, frameCount);
         this.handleDragonImpactAnimationEnd(anim, frameCount, timestamp);
         this.handleDragonAttackAnimationEnd(anim, frameCount);
+        this.handleChickenAttackAnimationEnd();
     }
 
     /**
@@ -219,6 +220,48 @@ export class EnemyAnimationTransitionsController {
      * @returns {void}
      */
     finishDragonAttackAnimation() {
+        this.enemy.attackHitbox.active = false;
+        this.enemy.isAttack = false;
+        this.enemy.frameIndex = 0;
+        this.enemy.sheetIndex = 0;
+        this.enemy.animationFinished = false;
+        this.enemy.hasHitPlayerThisAttack = false;
+    }
+
+    /**
+     * Handles logic after a chicken attack animation ends.
+     * @returns {void}
+     */
+    handleChickenAttackAnimationEnd() {
+        if (this.enemy.currentAnimation !== 'attack') return;
+        if (!this.enemy.isAttack) return;
+        if (!this.enemy.animationFinished) return;
+        if (this.enemy.currentEnemy === 'chickenMutatesBig') {
+            this.finishBigChickenAttackAnimation();
+            return;
+        }
+        if (this.enemy.currentEnemy === 'chickenMutatesSmall') {
+            this.finishSmallChickenAttackAnimation();
+        }
+    }
+
+    /**
+     * Resets state after a big chicken attack animation.
+     * @returns {void}
+     */
+    finishBigChickenAttackAnimation() {
+        this.enemy.hasFiredThisAttack = false;
+        this.enemy.isAttack = false;
+        this.enemy.frameIndex = 0;
+        this.enemy.sheetIndex = 0;
+        this.enemy.animationFinished = false;
+    }
+
+    /**
+     * Resets state after a small chicken attack animation.
+     * @returns {void}
+     */
+    finishSmallChickenAttackAnimation() {
         this.enemy.attackHitbox.active = false;
         this.enemy.isAttack = false;
         this.enemy.frameIndex = 0;

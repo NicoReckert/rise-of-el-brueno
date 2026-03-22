@@ -256,6 +256,6 @@ export class CharacterConfig {
     initCombatConfig() {
         this.char.attackHitbox = this.char.isHaveSword
             ? { top: 200, left: 200, right: 8, bottom: 65, active: false }
-            : { top: 220, left: 200, right: 8, bottom: 52, active: false };
+            : { top: 215, left: 160, right: 8, bottom: 52, active: false };
     }
 }

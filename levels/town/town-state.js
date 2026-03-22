@@ -36,7 +36,8 @@ function createTownFlags() {
         isNearSollita: false,
         isNearDestroyedHouse: false,
         isTadeoAfraid: false,
-        isTadeoPanic: false
+        isTadeoPanic: false,
+        comeFromNayelisHouse: false
     };
 }
 

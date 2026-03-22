@@ -1,3 +1,6 @@
+import { EventManager } from "../../classes/systems/event-manager.class.js";
+import { QuestManager } from "../../classes/systems/quest-manager.class.js";
+
 /**
  * Controls the new weapon level including character state, text, and rendering.
  */
@@ -13,8 +16,23 @@ export class NewWeaponLevelController {
         this.canvas = this.world.canvas;
         this.addToWorld = this.world.renderer.addToWorld.bind(this.world.renderer);
         this.character = this.world.character;
+        this.initManagers();
         this.initHeroTextState();
         this.initCharacterCanvas();
+    }
+
+    /**
+     * Initializes event and quest managers.
+     * @returns {void}
+     */
+    initManagers() {
+        this.eventManager = new EventManager(this.setup);
+        this.questManager = new QuestManager(
+            this.setup,
+            this.eventManager,
+            this.setup.newWeaponEvents
+        );
+        this.eventManager.questManager = this.questManager;
     }
 
     /**
@@ -48,6 +66,7 @@ export class NewWeaponLevelController {
         this.updateCharacter(timestamp);
         this.updateEntities(timestamp);
         this.animateHeroText();
+        this.eventManager.update();
     }
 
     /**

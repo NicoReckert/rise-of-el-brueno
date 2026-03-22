@@ -96,7 +96,7 @@ export class EnemyAnimationController {
         const moving = e.isMovingLeft || e.isMovingRight;
         const [name, speed] =
             e.isAttack ? ['attack', 5] :
-                e.isHurt ? ['hurt', 6] :
+                e.isHurt ? ['hurt', 10] :
                     moving ? ['walk', 5] :
                         ['idle', 5];
         this.setAnimation(name, speed);
