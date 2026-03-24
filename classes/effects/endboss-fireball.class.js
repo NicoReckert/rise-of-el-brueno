@@ -5,31 +5,34 @@ import { Projectile } from '../entities/projectile.class.js';
  */
 export class EndbossFireball extends Projectile {
     /**
-     * Creates a new instance.
-     * @param {Object} entityImages Image collection for the entity.
-     * @param {number} startX Initial x position.
-     * @param {number} startY Initial y position.
+     * Creates a fireball projectile instance.
+     * @param {Object} entityImages Entity images.
+     * @param {number} startX Start x position.
+     * @param {number} startY Start y position.
      * @param {number} targetX Target x position.
      * @param {number} targetY Target y position.
-     * @param {Object} allAudios Audio collection.
+     * @param {Object} allAudios Audio resources.
+     * @returns {void}
      */
     constructor(entityImages, startX, startY, targetX, targetY, allAudios) {
         const direction = targetX >= startX;
-        super(entityImages, "fireball", startX, startY, direction);
+        super(entityImages, "fireball", startX, startY, direction, 800, {
+            width: 180,
+            height: 180,
+            damage: 4
+        });
         this.initCore(allAudios);
         this.initVelocity(startX, startY, targetX, targetY);
         this.world = null;
     }
 
     /**
-     * Initializes core properties.
-     * @param {*} allAudios Audio resources.
+     * Initializes core projectile properties.
+     * @param {Object} allAudios Audio resources.
+     * @returns {void}
      */
     initCore(allAudios) {
         this.allAudios = allAudios;
-        this.width = 180;
-        this.height = 180;
-        this.damage = 4;
     }
 
     /**

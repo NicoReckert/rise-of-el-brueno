@@ -1,6 +1,7 @@
 import { SandstormEffect } from '../../classes/effects/sandstorm-effect.class.js';
 import { MagicShieldEffect } from '../../classes/effects/magic-shield-effect.class.js';
 import { WindParticleEffect } from '../../classes/effects/wind-particle.class.js';
+import { DustParticle } from '../../classes/effects/dust-particle.class.js';
 import { TimerManager } from '../../classes/systems/timer-manager.class.js';
 import { ThrowBottleSystem } from '../../classes/systems/throw-bottle-system.class.js';
 import { DarkEnergyEffect } from '../../classes/effects/dark-energy-effect.class.js';
@@ -19,6 +20,7 @@ export function createTownSystems(setup) {
     return {
         timerManager: new TimerManager(), ...sandstorms, magicShield,
         windParticleEffect: createTownWindParticleEffect(canvas),
+        dustParticleEffect: createTownDustParticleEffect(canvas),
         throwBottleSystem: createTownThrowBottleSystem(world, setup),
         darkEnergyEffect: createTownDarkEnergyEffect(canvas),
         stormHazards: createTownStormHazardSystem(world, setup, canvas)
@@ -68,7 +70,16 @@ function applyTownSandstormShockwave({ sandstorm, sandstormNear, sandstormFar })
  * @returns {Object} Wind particle effect instance.
  */
 function createTownWindParticleEffect(canvas) {
-    return new WindParticleEffect(canvas.width * 38, canvas.height, 1200);
+    return new WindParticleEffect(canvas.width, canvas.height, 250);
+}
+
+/**
+ * Creates a town dust particle effect.
+ * @param {HTMLCanvasElement} canvas Canvas element.
+ * @returns {Object} Dust particle effect.
+ */
+function createTownDustParticleEffect(canvas) {
+    return new DustParticle(canvas, 80);
 }
 
 /**

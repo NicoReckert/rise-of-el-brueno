@@ -43,6 +43,19 @@ export class TownRenderer {
         this.renderParallaxLayer(cameraX, 0.75, this.setup.townLevel.grounds.midGrounds);
         this.renderParallaxLayer(cameraX, 1.0, this.setup.townLevel.grounds.foreGrounds);
         this.renderParallaxLayer(cameraX, 1.0, this.setup.townLevel.sceneryObjects);
+        this.renderParticleEffects(cameraX);
+    }
+
+    /**
+     * Renders particle effects based on quest progress.
+     * @param {number} cameraX Camera x position.
+     * @returns {void}
+     */
+    renderParticleEffects(cameraX) {
+        if (this.questManager.step >= 13) {
+            this.setup.windParticleEffect.draw(this.ctx, cameraX);
+            this.setup.dustParticleEffect.update(this.ctx, cameraX);
+        }
     }
 
     /**
@@ -83,9 +96,12 @@ export class TownRenderer {
         this.ctx.save();
         this.ctx.translate(-cameraX, 0);
         this.renderTownBaseActors();
+        this.renderTownEggs();
         this.renderTownEnemies();
         this.renderTownCollections();
+        this.renderTownPreCharacterActors();
         this.renderTownCharacter();
+        this.renderTownPostCharacterActors();
         this.renderTownFrontActors();
         this.ctx.restore();
         this.renderShieldAndSandstorm(cameraX);
@@ -98,7 +114,6 @@ export class TownRenderer {
     renderTownBaseActors() {
         this.renderTownDestroyedBuildings();
         this.renderTownTadeo();
-        this.renderTownSpirits();
     }
 
     /**
@@ -146,6 +161,23 @@ export class TownRenderer {
     }
 
     /**
+     * Renders post-character actors in the town.
+     * @returns {void}
+     */
+    renderTownPostCharacterActors() {
+        this.renderTownSpirits();
+        this.renderTownPostCharacterEffects();
+    }
+
+    /**
+     * Renders pre-character actors in the town.
+     * @returns {void}
+     */
+    renderTownPreCharacterActors() {
+        this.renderTownSollitaAndMusician();
+    }
+
+    /**
      * Renders spirit characters and spirit essence objects.
      * @returns {void}
      */
@@ -160,15 +192,38 @@ export class TownRenderer {
     }
 
     /**
+     * Renders Sollita and musician characters in the town.
+     * @returns {void}
+     */
+    renderTownSollitaAndMusician() {
+        this.addToWorld(this.setup.characters.sollita);
+        this.addToWorld(this.setup.characters.musician);
+    }
+
+    /**
+     * Renders post-character effects in the town.
+     * @returns {void}
+     */
+    renderTownPostCharacterEffects() {
+        this.addObject(this.setup.state.effects);
+    }
+
+    /**
+     * Renders eggs in the town.
+     * @returns {void}
+     */
+    renderTownEggs() {
+        this.addObject(this.setup.endbossAttack.eggs);
+    }
+
+    /**
      * Renders collectible and interactive objects in the town.
      * @returns {void}
      */
     renderTownCollections() {
         this.addObject(this.setup.townLevel.coins);
         this.addObject(this.setup.townLevel.bottles);
-        this.addObject(this.setup.endbossAttack.eggs);
         this.addObject(this.setup.state.projectiles);
-        this.addObject(this.setup.state.effects);
         this.addToWorld(this.setup.endbossAttack);
         this.addObject(this.setup.state.throwableObjects);
     }
@@ -183,8 +238,6 @@ export class TownRenderer {
             this.addToWorld(this.setup.characters.soul);
             this.addToWorld(this.setup.characters.endboss);
         }
-        this.addToWorld(this.setup.characters.sollita);
-        this.addToWorld(this.setup.characters.musician);
     }
 
     /**
@@ -254,8 +307,8 @@ export class TownRenderer {
      * @returns {void}
      */
     renderStatusBar() {
-        this.addToWorld(this.setup.statusBar);
-        if (this.questManager.step >= 10) this.addToWorld(this.setup.statusBar2);
+        this.addToWorld(this.setup.statusBarCharacter);
+        if (this.questManager.step >= 10) this.addToWorld(this.setup.statusBarEndboss);
         this.addToWorld(this.setup.coinBar);
         this.addToWorld(this.setup.bottleBar);
     }

@@ -58,6 +58,7 @@ export class TownLevelController {
         this.sandstormFar = this.setup.sandstormFar;
         this.magicShield = this.setup.magicShield;
         this.windParticleEffect = this.setup.windParticleEffect;
+        this.dustParticleEffect = this.setup.dustParticleEffect;
         this.throwBottleSystem = this.setup.throwBottleSystem;
         this.darkEnergyEffect = this.setup.darkEnergyEffect;
         this.stormHazards = this.setup.stormHazards;
@@ -131,6 +132,7 @@ export class TownLevelController {
         this.spiritEssenceCtrl.updateSpiritEssenceSequence(timestamp);
         this.timerManager.update();
         this.darkEnergyEffect.update(timestamp, this.renderCameraX, this.canvas.width);
+        this.windParticleEffect.update(this.renderCameraX);
         this.stormHazards.update(timestamp);
     }
 

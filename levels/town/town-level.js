@@ -5,11 +5,11 @@ import { SceneryObject } from '../../classes/entities/scenery-object.class.js';
 import { Sky } from '../../classes/entities/sky.class.js';
 import { Bottle } from '../../classes/entities/bottle.class.js';
 
-const TOWN_LEVEL_WIDTH = 26640;
+const TOWN_LEVEL_WIDTH = 30960;
 const CLOUD_DENSITY = 1 / 700;
 const PARALLAX_STEP = 720;
 const PARALLAX_START_X = -720;
-const PARALLAX_COUNT = 38;
+const PARALLAX_COUNT = 44;
 const TOWN_TILE_START_X = 22676;
 const TOWN_TILE_COUNT = 41;
 const TOWN_TILE_STEP = 100;

@@ -76,7 +76,7 @@ export class StableLevelController {
      * @returns {void}
      */
     renderStatusBar() {
-        this.addToWorld(this.setup.statusBar);
+        this.addToWorld(this.setup.statusBarCharacter);
     }
 
     /**

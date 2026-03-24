@@ -3,24 +3,26 @@
  */
 class WindParticle {
     /**
-     * Creates a new instance.
-     * @param {number} worldWidth Width of the world.
-     * @param {number} worldHeight Height of the world.
+     * Creates a wind particle instance.
+     * @param {number} viewportW Viewport width.
+     * @param {number} viewportH Viewport height.
+     * @returns {void}
      */
-    constructor(worldWidth, worldHeight) {
-        this.worldWidth = worldWidth;
-        this.worldHeight = worldHeight;
+    constructor(viewportW, viewportH) {
+        this.viewportW = viewportW;
+        this.viewportH = viewportH;
         this.reset();
     }
 
     /**
-     * Resets the particle with randomized properties.
+     * Resets particle properties.
+     * @returns {void}
      */
     reset() {
-        this.x = Math.random() * this.worldWidth;
-        this.y = Math.random() * this.worldHeight;
+        this.x = Math.random() * this.viewportW;
+        this.y = Math.random() * this.viewportH;
         this.size = Math.random() * 3 + 1;
-        this.speedX = -(Math.random() * 1.5 + 0.5);
+        this.speedX = -(Math.random() * 0.8 + 0.2);
         this.speedY = Math.random() * 0.4 - 0.2;
         this.alpha = Math.random() * 0.4 + 0.3;
         this.rotation = Math.random() * Math.PI * 2;
@@ -28,27 +30,28 @@ class WindParticle {
     }
 
     /**
-     * Updates the particle position and state.
+     * Updates particle position and respawns if needed.
+     * @returns {void}
      */
     update() {
         this.x += this.speedX;
         this.y += this.speedY;
         this.rotation += this.rotationSpeed;
-        if (this.x < -50 || this.y < 0 || this.y > this.worldHeight) {
+        if (this.x < -50 || this.y < -50 || this.y > this.viewportH + 50) {
             this.reset();
-            this.x = this.worldWidth + 10;
+            this.x = this.viewportW + 10 + Math.random() * 80;
         }
     }
 
     /**
-     * Draws the particle.
+     * Draws the particle if visible.
      * @param {CanvasRenderingContext2D} ctx Rendering context.
-     * @param {number} renderCameraX Camera x-offset.
      * @param {number} canvasWidth Canvas width.
      * @param {number} canvasHeight Canvas height.
+     * @returns {void}
      */
-    draw(ctx, renderCameraX, canvasWidth, canvasHeight) {
-        const screenX = this.x - renderCameraX;
+    draw(ctx, canvasWidth, canvasHeight) {
+        const screenX = this.x;
         if (screenX < -50 || screenX > canvasWidth + 50) return;
         if (this.y < -50 || this.y > canvasHeight + 50) return;
         ctx.save();
@@ -68,34 +71,51 @@ class WindParticle {
  */
 export class WindParticleEffect {
     /**
-     * Creates a new instance.
-     * @param {number} worldWidth Width of the world.
-     * @param {number} worldHeight Height of the world.
+     * Creates a wind particle system.
+     * @param {number} viewportW Viewport width.
+     * @param {number} viewportH Viewport height.
      * @param {number} [particleCount=200] Number of particles.
+     * @param {number} [_parallaxFactor=1] Unused parallax factor.
+     * @returns {void}
      */
-    constructor(worldWidth, worldHeight, particleCount = 200) {
-        this.worldWidth = worldWidth;
-        this.worldHeight = worldHeight;
+    constructor(viewportW, viewportH, particleCount = 200, _parallaxFactor = 1) {
+        this.viewportW = viewportW;
+        this.viewportH = viewportH;
+        this.cameraInfluence = 0.22;
+        this.lastCameraX = null;
         this.particles = Array.from({ length: particleCount }, () =>
-            new WindParticle(worldWidth, worldHeight)
+            new WindParticle(viewportW, viewportH)
         );
     }
 
     /**
-     * Updates all particles.
+     * Updates particles with camera influence.
+     * @param {number} [cameraX=0] Camera x position.
+     * @returns {void}
      */
-    update() {
-        this.particles.forEach(p => p.update());
+    update(cameraX = 0) {
+        if (this.lastCameraX == null) {
+            this.lastCameraX = cameraX;
+        }
+        let cameraDx = cameraX - this.lastCameraX;
+        this.lastCameraX = cameraX;
+        cameraDx = Math.max(-40, Math.min(40, cameraDx));
+        const screenDrift = cameraDx * this.cameraInfluence;
+        this.particles.forEach(p => {
+            p.x -= screenDrift;
+            p.update();
+        });
     }
 
     /**
-     * Draws all particles managed by this system.
-     * @param {CanvasRenderingContext2D} ctx Canvas rendering context.
-     * @param {number} renderCameraX Current camera x-position used for rendering offset.
+     * Draws all particles.
+     * @param {CanvasRenderingContext2D} ctx Rendering context.
+     * @param {number} [_cameraX=0] Camera x position.
+     * @returns {void}
      */
-    draw(ctx, renderCameraX) {
+    draw(ctx, _cameraX = 0) {
         const canvasWidth = ctx.canvas.width;
         const canvasHeight = ctx.canvas.height;
-        this.particles.forEach(p => p.draw(ctx, renderCameraX, canvasWidth, canvasHeight));
+        this.particles.forEach(p => p.draw(ctx, canvasWidth, canvasHeight));
     }
 }

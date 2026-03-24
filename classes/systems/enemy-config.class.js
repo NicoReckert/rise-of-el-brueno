@@ -101,9 +101,10 @@ export class EnemyConfig {
      * @returns {void}
      */
     initCombatState() {
-        this.enemy.health = 3;
+        const state = this.enemy.world?.townLevelSetup?.state;
+        this.enemy.health = state?.enemyHealth ?? 3;
         this.enemy.attackOnCooldown = false;
-        this.enemy.attackCooldownMs = 900;
+        this.enemy.attackCooldownMs = 1500;
         this.enemy.lastAttackTime = 0;
         this.enemy.meleeRange = 64;
         this.enemy.rangedRange = 320;

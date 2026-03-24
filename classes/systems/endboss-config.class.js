@@ -136,9 +136,9 @@ export class EndbossConfig {
      */
     initEndbossAirConfig() {
         this.endboss.airPoints = [
-            23000,
-            23800,
-            24200
+            27000,
+            27800,
+            28200
         ];
         this.endboss.airPointIndex = 0;
         this.endboss.airDropSequence = [
@@ -151,7 +151,7 @@ export class EndbossConfig {
      * Sets size and initial position.
      */
     setSizeAndPosition() {
-        this.endboss.x = 23000;
+        this.endboss.x = 27000;
         this.endboss.y = 205;
         this.endboss.width = 350;
         this.endboss.height = 500;
@@ -261,7 +261,7 @@ export class EndbossConfig {
      * Initializes finisher fire state values.
      */
     initFinisherFireState() {
-        this.endboss.finisherFireX = 23800;
+        this.endboss.finisherFireX = 27800;
         this.endboss.finisherFireShotsMax = 5;
         this.endboss.finisherFireShotsDone = 0;
         this.endboss.finisherFireShotDelay = 450;

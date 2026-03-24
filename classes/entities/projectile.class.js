@@ -1,24 +1,26 @@
 import { MovableObject } from '../systems/movable-object.class.js';
-import { getCachedAnimationByConfigKey } from '../../utils/entity-animation-cache.util.js';
+import { getCachedAnimationBySize } from '../../utils/entity-animation-cache.util.js';
 
 /**
  * Movable projectile entity.
  */
 export class Projectile extends MovableObject {
   /**
-   * Creates a new instance.
-   * @param {Object} entityImages Image collection for the projectile.
+   * Creates a projectile instance.
+   * @param {Object} entityImages Entity images.
    * @param {string} type Projectile type.
    * @param {number} x Initial x position.
    * @param {number} y Initial y position.
-   * @param {boolean} [direction=true] Movement direction.
+   * @param {boolean} [direction=true] Direction flag.
    * @param {number} [maxDistance=800] Maximum travel distance.
+   * @param {Object} [opts={}] Additional options.
+   * @returns {void}
    */
-  constructor(entityImages, type, x, y, direction = true, maxDistance = 800) {
+  constructor(entityImages, type, x, y, direction = true, maxDistance = 800, opts = {}) {
     super();
     this.entityImages = entityImages;
     this.initProjectileCore(type, x, y, direction, maxDistance);
-    this.initProjectileStats();
+    this.initProjectileStats(opts);
     this.initProjectileAnimation();
   }
 
@@ -42,14 +44,15 @@ export class Projectile extends MovableObject {
   }
 
   /**
-   * Initializes the projectile statistics.
+   * Initializes projectile stats.
+   * @param {Object} [opts={}] Projectile options.
    * @returns {void}
    */
-  initProjectileStats() {
-    this.width = 60;
-    this.height = 60;
-    this.speed = 10;
-    this.damage = 2;
+  initProjectileStats(opts = {}) {
+    this.width = opts.width ?? 60;
+    this.height = opts.height ?? 60;
+    this.speed = opts.speed ?? 10;
+    this.damage = opts.damage ?? 2;
     this.isActive = true;
     this.markedForRemoval = false;
   }
@@ -67,9 +70,8 @@ export class Projectile extends MovableObject {
     this.lastUpdateTime = 0;
     const source = this.entityImages?.projectile?.[this.type]?.idleExplodeSheet ?? null;
     this.idleExplodeSheetIdle =
-      getCachedAnimationByConfigKey(source, 'projectile', `${this.type}_idle`, 'idle') ?? source;
-    this.idleExplodeSheetExplode =
-      getCachedAnimationByConfigKey(source, 'projectile', `${this.type}_explode`, 'explode') ?? source;
+      getCachedAnimationBySize(source, 'projectile', `${this.type}_idle`, 'idle', this.width, this.height) ?? source;
+    this.idleExplodeSheetExplode = getCachedAnimationBySize(source, 'projectile', `${this.type}_explode`, 'explode', this.width, this.height) ?? source;
   }
 
   /**

@@ -33,8 +33,8 @@ export function createTownUI(setup) {
  */
 function createTownBarsAndDialog(setup) {
     return {
-        statusBar: new LifeEnergyCharacterBar(setup.entityImages),
-        statusBar2: new LifeEnergyBossBar(setup.entityImages),
+        statusBarCharacter: new LifeEnergyCharacterBar(setup.entityImages),
+        statusBarEndboss: new LifeEnergyBossBar(setup.entityImages),
         coinBar: new CoinBar(setup.entityImages),
         bottleBar: new BottleBar(setup.entityImages),
         dialogManager: new DialogManager(setup.world, setup.world.keyboard),

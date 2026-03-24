@@ -51,9 +51,4 @@ export const EntityFrameCacheConfig = {
         walk: { width: 160, height: 160 },
         attack: { width: 160, height: 160 }
     },
-
-    projectile: {
-        fireball_idle: { width: 60, height: 60 },
-        fireball_explode: { width: 60, height: 60 }
-    }
 };

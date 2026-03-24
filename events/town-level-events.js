@@ -17,7 +17,7 @@ export const townEvents =
                 setup.world.audioManager.fadeInAudio(setup.sounds.backgroundMusic, 2000, 0.6);
                 setup.world.character.x = setup.state.comeFromNayelisHouse ? 20265 : 100; // 100 //18500//23000
                 setup.world.character.level_start_x = setup.state.comeFromNayelisHouse ? 20265 : 0;
-                setup.world.level_end_x = 25000;
+                setup.world.level_end_x = 29000;
                 setup.world.camera_x = setup.state.comeFromNayelisHouse ? 20015 : 0; //0 // 18400 //22900
                 setup.world.character.isWalkDetermined = false;
                 setup.characters.tadeo.updateAnimationState('idle', 1000 / 5);
@@ -915,6 +915,23 @@ export const townEvents =
             }
         },
 
+        {
+            type: 'quest',
+            step: 12,
+            once: false,
+            action: (setup) => {
+                setup.sandstormFar.setEnabled(false);
+                setup.sandstorm.setEnabled(false);
+                setup.sandstormNear.setEnabled(false);
+                setup.magicShield.stop();
+                setup.characters.tadeo.updateAnimationState('idle');
+                setup.world.character.isHaveSword = true;
+                setup.world.character.config.initCombatConfig();
+                setup.state.enemyHealth = 2;
+                setup.characters.tadeo.x = 20400; // muss wieder entfernt werden!!
+            }
+        },
+
         /**
          * Collision event that switches background music
          * when the character approaches or leaves the musician.
@@ -975,16 +992,16 @@ export const townEvents =
 
         {
             type: "position",
-            area: { x: 22500, width: 100 },
+            area: { x: 26500, width: 100 },
             action: (setup) => {
-                setup.characters.endboss.x = 22000;
+                setup.characters.endboss.x = 26000;
                 setup.characters.endboss.y = -100;
                 setup.characters.endboss.isFlipped = true;
                 setup.characters.endboss.isFly = true;
                 // setup.sounds.endbossFlappingWingsSound.play();
                 // setup.sounds.endbossFlappingWingsSound.loop = true;
                 // setup.sounds.endbossFlappingWingsSound.volume = 1.0;
-                setup.endbossMusic.currentTime = 0;
+                setup.sounds.endbossMusic.currentTime = 0;
                 setup.world.audioManager.fadeOutAudio(setup.sounds.backgroundMusic, 1000);
                 setup.world.audioManager.fadeInAudio(setup.sounds.endbossMusic, 2000, 0.6);
                 const audio = setup.sounds.endbossFlappingWingsSound;
@@ -997,7 +1014,7 @@ export const townEvents =
                 audio.play();
                 audio.loop = true;
                 setup.world.character.speedX = 8;
-                setup.world.townLevelController.questManager.advance(12);
+                setup.world.townLevelController.questManager.advance(13);
 
             }
         },
@@ -1042,14 +1059,14 @@ export const townEvents =
          */
         {
             type: "quest",
-            step: 12,
+            step: 13,
             once: false,
             action: (setup) => {
                 const endboss = setup.characters.endboss;
-                const arrivedX = endboss.moveToX(23000, 220);
+                const arrivedX = endboss.moveToX(27000, 220);
                 if (arrivedX) {
                     endboss.setPhase(endboss.ENDBOSS_PHASE.AIR_EGGS)
-                    setup.world.townLevelController.questManager.advance(13)
+                    setup.world.townLevelController.questManager.advance(14)
                 }
             }
 
@@ -1073,7 +1090,7 @@ export const townEvents =
                         element.isActive = false;
                         element.explode();
                         char.combatCtrl.hit(setup.world.timestamp, dmg);
-                        setup.statusBar.setPercentage(char.energy);
+                        setup.statusBarCharacter.setPercentage(char.energy);
                         setup.state.damageTexts.push(new DamageText(char, dmg));
 
                     }
@@ -1100,7 +1117,7 @@ export const townEvents =
                         knockY: 16
                     });
                     if (did) {
-                        setup.statusBar.setPercentage(char.energy);
+                        setup.statusBarCharacter.setPercentage(char.energy);
                         setup.state.damageTexts.push(
                             new DamageText(char, char.isProtect ? 2 : 10)
                         );
@@ -1128,7 +1145,7 @@ export const townEvents =
             action: (setup, char, enemy) => {
                 const dmg = char.isProtect ? 2 : 10;
                 char.combatCtrl.hit(setup.world.timestamp, dmg);
-                setup.statusBar.setPercentage(char.energy);
+                setup.statusBarCharacter.setPercentage(char.energy);
                 setup.state.damageTexts.push(new DamageText(char, dmg));
                 enemy.hasHitPlayerThisAttack = true;
             }
@@ -1218,7 +1235,7 @@ export const townEvents =
             action: (setup, char, enemy) => {
                 const dmg = char.isProtect ? 2 : 10;
                 char.combatCtrl.hit(setup.world.timestamp, dmg);
-                setup.statusBar.setPercentage(char.energy);
+                setup.statusBarCharacter.setPercentage(char.energy);
                 setup.state.damageTexts.push(new DamageText(char, dmg));
                 enemy.hasHitPlayerThisAttack = true;
             }
@@ -1427,7 +1444,7 @@ export const townEvents =
                     bottle.isBrokenAnimation = true;
 
                     boss.energy -= 20;
-                    setup.statusBar2.setPercentage(boss.energy);
+                    setup.statusBarEndboss.setPercentage(boss.energy);
 
                     if (boss.energy <= 0) {
                         boss.isDead = true;
@@ -1516,7 +1533,7 @@ export const townEvents =
                 boss.isHurt = true;
                 boss.frameIndex = 0;
                 boss.energy -= 5;
-                setup.statusBar2.setPercentage(boss.energy);
+                setup.statusBarEndboss.setPercentage(boss.energy);
 
                 char.hasHitEnemyThisAttack = true;
 

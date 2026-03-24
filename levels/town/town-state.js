@@ -6,7 +6,8 @@ export function createTownState() {
     return {
         ...createTownCollections(),
         ...createTownFlags(),
-        ...createTadeoState()
+        ...createTadeoState(),
+        ...createTownEnemyState()
     };
 }
 
@@ -54,5 +55,15 @@ function createTadeoState() {
         tadeoPanicNearIdx: 0,
         tadeoAfraidIdx: 0,
         tadeoPanicUntil: 0
+    };
+}
+
+/**
+ * Creates the town enemy state.
+ * @returns {Object} Enemy state.
+ */
+function createTownEnemyState() {
+    return {
+        enemyHealth: 3
     };
 }

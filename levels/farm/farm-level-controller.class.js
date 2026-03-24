@@ -239,7 +239,7 @@ export class FarmLevelController {
         if (this.setup.state.isGameCharacterInHouse) {
             return;
         }
-        this.addToWorld(this.setup.statusBar);
+        this.addToWorld(this.setup.statusBarCharacter);
     }
 
     /**

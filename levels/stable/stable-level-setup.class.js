@@ -19,7 +19,7 @@ export class StableLevelSetup {
         this.allAudios = this.world.allAudios;
         this.allVideos = this.world.allVideos;
         this.initStableData();
-        this.statusBar = new LifeEnergyCharacterBar(this.entityImages);
+        this.statusBarCharacter = new LifeEnergyCharacterBar(this.entityImages);
         this.characters = this.createCharacters();
         this.environment = this.createEnvironment();
         this.sounds = this.createSounds();

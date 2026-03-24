@@ -19,6 +19,9 @@ export const nayelisHouseEvents =
                 setup.video.loop = true;
                 setup.video.play();
                 setup.comeFromNewWeapon = false;
+                
+                setup.world.townLevelController.questManager.advance(12); // muss wieder entfernt werden!!
+                setup.world.nayelisHouseLevelController.questManager.advance(2); // muss wieder entfernt werden!!
             }
         },
 
@@ -80,8 +83,9 @@ export const nayelisHouseEvents =
             objectB: 'nayeli',
             toleranceB: { x: -80, width: 50 },
             action: (setup) => {
-                setup.sounds.nayelisSpeakSound.play()
-                setup.world.nayelisHouseLevelController.questManager.advance(2)
+                setup.sounds.nayelisSpeakSound.play();
+                setup.world.townLevelController.questManager.advance(12);
+                setup.world.nayelisHouseLevelController.questManager.advance(2);
             }
 
         },

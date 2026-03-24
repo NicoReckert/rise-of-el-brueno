@@ -171,7 +171,7 @@ export class NayelisHouseLevelController {
      * @returns {void}
      */
     renderStatusBar() {
-        this.addToWorld(this.setup.statusBar);
+        this.addToWorld(this.setup.statusBarCharacter);
     }
 
     /**

@@ -435,17 +435,34 @@ export const otherLevelEntityManifestLazy = {
 
   endboss: {
     idle: Array.from({ length: 12 }, (_, i) => `./assets/img/4_enemie_boss_chicken/0_idle/image_${i + 1}.webp`),
-    walk: Array.from({ length: 4 }, (_, i) => `./assets/img/4_enemie_boss_chicken/1_walk/G${i + 1}.webp`),
-    hurt: Array.from({ length: 6 }, (_, i) => `./assets/img/4_enemie_boss_chicken/4_hurt/image_${i + 1}.webp`),
-    dead: Array.from({ length: 8 }, (_, i) => `./assets/img/4_enemie_boss_chicken/5_dead/image_${i + 1}.webp`),
-    findsPeace: Array.from({ length: 20 }, (_, i) => `./assets/img/4_enemie_boss_chicken/6_finds_peace/image_${i + 1}.webp`),
-    fly: Array.from({ length: 8 }, (_, i) => `./assets/img/4_enemie_boss_chicken/7_fly/image_${i + 1}.png`),
-    fireballAttack: Array.from({ length: 14 }, (_, i) => `./assets/img/4_enemie_boss_chicken/8_fireball_attack/image_${i + 1}.png`),
+    hurt: {
+      type: 'sheet',
+      json: './assets/img/4_enemie_boss_chicken/hurt_and_dead/hurt_and_dead_sheet.json'
+    },
+    dead: {
+      type: 'sheet',
+      json: './assets/img/4_enemie_boss_chicken/hurt_and_dead/hurt_and_dead_sheet.json'
+    },
+    findsPeace: {
+      type: 'sheet',
+      json: './assets/img/4_enemie_boss_chicken/finds_peace/finds_peace_sheet.json'
+    },
+    fly: {
+      type: 'sheet',
+      json: './assets/img/4_enemie_boss_chicken/fly_and_fireball_attack/fly_and_fireball_attack_sheet.json'
+    },
+    fireballAttack: {
+      type: 'sheet',
+      json: './assets/img/4_enemie_boss_chicken/fly_and_fireball_attack/fly_and_fireball_attack_sheet.json'
+    },
     tornadoAttack: {
       type: 'sheet',
       json: './assets/img/entities/tornado/idle/idle_sheet.json'
     },
-    fireBreathAttack: Array.from({ length: 3 }, (_, i) => `./assets/img/4_enemie_boss_chicken/8_fireball_attack/image_${12 + i}.png`)
+    fireBreathAttack: {
+      type: 'sheet',
+      json: './assets/img/4_enemie_boss_chicken/fly_and_fireball_attack/fly_and_fireball_attack_sheet.json'
+    }
   },
 
   chickenMutatesSmall: {

@@ -1,0 +1,22 @@
+﻿{
+    "frameHeight":  512,
+    "columns":  4,
+    "frameWidth":  512,
+    "animations": {
+    "hurt": {
+      "from": 0,
+      "to": 4,
+      "fps": 10,
+      "loop": false
+    },
+    "dead": {
+      "from": 5,
+      "to": 12,
+      "fps": 8,
+      "loop": false
+    }
+  },
+    "image":  "hurt_and_dead_sheet.webp",
+    "frames":  13,
+    "rows":  4
+}

@@ -59,7 +59,7 @@ export class FarmLevelSetup {
         this.sounds = createFarmSounds(this.allAudios);
         this.speechBubbles = createFarmSpeechBubbles(this.world.character, this.allAudios);
         this.hints = createFarmHints(this.world.character, this.characters);
-        this.statusBar = new LifeEnergyCharacterBar(this.entityImages);
+        this.statusBarCharacter = new LifeEnergyCharacterBar(this.entityImages);
     }
 
     /**

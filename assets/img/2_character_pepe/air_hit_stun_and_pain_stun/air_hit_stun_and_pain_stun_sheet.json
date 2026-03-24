@@ -6,7 +6,8 @@
     "air-hit-stun": {
       "from": 0,
       "to": 9,
-      "fps": 3
+      "fps": 3,
+      "loop": false
     },
     "air-pain-stun": {
       "from": 10,

@@ -69,3 +69,47 @@ function getOrBuildCachedAnimationByConfigKey(source, configGroup, configKey, an
     entityAnimationCacheStore.set(cacheKey, cached);
     return cached;
 }
+
+/**
+ * Returns a cached animation by size.
+ * @param {Object} source Animation source.
+ * @param {string} cacheGroup Cache group.
+ * @param {string} cacheKey Cache key.
+ * @param {string} [animName='default'] Animation name.
+ * @param {number} width Target width.
+ * @param {number} height Target height.
+ * @returns {Object|null} Cached animation or original source.
+ */
+export function getCachedAnimationBySize(source, cacheGroup, cacheKey, animName = 'default', width, height) {
+    if (!source) return null;
+    if (source.type !== 'sheet') return source;
+    if (!width || !height) return source;
+    return getOrBuildCachedAnimationBySize(
+        source,
+        cacheGroup,
+        cacheKey,
+        animName,
+        width,
+        height
+    );
+}
+
+/**
+ * Returns or builds a cached animation by size.
+ * @param {Object} source Animation source.
+ * @param {string} cacheGroup Cache group.
+ * @param {string} cacheKey Cache key.
+ * @param {string} animName Animation name.
+ * @param {number} width Target width.
+ * @param {number} height Target height.
+ * @returns {Object} Cached animation.
+ */
+function getOrBuildCachedAnimationBySize(source, cacheGroup, cacheKey, animName, width, height) {
+    const finalCacheKey = `${cacheGroup}::${cacheKey}::${animName}::${width}x${height}`;
+    if (entityAnimationCacheStore.has(finalCacheKey)) {
+        return entityAnimationCacheStore.get(finalCacheKey);
+    }
+    const cached = buildCachedSheetFrames(source, animName, width, height);
+    entityAnimationCacheStore.set(finalCacheKey, cached);
+    return cached;
+}

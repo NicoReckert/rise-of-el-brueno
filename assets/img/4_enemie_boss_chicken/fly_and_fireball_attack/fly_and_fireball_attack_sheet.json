@@ -3,24 +3,24 @@
     "columns":  4,
     "frameWidth":  512,
     "animations": {
-    "idle": {
+    "fly": {
       "from": 0,
       "to": 7,
-      "fps": 7
+      "fps": 10
     },
-    "spiritCuddle": {
+    "fireballAttack": {
       "from": 8,
-      "to": 15,
+      "to": 21,
       "fps": 8,
       "loop": false
     },
-    "spiritCuddleLoop": {
-      "from": 16,
+    "fireBreathAttack": {
+      "from": 19,
       "to": 21,
       "fps": 8
     }
   },
-    "image":  "idle_and_spirit_cuddle_sheet.webp",
+    "image":  "fly_and_fireball_attack_sheet.webp",
     "frames":  22,
     "rows":  6
 }
