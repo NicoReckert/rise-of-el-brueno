@@ -73,6 +73,7 @@ function createTownMusicSounds(allAudios) {
         nayelisMusic: allAudios.nayelisMusic,
         stormHazardMusic: allAudios.stormHazardMusic,
         finalStormHazardMusic: allAudios.finalStormHazardMusic,
-        endbossMusic: allAudios.endbossMusic
+        endbossMusic: allAudios.endbossMusic,
+        endSceneMusic: allAudios.endSceneMusic
     };
 }

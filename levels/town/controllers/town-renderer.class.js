@@ -101,8 +101,9 @@ export class TownRenderer {
         this.renderTownCollections();
         this.renderTownPreCharacterActors();
         this.renderTownCharacter();
-        this.renderTownPostCharacterActors();
+        this.renderTownSpirits();
         this.renderTownFrontActors();
+        this.renderTownPostCharacterEffects();
         this.ctx.restore();
         this.renderShieldAndSandstorm(cameraX);
     }
@@ -161,15 +162,6 @@ export class TownRenderer {
     }
 
     /**
-     * Renders post-character actors in the town.
-     * @returns {void}
-     */
-    renderTownPostCharacterActors() {
-        this.renderTownSpirits();
-        this.renderTownPostCharacterEffects();
-    }
-
-    /**
      * Renders pre-character actors in the town.
      * @returns {void}
      */
@@ -189,6 +181,7 @@ export class TownRenderer {
         this.addToWorld(this.setup.environment.spiritEssence1);
         this.addToWorld(this.setup.environment.spiritEssence2);
         this.addToWorld(this.setup.environment.spiritEssence3);
+        this.addToWorld(this.setup.environment.macuahuitl);
     }
 
     /**

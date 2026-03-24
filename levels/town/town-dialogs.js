@@ -9,6 +9,7 @@ export function registerTownDialogs(setup) {
     registerCharacterDialogs(setup);
     registerNayeliDialogs(setup);
     registerTadeoDialogs(setup);
+    registerCharacterEndSceneDialogs(setup);
 }
 
 /**
@@ -52,5 +53,26 @@ function registerTadeoDialogs(setup) {
         bubbleStep({ bubble: setup.speechBubblesTadeo[0], duration: 1000, yOffset: -40 }),
         bubbleStep({ bubble: setup.speechBubblesTadeo[1], duration: 600, yOffset: -40 }),
         bubbleStep({ bubble: setup.speechBubblesTadeo[2], duration: 1500, yOffset: -40 })
+    ]);
+}
+
+/**
+ * Registers character end scene dialogs.
+ * @param {Object} setup Setup object.
+ * @returns {Object} Dialog reference.
+ */
+function registerCharacterEndSceneDialogs(setup) {
+    return setup.dialogManager.addDialog([
+        pauseStep(2000),
+        bubbleStep({ bubble: setup.speechBubblesCharacter[4], duration: 4500, yOffset: -65 }),
+        pauseStep(1000),
+        bubbleStep({ bubble: setup.speechBubblesCharacter[5], duration: 4500, yOffset: -65 }),
+        pauseStep(1000),
+        bubbleStep({ bubble: setup.speechBubblesCharacter[6], duration: 4500, yOffset: -65 }),
+        pauseStep(1000),
+        bubbleStep({ bubble: setup.speechBubblesCharacter[7], duration: 4500, yOffset: -65 }),
+        pauseStep(1000),
+        bubbleStep({ bubble: setup.speechBubblesCharacter[8], duration: 4500, yOffset: -65 }),
+        pauseStep(2000)
     ]);
 }

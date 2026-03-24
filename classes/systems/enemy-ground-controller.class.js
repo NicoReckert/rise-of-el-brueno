@@ -60,18 +60,27 @@ export class EnemyGroundController {
     }
 
     /**
-     * Updates enemy AI based on the current target and state.
+     * Updates AI behavior.
      * @param {number} timestamp Frame timestamp.
-     * @param {object} char Character object.
+     * @param {Object} char Character object.
      * @returns {void}
      */
     updateAI(timestamp, char) {
         if (!char) return;
-        if (this.shouldAbortAi()) { this.stopMovement(); return; }
-        if (this.isCharacterFarAbove(char)) { this.stopMovement(); return; }
+        if (this.shouldAbortAi()) return this.stopMovement();
+        this.runActiveAI(timestamp, char);
+    }
+
+    /**
+     * Runs active AI behavior.
+     * @param {number} timestamp Frame timestamp.
+     * @param {Object} char Character object.
+     * @returns {void}
+     */
+    runActiveAI(timestamp, char) {
+        if (this.isCharacterFarAbove(char)) return this.handleAirborneTarget(char);
         if (this.enemy.currentEnemy === 'chickenMutatesBig') {
-            this.updateBigChickenAI(timestamp, char);
-            return;
+            return this.updateBigChickenAI(timestamp, char);
         }
         this.updateMeleeChickenAI(timestamp, char);
     }
@@ -172,7 +181,7 @@ export class EnemyGroundController {
             this.handleMeleeInRange(timestamp, char, desiredNear, behind);
             return;
         }
-        this.enemy.movementCtrl.moveToTargetX(char, { desiredDist: this.enemy.meleeRange, tolerance: 10, snap: false, faceTarget: true, speed: 40 });
+        this.enemy.movementCtrl.moveToTargetX(char, { desiredDist: desiredNear, tolerance: 10, snap: false, faceTarget: true, speed: 40 });
     }
 
     /**
@@ -210,8 +219,8 @@ export class EnemyGroundController {
     }
 
     /**
-     * Returns the desired melee distance to the character.
-     * @param {object} char Character object.
+     * Returns the desired melee distance to a character.
+     * @param {Object} char Character object.
      * @returns {number} Desired melee distance.
      */
     getDesiredMeleeDistance(char) {
@@ -221,9 +230,27 @@ export class EnemyGroundController {
             this.enemy.currentEnemy === 'chickenMutatesSmall' &&
             this.isBehindCharacter(char)
         ) {
-            desired += !char.isProtect ? 12 : 22;
+            desired += this.getStateBasedOffset(char);
         }
         return desired;
+    }
+
+    /**
+     * Returns state-based distance offset for a character.
+     * @param {Object} char Character object.
+     * @returns {number} Distance offset.
+     */
+    getStateBasedOffset(char) {
+        const flipped = !!char.isFlipped;
+        if (char.currentAnimation === 'protect' || char.currentAnimation === 'protect-loop') {
+            return flipped ? -5 : 22;
+        }
+        if (char.currentAnimation === 'attack-sword') return flipped ? -60 : 80;
+        if (char.currentAnimation === 'attack-staff') return flipped ? -45 : 55;
+        if (['duck-enter', 'duck-loop', 'duck-exit', 'duck-walk'].includes(char.currentAnimation)) {
+            return flipped ? -1 : 26;
+        }
+        return 12;
     }
 
     /**
@@ -240,5 +267,25 @@ export class EnemyGroundController {
             (charFacingRight && !chickenRightOfChar) ||
             (!charFacingRight && chickenRightOfChar)
         );
+    }
+
+    /**
+     * Handles behavior for an airborne target.
+     * @param {Object} char Character object.
+     * @returns {void}
+     */
+    handleAirborneTarget(char) {
+        const e = this.enemy;
+        const dist = this.getHorizontalDistanceToChar(char);
+        const desired = this.getDesiredMeleeDistance(char) * 1.1;
+        if (dist < desired * 0.9) {
+            e.movementCtrl.keepDistanceToTarget(char, { desiredDist: desired, faceTarget: true, speed: 1 });
+            return;
+        }
+        if (dist > desired * 1.3) {
+            e.movementCtrl.moveToTargetX(char, { desiredDist: desired, tolerance: 10, snap: false, faceTarget: true, speed: 20 });
+            return;
+        }
+        this.stopMovement();
     }
 }

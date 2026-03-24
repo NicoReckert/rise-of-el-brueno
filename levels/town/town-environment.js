@@ -40,7 +40,7 @@ function createTownEssenceEnvironment(entityImages) {
         spiritEssence1: new AnimatedEntity(entityImages, 'spiritEssence', 90, 90, 0, 0),
         spiritEssence2: new AnimatedEntity(entityImages, 'spiritEssence', 90, 90, 0, 0),
         spiritEssence3: new AnimatedEntity(entityImages, 'spiritEssence', 90, 90, 0, 0),
-        macuahuitl: new AnimatedEntity(entityImages, 'macuahuitl', 120, 120, 23350, 180)
+        macuahuitl: new AnimatedEntity(entityImages, 'macuahuitl', 120, 120, 27350, 180)
     };
 }
 

@@ -375,4 +375,12 @@ export class Character extends MovableObject {
         if (y !== undefined && y !== null) this.y = y;
         this.offset = offset;
     }
+
+    /**
+     * Returns the base x position for collision.
+     * @returns {number} Base x position.
+     */
+    getCollisionBaseX() {
+        return this.getRenderX();
+    }
 }

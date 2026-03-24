@@ -67,12 +67,15 @@ export const movableCollisionMethods = {
     },
 
     /**
-     * Resolves the x-position used for collision calculations.
-     * @param {Object} entity Entity used for collision calculation.
-     * @param {boolean} useAttackHitbox Whether to use the attack hitbox if active.
-     * @returns {number} X position used for collision checks.
+     * Returns the collision x position of an entity.
+     * @param {Object} entity Target entity.
+     * @param {boolean} useAttackHitbox Whether to use attack hitbox.
+     * @returns {number} Collision x position.
      */
     getCollisionX(entity, useAttackHitbox) {
+        if (typeof entity?.getCollisionBaseX === "function") {
+            return entity.getCollisionBaseX(useAttackHitbox);
+        }
         const shouldUseRenderX = !!(useAttackHitbox && entity.attackHitbox?.active);
         if (shouldUseRenderX && typeof entity.getRenderX === "function") {
             return entity.getRenderX();
@@ -127,12 +130,14 @@ export const movableCollisionMethods = {
     },
 
     /**
-     * Calculates the jump collision box for an entity.
-     * @param {Object} entity Entity used for jump collision calculation.
-     * @returns {{left:number, right:number, top:number, bottom:number}} Jump collision box.
+     * Returns the jump collision box of an entity.
+     * @param {Object} entity Target entity.
+     * @returns {Object} Jump box.
      */
     getJumpBox(entity) {
-        const x = entity.x ?? 0;
+        const x = typeof entity?.getCollisionBaseX === "function"
+            ? entity.getCollisionBaseX(false)
+            : (entity.x ?? 0);
         const offset = entity.offset ?? { top: 0, left: 0, right: 0, bottom: 0 };
         const left = entity.isFlipped
             ? x + offset.right
@@ -191,11 +196,13 @@ export const movableCollisionMethods = {
     },
 
     /**
-     * Returns the hitbox rectangle and center coordinates.
-     * @returns {{left:number, right:number, top:number, bottom:number, cx:number, cy:number}} Hitbox rectangle.
+     * Returns the hitbox rectangle of the entity.
+     * @returns {Object} Hitbox rectangle with bounds and center.
      */
     getHitboxRect() {
-        const x = this.x ?? 0;
+        const x = typeof this.getCollisionBaseX === "function"
+            ? this.getCollisionBaseX(false)
+            : (this.x ?? 0);
         const { left, right } = this.getHitboxXBounds(x);
         const offset = this.offset ?? { top: 0, left: 0, right: 0, bottom: 0 };
         const top = this.y + offset.top;

@@ -466,6 +466,10 @@ export const otherLevelEntityManifestLazy = {
   },
 
   chickenMutatesSmall: {
+    idle: {
+      type: 'sheet',
+      json: './assets/img/3_enemies/chicken_mutates_small/idle/idle_sheet.json'
+    },
     walk: {
       type: 'sheet',
       json: './assets/img/3_enemies/chicken_mutates_small/walk_and_attack/walk_and_attack_sheet.json'
@@ -485,6 +489,10 @@ export const otherLevelEntityManifestLazy = {
   },
 
   chickenMutatesBig: {
+    idle: {
+      type: 'sheet',
+      json: './assets/img/3_enemies/chicken_mutates_big/idle/idle_sheet.json'
+    },
     walk: {
       type: 'sheet',
       json: './assets/img/3_enemies/chicken_mutates_big/walk_and_attack/walk_and_attack_sheet.json'

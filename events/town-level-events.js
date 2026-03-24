@@ -1072,6 +1072,43 @@ export const townEvents =
 
         },
 
+        {
+            name: "follow_tornado_camera",
+            type: "quest",
+            step: 14,
+            once: false,
+            condition: (setup) => setup.world.character?.isCapturedByTornado,
+            action: (setup) => {
+                const tornado = setup.world.tornado;
+                if (!tornado) return;
+                setup.world.camera.moveToX(
+                    tornado.x + tornado.width * 0.5 - 400,
+                    { speed: 10, tolerance: 2, snap: false, clamp: true }
+                );
+            }
+        },
+
+        {
+            type: "quest",
+            step: 14,
+            condition: (setup) => setup.world.character?.isCapturedByTornado,
+            action: (setup) => {
+                setup.world.character.isFlipped = false;
+                setup.world.character.isMovingLeft = false;
+                setup.world.character.isMovingRight = false;
+                setup.world.isKeysStopp = true;
+            }
+        },
+
+        {
+            type: "time",
+            delay: 4000,
+            step: 15,
+            action: (setup) => {
+                setup.world.audioManager.fadeOutAudio(setup.sounds.airHitStunMusic, 1000);
+                setup.world.audioManager.fadeInAudio(setup.sounds.endSceneMusic, 2000);
+            }
+        },
 
         //COLLIDINGS
 
@@ -1161,7 +1198,19 @@ export const townEvents =
                 const char = setup.world.character;
                 return !!char && char.isAttack && !char.hasHitEnemyThisAttack;
             },
-            targetFilter: (enemy) => !!enemy && !enemy.isDead && !enemy.isRemoved,
+            targetFilter: (enemy, setup, char) => {
+                if (!enemy || enemy.isDead || enemy.isRemoved) return false;
+
+                const cBox = char.getHitboxRect?.();
+                const eBox = enemy.getHitboxRect?.();
+
+                const charCenterX = cBox ? cBox.cx : char.x + char.width * 0.5;
+                const enemyCenterX = eBox ? eBox.cx : enemy.x + enemy.width * 0.5;
+
+                return char.isFlipped
+                    ? enemyCenterX < charCenterX
+                    : enemyCenterX > charCenterX;
+            },
             action: (setup, char, enemy) => {
                 const hit = enemy.combatCtrl.receiveHit(setup.world.timestamp, {
                     dmg: 1,
@@ -1543,61 +1592,6 @@ export const townEvents =
                 }
             }
         },
-
-        // Wurf von Flaschen mit Taste D
-        // {
-        //     name: 'town_throw_bottle_input',
-        //     type: 'quest',
-        //     once: false,
-        //     action: (setup) => {
-        //         const world = setup.world;
-        //         const char = world.character;
-
-        //         // Cooldown wie vorher in checkThrowObjects
-        //         if (world.timestamp - world.lastThrowCheck < world.throwCheckDelay) return;
-
-        //         // Taste D muss gedrückt sein
-        //         if (!world.keyboard.D) return;
-
-        //         world.lastThrowCheck = world.timestamp;
-
-        //         // Kann der Charakter aktuell überhaupt werfen?
-        //         const noMoveInput = !world.keyboard.LEFT && !world.keyboard.RIGHT;
-        //         const throwIsIdle =
-        //             !char.isThrowing && (char.currentAnimation !== 'throw' || char.animationFinished);
-        //         const canThrow =
-        //             !char.isThrowing &&
-        //             noMoveInput &&
-        //             char.throwableBottles > 0 &&
-        //             !char.isAttack &&
-        //             !char.isProtect &&
-        //             throwIsIdle;
-
-
-        //         if (canThrow) {
-        //             char.isThrowing = true;
-        //             char.currentAnimation = 'throw';
-        //             char.frameIndex = 0;
-        //             char.sheetIndex = 0;
-        //             char.animationFinished = false;
-        //             char.lastFrameTime = null;
-        //             char.deferSizeUpdate = true;
-        //             char._thrownThisAnim = false;
-        //             world.throwStartTime = world.timestamp;
-        //             world.throwCommitUntil = world.timestamp + 100;
-        //             const bar = setup.bottleBar;
-        //             bar.percentage = Math.min(bar.percentage - 20, 100);
-        //             bar.setPercentage(bar.percentage);
-
-        //             if (char.throwableBottles > 0) {
-        //                 char.throwableBottles -= 1;
-        //             }
-        //         } else if (char.throwableBottles === 0) {
-        //             // Keine Flaschen mehr → leeres "Klick" Geräusch
-        //             world.audioManager.playOneShot('bottleEmptySound', { volume: 0.6 });
-        //         }
-        //     }
-        // },
 
         {
             name: "town_throw_bottle_hold",

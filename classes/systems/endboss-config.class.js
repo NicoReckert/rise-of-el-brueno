@@ -14,7 +14,6 @@ export class EndbossConfig {
         this.entityImages = entityImages;
         this.allAudios = allAudios;
         this.world = world;
-        this.isGamecharacter = false;
     }
 
     /**

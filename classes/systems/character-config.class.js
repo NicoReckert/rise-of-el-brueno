@@ -86,7 +86,6 @@ export class CharacterConfig {
      * Initializes core state-related values.
      */
     initCoreStateValues() {
-        this.char.isGamecharacter = false;
         this.char.isHaveSword = false;
         this.char.hasHitEnemyThisAttack = false;
         this.char.isCapturedByTornado = false;

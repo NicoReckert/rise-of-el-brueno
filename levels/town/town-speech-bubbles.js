@@ -11,7 +11,12 @@ export function createTownSpeechBubblesCharacter(character, audioManager) {
         new SpeechBubble("Ein Bauernhof… völlig verwüstet.", character, 'speech', { audioManager }),
         new SpeechBubble("Hier hat jemand gewütet…", character, 'speech', { audioManager }),
         new SpeechBubble("Kratzspuren… Federn… und Blut.", character, 'speech', { audioManager }),
-        new SpeechBubble("Ich darf keine Zeit verlieren.", character, 'speech', { audioManager })
+        new SpeechBubble("Ich darf keine Zeit verlieren.", character, 'speech', { audioManager }),
+        new SpeechBubble("Es tut mir so leid …", character, 'speech', { audioManager }),
+        new SpeechBubble("Ich hätte euch beschützen müssen, aber ich habe versagt.", character, 'speech', { audioManager }),
+        new SpeechBubble("Nicht ein Tag vergeht, ohne dass ich an euch denke und daran zerbreche.", character, 'speech', { audioManager }),
+        new SpeechBubble("Wenn ich stärker gewesen wäre, wärt ihr jetzt noch bei mir.", character, 'speech', { audioManager }),
+        new SpeechBubble("Bitte … sagt mir, dass ihr mich noch nicht ganz verlassen habt.", character, 'speech', { audioManager })
     ]
 }
 

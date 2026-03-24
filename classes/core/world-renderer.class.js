@@ -129,7 +129,7 @@ export class WorldRenderer {
         ctx.translate(tx, ty);
         ctx.scale(-1, 1);
         this.drawSprite(ctx, object, 0, 0);
-        if (!object.isGamecharacter) return;
+        if (!object.isDebug) return;
         this.drawCharacterDebugFlipped(ctx, object, offsets);
     }
 
@@ -145,7 +145,7 @@ export class WorldRenderer {
         const drawX = Math.round(object.x + dx);
         const drawY = Math.round(object.y + dy);
         this.drawSprite(ctx, object, drawX, drawY);
-        if (!object.isGamecharacter) return;
+        if (!object.isDebug) return;
         this.drawCharacterDebug(ctx, object, offsets, drawX, drawY);
     }
 

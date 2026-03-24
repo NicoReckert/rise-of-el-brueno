@@ -11,23 +11,33 @@ export class EndbossGroundAttackController {
     }
 
     /**
-     * Updates behavior during the ground phase.
+     * Updates the ground phase logic.
      * @param {number} timestamp Frame timestamp.
-     * @param {*} setup Configuration or state setup object.
+     * @param {Object} setup Setup object.
      * @returns {void}
      */
     updateGroundPhase(timestamp, setup) {
-        const char = setup.world.character;
-        const dist = Math.abs(char.x - this.endboss.x);
         if (!this.endboss.groundFireballSequenceActive) {
-            if (dist <= 400) return;
+            if (!this.shouldStartGroundPhase(setup)) return;
             this.startGroundFireballSequence();
         }
         this.updateGroundShotProgress(timestamp);
-        if (this.handleGroundSequenceCompletion()) {
-            return;
-        }
+        if (this.handleGroundSequenceCompletion()) return;
         this.tryStartNextGroundShot(timestamp);
+    }
+
+    /**
+     * Checks whether the ground phase should start.
+     * @param {Object} setup Setup object.
+     * @returns {boolean} True if the ground phase should start, otherwise false.
+     */
+    shouldStartGroundPhase(setup) {
+        const char = setup.world.character;
+        const dist = Math.abs(
+            (char.x + char.width * 0.5) -
+            (this.endboss.x + this.endboss.width * 0.5)
+        );
+        return dist >= 200 && dist <= 900;
     }
 
     /**

@@ -64,7 +64,8 @@ export class EndbossTornado extends MovableObject {
     }
 
     /**
-     * Moves towards the target and attempts capture.
+     * Moves towards the target and captures it on collision.
+     * @returns {void}
      */
     seekTarget() {
         if (!this.target) return;
@@ -72,9 +73,11 @@ export class EndbossTornado extends MovableObject {
         const dx = this.getHorizontalDistanceToTarget();
         const step = this.getHorizontalStep(dx, dt60);
         this.x += Math.sign(dx) * step;
-        if (this.isColliding(this.target)) {
-            this.captureTarget();
-        }
+        if (this.isColliding(
+            this.target,
+            { x: this.width * 0.4, width: this.width * 0.4, y: this.height * 0.15, height: this.height * 0.15 },
+            { x: this.target.width * 0.35, width: this.target.width * 0.35, y: this.target.height * 0.1, height: this.target.height * 0.1 }
+        )) this.captureTarget();
     }
 
     /**
@@ -129,7 +132,7 @@ export class EndbossTornado extends MovableObject {
         const dt60 = (this.deltaTime ?? 1 / 60) * 60;
         const dy = this.liftSpeed * dt60;
         this.target.y = Math.max(targetHeroY, this.target.y - dy);
-        this.target.x = this.x + this.width * 0.35;
+        this.target.x = this.x + this.width * 0.5 - this.target.width * 0.5;
         if (this.target.y <= targetHeroY + 1) {
             this.state = "MOVE_TO_BUILD";
         }
@@ -142,7 +145,7 @@ export class EndbossTornado extends MovableObject {
     moveToBuildSpot(timestamp) {
         if (!this.target) return;
         const reached = this.moveToCenterX(this.buildX);
-        this.target.x = this.x + this.width * 0.35;
+        this.target.x = this.x + this.width * 0.5 - this.target.width * 0.5;
         this.target.y = this.buildYHero;
         if (reached) {
             this.x = this.buildX - this.width * 0.5;
@@ -195,7 +198,7 @@ export class EndbossTornado extends MovableObject {
      */
     updateTargetOnPedestal() {
         if (!this.target) return;
-        this.target.x = this.x + this.width * 0.35;
+        this.target.x = this.x + this.width * 0.5 - this.target.width * 0.5;
         this.target.y = this.buildYHero;
     }
 

@@ -6,8 +6,6 @@ import { MovableObject } from '../systems/movable-object.class.js';
  * @extends MovableObject
  */
 export class Coin extends MovableObject {
-    isGameCharacter = true;
-
     /**
      * Creates a new instance with randomized position and animation settings.
      * @param {Object} entityImages - Image data containing animation frames.
