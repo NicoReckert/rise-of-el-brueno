@@ -6,6 +6,7 @@ import { TimerManager } from '../../classes/systems/timer-manager.class.js';
 import { ThrowBottleSystem } from '../../classes/systems/throw-bottle-system.class.js';
 import { DarkEnergyEffect } from '../../classes/effects/dark-energy-effect.class.js';
 import { StormHazardSystem } from '../../classes/systems/storm-hazard-system.class.js';
+import { WhiteFlashTransition } from '../../classes/effects/white-flash-transition.class.js';
 
 /**
  * Creates runtime systems used in the town level.
@@ -23,7 +24,8 @@ export function createTownSystems(setup) {
         dustParticleEffect: createTownDustParticleEffect(canvas),
         throwBottleSystem: createTownThrowBottleSystem(world, setup),
         darkEnergyEffect: createTownDarkEnergyEffect(canvas),
-        stormHazards: createTownStormHazardSystem(world, setup, canvas)
+        stormHazards: createTownStormHazardSystem(world, setup, canvas),
+        whiteFlashTransition: createWhiteFlashTransition()
     };
 }
 
@@ -114,4 +116,12 @@ function createTownDarkEnergyEffect(canvas) {
  */
 function createTownStormHazardSystem(world, setup, canvas) {
     return new StormHazardSystem({ world, setup, canvas });
+}
+
+/**
+ * Creates a white flash transition.
+ * @returns {WhiteFlashTransition} White flash transition instance.
+ */
+function createWhiteFlashTransition() {
+    return new WhiteFlashTransition();
 }

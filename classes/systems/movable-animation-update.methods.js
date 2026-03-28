@@ -206,7 +206,7 @@ export const movableAnimationUpdateMethods = {
         this.sheetIndex++;
         const atEnd = this.sheetIndex >= sheets.length;
         if (!atEnd) return;
-        if (!isOneShot && allowLoop && !!anim.loop) return void (this.sheetIndex = 0);
+        if (!isOneShot && allowLoop && anim.loop === true) return void (this.sheetIndex = 0);
         this.sheetIndex = Math.max(0, sheets.length - 1);
         this.animationFinished = true;
         onFinished?.();

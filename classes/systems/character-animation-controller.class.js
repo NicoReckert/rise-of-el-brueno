@@ -35,10 +35,9 @@ export class CharacterAnimationController {
         if (!anim) return void (this.char.lastFrameTime = timestamp);
         this.char.updateAnimationFromSourceGeneric(anim);
         this.char.handleDeferredSizeUpdate();
-        const frameCount = this.char.getFrameCountForSource(anim);
-        if (this.char.frameIndex >= frameCount) {
-            this.char.animationFinished = true;
+        if (this.char.animationFinished) {
             this.transitions.handleAnimationTransition(this.char.currentAnimation);
+            this.char.animationFinished = false
         }
         this.updateAttackHitboxState();
         this.char.lastFrameTime = timestamp;
@@ -125,6 +124,7 @@ export class CharacterAnimationController {
         if (this.handleCareAndGrief()) return true;
         if (this.handleDeterminedAndCollapse()) return true;
         if (this.handleAirStunAnimation()) return true;
+        if (this.handleStandUpAfterPainStunAnimation()) return true;
         return false;
     }
 
@@ -169,6 +169,16 @@ export class CharacterAnimationController {
     }
 
     /**
+     * Handles stand-up-after-pain-stun animation transition.
+     * @returns {boolean} True if the transition was handled, otherwise false.
+     */
+    handleStandUpAfterPainStunAnimation() {
+        if (this.char.isStandUpAfterPainStun)
+            return this.setAnim('stand-up-after-pain-stun', 5, 'attack-end-scene');
+        return false;
+    }
+
+    /**
      * Handles music-related animations.
      * @returns {boolean} True if an animation was applied, otherwise false.
      */
@@ -187,11 +197,9 @@ export class CharacterAnimationController {
      * @returns {boolean} True if an animation was applied, otherwise false.
      */
     handleCombatAndMeditation() {
-        if (this.char.isAttack) {
-            if (!this.char.isHaveSword) {
-                return this.setAnim('attack-staff', 7);
-            } else return this.setAnim('attack-sword', 6);
-        }
+        if (this.char.isAttack)
+            return this.setAnim(this.char.isHaveSword ? 'attack-sword' : 'attack-staff', this.char.isHaveSword ? 6 : 7);
+        if (this.char.isAttackEndScene) return this.setAnim('attack-end-scene', 6, 'attack-end-scene-loop');
         if (this.char.isThrowing) return this.setAnim('throw', 10);
         if (this.char.isHealing) return this.setAnim('heal', 6);
         if (this.char.isMeditation) return this.setAnim('meditation', 6, 'meditation-loop');

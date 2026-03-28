@@ -65,6 +65,10 @@ export const otherLevelCharacterManifestLazy = {
         type: 'sheet',
         json: './assets/img/2_character_pepe/attack_sword/attack_sword_sheet.json'
     },
+    attackEndSceneSheet: {
+        type: 'sheet',
+        json: './assets/img/2_character_pepe/attack_end_scene/attack_end_scene_sheet.json'
+    },
     throwSheet: {
         type: 'sheet',
         json: './assets/img/2_character_pepe/throw/throw_sheet.json'
@@ -79,6 +83,7 @@ export const otherLevelCharacterManifestLazy = {
     },
     newWeaponStartSheet: {
         type: 'sheetSequence',
+        loop: false,
         sheets: [
             { json: './assets/img/2_character_pepe/new_weapon_start_and_loop/start/new_weapon_start_sheet_01.json' },
             { json: './assets/img/2_character_pepe/new_weapon_start_and_loop/start/new_weapon_start_sheet_02.json' },
@@ -104,5 +109,9 @@ export const otherLevelCharacterManifestLazy = {
     airHitPainStunSheet: {
         type: 'sheet',
         json: './assets/img/2_character_pepe/air_hit_stun_and_pain_stun/air_hit_stun_and_pain_stun_sheet.json'
+    },
+    standUpAfterPainStunSheet: {
+        type: 'sheet',
+        json: './assets/img/2_character_pepe/stand_up_after_pain_stun/stand_up_after_pain_stun_sheet.json'
     }
 }

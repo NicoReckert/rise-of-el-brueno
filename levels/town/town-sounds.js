@@ -74,6 +74,9 @@ function createTownMusicSounds(allAudios) {
         stormHazardMusic: allAudios.stormHazardMusic,
         finalStormHazardMusic: allAudios.finalStormHazardMusic,
         endbossMusic: allAudios.endbossMusic,
-        endSceneMusic: allAudios.endSceneMusic
+        endSceneMusic: allAudios.endSceneMusic,
+        sollitaSpiritEchoSpeakSound: allAudios.sollitaSpiritEchoSpeakSound,
+        tadeoSpiritEchoSpeakSound: allAudios.tadeoSpiritEchoSpeakSound,
+        happyEndMusic: allAudios.happyEndMusic
     };
 }

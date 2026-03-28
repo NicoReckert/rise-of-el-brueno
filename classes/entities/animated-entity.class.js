@@ -345,4 +345,24 @@ export class AnimatedEntity extends MovableObject {
         if (!idleAnimation) return;
         this.updateAnimationState(idleAnimation);
     }
+
+    /**
+     * Moves to a target y position.
+     * @param {number} targetY Target y position.
+     * @param {Object} [options={}] Move options.
+     * @returns {boolean} True if the target position was reached, otherwise false.
+     */
+    moveToY(targetY, options = {}) {
+        const { tolerance = 2, snap = true, speed = this.movementSpeed || 1.5, onArrive = null } = options;
+        const d = targetY - this.y;
+        if (Math.abs(d) <= tolerance) {
+            if (snap) this.y = targetY;
+            onArrive?.();
+            return true;
+        }
+        const dt = this.deltaTime ?? 1 / 60;
+        const step = speed * dt * 60;
+        this.y += Math.sign(d) * step;
+        return false;
+    }
 }

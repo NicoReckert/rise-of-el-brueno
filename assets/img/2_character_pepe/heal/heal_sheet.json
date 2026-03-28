@@ -3,7 +3,7 @@
     "columns":  4,
     "frameWidth":  512,
     "animations":  {
-                       "default":  {
+                       "heal":  {
                                        "loop":  false,
                                        "from":  0,
                                        "to":  15,

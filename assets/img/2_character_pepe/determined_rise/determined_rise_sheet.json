@@ -6,7 +6,8 @@
     "determined-rise": {
       "from": 0,
       "to": 14,
-      "fps": 3
+      "fps": 3,
+      "loop": false
     },
     "determined-rise-loop": {
       "from": 11,

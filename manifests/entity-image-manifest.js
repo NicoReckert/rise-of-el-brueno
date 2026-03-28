@@ -406,6 +406,14 @@ export const otherLevelEntityManifestLazy = {
     blessing: {
       type: 'sheet',
       json: './assets/img/entities/nayeli_spirit/blessing/blessing_sheet.json'
+    },
+    spiritCuddle: {
+      type: 'sheet',
+      json: './assets/img/entities/nayeli_spirit/spirit_cuddle/spirit_cuddle_sheet.json'
+    },
+    spiritCuddleLoop: {
+      type: 'sheet',
+      json: './assets/img/entities/nayeli_spirit/spirit_cuddle_loop/spirit_cuddle_loop_sheet.json'
     }
   },
 
@@ -624,6 +632,17 @@ export const otherLevelEntityManifestLazy = {
     }
   },
 
+  tadeoSpirit: {
+    spiritCuddle: {
+      type: 'sheet',
+      json: './assets/img/entities/tadeo_spirit/spirit_cuddle/spirit_cuddle_sheet.json'
+    },
+    spiritCuddleLoop: {
+      type: 'sheet',
+      json: './assets/img/entities/tadeo_spirit/spirit_cuddle_loop/spirit_cuddle_loop_sheet.json'
+    }
+  },
+
   projectile: {
     fireball: {
       idleExplodeSheet: {
@@ -638,7 +657,25 @@ export const otherLevelEntityManifestLazy = {
   },
 
   sollita: {
-    idle: Array.from({ length: 20 }, (_, i) => `./assets/img/entities/sollita/idle/image_${i + 1}.png`)
+    idle: {
+      type: 'sheet',
+      json: './assets/img/entities/sollita/idle_and_walk/idle_and_walk_sheet.json'
+    },
+    walk: {
+      type: 'sheet',
+      json: './assets/img/entities/sollita/idle_and_walk/idle_and_walk_sheet.json'
+    }
+  },
+
+  sollitaSpirit: {
+    spiritCuddle: {
+      type: 'sheet',
+      json: './assets/img/entities/sollita_spirit/spirit_cuddle/spirit_cuddle_sheet.json'
+    },
+    spiritCuddleLoop: {
+      type: 'sheet',
+      json: './assets/img/entities/sollita_spirit/spirit_cuddle_loop/spirit_cuddle_loop_sheet.json'
+    }
   },
 
   egg: {
@@ -653,7 +690,25 @@ export const otherLevelEntityManifestLazy = {
   },
 
   fire: {
-    idle: Array.from({ length: 8 }, (_, i) => `./assets/img/entities/fire/idle/image_${i + 1}.png`)
+    idle: {
+      type: 'sheet',
+      json: './assets/img/entities/fire/idle/idle_sheet.json'
+    }
+  },
+
+  fireBlue: {
+    idle: {
+      type: 'sheet',
+      json: './assets/img/entities/fire_blue/idle/idle_sheet.json'
+    },
+    sustain: {
+      type: 'sheet',
+      json: './assets/img/entities/fire_blue/sustain/sustain_sheet.json'
+    },
+    sustainLoop: {
+      type: 'sheet',
+      json: './assets/img/entities/fire_blue/sustain/sustain_sheet.json'
+    }
   },
 
   juanitoSpirit: {

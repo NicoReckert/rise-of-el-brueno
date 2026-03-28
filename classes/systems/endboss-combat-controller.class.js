@@ -105,7 +105,7 @@ export class EndbossCombatController {
         if (this.endboss.fireBreathBeam) return;
         const beam = new EndbossFireBeam(setup.entityImages, this.endboss.allAudios);
         beam.world = setup.world;
-        setup.state.effects.push(beam);
+        setup.state.effectsBehind.push(beam);
         this.endboss.fireBreathBeam = beam;
     }
 
@@ -143,8 +143,6 @@ export class EndbossCombatController {
      * @returns {void}
      */
     refreshFireBreathBeam(beam) {
-        beam.setOwner(this.endboss);
-        beam.active = true;
         beam.updateFromOwner();
     }
 

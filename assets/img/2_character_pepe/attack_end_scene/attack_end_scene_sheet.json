@@ -1,0 +1,21 @@
+﻿{
+    "frameHeight":  848,
+    "columns":  4,
+    "frameWidth":  948,
+    "animations": {
+    "attack-end-scene": {
+      "from": 0,
+      "to": 17,
+      "fps": 3,
+      "loop": false
+    },
+    "attack-end-scene-loop": {
+      "from": 2,
+      "to": 17,
+      "fps": 7
+    }
+  },
+    "image":  "attack_end_scene_sheet.webp",
+    "frames":  18,
+    "rows":  5
+}

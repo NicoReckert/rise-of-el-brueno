@@ -19,7 +19,8 @@ function createTownCollections() {
     return {
         popupTexts: [],
         damageTexts: [],
-        effects: [],
+        effectsFront: [],
+        effectsBehind: [],
         throwableObjects: [],
         projectiles: [],
         spiritEssenceSeq: null,

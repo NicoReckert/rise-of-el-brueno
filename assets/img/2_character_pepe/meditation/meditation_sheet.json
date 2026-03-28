@@ -6,7 +6,8 @@
     "meditation": {
       "from": 0,
       "to": 9,
-      "fps": 3
+      "fps": 3,
+      "loop": false
     },
     "meditation-loop": {
       "from": 6,

@@ -6,7 +6,8 @@
     "findsPeace": {
       "from": 0,
       "to": 21,
-      "fps": 22
+      "fps": 22,
+      "loop": false			
     },
     "findsPeaceLoop": {
       "from": 12,

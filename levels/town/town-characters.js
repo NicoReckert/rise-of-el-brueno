@@ -15,5 +15,7 @@ export function createTownCharacters(entityImages, allAudios, world) {
     const sollita = new AnimatedEntity(entityImages, 'sollita', 180, 180, 23000, 480);
     const musician = new AnimatedEntity(entityImages, 'musician', 230, 230, 24000, 435);
     sollita.isFlipped = false;
+    soul.opacity = 0;
+    endboss.opacity = 1;
     return { endboss, soul, tadeo, sollita, musician };
 }

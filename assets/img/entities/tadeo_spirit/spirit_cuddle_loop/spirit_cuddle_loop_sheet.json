@@ -1,0 +1,16 @@
+﻿{
+    "frameHeight":  512,
+    "columns":  4,
+    "frameWidth":  512,
+    "animations":  {
+                       "default":  {
+                                       "loop":  true,
+                                       "from":  0,
+                                       "to":  15,
+                                       "fps":  12
+                                   }
+                   },
+    "image":  "spirit_cuddle_loop_sheet.webp",
+    "frames":  16,
+    "rows":  4
+}

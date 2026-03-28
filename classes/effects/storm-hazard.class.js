@@ -98,7 +98,7 @@ export class StormHazard extends MovableObject {
         const lane = this.resolveSpawnLane(def, opts.lane ?? 'safe');
         const data = this.buildSpawnData(setup, type, def, lane, opts);
         const hazard = new StormHazard(setup, this.buildHazardConfig(type, def, data));
-        setup.state.effects.push(hazard);
+        setup.state.effectsFront.push(hazard);
         return hazard;
     }
 
@@ -373,7 +373,7 @@ export class StormHazard extends MovableObject {
     spawnImpactEffect(hit, setup, impactAnim) {
         const { cx, cy } = this.getImpactCenter(hit);
         const size = hit.impactSize ?? { width: 220, height: 220 };
-        setup.state.effects.push(this.createImpactEffect(hit, impactAnim, cx, cy, size));
+        setup.state.effectsFront.push(this.createImpactEffect(hit, impactAnim, cx, cy, size));
     }
 
     /**

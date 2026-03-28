@@ -17,7 +17,7 @@ export class CharacterCombatController {
      * @param {number} timestamp Frame timestamp.
      * @param {number} [duration=100000] Duration in milliseconds.
      */
-    startAirHitStun(timestamp, duration = 100000) {
+    startAirHitStun(timestamp, duration = 70000) {
         this.char.isAirHitStun = true;
         this.char.airHitStunStart = timestamp;
         this.char.airHitStunDuration = duration;

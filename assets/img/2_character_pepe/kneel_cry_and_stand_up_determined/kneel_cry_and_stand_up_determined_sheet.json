@@ -6,7 +6,8 @@
     "kneel-and-cry": {
       "from": 0,
       "to": 7,
-      "fps": 3
+      "fps": 3,
+      "loop": false
     },
     "kneel-and-cry-loop": {
       "from": 5,
@@ -16,7 +17,8 @@
     "stand-up-determined": {
       "from": 8,
       "to": 17,
-      "fps": 7
+      "fps": 7,
+      "loop": false
     },
     "stand-up-determined-loop": {
       "from": 15,

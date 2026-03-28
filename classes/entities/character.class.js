@@ -90,6 +90,7 @@ export class Character extends MovableObject {
             case 'stand-up-after-collapse': return this.standUpAfterCollapseSheet;
             case 'air-hit-stun': return this.airHitPainStunSheet;
             case 'air-pain-stun': return this.airHitPainStunSheet;
+            case 'stand-up-after-pain-stun': return this.standUpAfterPainStunSheet;
         }
         return null;
     }
@@ -129,24 +130,34 @@ export class Character extends MovableObject {
     }
 
     /**
-     * Returns combat-related animation images for the given state.
-     * @param {string} state Animation state identifier.
-     * @returns {*|null} Animation images or null if not found.
+     * Returns combat animation images for a state.
+     * @param {string} state Animation state.
+     * @returns {Object|null} Combat animation images.
      */
     getCombatImages(state) {
+        if (this.isLoopedCombatState(state, 'attack-end-scene', 'attack-end-scene-loop')) return this.attackEndSceneSheet;
+        if (this.isLoopedCombatState(state, 'meditation', 'meditation-loop')) return this.meditationSheet;
+        if (this.isLoopedCombatState(state, 'protect', 'protect-loop')) return this.protectSheet;
         switch (state) {
             case 'attack-staff': return this.attackStaffSheet;
             case 'attack-sword': return this.attackSwordSheet;
-            case 'meditation': return this.meditationSheet;
-            case 'meditation-loop': return this.meditationSheet;
             case 'new-weapon': return this.newWeaponStartSheet;
             case 'new-weapon-loop': return this.newWeaponLoopSheet;
-            case 'protect': return this.protectSheet;
-            case 'protect-loop': return this.protectSheet;
             case 'throw': return this.throwSheet;
             case 'heal': return this.healSheet;
+            default: return null;
         }
-        return null;
+    }
+
+    /**
+     * Checks whether a combat state matches a base or loop state.
+     * @param {string} state Animation state.
+     * @param {string} baseState Base animation state.
+     * @param {string} loopState Loop animation state.
+     * @returns {boolean} True if the state matches, otherwise false.
+     */
+    isLoopedCombatState(state, baseState, loopState) {
+        return state === baseState || state === loopState;
     }
 
     /**
@@ -206,7 +217,7 @@ export class Character extends MovableObject {
      */
     getLargeSizeConfig(anim) {
         if (anim === 'attack-staff') return this.getLargeASizeConfig();
-        if (anim === 'attack-sword') return this.getLargeBSizeConfig();
+        if (['attack-sword', 'attack-end-scene', 'attack-end-scene-loop'].includes(anim)) return this.getLargeBSizeConfig();
         return null;
     }
 
@@ -240,15 +251,9 @@ export class Character extends MovableObject {
      * @returns {Object|null} Size configuration or null if not applicable.
      */
     getSpecialSizeConfig(anim) {
-        if (this.isProtectAnim(anim)) {
-            return this.getProtectSizeConfig();
-        }
-        if (this.isNewWeaponAnim(anim)) {
-            return this.getNewWeaponSizeConfig();
-        }
-        if (this.isDuckAnim(anim)) {
-            return this.getDuckSizeConfig();
-        }
+        if (this.isProtectAnim(anim)) return this.getProtectSizeConfig();
+        if (this.isNewWeaponAnim(anim)) return this.getNewWeaponSizeConfig();
+        if (this.isDuckAnim(anim)) return this.getDuckSizeConfig();
         return null;
     }
 
@@ -342,7 +347,7 @@ export class Character extends MovableObject {
     updateDrawOffsetForAnim(anim) {
         if (anim === 'attack-staff') {
             this.drawOffset = { x: 0, y: 0, flipX: -100 };
-        } else if (anim === 'attack-sword') {
+        } else if (['attack-sword', 'attack-end-scene', 'attack-end-scene-loop'].includes(anim)) {
             this.drawOffset = { x: -5, y: 0, flipX: -130 };
         } else if (anim === 'protect' || anim === 'protect-loop') {
             this.drawOffset = { x: -14, y: 0, flipX: 0 };

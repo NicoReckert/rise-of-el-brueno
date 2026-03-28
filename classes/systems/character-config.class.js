@@ -44,7 +44,7 @@ export class CharacterConfig {
             'meditation', 'meditation-loop', 'stand-up', 'walk-determined', 'stand-determined',
             'stand-determined-loop', 'walk-in-storm',
             'collapse', 'collapse-loop', 'stand-up-after-collapse',
-            'air-hit-stun', 'air-pain-stun', 'throw', 'heal'
+            'air-hit-stun', 'air-pain-stun', 'stand-up-after-pain-stun', 'throw', 'heal'
         ]);
     }
     /**
@@ -53,9 +53,10 @@ export class CharacterConfig {
     initTransitionableAnimations() {
         this.char.TRANSITIONABLE_ANIMS = new Set([
             'kneel-and-cry', 'stand-up-determined', 'determined-rise', 'caress',
-            'sit-down-and-play-guitar', 'light-a-campfire', 'attack-staff', 'attack-sword',
+            'sit-down-and-play-guitar', 'light-a-campfire', 'attack-staff', 'attack-sword', 'attack-end-scene',
             'meditation', 'new-weapon', 'stand-up', 'stand-determined', 'duck-enter', 'duck-exit',
-            'collapse', 'stand-up-after-collapse', 'protect', 'air-hit-stun', 'hurt', 'throw', 'heal'
+            'collapse', 'stand-up-after-collapse', 'protect', 'air-hit-stun', 'hurt', 'throw', 'heal',
+            'stand-up-after-pain-stun'
         ]);
     }
 
@@ -98,8 +99,8 @@ export class CharacterConfig {
      * Sets the character's size and initial position on the screen.
      */
     setSizeAndPosition() {
-        this.char.height = 300; 
-        this.char.width = 130; 
+        this.char.height = 300;
+        this.char.width = 130;
         this.char.x = 1000;
         this.char.y = 370;
     }
@@ -145,6 +146,7 @@ export class CharacterConfig {
         this.char.walkInStormCollapseSheet = this.images.walkInStormCollapseSheet ?? null;
         this.char.standUpAfterCollapseSheet = this.images.standUpAfterCollapseSheet ?? null;
         this.char.airHitPainStunSheet = this.images.airHitPainStunSheet ?? null;
+        this.char.standUpAfterPainStunSheet = this.images.standUpAfterPainStunSheet ?? null;
     }
 
     /**
@@ -153,6 +155,7 @@ export class CharacterConfig {
     initActionImages() {
         this.char.attackStaffSheet = this.images.attackStaffSheet ?? null;
         this.char.attackSwordSheet = this.images.attackSwordSheet ?? null;
+        this.char.attackEndSceneSheet = this.images.attackEndSceneSheet ?? null;
         this.char.jetPackImages = this.images.jetPackImages ?? (this.images.jetPackImages = []);
         this.char.meditationSheet = this.images.meditationSheet ?? null;
         this.char.newWeaponStartSheet = this.images.newWeaponStartSheet ?? null;
@@ -213,6 +216,7 @@ export class CharacterConfig {
      */
     initActionStates() {
         this.char.isAttack = false;
+        this.char.isAttackEndScene = false;
         this.char.isStandUp = false;
         this.char.isStandDetermined = false;
         this.char.isNewWeapon = false;
@@ -235,7 +239,7 @@ export class CharacterConfig {
         this.char.isCollapse = false;
         this.char.isStandUpAfterCollapse = false;
         this.char.isAirHitStun = false;
-        this.char.isAirPainStun = false;
+        this.char.isStandUpAfterPainStun = false;
     }
 
     /**

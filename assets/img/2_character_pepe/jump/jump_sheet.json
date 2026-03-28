@@ -3,7 +3,7 @@
     "columns":  4,
     "frameWidth":  610,
     "animations":  {
-                       "default":  {
+                       "jump":  {
                                        "loop":  true,
                                        "from":  0,
                                        "to":  8,

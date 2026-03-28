@@ -12,7 +12,8 @@
     "dead": {
       "from": 3,
       "to": 9,
-      "fps": 7
+      "fps": 7,
+      "loop": false
     }
   },
     "image": "hurt_and_dead_sheet.webp",

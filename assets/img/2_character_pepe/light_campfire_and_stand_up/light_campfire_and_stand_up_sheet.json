@@ -6,12 +6,14 @@
     "light-a-campfire": {
       "from": 0,
       "to": 9,
-      "fps": 3
+      "fps": 3,
+      "loop": false
     },
     "stand-up": {
       "from": 10,
       "to": 12,
-      "fps": 7
+      "fps": 7,
+      "loop": false
     }
   },
     "image":  "light_campfire_and_stand_up_sheet.webp",

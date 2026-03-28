@@ -72,6 +72,7 @@ export class CharacterAnimationTransitions {
         if (this.handleHurtAndBasic(anim)) return true;
         if (this.handleCollapseAndStand(anim)) return true;
         if (this.handleAirHitStunTransition(anim)) return true;
+        if (this.handleStandUpAfterPainStunTransition(anim)) return true;
         return false;
     }
 
@@ -98,8 +99,7 @@ export class CharacterAnimationTransitions {
      * @returns {boolean} True if a transition was applied, otherwise false.
      */
     handleCollapseAndStand(anim) {
-        if (anim === 'collapse')
-            return this.setTransition('collapse-loop', 5);
+        if (anim === 'collapse') return this.setTransition('collapse-loop', 5);
         if (anim === 'stand-up-after-collapse') {
             this.char.isStandUpAfterCollapse = false;
             return this.setTransition('air-pain-stun', 5);
@@ -113,8 +113,21 @@ export class CharacterAnimationTransitions {
      * @returns {boolean} True if a transition was applied, otherwise false.
      */
     handleAirHitStunTransition(anim) {
-        if (anim === 'air-hit-stun')
-            return this.setTransition('air-pain-stun', 5);
+        if (anim === 'air-hit-stun') return this.setTransition('air-pain-stun', 5);
+        return false;
+    }
+
+    /**
+     * Handles transition after stand-up-after-pain-stun animation.
+     * @param {string} anim Animation name.
+     * @returns {boolean} True if the transition was handled, otherwise false.
+     */
+    handleStandUpAfterPainStunTransition(anim) {
+        if (anim === 'stand-up-after-pain-stun') {
+            this.char.isStandUpAfterPainStun = false;
+            this.char.isAttackEndScene = true;
+            return this.setTransition('attack-end-scene', 6);
+        }
         return false;
     }
 
@@ -142,6 +155,7 @@ export class CharacterAnimationTransitions {
      */
     handleCombatTransitions(anim) {
         if (this.handleAttackTransitions(anim)) return true;
+        if (this.handleAttackEndSceneTransition(anim)) return true;
         if (this.handleThrowTransition(anim)) return true;
         if (this.handleHealTransition(anim)) return true;
         if (this.handleMeditationTransition(anim)) return true;
@@ -214,6 +228,16 @@ export class CharacterAnimationTransitions {
     handleProtectTransition(anim) {
         if (anim !== 'protect') return false;
         return this.setTransition('protect-loop', 6);
+    }
+
+    /**
+     * Handles the transition from the attack end scene animation.
+     * @param {string} anim Animation name.
+     * @returns {boolean} True if the transition was handled, otherwise false.
+     */
+    handleAttackEndSceneTransition(anim) {
+        if (anim !== 'attack-end-scene') return false;
+        return this.setTransition('attack-end-scene-loop', 6);
     }
 
     /**

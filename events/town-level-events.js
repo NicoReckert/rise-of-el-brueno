@@ -1004,15 +1004,15 @@ export const townEvents =
                 setup.sounds.endbossMusic.currentTime = 0;
                 setup.world.audioManager.fadeOutAudio(setup.sounds.backgroundMusic, 1000);
                 setup.world.audioManager.fadeInAudio(setup.sounds.endbossMusic, 2000, 0.6);
-                const audio = setup.sounds.endbossFlappingWingsSound;
-                const ctx = new AudioContext();
-                const source = ctx.createMediaElementSource(audio);
-                const gainNode = ctx.createGain();
-                gainNode.gain.value = 6.0; // 200% Lautstärke
-                source.connect(gainNode);
-                gainNode.connect(ctx.destination);
-                audio.play();
-                audio.loop = true;
+                // const audio = setup.sounds.endbossFlappingWingsSound;
+                // const ctx = new AudioContext();
+                // const source = ctx.createMediaElementSource(audio);
+                // const gainNode = ctx.createGain();
+                // gainNode.gain.value = 6.0; // 200% Lautstärke
+                // source.connect(gainNode);
+                // gainNode.connect(ctx.destination);
+                // audio.play();
+                // audio.loop = true;
                 setup.world.character.speedX = 8;
                 setup.world.townLevelController.questManager.advance(13);
 
@@ -1107,6 +1107,288 @@ export const townEvents =
             action: (setup) => {
                 setup.world.audioManager.fadeOutAudio(setup.sounds.airHitStunMusic, 1000);
                 setup.world.audioManager.fadeInAudio(setup.sounds.endSceneMusic, 2000);
+                setup.environment.macuahuitl.fadeIn(setup.world.timestamp, 4000)
+            }
+        },
+
+        {
+            type: "time",
+            delay: 6000,
+            step: 15,
+            once: false,
+            action: (setup) => {
+                const macuahuitl = setup.environment.macuahuitl;
+                const arriveY = macuahuitl.moveToY(150, { speed: 0.5 });
+                if (arriveY) {
+                    setup.world.townLevelController.questManager.advance(16);
+                }
+            }
+        },
+
+        {
+            type: "time",
+            delay: 1000,
+            step: 16,
+            action: (setup) => {
+                setup.environment.nayeliSpiritEcho.updateAnimationState('spiritCuddle', 1000 / 5.5);
+                setup.environment.nayeliSpiritEcho.fadeIn(setup.world.timestamp, 4000);
+                setup.sounds.nayelisSpiritSpeakSound.play();
+            },
+        },
+
+        {
+            type: "time",
+            delay: 8000,
+            step: 16,
+            action: (setup) => {
+                setup.environment.nayeliSpiritEcho.fadeOut(setup.world.timestamp, 4000);
+            },
+        },
+
+        {
+            type: "time",
+            delay: 9000,
+            step: 16,
+            action: (setup) => {
+                setup.environment.sollitaSpiritEcho.updateAnimationState('spiritCuddle', 1000 / 5.5);
+                setup.environment.sollitaSpiritEcho.fadeIn(setup.world.timestamp, 4000);
+                setup.sounds.sollitaSpiritEchoSpeakSound.play();
+            },
+        },
+
+        {
+            type: "time",
+            delay: 17000,
+            step: 16,
+            action: (setup) => {
+                setup.environment.sollitaSpiritEcho.fadeOut(setup.world.timestamp, 4000);
+            },
+        },
+
+        {
+            type: "time",
+            delay: 18000,
+            step: 16,
+            action: (setup) => {
+                setup.environment.tadeoSpiritEcho.updateAnimationState('spiritCuddle', 1000 / 5.5);
+                setup.environment.tadeoSpiritEcho.fadeIn(setup.world.timestamp, 4000);
+                setup.sounds.tadeoSpiritEchoSpeakSound.play();
+            },
+        },
+
+        {
+            type: "time",
+            delay: 18000,
+            step: 16,
+            once: false,
+            action: (setup) => {
+                const macuahuitl = setup.environment.macuahuitl;
+                const arriveY = macuahuitl.moveToY(220, { speed: 0.5 });
+                if (arriveY) {
+                    setup.world.townLevelController.questManager.advance(17);
+                }
+            }
+        },
+
+        {
+            type: "quest",
+            step: 17,
+            action: (setup) => {
+                setup.environment.macuahuitl.fadeOut(setup.world.timestamp, 4000)
+            }
+        },
+
+        {
+            type: "time",
+            delay: 4000,
+            step: 17,
+            action: (setup) => {
+                setup.environment.tadeoSpiritEcho.fadeOut(setup.world.timestamp, 4000);
+                setup.world.character.isStandUpAfterPainStun = true;
+            },
+        },
+
+        {
+            type: "time",
+            delay: 14000,
+            step: 17,
+            action: (setup) => {
+                setup.environment.fireBlue.fadeIn(setup.world.timestamp, 4000);
+            }
+        },
+
+        {
+            type: "time",
+            delay: 14000,
+            step: 17,
+            once: false,
+            action: (setup) => {
+                const beam = setup.state.effectsBehind[0];
+                if (beam && beam.width >= 380) {
+                    beam.width -= 0.5;
+                }
+            }
+        },
+
+        {
+            type: "time",
+            delay: 27000,
+            step: 17,
+            action: (setup) => {
+                setup.environment.fireBlue.updateAnimationState('sustain', 1000 / 12);
+            },
+        },
+
+        {
+            type: "time",
+            delay: 27000,
+            step: 17,
+            once: false,
+            action: (setup) => {
+                if (setup.environment.fireBlue.width <= 500) {
+                    setup.environment.fireBlue.width += 0.5;
+                }
+            },
+        },
+
+        {
+            type: "time",
+            delay: 35000,
+            step: 17,
+            action: (setup) => {
+                setup.whiteFlashTransition.start(setup.world.timestamp);
+            },
+        },
+
+        {
+            type: "time",
+            delay: 36000,
+            step: 17,
+            action: (setup) => {
+                setup.world.character.isAttackEndScene = false;
+                setup.world.character.y = 370;
+                setup.environment.fireBlue.opacity = 0;
+                setup.environment.rockyDesertPedestal.opacity = 0;
+                setup.world.audioManager.fadeOutAudio(setup.sounds.endSceneMusic, 1000);
+                setup.state.effectsBehind[0].opacity = 0;
+                setup.environment.juanitoSpirit.opacity = 0;
+                setup.environment.pollitoSpirit.opacity = 0;
+                setup.environment.lolaSpirit.opacity = 0;
+                setup.characters.endboss.isDead = true;
+                setup.world.townLevelController.questManager.advance(18);
+            },
+        },
+
+        {
+            type: "quest",
+            step: 18,
+            action: (setup) => {
+                const boss = setup.characters.endboss;
+                const soul = setup.characters.soul;
+                soul.x = boss.x + 75;
+                soul.y = boss.y + 200;
+                setup.sounds.soulMusic.loop = true;
+                setup.world.audioManager.fadeInAudio(setup.sounds.soulMusic, 2000, 0.1);
+
+            },
+        },
+
+        {
+            type: "time",
+            delay: 4000,
+            step: 18,
+            once: false,
+            action: (setup) => {
+                setup.world.character.movementCtrl.moveToX(27600, {
+                    speed: 1.5, faceTarget: true, setWalkFlag: true
+                });
+            }
+        },
+
+        {
+            type: 'position',
+            area: { x: 27600, width: 50 },
+            step: 18,
+            action: (setup) => {
+                setup.characters.soul.fadeIn(setup.world.timestamp, 4000);
+                setup.world.townLevelController.questManager.advance(19);
+            }
+        },
+
+        {
+            type: 'quest',
+            step: 19,
+            once: false,
+            action: (setup) => {
+                const arriveY = setup.characters.soul.moveToY(250, { speed: 1.5 });
+                if (arriveY) {
+                    setup.world.townLevelController.questManager.advance(20);
+                }
+            }
+        },
+
+        {
+            type: 'quest',
+            step: 20,
+            action: (setup) => {
+                setup.world.audioManager.safePlay(setup.sounds.soulSpeakSound);
+            }
+        },
+
+        {
+            type: 'quest',
+            step: 20,
+            condition: (setup) => setup.sounds.soulSpeakSound.currentTime >= 18,
+            action: (setup) => {
+                setup.world.character.isMeditation = true;
+                setup.characters.soul.updateAnimationState('findsPeace', 1000 / 5);
+                setup.characters.endboss.isFindsPeace = true;
+                setup.world.audioManager.fadeAudioTo(setup.sounds.soulMusic, 8000, 1);
+                setup.world.townLevelController.questManager.advance(21);
+            }
+        },
+
+        {
+            type: 'quest',
+            step: 21,
+            once: false,
+            action: (setup) => {
+                setup.characters.endboss.opacity = Math.max(
+                    0, (setup.characters.endboss.opacity ?? 1) - 0.0001);
+            }
+        },
+
+        {
+            type: 'quest',
+            step: 21,
+            once: false,
+            action: (setup) => {
+                const arriveY = setup.characters.soul.moveToY(-500, { speed: 1 });
+                if (arriveY) {
+                    setup.world.townLevelController.questManager.advance(22);
+                }
+            }
+        },
+
+        {
+            type: 'time',
+            delay: 4000,
+            step: 22,
+            action: (setup) => {
+                setup.whiteFlashTransition.start(setup.world.timestamp);
+                setup.world.townLevelController.questManager.advance(23);
+            }
+        },
+
+        {
+            type: 'time',
+            delay: 1000,
+            step: 23,
+            action: (setup) => {
+                setup.world.audioManager.fadeOutAudio(setup.sounds.soulMusic, 1000);
+                setup.world.audioManager.fadeInAudio(setup.sounds.happyEndMusic, 2000);
+                setup.world.character.isMeditation = false;
+                setup.townLevel.sky.usePreset('desertDay');
             }
         },
 
@@ -1499,68 +1781,6 @@ export const townEvents =
                         boss.isDead = true;
                         boss.frameIndex = 0;
                     }
-                }
-            }
-        },
-
-        // Soul folgt dem Boss und steigt nach dem Tod hoch
-        {
-            name: 'town_soul_follow_and_rise',
-            type: 'quest',
-            once: false,
-            action: (setup) => {
-                const boss = setup.characters.endboss;
-                const soul = setup.characters.soul;
-                if (!boss || !soul) return;
-
-                // Solange Boss lebt → Soul "klebt" an ihm
-                if (!boss.isDead) {
-                    soul.x = boss.x + 75;
-                    soul.y = boss.y + 200;
-                    return;
-                }
-
-                // Boss ist tot → Soul steigt hoch, bis y <= 250
-                if (boss.isDead && soul.y >= 250) {
-                    soul.y -= 1.5;
-                }
-            }
-        },
-
-        // Musik-Fade + Soul-Cutscene / Meditation
-        {
-            name: 'town_soul_cutscene',
-            type: 'quest',
-            once: false,
-            action: (setup) => {
-                const world = setup.world;
-                const boss = setup.characters.endboss;
-                const soul = setup.characters.soul;
-                const sounds = setup.sounds;
-                const audio = world.audioManager;
-
-                if (!boss || !soul) return;
-
-                // Cutscene startet, wenn Soul oben angekommen ist
-                if (soul.y > 250 || boss.isFly) return;
-
-                audio.fadeOutAudio(setup.endbossMusic, 3000);
-                sounds.soulMusic.loop = true;
-                audio.fadeInAudio(sounds.soulMusic, 3000, 0.1);
-                audio.safePlay(sounds.soulSpeakSound);
-                // 3) Nach ~18s: Meditation + Soul findet Frieden
-                if (sounds.soulSpeakSound.currentTime >= 18) {
-                    const char = world.character;
-
-                    char.isMeditation = true;
-                    soul.updateAnimationState('findsPeace', 1000 / 5);
-                    boss.isFindsPeace = true;
-
-                    if (soul.y >= -500) {
-                        soul.y -= 1;
-                    }
-
-                    audio.fadeAudioTo(sounds.soulMusic, 8000, 1);
                 }
             }
         },

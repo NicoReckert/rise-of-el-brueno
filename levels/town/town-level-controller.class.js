@@ -235,26 +235,42 @@ export class TownLevelController {
      * @returns {void}
      */
     updateSceneEffects(timestamp) {
-        this.setup.state.effects.forEach(effect => effect.updateState(timestamp));
-        this.setup.state.effects =
-            this.setup.state.effects.filter(effect => !effect.markedForRemoval);
+        this.setup.state.effectsFront.forEach(effect => effect.updateState(timestamp));
+        this.setup.state.effectsFront =
+            this.setup.state.effectsFront.filter(effect => !effect.markedForRemoval);
+        this.setup.state.effectsBehind.forEach(effect => effect.updateState(timestamp));
+        this.setup.state.effectsBehind =
+            this.setup.state.effectsBehind.filter(effect => !effect.markedForRemoval);
+        this.setup.whiteFlashTransition?.updateState(timestamp);
     }
 
     /**
-     * Updates characters, environment entities, and enemies in the town level.
+     * Updates characters, environment, and enemies.
      * @param {number} timestamp Frame timestamp.
+     * @returns {void}
      */
     updateEntities(timestamp) {
+        this.updateCharactersAndEnvironment(timestamp);
+        this.setup.townLevel.enemies.forEach(enemy => {
+            enemy.updateState(timestamp);
+        });
+    }
+
+    /**
+     * Updates characters and environment entities.
+     * @param {number} timestamp Frame timestamp.
+     * @returns {void}
+     */
+    updateCharactersAndEnvironment(timestamp) {
         Object.values(this.setup.characters)
             .filter(c => c !== this.setup.characters.endboss)
             .forEach(c => c.updateState(timestamp));
-        Object.values(this.setup.environment)
-            .forEach(c => {
+        Object.values(this.setup.environment).forEach(entry => {
+            const entities = Array.isArray(entry) ? entry : [entry];
+            entities.forEach(c => {
                 if (!this.shouldUpdateEnvironmentEntity(c)) return;
                 c.updateState(timestamp);
             });
-        this.setup.townLevel.enemies.forEach(enemy => {
-            enemy.updateState(timestamp);
         });
     }
 

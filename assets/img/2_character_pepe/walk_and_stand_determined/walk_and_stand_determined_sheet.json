@@ -11,7 +11,8 @@
     "stand-determined": {
       "from": 4,
       "to": 11,
-      "fps": 7
+      "fps": 7,
+      "loop": false
     },
     "stand-determined-loop": {
       "from": 10,

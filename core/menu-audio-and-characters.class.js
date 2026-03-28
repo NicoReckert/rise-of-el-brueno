@@ -179,7 +179,7 @@ export class MenuAudioAndCharacters {
      * @returns {{infoScreenMusic:Object, speech:Object}|null} Story overlay state or null.
      */
     getStoryOverlayState() {
-        const submenuBg = this.prepareSubmenuBg(this.uiManager.dom.story-overlay);
+        const submenuBg = this.prepareSubmenuBg(this.uiManager.dom.storyOverlay);
         const infoScreenMusic = this.audioManager.get('infoScreenMusic');
         const speech = this.audioManager.get('storyTextSpeechSound');
         if (!submenuBg || !infoScreenMusic) return null;

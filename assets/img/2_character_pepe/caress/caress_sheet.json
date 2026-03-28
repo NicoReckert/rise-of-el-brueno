@@ -6,7 +6,8 @@
     "caress": {
       "from": 0,
       "to": 7,
-      "fps": 8
+      "fps": 8,
+      "loop": false
     },
     "caress-loop": {
       "from": 5,

@@ -26,6 +26,7 @@ export class TownRenderer {
      */
     render(cameraX) {
         this.renderBackgrounds(cameraX);
+        this.renderTownFlowers(cameraX);
         this.renderCharacterAndEntities(cameraX);
         this.handleHint(cameraX);
     }
@@ -37,13 +38,27 @@ export class TownRenderer {
      */
     renderBackgrounds(cameraX) {
         this.addToWorld(this.setup.townLevel.sky);
-        this.setup.darkEnergyEffect.draw(this.ctx, cameraX);
+        if (this.questManager.step < 23) {
+            this.setup.darkEnergyEffect.draw(this.ctx, cameraX);
+        }
         this.renderCloudLayer(cameraX);
         this.renderParallaxLayer(cameraX, 0.5, this.setup.townLevel.grounds.backGrounds);
         this.renderParallaxLayer(cameraX, 0.75, this.setup.townLevel.grounds.midGrounds);
         this.renderParallaxLayer(cameraX, 1.0, this.setup.townLevel.grounds.foreGrounds);
         this.renderParallaxLayer(cameraX, 1.0, this.setup.townLevel.sceneryObjects);
         this.renderParticleEffects(cameraX);
+    }
+
+    /**
+     * Renders flowers in the town based on quest progress.
+     * @returns {void}
+     */
+    renderTownFlowers(cameraX) {
+        if (this.questManager.step < 23) return;
+        this.ctx.save();
+        this.ctx.translate(-cameraX, 0);
+        this.addObject(this.setup.environment.flowers);
+        this.ctx.restore();
     }
 
     /**
@@ -99,13 +114,15 @@ export class TownRenderer {
         this.renderTownEggs();
         this.renderTownEnemies();
         this.renderTownCollections();
+        this.renderBehindEffects();
         this.renderTownPreCharacterActors();
         this.renderTownCharacter();
+        this.renderFrontEffects();
         this.renderTownSpirits();
         this.renderTownFrontActors();
-        this.renderTownPostCharacterEffects();
         this.ctx.restore();
         this.renderShieldAndSandstorm(cameraX);
+        this.renderWhiteFlashTransition();
     }
 
     /**
@@ -178,10 +195,16 @@ export class TownRenderer {
         this.addToWorld(this.setup.environment.pollitoSpirit);
         this.addToWorld(this.setup.environment.lolaSpirit);
         this.addToWorld(this.setup.environment.nayeliSpirit);
+        this.addToWorld(this.setup.environment.nayeliSpiritEcho);
+        this.addToWorld(this.setup.environment.sollitaSpiritEcho);
+        this.addToWorld(this.setup.environment.tadeoSpiritEcho);
         this.addToWorld(this.setup.environment.spiritEssence1);
         this.addToWorld(this.setup.environment.spiritEssence2);
         this.addToWorld(this.setup.environment.spiritEssence3);
+        this.ctx.shadowColor = 'rgba(255, 255, 200, 0.8)';
+        this.ctx.shadowBlur = 10;
         this.addToWorld(this.setup.environment.macuahuitl);
+        this.ctx.shadowBlur = 0;
     }
 
     /**
@@ -194,11 +217,19 @@ export class TownRenderer {
     }
 
     /**
-     * Renders post-character effects in the town.
+     * Renders front effects.
      * @returns {void}
      */
-    renderTownPostCharacterEffects() {
-        this.addObject(this.setup.state.effects);
+    renderFrontEffects() {
+        this.addToWorld(this.setup.environment.fireBlue);
+        this.addObject(this.setup.state.effectsFront);
+    }
+    /**
+     * Renders behind effects.
+     * @returns {void}
+     */
+    renderBehindEffects() {
+        this.addObject(this.setup.state.effectsBehind);
     }
 
     /**
@@ -304,6 +335,14 @@ export class TownRenderer {
         if (this.questManager.step >= 10) this.addToWorld(this.setup.statusBarEndboss);
         this.addToWorld(this.setup.coinBar);
         this.addToWorld(this.setup.bottleBar);
+    }
+
+    /**
+     * Renders the white flash transition.
+     * @returns {void}
+     */
+    renderWhiteFlashTransition() {
+        this.setup.whiteFlashTransition.draw(this.ctx);
     }
 
     /**

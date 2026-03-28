@@ -85,14 +85,14 @@ export const uiManagerOverlayMethods = {
      * Shows the story overlay.
      */
     showStoryOverlay() {
-        this.showElement(this.dom.story-overlay);
+        this.showElement(this.dom.storyOverlay);
     },
 
     /**
      * Hides the story overlay.
      */
     hideStoryOverlay() {
-        this.hideElement(this.dom.story-overlay);
+        this.hideElement(this.dom.storyOverlay);
     },
 
     /**

@@ -189,7 +189,7 @@ export class TownSpiritEssenceController {
         const pX = e.x + e.width * 0.5 - nx * back;
         const pY = e.y + e.height * 0.5 - ny * back;
         const half = 9;
-        this.setup.state.effects.push(new EssenceTrailParticle(e.img, pX - half, pY - half));
+        this.setup.state.effectsFront.push(new EssenceTrailParticle(e.img, pX - half, pY - half));
     }
 
     /**

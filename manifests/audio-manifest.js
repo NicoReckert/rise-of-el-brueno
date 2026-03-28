@@ -8,7 +8,7 @@ export const introAudioManifest = {
 export const farmAudioManifestImmediate = {
     nayelisMusic: './assets/audio/nayelis-music.opus',
     sollitasMusic: './assets/audio/sollitas-music.opus',
-    tadeosMusic: './assets/audio/tadeo-music.opus',
+    tadeoMusic: './assets/audio/tadeo-music.opus',
     soulMusic: './assets/audio/soul-music.opus',
     happyTogetherMusic: './assets/audio/happy-together-music.opus',
     infoScreenMusic: './assets/audio/info-screen-music4.opus',
@@ -102,5 +102,8 @@ export const otherLevelAudioManifestLazy = {
     vo_tadeo_help_03: './assets/audio/tadeo_help_03.mp3',
     stormHazardMusic: './assets/audio/storm-hazard-music.mp3',
     finalStormHazardMusic: './assets/audio/final-storm-hazard-music.mp3',
-    endSceneMusic: './assets/audio/end-scene-music.mp3'
+    endSceneMusic: './assets/audio/end-scene-music.mp3',
+    sollitaSpiritEchoSpeakSound: './assets/audio/sollita-spirit-echo-speak-sound.mp3',
+    tadeoSpiritEchoSpeakSound: './assets/audio/tadeo-spirit-echo-speak-sound.mp3',
+    happyEndMusic: './assets/audio/happy-end-music.mp3',
 }
