@@ -19,12 +19,11 @@ export function createFarmSounds(allAudios) {
  */
 function createFarmMusicSounds(allAudios) {
     return {
-        farmMusic: allAudios.farmMusic,
-        nightMusic: allAudios.nightMusic,
+        farmDayMusic: allAudios.farmDayMusic,
+        farmNightMusic: allAudios.farmNightMusic,
         sadMusic: allAudios.sadMusic,
         happyTogetherMusic: allAudios.happyTogetherMusic,
-        determinedMusic: allAudios.determinedMusic,
-        sadSoulMusic: allAudios.sadSoulMusic
+        determinedMusic: allAudios.determinedMusic
     };
 }
 
@@ -35,12 +34,12 @@ function createFarmMusicSounds(allAudios) {
  */
 function createFarmAmbientSounds(allAudios) {
     return {
-        droneSound: allAudios.droneSound,
-        droneControlledSound: allAudios.droneControlledSound,
-        eveningSound: allAudios.eveningSound,
-        yawningSound: allAudios.yawningSound,
-        snoringSound: allAudios.snoringSound,
-        earthquakeSound: allAudios.earthquakeSound,
+        droneIdleSfx: allAudios.droneIdleSfx,
+        droneControlledSfx: allAudios.droneControlledSfx,
+        eveningAmbienceSfx: allAudios.eveningAmbienceSfx,
+        yawningSfx: allAudios.yawningSfx,
+        snoringSfx: allAudios.snoringSfx,
+        earthquakeSfx: allAudios.earthquakeSfx,
         windSound: allAudios.windSound
     };
 }
@@ -52,12 +51,12 @@ function createFarmAmbientSounds(allAudios) {
  */
 function createFarmActionSounds(allAudios) {
     return {
-        newTaskSound: allAudios.newTaskSound,
-        taskCompletedSound: allAudios.taskCompletedSound,
-        taskCompletedSound2: allAudios.taskCompletedSound.cloneNode(),
-        doorOpeningSound: allAudios.doorOpeningSound,
-        doorClosingSound: allAudios.doorClosingSound,
-        attackSound: allAudios.attackSound
+        newTaskSfx: allAudios.newTaskSfx,
+        taskCompletedSfx01: allAudios.taskCompletedSfx,
+        taskCompletedSfx02: allAudios.taskCompletedSfx.cloneNode(),
+        doorOpenSfx: allAudios.doorOpenSfx,
+        doorCloseSfx: allAudios.doorCloseSfx,
+        attackSfx: allAudios.attackSfx
     };
 }
 
@@ -68,7 +67,7 @@ function createFarmActionSounds(allAudios) {
  */
 function createFarmAnimalSounds(allAudios) {
     return {
-        cowSound: allAudios.cowSound,
-        cowSound2: allAudios.cowSound2
+        cowSfx01: allAudios.cowSfx01,
+        cowSfx02: allAudios.cowSfx02
     };
 }

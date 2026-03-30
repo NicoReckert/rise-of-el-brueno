@@ -265,13 +265,13 @@ export class AudioManager {
      * Sets up automatic transition from intro title music to looping track.
      */
     setupTitleMusicChain() {
-        const titleMusicIntro = this.get('titleMusicIntro');
-        const titleMusicLoop = this.get('titleMusicLoop');
-        if (!titleMusicIntro || !titleMusicLoop) return;
-        titleMusicIntro.addEventListener("ended", () => {
-            titleMusicLoop.currentTime = 0;
-            titleMusicLoop.loop = true;
-            titleMusicLoop.play();
+        const uiTitleIntroMusic = this.get('uiTitleIntroMusic');
+        const uiTitleLoopMusic = this.get('uiTitleLoopMusic');
+        if (!uiTitleIntroMusic || !uiTitleLoopMusic) return;
+        uiTitleIntroMusic.addEventListener("ended", () => {
+            uiTitleLoopMusic.currentTime = 0;
+            uiTitleLoopMusic.loop = true;
+            uiTitleLoopMusic.play();
         });
     }
 
@@ -280,17 +280,17 @@ export class AudioManager {
      * @param {Function} [callback] Optional callback triggered when the cue fires.
      */
     setupTitleIntroCue(callback) {
-        const titleMusicIntro = this.get('titleMusicIntro');
-        const titleSound = this.get('titleSound');
-        if (!titleMusicIntro || !titleSound) return;
+        const uiTitleIntroMusic = this.get('uiTitleIntroMusic');
+        const uiTitleHitSfx = this.get('uiTitleHitSfx');
+        if (!uiTitleIntroMusic || !uiTitleHitSfx) return;
         const handler = () => {
-            if (titleMusicIntro.currentTime >= 22.8 && titleSound.paused) {
-                titleSound.play();
+            if (uiTitleIntroMusic.currentTime >= 22.8 && uiTitleHitSfx.paused) {
+                uiTitleHitSfx.play();
                 callback?.();
-                titleMusicIntro.removeEventListener('timeupdate', handler);
+                uiTitleIntroMusic.removeEventListener('timeupdate', handler);
             }
         }
-        titleMusicIntro.addEventListener('timeupdate', handler);
+        uiTitleIntroMusic.addEventListener('timeupdate', handler);
     }
 
     /**
@@ -298,17 +298,17 @@ export class AudioManager {
      * @returns {void}
      */
     playClickSound() {
-        const introStartButtonClickSound = this.get('introStartButtonClickSound');
-        introStartButtonClickSound.currentTime = 0;
-        introStartButtonClickSound.play();
+        const uiIntroStartButtonClickSfx = this.get('uiIntroStartButtonClickSfx');
+        uiIntroStartButtonClickSfx.currentTime = 0;
+        uiIntroStartButtonClickSfx.play();
     }
 
     /**
      * Stops the title intro and loop music tracks.
      */
     stopTitleMusic() {
-        const intro = this.get('titleMusicIntro');
-        const loop = this.get('titleMusicLoop');
+        const intro = this.get('uiTitleIntroMusic');
+        const loop = this.get('uiTitleLoopMusic');
         intro?.pause();
         loop?.pause();
     }
@@ -317,7 +317,7 @@ export class AudioManager {
      * Fades in the looping title music.
      */
     fadeInTitleMusic() {
-        const loop = this.get('titleMusicLoop');
+        const loop = this.get('uiTitleLoopMusic');
         loop.currentTime = 0;
         this.fadeInAudio(loop, 2000);
     }

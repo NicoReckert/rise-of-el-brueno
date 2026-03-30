@@ -95,7 +95,7 @@ export class SpeechBubble {
     startTypingLoopSound() {
         if (!this.audioManager) return;
         if (this.loopSoundInstance && !this.loopSoundInstance.paused) return;
-        this.loopSoundInstance = this.audioManager.playOneShot("speechSound", {
+        this.loopSoundInstance = this.audioManager.playOneShot("genericSpeechBlip", {
             volume: 0.35,
             loop: true
         });

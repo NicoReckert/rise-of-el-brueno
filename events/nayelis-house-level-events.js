@@ -14,8 +14,8 @@ export const nayelisHouseEvents =
                 setup.world.character.level_start_x = 290;
                 setup.world.level_end_x = 845;
                 setup.characters.nayeli.updateAnimationState('idle', 1000 / 5.2);
-                setup.sounds.nayelisMusic.loop = true;
-                setup.world.audioManager.fadeInAudio(setup.sounds.nayelisMusic, 2000, 0.3);
+                setup.sounds.nayeliThemeMusic.loop = true;
+                setup.world.audioManager.fadeInAudio(setup.sounds.nayeliThemeMusic, 2000, 0.3);
                 setup.video.loop = true;
                 setup.video.play();
                 setup.comeFromNewWeapon = false;
@@ -67,7 +67,7 @@ export const nayelisHouseEvents =
                 setup.world.townLevelSetup.state.comeFromNayelisHouse = true;
                 setup.world.townLevelController.eventManager.resetEventByName('init');
                 setup.world.townLevelController.eventManager.resetEventByName('changeLevel');
-                setup.world.audioManager.fadeOutAudio(setup.sounds.nayelisMusic, 1000);
+                setup.world.audioManager.fadeOutAudio(setup.sounds.nayeliThemeMusic, 1000);
                 setup.world.keyboard.F = false;
                 setup.world.character.isFlipped = false;
                 setup.world.currentScene = 'townLevel';
@@ -83,7 +83,7 @@ export const nayelisHouseEvents =
             objectB: 'nayeli',
             toleranceB: { x: -80, width: 50 },
             action: (setup) => {
-                setup.sounds.nayelisSpeakSound.play();
+                setup.sounds.voNayeliSpeak01.play();
                 setup.world.townLevelController.questManager.advance(12);
                 setup.world.nayelisHouseLevelController.questManager.advance(2);
             }
@@ -99,7 +99,7 @@ export const nayelisHouseEvents =
             step: 2,
             action: (setup) => {
                 setup.world.character.isFlipped = false;
-                setup.world.audioManager.fadeOutAudio(setup.sounds.nayelisMusic, 1000);
+                setup.world.audioManager.fadeOutAudio(setup.sounds.nayeliThemeMusic, 1000);
                 setup.world.currentScene = 'newWeaponLevel';
             },
         }

@@ -68,7 +68,7 @@ export class MenuAudioAndCharacters {
         if (!submenuBg) return;
         this.uiManager.showCharactersOverlay();
         this.uiManager.renderCharacterCards(this.characters);
-        this.startInfoScreenMusic();
+        this.startSubmenuMusic();
     }
 
     /**
@@ -87,13 +87,13 @@ export class MenuAudioAndCharacters {
     /**
      * Resolves the state required to render a character big card.
      * @param {string} nameCharacter Character identifier.
-     * @returns {{character:Object, infoScreenMusic:Object}|null} Big card state or null.
+     * @returns {{character:Object, uiSubmenuMusic:Object}|null} Big card state or null.
      */
     getBigCardState(nameCharacter) {
         const character = this.characters.find(c => c.name === nameCharacter);
-        const infoScreenMusic = this.audioManager.get('infoScreenMusic');
-        if (!character || !infoScreenMusic) return null;
-        return { character, infoScreenMusic };
+        const uiSubmenuMusic = this.audioManager.get('uiSubmenuMusic');
+        if (!character || !uiSubmenuMusic) return null;
+        return { character, uiSubmenuMusic };
     }
 
     /**
@@ -108,12 +108,12 @@ export class MenuAudioAndCharacters {
 
     /**
      * Starts the character-specific audio for the big card view.
-     * @param {{character:Object, infoScreenMusic:Object}} state Big card state.
+     * @param {{character:Object, uiSubmenuMusic:Object}} state Big card state.
      * @returns {void}
      */
-    startBigCardAudio({ character, infoScreenMusic }) {
+    startBigCardAudio({ character, uiSubmenuMusic }) {
         character.music.currentTime = 0;
-        this.audioManager.fadeOutAudio(infoScreenMusic, 1000);
+        this.audioManager.fadeOutAudio(uiSubmenuMusic, 1000);
         this.audioManager.fadeInAudio(character.music, 2000, 0.2);
         this.currentCharacterMusic = character.music;
     }
@@ -149,7 +149,7 @@ export class MenuAudioAndCharacters {
         this.uiManager.hideCharacterDetailOverlay();
         this.audioManager.fadeOutAudio(this.currentCharacterMusic, 1000);
         this.stopSpeech(this.currentCharacterSpeechSound, 'characterSpeechTimeout', 1000);
-        this.returnToInfoScreenMusic();
+        this.returnToSubmenuMusic();
     }
 
     /**
@@ -176,14 +176,14 @@ export class MenuAudioAndCharacters {
 
     /**
      * Resolves the state required to open the story overlay.
-     * @returns {{infoScreenMusic:Object, speech:Object}|null} Story overlay state or null.
+     * @returns {{uiSubmenuMusic:Object, speech:Object}|null} Story overlay state or null.
      */
     getStoryOverlayState() {
         const submenuBg = this.prepareSubmenuBg(this.uiManager.dom.storyOverlay);
-        const infoScreenMusic = this.audioManager.get('infoScreenMusic');
-        const speech = this.audioManager.get('storyTextSpeechSound');
-        if (!submenuBg || !infoScreenMusic) return null;
-        return { infoScreenMusic, speech };
+        const uiSubmenuMusic = this.audioManager.get('uiSubmenuMusic');
+        const speech = this.audioManager.get('narratorStoryVoice');
+        if (!submenuBg || !uiSubmenuMusic) return null;
+        return { uiSubmenuMusic, speech };
     }
 
     /**
@@ -197,26 +197,26 @@ export class MenuAudioAndCharacters {
 
     /**
      * Prepares audio playback for the story overlay.
-     * @param {{infoScreenMusic:Object, speech:Object}} state Story overlay state.
+     * @param {{uiSubmenuMusic:Object, speech:Object}} state Story overlay state.
      * @returns {void}
      */
-    prepareStoryAudio({ infoScreenMusic, speech }) {
+    prepareStoryAudio({ uiSubmenuMusic, speech }) {
         this.resetSpeechState(speech, 'storySpeechTimeout');
-        this.startInfoScreenMusic(0.2);
+        this.startSubmenuMusic(0.2);
         this.scheduleSpeechFadeIn(speech, 'storySpeechTimeout');
-        this.bindStorySpeechEnd(infoScreenMusic, speech);
+        this.bindStorySpeechEnd(uiSubmenuMusic, speech);
     }
 
     /**
      * Binds the speech end event to restore info screen music volume.
-     * @param {Object} infoScreenMusic Info screen music audio.
+     * @param {Object} uiSubmenuMusic Info screen music audio.
      * @param {Object} speech Speech audio element.
      * @returns {void}
      */
-    bindStorySpeechEnd(infoScreenMusic, speech) {
+    bindStorySpeechEnd(uiSubmenuMusic, speech) {
         if (!speech) return;
         speech.onended = () => {
-            this.audioManager.fadeAudioTo(infoScreenMusic, 2000, 1);
+            this.audioManager.fadeAudioTo(uiSubmenuMusic, 2000, 1);
         };
     }
 
@@ -227,7 +227,7 @@ export class MenuAudioAndCharacters {
     closeStoryOverlay() {
         this.pauseSubmenuBg();
         this.uiManager.hideStoryOverlay();
-        this.stopSpeech(this.audioManager.get('storyTextSpeechSound'), 'storySpeechTimeout', 1000);
+        this.stopSpeech(this.audioManager.get('narratorStoryVoice'), 'storySpeechTimeout', 1000);
         this.returnToTitleLoop();
     }
 
@@ -240,7 +240,7 @@ export class MenuAudioAndCharacters {
         if (!submenuBg) return;
         this.uiManager.showControlsOverlay();
         this.uiManager.renderControlsCard(controls);
-        this.startInfoScreenMusic();
+        this.startSubmenuMusic();
     }
 
     /**
@@ -262,7 +262,7 @@ export class MenuAudioAndCharacters {
         if (!submenuBg) return;
         this.uiManager.showCreditsOverlay();
         this.uiManager.renderCreditsCard();
-        this.startInfoScreenMusic();
+        this.startSubmenuMusic();
     }
 
     /**
@@ -297,15 +297,15 @@ export class MenuAudioAndCharacters {
      * @param {number} [targetVolume=1] Target volume level.
      * @returns {void}
      */
-    startInfoScreenMusic(targetVolume = 1) {
-        const titleMusicIntro = this.audioManager.get('titleMusicIntro');
-        const titleMusicLoop = this.audioManager.get('titleMusicLoop');
-        const infoScreenMusic = this.audioManager.get('infoScreenMusic');
-        if (!infoScreenMusic) return;
-        this.audioManager.fadeOutAudio(titleMusicIntro, 1000);
-        this.audioManager.fadeOutAudio(titleMusicLoop, 1000);
-        infoScreenMusic.currentTime = 0;
-        this.audioManager.fadeInAudio(infoScreenMusic, 2000, targetVolume);
+    startSubmenuMusic(targetVolume = 1) {
+        const uiTitleIntroMusic = this.audioManager.get('uiTitleIntroMusic');
+        const uiTitleLoopMusic = this.audioManager.get('uiTitleLoopMusic');
+        const uiSubmenuMusic = this.audioManager.get('uiSubmenuMusic');
+        if (!uiSubmenuMusic) return;
+        this.audioManager.fadeOutAudio(uiTitleIntroMusic, 1000);
+        this.audioManager.fadeOutAudio(uiTitleLoopMusic, 1000);
+        uiSubmenuMusic.currentTime = 0;
+        this.audioManager.fadeInAudio(uiSubmenuMusic, 2000, targetVolume);
     }
 
     /**
@@ -313,12 +313,12 @@ export class MenuAudioAndCharacters {
      * @returns {void}
      */
     returnToTitleLoop() {
-        const titleMusicLoop = this.audioManager.get('titleMusicLoop');
-        const infoScreenMusic = this.audioManager.get('infoScreenMusic');
-        if (!titleMusicLoop) return;
-        this.audioManager.fadeOutAudio(infoScreenMusic, 1000);
-        titleMusicLoop.currentTime = 0;
-        this.audioManager.fadeInAudio(titleMusicLoop, 2000);
+        const uiTitleLoopMusic = this.audioManager.get('uiTitleLoopMusic');
+        const uiSubmenuMusic = this.audioManager.get('uiSubmenuMusic');
+        if (!uiTitleLoopMusic) return;
+        this.audioManager.fadeOutAudio(uiSubmenuMusic, 1000);
+        uiTitleLoopMusic.currentTime = 0;
+        this.audioManager.fadeInAudio(uiTitleLoopMusic, 2000);
     }
 
     /**
@@ -333,11 +333,11 @@ export class MenuAudioAndCharacters {
      * Restarts the info screen music with a fade-in.
      * @returns {void}
      */
-    returnToInfoScreenMusic() {
-        const infoScreenMusic = this.audioManager.get('infoScreenMusic');
-        if (!infoScreenMusic) return;
-        infoScreenMusic.currentTime = 0;
-        this.audioManager.fadeInAudio(infoScreenMusic, 2000);
+    returnToSubmenuMusic() {
+        const uiSubmenuMusic = this.audioManager.get('uiSubmenuMusic');
+        if (!uiSubmenuMusic) return;
+        uiSubmenuMusic.currentTime = 0;
+        this.audioManager.fadeInAudio(uiSubmenuMusic, 2000);
     }
 
     /**

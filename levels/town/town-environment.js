@@ -56,7 +56,7 @@ function createTownEssenceEnvironment(entityImages) {
 function createTownSceneEnvironment(entityImages) {
     return {
         rockyDesertPedestal: new AnimatedEntity(entityImages, 'rockyDesertPedestal', 400, 400, 23300, 300),
-        fireBlue: new AnimatedEntity(entityImages, 'fireBlue', 500, 200, 27440, 120),
+        fireBlue: new AnimatedEntity(entityImages, 'fireBlue', 500, 200, 27460, 120),
         houseDestroyed: new AnimatedEntity(entityImages, 'houseDestroyed', 900, 800, 2000, -50),
         stableDestroyed: new AnimatedEntity(entityImages, 'stableDestroyed', 600, 600, 2720, 200),
         millDestroyed: new AnimatedEntity(entityImages, 'millDestroyed', 1100, 800, 3200, -285),
@@ -106,13 +106,13 @@ function initTownEnvironmentAnimations(environment) {
 function createTownFlowers(entityImages) {
     return [
         new AnimatedEntity(entityImages, 'flowerA', 65, 65, 27600, 600),
-        new AnimatedEntity(entityImages, 'flowerA', 65, 65, 27625, 600),
         new AnimatedEntity(entityImages, 'flowerA', 65, 65, 27650, 600),
-        new AnimatedEntity(entityImages, 'flowerB', 65, 65, 27675, 600),
-        new AnimatedEntity(entityImages, 'flowerB', 65, 65, 27700, 600),
-        new AnimatedEntity(entityImages, 'flowerB', 65, 65, 27725, 600),
-        new AnimatedEntity(entityImages, 'flowerC', 65, 65, 27750, 600),
-        new AnimatedEntity(entityImages, 'flowerC', 65, 65, 27775, 600),
-        new AnimatedEntity(entityImages, 'flowerC', 65, 65, 27800, 600)
+        new AnimatedEntity(entityImages, 'flowerA', 65, 65, 27700, 600),
+        new AnimatedEntity(entityImages, 'flowerB', 65, 65, 27750, 600),
+        new AnimatedEntity(entityImages, 'flowerB', 65, 65, 27800, 600),
+        new AnimatedEntity(entityImages, 'flowerB', 65, 65, 27850, 600),
+        new AnimatedEntity(entityImages, 'flowerC', 65, 65, 27900, 600),
+        new AnimatedEntity(entityImages, 'flowerC', 65, 65, 27950, 600),
+        new AnimatedEntity(entityImages, 'flowerC', 65, 65, 28000, 600)
     ];
 }

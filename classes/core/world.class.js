@@ -92,8 +92,8 @@ export class World {
      */
     initIntroAndPauseState() {
         this.intro = new IntroScreen(this.ctx, this.canvas);
-        this.chapterSound = this.allAudios.chapterSound;
-        this.isChapterSoundPlayed = false;
+        this.chapterStingSfx = this.allAudios.chapterStingSfx;
+        this.isChapterStingSfxPlayed = false;
         this.isKeysStopp = false;
         this.paused = false;
         this.isRunning = true;
@@ -256,9 +256,9 @@ export class World {
         if (this.intro?.done) return false;
         this.intro.update(deltaTime);
         this.intro.draw();
-        if (!this.isChapterSoundPlayed) {
-            this.chapterSound?.play();
-            this.isChapterSoundPlayed = true;
+        if (!this.isChapterStingSfxPlayed) {
+            this.chapterStingSfx?.play();
+            this.isChapterStingSfxPlayed = true;
         }
         return true;
     }

@@ -34,9 +34,9 @@ export class CharacterAudioController {
         const isWalking = c.isMovingLeft || c.isMovingRight;
         if (isWalking && !c.isJumping && !c.isFlying) {
             if (c.walkOnDestroyedHouse) {
-                this.audioManager.playOneShot('footStepOnDestroyedHouseSound', { volume: 0.6 });
+                this.audioManager.playOneShot('destroyedHouseFootstepSfx', { volume: 0.6 });
             } else {
-                this.audioManager.playOneShot('footStepSound', { volume: 0.6 });
+                this.audioManager.playOneShot('footstepSfx', { volume: 0.6 });
             }
         }
     }
@@ -47,7 +47,7 @@ export class CharacterAudioController {
     playLandingIfNeeded() {
         const c = this.character;
         if (!c.isLanding) return;
-        this.audioManager.playOneShot('landingSound', { volume: 0.8 });
+        this.audioManager.playOneShot('landingSfx', { volume: 0.8 });
         c.isLanding = false;
     }
 }

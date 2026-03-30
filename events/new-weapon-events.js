@@ -14,7 +14,7 @@ export const newWeaponEvents =
                 setup.world.character.isNewWeapon = true;
                 setup.sounds.newWeaponMusic.loop = true;
                 setup.world.audioManager.fadeInAudio(setup.sounds.newWeaponMusic, 2000);
-                setup.sounds.newWeaponSpeakSound.play();
+                setup.sounds.voNewWeapon01.play();
                 setup.video.loop = true;
                 setup.video.play();
             }

@@ -72,8 +72,8 @@ export const stableEvents =
                     setup.world.character.x = 560;
                     setup.world.character.isFlipped = false
                     setup.characters.juanito.updateAnimationState('love')
-                    setup.sounds.chickenSound.loop = true
-                    setup.sounds.chickenSound.play()
+                    setup.sounds.chickenSfx.loop = true
+                    setup.sounds.chickenSfx.play()
                     setup.world.stableLevelController.eventManager.emitNow('caressStartChicken');
                     setup.world.stableLevelController.questManager.advance(2)
                 }
@@ -113,7 +113,7 @@ export const stableEvents =
                 setup.world.keyboard.F = false
                 setup.world.isKeysStopp = false
                 setup.characters.juanito.updateAnimationState('idle')
-                setup.sounds.chickenSound.loop = false;
+                setup.sounds.chickenSfx.loop = false;
                 setup.world.stableLevelController.questManager.advance(1)
             }
         },
@@ -130,8 +130,8 @@ export const stableEvents =
             condition: (setup) => !setup.world.taskWindow.tasks[0].done,
             action: (setup) => {
                 setup.world.taskWindow.markDone(0)
-                setup.world.farmLevelSetup.sounds.taskCompletedSound.currentTime = 0;
-                setup.world.farmLevelSetup.sounds.taskCompletedSound.play();
+                setup.world.farmLevelSetup.sounds.taskCompletedSfx01.currentTime = 0;
+                setup.world.farmLevelSetup.sounds.taskCompletedSfx01.play();
                 setup.popupTexts.push(new PopupText("Aufgabe erledigt!", setup.world.canvas.width / 2, 440));
             }
         },
@@ -154,8 +154,8 @@ export const stableEvents =
                     setup.world.character.x = 720;
                     setup.world.character.isFlipped = false
                     setup.characters.pollito.updateAnimationState('love')
-                    setup.sounds.chickSound.loop = true
-                    setup.sounds.chickSound.play()
+                    setup.sounds.chickSfx.loop = true
+                    setup.sounds.chickSfx.play()
                     setup.world.stableLevelController.eventManager.emitNow('caressStartChick');
                     setup.world.stableLevelController.questManager.advance(3)
                 }
@@ -195,7 +195,7 @@ export const stableEvents =
                 setup.world.keyboard.F = false
                 setup.world.isKeysStopp = false
                 setup.characters.pollito.updateAnimationState('idle')
-                setup.sounds.chickSound.loop = false;
+                setup.sounds.chickSfx.loop = false;
                 setup.world.stableLevelController.questManager.advance(1)
             }
         },
@@ -212,8 +212,8 @@ export const stableEvents =
             condition: (setup) => !setup.world.taskWindow.tasks[1].done,
             action: (setup) => {
                 setup.world.taskWindow.markDone(1)
-                setup.world.farmLevelSetup.sounds.taskCompletedSound2.currentTime = 0;
-                setup.world.farmLevelSetup.sounds.taskCompletedSound2.play();
+                setup.world.farmLevelSetup.sounds.taskCompletedSfx02.currentTime = 0;
+                setup.world.farmLevelSetup.sounds.taskCompletedSfx02.play();
                 setup.popupTexts.push(new PopupText("Aufgabe erledigt!", setup.world.canvas.width / 2, 440));
             }
         },
@@ -249,8 +249,8 @@ export const stableEvents =
             condition: (setup) => setup.world.farmLevelController.questManager.step >= 20,
             action: (setup) => {
                 setup.world.taskWindow.markDone(7)
-                setup.world.farmLevelSetup.sounds.taskCompletedSound2.currentTime = 0;
-                setup.world.farmLevelSetup.sounds.taskCompletedSound2.play();
+                setup.world.farmLevelSetup.sounds.taskCompletedSfx02.currentTime = 0;
+                setup.world.farmLevelSetup.sounds.taskCompletedSfx02.play();
                 setup.popupTexts.push(new PopupText("Aufgabe erledigt!", setup.world.canvas.width / 2, 440));
                 setup.video.play();
                 setup.world.character.isMovingLeft = false;

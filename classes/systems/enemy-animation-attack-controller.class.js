@@ -31,9 +31,40 @@ export class EnemyAnimationAttackController {
     handleBigChickenAttack(prevFrame) {
         if (!this.shouldProcessBigChickenAttack()) return;
         const shootFrame = 8;
+        if (this.shouldPlayChargeSoundAtAttackStart(prevFrame)) {
+            this.playBigChickenChargeSound();
+        }
         if (this.shouldShootNow(prevFrame, shootFrame)) {
             this.fireBigChickenProjectile();
         }
+    }
+
+    /**
+     * Checks whether the charge-up sound should be played at the start of the attack.
+     * @param {number} prevFrame Previous frame index.
+     * @returns {boolean} True if the charge-up sound should be played, otherwise false.
+     */
+    shouldPlayChargeSoundAtAttackStart(prevFrame) {
+        if (prevFrame !== 0) return false;
+        if (this.enemy.hasPlayedChargeSoundThisAttack) return false;
+        return true;
+    }
+
+    /**
+     * Plays the charge sound for the big chicken attack.
+     * @returns {void}
+     */
+    playBigChickenChargeSound() {
+        const e = this.enemy;
+        if (e.activeChargeSound) {
+            e.activeChargeSound.pause();
+            e.activeChargeSound.currentTime = 0;
+            e.activeChargeSound = null;
+        }
+        const audio = e.allAudios.fireballChargeStartSfx.cloneNode();
+        audio.play();
+        e.activeChargeSound = audio;
+        e.hasPlayedChargeSoundThisAttack = true;
     }
 
     /**
@@ -66,7 +97,7 @@ export class EnemyAnimationAttackController {
      */
     fireBigChickenProjectile() {
         const e = this.enemy;
-        const audio = e.allAudios.fireballShotSound.cloneNode();
+        const audio = e.allAudios.fireballShotSfx.cloneNode();
         audio.play();
         e.combatCtrl.shootProjectile("fireball");
         e.hasFiredThisAttack = true;

@@ -11,7 +11,7 @@ export const levelCompleteEvents =
                 setup.world.camera_x = 0;
                 setup.sounds.levelCompleteMusic.loop = true;
                 setup.sounds.levelCompleteMusic.play();
-                setup.sounds.levelCompleteSound.play();
+                setup.sounds.voLevelComplete01.play();
                 setup.video.loop = true;
                 setup.video.play();
                 setup.characters.levelCompleteCharacter.isFlipped = false;

@@ -109,7 +109,7 @@ export class GameplayInputController {
             }
             char.isJumping = true;
             char.speedY = 25;
-            game.audioManager.playOneShot('jumpSound');
+            game.audioManager.playOneShot('jumpSfx');
         }
     }
 
@@ -150,7 +150,7 @@ export class GameplayInputController {
         char.isAttack = true;
         game.attackStartTime = timestamp;
         game.attackCommitUntil = timestamp + 180;
-        game.audioManager.playOneShot('attackSound');
+        game.audioManager.playOneShot('attackSfx');
     }
 
     /**

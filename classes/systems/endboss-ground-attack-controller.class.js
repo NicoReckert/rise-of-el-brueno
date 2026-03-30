@@ -139,7 +139,7 @@ export class EndbossGroundAttackController {
         boss.hasFiredThisAttack = false;
         boss.frameIndex = 0;
         boss.lastFireballAttackTime = timestamp;
-        const audio = boss.allAudios.fireballChargeSound.cloneNode();
+        const audio = boss.allAudios.bossFireballChargeSfx.cloneNode();
         audio.play();
         boss.groundShotInProgress = true;
     }

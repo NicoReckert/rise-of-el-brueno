@@ -32,7 +32,7 @@ export class EnemyCombatController {
      * @returns {Projectile} Projectile instance.
      */
     createProjectileForType(type, direction) {
-        const offsetX = direction ? this.enemy.width - 140 : 80; 
+        const offsetX = direction ? this.enemy.width - 140 : 80;
         const offsetY = this.enemy.y + this.enemy.height * 0.12;
         return new Projectile(
             this.enemy.entityImages,
@@ -63,11 +63,13 @@ export class EnemyCombatController {
         if (this.enemy.isDead || this.enemy.isHurt) return false;
         if (this.enemy.isAttack) return false;
         if (timestamp - this.enemy.lastAttackTime < this.enemy.attackCooldownMs) return false;
+        this.stopChargeSound();
         this.enemy.isAttack = true;
         this.enemy.lastAttackTime = timestamp;
         this.enemy.frameIndex = 0;
         this.enemy.lastFrameTime = 0;
         this.enemy.hasFiredThisAttack = false;
+        this.enemy.hasPlayedChargeSoundThisAttack = false;
         return true;
     }
 
@@ -121,8 +123,22 @@ export class EnemyCombatController {
      */
     cancelAttackIfAny() {
         if (!this.enemy.isAttack) return;
+        this.stopChargeSound();
         this.enemy.isAttack = false;
         this.enemy.hasFiredThisAttack = false;
+        this.enemy.hasPlayedChargeSoundThisAttack = false;
+    }
+
+    /**
+     * Stops the currently playing charge sound if present.
+     * @returns {void}
+     */
+    stopChargeSound() {
+        const audio = this.enemy.activeChargeSound;
+        if (!audio) return;
+        audio.pause();
+        audio.currentTime = 0;
+        this.enemy.activeChargeSound = null;
     }
 
     /**

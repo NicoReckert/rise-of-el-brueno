@@ -37,7 +37,7 @@ export class LevelCompleteSetup {
     createSounds() {
         return {
             levelCompleteMusic: this.allAudios.levelCompleteMusic,
-            levelCompleteSound: this.allAudios.levelCompleteSound
+            voLevelComplete01: this.allAudios.voLevelComplete01
         };
     }
 }

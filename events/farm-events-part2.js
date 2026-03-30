@@ -21,7 +21,7 @@ export const farmEvents_part2 = [
             } else {
                 setup.characters.cow.isMovingLeft = false;
                 setup.world.taskWindow.markDone(5);
-                setup.sounds.taskCompletedSound.play();
+                setup.sounds.taskCompletedSfx01.play();
                 setup.state.popupTexts.push(new PopupText("Aufgabe erledigt!", setup.world.canvas.width / 2, 400));
                 setup.characters.cow.updateAnimationState('idle');
                 setup.world.farmLevelController.questManager.advance(8)
@@ -45,7 +45,7 @@ export const farmEvents_part2 = [
         step: 7,
         once: false,
         cooldown: 4000,
-        onLeave: (setup) => setup.sounds.cowSound.play()
+        onLeave: (setup) => setup.sounds.cowSfx01.play()
     },
 
     /**
@@ -234,7 +234,7 @@ export const farmEvents_part2 = [
         action: (setup) => {
             if (setup.state.volumeLevel > setup.state.minVolumeLevel) {
                 setup.state.volumeLevel = Math.max(setup.state.volumeLevel - 0.005, setup.state.minVolumeLevel);
-                setup.sounds.farmMusic.volume = setup.state.volumeLevel;
+                setup.sounds.farmDayMusic.volume = setup.state.volumeLevel;
             }
         }
     },
@@ -288,9 +288,9 @@ export const farmEvents_part2 = [
         action: (setup) => {
             setup.environment.campfire.updateAnimationState('fireGoesOn');
             setup.sounds.happyTogetherMusic.play();
-            setup.sounds.farmMusic.loop = false;
-            setup.sounds.eveningSound.loop = true;
-            setup.sounds.eveningSound.play();
+            setup.sounds.farmDayMusic.loop = false;
+            setup.sounds.eveningAmbienceSfx.loop = true;
+            setup.sounds.eveningAmbienceSfx.play();
             setup.characters.cow.updateAnimationState('swingToMusic', 1000 / 6.5);
             setup.characters.pollito.updateAnimationState('swingToMusic', 1000 / 6.5);
             setup.characters.juanito.updateAnimationState('swingToMusic', 1000 / 6.5);
@@ -329,7 +329,7 @@ export const farmEvents_part2 = [
                 setup.world.character.isPlayGuitar = false;
                 setup.world.character.isStandUp = true;
                 setup.environment.house.updateAnimationState('doorOpens');
-                setup.sounds.doorOpeningSound.play();
+                setup.sounds.doorOpenSfx.play();
                 setup.world.farmLevelController.questManager.advance(11);
             }
         }
@@ -358,7 +358,7 @@ export const farmEvents_part2 = [
         step: 11,
         action: (setup) => {
             setup.world.taskWindow.addTask('7. Gehe ins Haus', { active: true })
-            setup.sounds.newTaskSound.play()
+            setup.sounds.newTaskSfx.play()
             setup.state.popupTexts.push(new PopupText("Neue Aufgabe im Log!", setup.world.canvas.width / 2, 400))
         }
     },

@@ -74,13 +74,18 @@ function createClouds(levelImages, levelWidth) {
 }
 
 /**
- * Creates ground layers for the town level.
- * @param {Object} levelImages Level image assets.
- * @returns {Object} Ground layer configuration.
+ * Creates town ground layers.
+ * @param {Object} levelImages Level images.
+ * @returns {Object} Ground layers.
  */
 function createTownGrounds(levelImages) {
-    const { shared } = levelImages;
-    return createTownGroundLayers(shared);
+    const { shared, farm } = levelImages;
+    const grounds = createTownGroundLayers(shared);
+    const townGrass = new Ground(farm.ground.grass[0], 27500, 575, 720, 100);
+    townGrass.opacity = 0;
+    grounds.foreGrounds.push(townGrass);
+    grounds.townGrass = townGrass;
+    return grounds;
 }
 
 /**

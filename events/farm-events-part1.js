@@ -24,9 +24,9 @@ export const farmEvents_part1 = [
     {
         type: 'quest',
         action: (setup) => {
-            setup.sounds.farmMusic.loop = true;
-            setup.sounds.farmMusic.volume = 0.6;
-            setup.sounds.farmMusic.play();
+            setup.sounds.farmDayMusic.loop = true;
+            setup.sounds.farmDayMusic.volume = 0.6;
+            setup.sounds.farmDayMusic.play();
         }
     },
 
@@ -50,7 +50,7 @@ export const farmEvents_part1 = [
         delay: 2000,
         step: 1,
         action: (setup) => {
-            setup.sounds.newTaskSound.play();
+            setup.sounds.newTaskSfx.play();
             setup.state.popupTexts.push(new PopupText("Neue Aufgaben im Log!", setup.world.canvas.width / 2, 400));
         }
 
@@ -115,7 +115,7 @@ export const farmEvents_part1 = [
         step: 1,
         once: false,
         cooldown: 6000,
-        action: (setup) => setup.sounds.cowSound2.play()
+        action: (setup) => setup.sounds.cowSfx02.play()
     },
 
     /**
@@ -141,7 +141,7 @@ export const farmEvents_part1 = [
         step: 2,
         action: (setup) => {
             setup.world.taskWindow.addTask('3. Bringe Lola zur Wiese', { active: true })
-            setup.sounds.newTaskSound.play()
+            setup.sounds.newTaskSfx.play()
             setup.state.popupTexts.push(new PopupText("Neue Aufgabe im Log!", setup.world.canvas.width / 2, 400))
         }
     },
@@ -214,7 +214,7 @@ export const farmEvents_part1 = [
         step: 3,
         once: false,
         cooldown: 4000,
-        onLeave: (setup) => setup.sounds.cowSound.play()
+        onLeave: (setup) => setup.sounds.cowSfx01.play()
     },
 
     /**
@@ -228,7 +228,7 @@ export const farmEvents_part1 = [
             setup.hints[1].hide();
             setup.world.taskWindow.markDone(2);
             setup.state.popupTexts.push(new PopupText("Aufgabe Erledigt!", setup.world.canvas.width / 2, 400));
-            setup.sounds.taskCompletedSound.play();
+            setup.sounds.taskCompletedSfx01.play();
             setup.characters.cow.isMovingRight = false;
             setup.characters.cow.updateAnimationState('eat', 1000 / 5.5);
         }
@@ -245,7 +245,7 @@ export const farmEvents_part1 = [
         action: (setup) => {
             setup.hints[2].show();
             setup.world.taskWindow.addTask('4. Warte bis Lola fertig ist', { active: true });
-            setup.sounds.newTaskSound.play();
+            setup.sounds.newTaskSfx.play();
             setup.state.popupTexts.push(new PopupText("Neue Aufgabe im Log!", setup.world.canvas.width / 2, 400));
         }
     },
@@ -279,7 +279,7 @@ export const farmEvents_part1 = [
         action: (setup) => {
             setup.hints[2].hide();
             setup.world.taskWindow.markDone(3)
-            setup.sounds.taskCompletedSound.play()
+            setup.sounds.taskCompletedSfx01.play()
             setup.state.popupTexts.push(new PopupText("Aufgabe erledigt!", setup.world.canvas.width / 2, 400))
         }
     },
@@ -295,7 +295,7 @@ export const farmEvents_part1 = [
         action: (setup) => {
             setup.hints[3].show();
             setup.world.taskWindow.addTask('5. Belohne Lola', { active: true })
-            setup.sounds.newTaskSound.play()
+            setup.sounds.newTaskSfx.play()
             setup.state.popupTexts.push(new PopupText("Neue Aufgabe im Log!", setup.world.canvas.width / 2, 400))
             setup.world.farmLevelController.questManager.advance(5)
         }
@@ -319,7 +319,7 @@ export const farmEvents_part1 = [
             setup.characters.cow.updateAnimationState('love');
             setup.world.character.x = setup.characters.cow.x + 135;
             if (setup.characters.cow.isFlipped) setup.world.character.isFlipped = true
-            setup.sounds.cowSound2.play();
+            setup.sounds.cowSfx02.play();
             setup.world.farmLevelController.questManager.advance(6)
         }
     },
@@ -335,7 +335,7 @@ export const farmEvents_part1 = [
         step: 6,
         once: false,
         action: (setup) => {
-            if (setup.characters.cow.currentAnimation === 'love') setup.sounds.cowSound2.play()
+            if (setup.characters.cow.currentAnimation === 'love') setup.sounds.cowSfx02.play()
         }
     },
 
@@ -366,7 +366,7 @@ export const farmEvents_part1 = [
         action: (setup) => {
             setup.hints[3].hide();
             setup.world.taskWindow.markDone(4);
-            setup.sounds.taskCompletedSound.play();
+            setup.sounds.taskCompletedSfx01.play();
             setup.state.popupTexts.push(new PopupText("Aufgabe erledigt!", setup.world.canvas.width / 2, 400));
         },
     },
@@ -392,7 +392,7 @@ export const farmEvents_part1 = [
         step: 7,
         action: (setup) => {
             setup.world.taskWindow.addTask('6. Bringe Lola wieder zurück', { active: true });
-            setup.sounds.newTaskSound.play();
+            setup.sounds.newTaskSfx.play();
             setup.state.popupTexts.push(new PopupText("Neue Aufgabe im Log!", setup.world.canvas.width / 2, 400));
             setup.characters.cow.updateAnimationState('walk');
             setup.characters.cow.isFlipped = false;

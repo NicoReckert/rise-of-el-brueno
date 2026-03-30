@@ -63,7 +63,7 @@ export const farmHelper = {
         if (!farmHelper.canStableDoorOpen(state, animation, elapsed, openDelay)) return;
         state.doorState = "open";
         stable.updateAnimationState("doorOpens");
-        setup.sounds.doorOpeningSound.play();
+        setup.sounds.doorOpenSfx.play();
     },
 
     /**
@@ -96,7 +96,7 @@ export const farmHelper = {
         if (!farmHelper.canStableDoorClose(state, animation)) return;
         state.doorState = "closed";
         stable.updateAnimationState("doorCloses");
-        setup.sounds.doorClosingSound.play();
+        setup.sounds.doorCloseSfx.play();
     },
 
     /**

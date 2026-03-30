@@ -13,8 +13,8 @@ export const townEvents =
             name: 'init',
             type: 'quest',
             action: (setup) => {
-                setup.sounds.backgroundMusic.loop = true;
-                setup.world.audioManager.fadeInAudio(setup.sounds.backgroundMusic, 2000, 0.6);
+                setup.sounds.townDayMusic.loop = true;
+                setup.world.audioManager.fadeInAudio(setup.sounds.townDayMusic, 2000, 0.6);
                 setup.world.character.x = setup.state.comeFromNayelisHouse ? 20265 : 100; // 100 //18500//23000
                 setup.world.character.level_start_x = setup.state.comeFromNayelisHouse ? 20265 : 0;
                 setup.world.level_end_x = 29000;
@@ -68,7 +68,7 @@ export const townEvents =
             type: 'quest',
             action: (setup) => {
                 setup.environment.stableDestroyed.animSeqCtrl.start([
-                    { anim: 'smokeA', fps: 10, pause: 0, audio: { name: "stableSmokeSound", volume: 1.0 } },
+                    { anim: 'smokeA', fps: 10, pause: 0, audio: { name: "stableSmokeSfx", volume: 1.0 } },
                     { anim: "idle", fps: 0, pause: 3000 },
                     { anim: 'smokeB', fps: 10, pause: 0 },
                     { anim: "idle", fps: 0, pause: 3000 }
@@ -87,9 +87,9 @@ export const townEvents =
             type: 'quest',
             action: (setup) => {
                 setup.environment.millDestroyed.animSeqCtrl.start([
-                    { anim: 'forward', fps: 6.5, pause: 0, audio: { name: "millScratchySound", volume: 1.0 } },
+                    { anim: 'forward', fps: 6.5, pause: 0, audio: { name: "windmillCreakSfx", volume: 1.0 } },
                     { anim: "idleB", fps: 0, pause: 5000 },
-                    { anim: 'backward', fps: 6.5, pause: 0, audio: { name: "millScratchySound", volume: 1.0 } },
+                    { anim: 'backward', fps: 6.5, pause: 0, audio: { name: "windmillCreakSfx", volume: 1.0 } },
                     { anim: "idle", fps: 0, pause: 5000 },
                 ],
                     setup.world.townLevelController.timerManager,
@@ -106,7 +106,7 @@ export const townEvents =
             type: "position",
             area: { x: 1300, width: 100 },
             action: (setup) => {
-                setup.world.audioManager.fadeOutAudio(setup.sounds.backgroundMusic, 1000);
+                setup.world.audioManager.fadeOutAudio(setup.sounds.townDayMusic, 1000);
                 setup.sounds.sadMomentMusic.loop = true;
                 setup.world.audioManager.fadeInAudio(setup.sounds.sadMomentMusic, 2000, 0.3);
             }
@@ -127,7 +127,7 @@ export const townEvents =
             },
             onLeave: (setup) => {
                 setup.environment.stableDestroyed.audioEnabled = false;
-                setup.world.audioManager.stopAll("stableSmokeSound");
+                setup.world.audioManager.stopAll("stableSmokeSfx");
             }
         },
 
@@ -146,7 +146,7 @@ export const townEvents =
             },
             onLeave: (setup) => {
                 setup.environment.millDestroyed.audioEnabled = false;
-                setup.world.audioManager.stopAll("millScratchySound");
+                setup.world.audioManager.stopAll("windmillCreakSfx");
             }
         },
 
@@ -163,15 +163,15 @@ export const townEvents =
             action: (setup) => {
                 if (!setup.state.isNearDestroyedHouse) {
                     setup.state.isNearDestroyedHouse = true;
-                    setup.sounds.houseFireSound.currentTime = 0;
-                    setup.sounds.houseFireSound.loop = true;
-                    setup.world.audioManager.fadeInAudio(setup.sounds.houseFireSound, 2000, 0.3);
+                    setup.sounds.houseFireSfx.currentTime = 0;
+                    setup.sounds.houseFireSfx.loop = true;
+                    setup.world.audioManager.fadeInAudio(setup.sounds.houseFireSfx, 2000, 0.3);
                 }
             },
             onLeave: (setup) => {
                 if (setup.state.isNearDestroyedHouse) {
                     setup.state.isNearDestroyedHouse = false;
-                    setup.world.audioManager.fadeOutAudio(setup.sounds.houseFireSound, 1000);
+                    setup.world.audioManager.fadeOutAudio(setup.sounds.houseFireSfx, 1000);
                 }
             }
         },
@@ -207,7 +207,7 @@ export const townEvents =
             requireKey: "F",
             action: (setup) => {
                 setup.world.audioManager.fadeOutAudio(setup.sounds.tadeoHoldStoneMusic, 1000);
-                setup.world.audioManager.fadeOutAudio(setup.sounds.backgroundMusic, 1000);
+                setup.world.audioManager.fadeOutAudio(setup.sounds.townDayMusic, 1000);
                 setup.world.nayelisHouseLevelController.eventManager.resetEventByName('init');
                 setup.world.nayelisHouseLevelController.eventManager.resetEventByName('changeLevel');
                 setup.world.keyboard.F = false;
@@ -223,7 +223,7 @@ export const townEvents =
             delay: 2000,
             step: 1,
             action: (setup) => {
-                setup.sounds.newTaskSound.play();
+                setup.sounds.newTaskSfx.play();
                 setup.state.popupTexts.push(new PopupText("Neue Aufgaben im Log!", setup.world.canvas.width / 2, 400));
             }
 
@@ -359,8 +359,8 @@ export const townEvents =
             action: (setup) => {
                 setup.environment.nayeliSpirit.fadeIn(setup.world.timestamp, 2000);
                 setup.world.audioManager.fadeOutAudio(setup.sounds.finalStormHazardMusic, 1000);
-                setup.sounds.nayelisMusic.loop = true;
-                setup.world.audioManager.fadeInAudio(setup.sounds.nayelisMusic, 2000, 0.3);
+                setup.sounds.nayeliThemeMusic.loop = true;
+                setup.world.audioManager.fadeInAudio(setup.sounds.nayeliThemeMusic, 2000, 0.3);
                 setup.sounds.spiritAppearsSound.play();
                 setup.environment.nayeliSpirit.updateAnimationState('walk', 1000 / 10);
                 setup.world.townLevelController.questManager.advance(7)
@@ -380,7 +380,7 @@ export const townEvents =
                 const arriveX = nayeliSpirit.moveToX(15050, { speed: 0.8 });
                 if (arriveX) {
                     setup.environment.nayeliSpirit.updateAnimationState('idle', 1000 / 8);
-                    setup.sounds.nayelisSpiritSpeakSound.play();
+                    setup.sounds.voNayeliSpirit01.play();
                     setup.world.townLevelController.questManager.advance(8);
                 }
             }
@@ -493,8 +493,8 @@ export const townEvents =
             delay: 2000,
             step: 9,
             action: (setup) => {
-                setup.world.audioManager.fadeOutAudio(setup.sounds.nayelisMusic, 1000);
-                setup.world.audioManager.fadeInAudio(setup.sounds.tadeosMusic, 2000, 0.6);
+                setup.world.audioManager.fadeOutAudio(setup.sounds.nayeliThemeMusic, 1000);
+                setup.world.audioManager.fadeInAudio(setup.sounds.tadeoThemeMusic, 2000, 0.6);
             }
         },
 
@@ -509,8 +509,8 @@ export const townEvents =
             action: (setup) => {
                 setup.sounds.tadeoHoldStoneMusic.loop = true;
                 setup.world.audioManager.fadeInAudio(setup.sounds.tadeoHoldStoneMusic, 2000, 0.6);
-                setup.world.audioManager.fadeOutAudio(setup.sounds.tadeosMusic, 1000);
-                setup.sounds.tadeosSpeakSound.play();
+                setup.world.audioManager.fadeOutAudio(setup.sounds.tadeoThemeMusic, 1000);
+                setup.sounds.voTadeoSpeak01.play();
                 setup.characters.tadeo.updateAnimationState('stoneActivated', 1000 / 5.5);
                 setup.panel.activate(performance.now());
                 setup.world.townLevelController.magicShield.start();
@@ -947,16 +947,16 @@ export const townEvents =
                 if (!setup.state.isNearMusician) {
                     setup.state.isNearMusician = true;
                     setup.sounds.musicianTownMusic.currentTime = 0;
-                    setup.world.audioManager.fadeOutAudio(setup.sounds.backgroundMusic, 1000);
+                    setup.world.audioManager.fadeOutAudio(setup.sounds.townDayMusic, 1000);
                     setup.world.audioManager.fadeInAudio(setup.sounds.musicianTownMusic, 2000, 0.6);
                 }
             },
             onLeave: (setup) => {
                 if (setup.state.isNearMusician) {
                     setup.state.isNearMusician = false;
-                    setup.sounds.backgroundMusic.currentTime = 0;
+                    setup.sounds.townDayMusic.currentTime = 0;
                     setup.world.audioManager.fadeOutAudio(setup.sounds.musicianTownMusic, 1000);
-                    setup.world.audioManager.fadeInAudio(setup.sounds.backgroundMusic, 2000, 0.6);
+                    setup.world.audioManager.fadeInAudio(setup.sounds.townDayMusic, 2000, 0.6);
                 }
             }
         },
@@ -975,17 +975,17 @@ export const townEvents =
             action: (setup) => {
                 if (!setup.state.isNearSollita) {
                     setup.state.isNearSollita = true;
-                    setup.sounds.sollitasMusic.currentTime = 0;
-                    setup.world.audioManager.fadeOutAudio(setup.sounds.backgroundMusic, 1000);
-                    setup.world.audioManager.fadeInAudio(setup.sounds.sollitasMusic, 2000, 0.6);
+                    setup.sounds.sollitaThemeMusic.currentTime = 0;
+                    setup.world.audioManager.fadeOutAudio(setup.sounds.townDayMusic, 1000);
+                    setup.world.audioManager.fadeInAudio(setup.sounds.sollitaThemeMusic, 2000, 0.6);
                 }
             },
             onLeave: (setup) => {
                 if (setup.state.isNearSollita) {
                     setup.state.isNearSollita = false;
-                    setup.sounds.backgroundMusic.currentTime = 0;
-                    setup.world.audioManager.fadeOutAudio(setup.sounds.sollitasMusic, 1000);
-                    setup.world.audioManager.fadeInAudio(setup.sounds.backgroundMusic, 2000, 0.6);
+                    setup.sounds.townDayMusic.currentTime = 0;
+                    setup.world.audioManager.fadeOutAudio(setup.sounds.sollitaThemeMusic, 1000);
+                    setup.world.audioManager.fadeInAudio(setup.sounds.townDayMusic, 2000, 0.6);
                 }
             }
         },
@@ -998,13 +998,13 @@ export const townEvents =
                 setup.characters.endboss.y = -100;
                 setup.characters.endboss.isFlipped = true;
                 setup.characters.endboss.isFly = true;
-                // setup.sounds.endbossFlappingWingsSound.play();
-                // setup.sounds.endbossFlappingWingsSound.loop = true;
-                // setup.sounds.endbossFlappingWingsSound.volume = 1.0;
-                setup.sounds.endbossMusic.currentTime = 0;
-                setup.world.audioManager.fadeOutAudio(setup.sounds.backgroundMusic, 1000);
-                setup.world.audioManager.fadeInAudio(setup.sounds.endbossMusic, 2000, 0.6);
-                // const audio = setup.sounds.endbossFlappingWingsSound;
+                // setup.sounds.bossFlappingWingsSfx.play();
+                // setup.sounds.bossFlappingWingsSfx.loop = true;
+                // setup.sounds.bossFlappingWingsSfx.volume = 1.0;
+                setup.sounds.bossBattleMusic.currentTime = 0;
+                setup.world.audioManager.fadeOutAudio(setup.sounds.townDayMusic, 1000);
+                setup.world.audioManager.fadeInAudio(setup.sounds.bossBattleMusic, 2000, 0.6);
+                // const audio = setup.sounds.bossFlappingWingsSfx;
                 // const ctx = new AudioContext();
                 // const source = ctx.createMediaElementSource(audio);
                 // const gainNode = ctx.createGain();
@@ -1048,7 +1048,7 @@ export const townEvents =
         //         setup.environment.juanitoSpirit.updateAnimationState('spiritCuddle', 1000 / 4);
         //         setup.environment.pollitoSpirit.updateAnimationState('spiritCuddle', 1000 / 4);
         //         setup.environment.lolaSpirit.updateAnimationState('spiritCuddle', 1000 / 4);
-        //         fadeOutAudio(setup.backgroundMusic, 1000);
+        //         fadeOutAudio(setup.townDayMusic, 1000);
         //         fadeInAudio(setup.sounds.airHitStunMusic, 2000, 1.0);
         //     }
         // },
@@ -1132,7 +1132,7 @@ export const townEvents =
             action: (setup) => {
                 setup.environment.nayeliSpiritEcho.updateAnimationState('spiritCuddle', 1000 / 5.5);
                 setup.environment.nayeliSpiritEcho.fadeIn(setup.world.timestamp, 4000);
-                setup.sounds.nayelisSpiritSpeakSound.play();
+                setup.sounds.voNayeliSpirit01.play();
             },
         },
 
@@ -1287,8 +1287,8 @@ export const townEvents =
                 const soul = setup.characters.soul;
                 soul.x = boss.x + 75;
                 soul.y = boss.y + 200;
-                setup.sounds.soulMusic.loop = true;
-                setup.world.audioManager.fadeInAudio(setup.sounds.soulMusic, 2000, 0.1);
+                setup.sounds.soulThemeMusic.loop = true;
+                setup.world.audioManager.fadeInAudio(setup.sounds.soulThemeMusic, 2000, 0.1);
 
             },
         },
@@ -1311,6 +1311,7 @@ export const townEvents =
             step: 18,
             action: (setup) => {
                 setup.characters.soul.fadeIn(setup.world.timestamp, 4000);
+                setup.world.character.isWalk = false;
                 setup.world.townLevelController.questManager.advance(19);
             }
         },
@@ -1331,19 +1332,19 @@ export const townEvents =
             type: 'quest',
             step: 20,
             action: (setup) => {
-                setup.world.audioManager.safePlay(setup.sounds.soulSpeakSound);
+                setup.world.audioManager.safePlay(setup.sounds.voSoulSpeak01);
             }
         },
 
         {
             type: 'quest',
             step: 20,
-            condition: (setup) => setup.sounds.soulSpeakSound.currentTime >= 18,
+            condition: (setup) => setup.sounds.voSoulSpeak01.currentTime >= 18,
             action: (setup) => {
                 setup.world.character.isMeditation = true;
                 setup.characters.soul.updateAnimationState('findsPeace', 1000 / 5);
                 setup.characters.endboss.isFindsPeace = true;
-                setup.world.audioManager.fadeAudioTo(setup.sounds.soulMusic, 8000, 1);
+                setup.world.audioManager.fadeAudioTo(setup.sounds.soulThemeMusic, 8000, 1);
                 setup.world.townLevelController.questManager.advance(21);
             }
         },
@@ -1354,7 +1355,7 @@ export const townEvents =
             once: false,
             action: (setup) => {
                 setup.characters.endboss.opacity = Math.max(
-                    0, (setup.characters.endboss.opacity ?? 1) - 0.0001);
+                    0, (setup.characters.endboss.opacity ?? 1) - 0.0005);
             }
         },
 
@@ -1385,10 +1386,11 @@ export const townEvents =
             delay: 1000,
             step: 23,
             action: (setup) => {
-                setup.world.audioManager.fadeOutAudio(setup.sounds.soulMusic, 1000);
+                setup.world.audioManager.fadeOutAudio(setup.sounds.soulThemeMusic, 1000);
                 setup.world.audioManager.fadeInAudio(setup.sounds.happyEndMusic, 2000);
                 setup.world.character.isMeditation = false;
                 setup.townLevel.sky.usePreset('desertDay');
+                setup.townLevel.grounds.townGrass.opacity = 1;
             }
         },
 
@@ -1501,12 +1503,12 @@ export const townEvents =
                     knockY: 12,
                     deathRemoveMs: 2000,
                     onHurtSound: () => {
-                        const sound = setup.sounds.enemyHurtSound.cloneNode();
+                        const sound = setup.sounds.enemyHurtSfx.cloneNode();
                         sound.currentTime = 0;
                         sound.play();
                     },
                     onDeathSound: () =>
-                        setup.world.audioManager.playOneShot("chickenDeathSound", { volume: 0.6 })
+                        setup.world.audioManager.playOneShot("chickenDeathSfx", { volume: 0.6 })
                 });
 
                 if (hit) {
@@ -1530,7 +1532,7 @@ export const townEvents =
                         enemy.isMovingRight = false;
                         enemy.removeAt = setup.world.timestamp + 2000;
                         enemy.isHurt = false; // optional: kein HURT-Anim bei Tod durch Sprung
-                        setup.world.audioManager.playOneShot('chickenDeathSound', { volume: 0.6 });
+                        setup.world.audioManager.playOneShot('chickenDeathSfx', { volume: 0.6 });
                         char.movementCtrl.bounce();
                     }
                 });
@@ -1590,7 +1592,7 @@ export const townEvents =
                 if (index === -1) return;
 
                 coins.splice(index, 1);
-                setup.world.audioManager.playOneShot("coinSound", { volume: 0.4 });
+                setup.world.audioManager.playOneShot("coinPickupSfx", { volume: 0.4 });
 
                 if (bar.percentage < 100) {
                     bar.percentage = Math.min(bar.percentage + 20, 100);
@@ -1615,7 +1617,7 @@ export const townEvents =
                 if (index === -1) return;
 
                 bottles.splice(index, 1);
-                setup.world.audioManager.playOneShot("bottleClinkSound", { volume: 0.6 });
+                setup.world.audioManager.playOneShot("bottleClinkSfx", { volume: 0.6 });
 
                 bar.percentage = Math.min(bar.percentage + 20, 100);
                 bar.setPercentage(bar.percentage);
@@ -1679,7 +1681,7 @@ export const townEvents =
                     bottle.y = groundBottomY - bottle.height + (bottle.offset?.bottom ?? 0);
 
                     if (!bottle.isBrokenSound) {
-                        world.audioManager.playOneShot("bottleBrokenSound", { volume: 0.6 });
+                        world.audioManager.playOneShot("bottleBreakSfx", { volume: 0.6 });
                         bottle.isBrokenSound = true;
                         bottle.isBroken = true;
                         bottle.isThrow = false;
@@ -1720,7 +1722,7 @@ export const townEvents =
                         if (!hit) continue;
                         if (bottle.isBrokenSound) break;
 
-                        world.audioManager.playOneShot("bottleBrokenSound", { volume: 0.6 });
+                        world.audioManager.playOneShot("bottleBreakSfx", { volume: 0.6 });
                         bottle.isBrokenSound = true;
                         bottle.isBroken = true;
                         bottle.isThrow = false;
@@ -1732,7 +1734,7 @@ export const townEvents =
                         enemy.isMovingRight = false;
                         enemy.removeAt = setup.world.timestamp + 2000;
 
-                        world.audioManager.playOneShot("chickenDeathSound", { volume: 0.6 });
+                        world.audioManager.playOneShot("chickenDeathSfx", { volume: 0.6 });
                         break;
                     }
                 }
@@ -1764,7 +1766,7 @@ export const townEvents =
                     if (!hit) continue;
                     if (bottle.isBrokenSound) continue;
 
-                    world.audioManager.playOneShot("bottleBrokenSound", { volume: 0.6 });
+                    world.audioManager.playOneShot("bottleBreakSfx", { volume: 0.6 });
                     boss.isHurt = true;
                     boss.frameIndex = 0;
 
@@ -1840,7 +1842,7 @@ export const townEvents =
 
                 if (!canThrow) {
                     if ((c.throwableBottles ?? 0) === 0) {
-                        world.audioManager.playOneShot("bottleEmptySound", { volume: 0.6 });
+                        world.audioManager.playOneShot("bottleEmptySfx", { volume: 0.6 });
                     }
                     return;
                 }
@@ -1983,7 +1985,7 @@ export const townEvents =
                 return (c.throwableBottles ?? 0) <= 0;
             },
             action: (setup) => {
-                setup.world.audioManager.playOneShot("bottleEmptySound", { volume: 0.6 });
+                setup.world.audioManager.playOneShot("bottleEmptySfx", { volume: 0.6 });
             }
         },
     ];

@@ -29,8 +29,8 @@ export const townHelper = {
      */
     startNayeliSpiritAudio(setup) {
         setup.world.audioManager.fadeOutAudio(setup.sounds.finalStormHazardMusic, 1000);
-        setup.sounds.nayelisMusic.loop = true;
-        setup.world.audioManager.fadeInAudio(setup.sounds.nayelisMusic, 2000, 0.3);
+        setup.sounds.nayeliThemeMusic.loop = true;
+        setup.world.audioManager.fadeInAudio(setup.sounds.nayeliThemeMusic, 2000, 0.3);
         setup.sounds.spiritAppearsSound.play();
     },
 
@@ -167,8 +167,8 @@ export const townHelper = {
      * @param {Object} audio Audio manager instance.
      */
     playTadeoHelpBottleAudio(audio) {
-        audio.playOneShot("bottleClinkSound", { volume: 0.9 });
-        setTimeout(() => audio.playOneShot("bottleClinkSound", { volume: 0.9 }), 150);
+        audio.playOneShot("bottleClinkSfx", { volume: 0.9 });
+        setTimeout(() => audio.playOneShot("bottleClinkSfx", { volume: 0.9 }), 150);
     },
 
     /**

@@ -37,7 +37,7 @@ function registerNayeliDialogs(setup) {
         bubbleStep({ bubble: setup.speechBubblesNayeli[1], duration: 2000, yOffset: -40 }),
         bubbleStep({ bubble: setup.speechBubblesNayeli[2], duration: 1500, yOffset: -40 }),
         pauseStep(1000),
-        callbackStep(() => { setup.sounds.nayelisSpiritSpeakSound_B.play(); }),
+        callbackStep(() => { setup.sounds.voNayeliSpirit02.play(); }),
         bubbleStep({ bubble: setup.speechBubblesNayeli[3], duration: 1500, yOffset: -40 }),
         bubbleStep({ bubble: setup.speechBubblesNayeli[4], duration: 2500, yOffset: -40 })
     ]);

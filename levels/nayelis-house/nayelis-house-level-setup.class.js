@@ -52,8 +52,8 @@ export class NayelisHouseLevelSetup {
      */
     createSounds() {
         return {
-            nayelisMusic: this.allAudios.nayelisMusic,
-            nayelisSpeakSound: this.allAudios.nayelisSpeakSound
+            nayeliThemeMusic: this.allAudios.nayeliThemeMusic,
+            voNayeliSpeak01: this.allAudios.voNayeliSpeak01
         };
     }
 

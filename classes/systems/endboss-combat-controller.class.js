@@ -75,7 +75,7 @@ export class EndbossCombatController {
      * @returns {void}
      */
     applyFireBreathAudio(setup) {
-        this.endboss.fadeOutAudio(setup.sounds.endbossMusic, 1000);
+        this.endboss.fadeOutAudio(setup.sounds.bossBattleMusic, 1000);
         this.endboss.fadeInAudio(setup.sounds.airHitStunMusic, 2000, 1.0);
     }
 

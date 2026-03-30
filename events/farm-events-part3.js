@@ -62,10 +62,10 @@ export const farmEvents_part3 = [
             setup.world.character.isFlipped = false;
             setup.hints[4].hide();
             setup.environment.house.updateAnimationState('doorCloses');
-            setup.sounds.doorClosingSound.play();
+            setup.sounds.doorCloseSfx.play();
             setup.world.taskWindow.markDone(6)
-            setup.world.farmLevelSetup.sounds.taskCompletedSound2.currentTime = 0;
-            setup.world.farmLevelSetup.sounds.taskCompletedSound2.play();
+            setup.world.farmLevelSetup.sounds.taskCompletedSfx02.currentTime = 0;
+            setup.world.farmLevelSetup.sounds.taskCompletedSfx02.play();
             setup.state.popupTexts.push(new PopupText("Aufgabe erledigt!", setup.world.canvas.width / 2, 440));
             setup.world.farmLevelController.questManager.advance(13);
         }
@@ -93,7 +93,7 @@ export const farmEvents_part3 = [
         delay: 3000,
         step: 14,
         action: (setup) => {
-            setup.sounds.yawningSound.play();
+            setup.sounds.yawningSfx.play();
         }
     },
 
@@ -105,7 +105,7 @@ export const farmEvents_part3 = [
         delay: 10000,
         step: 14,
         action: (setup) => {
-            setup.sounds.snoringSound.play();
+            setup.sounds.snoringSfx.play();
         }
     },
 
@@ -118,7 +118,7 @@ export const farmEvents_part3 = [
         delay: 15000,
         step: 14,
         action: (setup) => {
-            setup.sounds.earthquakeSound.play();
+            setup.sounds.earthquakeSfx.play();
             setup.state.earthquakeStart = true;
         }
     },
@@ -168,12 +168,12 @@ export const farmEvents_part3 = [
         type: 'quest',
         step: 15,
         action: (setup) => {
-            setup.sounds.farmMusic.pause();
-            setup.sounds.droneSound.loop = true;
-            setup.sounds.droneSound.play();
-            setup.sounds.nightMusic.loop = true;
-            setup.sounds.nightMusic.volume = 0.6;
-            setup.sounds.nightMusic.play();
+            setup.sounds.farmDayMusic.pause();
+            setup.sounds.droneIdleSfx.loop = true;
+            setup.sounds.droneIdleSfx.play();
+            setup.sounds.farmNightMusic.loop = true;
+            setup.sounds.farmNightMusic.volume = 0.6;
+            setup.sounds.farmNightMusic.play();
         }
     },
 
@@ -186,9 +186,9 @@ export const farmEvents_part3 = [
         delay: 4000,
         step: 16,
         action: (setup) => {
-            setup.sounds.droneSound.pause();
-            setup.sounds.droneControlledSound.loop = true;
-            setup.sounds.droneControlledSound.play();
+            setup.sounds.droneIdleSfx.pause();
+            setup.sounds.droneControlledSfx.loop = true;
+            setup.sounds.droneControlledSfx.play();
             setup.characters.drone.updateAnimationState('controlled', 1000 / 7);
             setup.cutsceneActors.chickenTranced.updateAnimationState('walk', 1000 / 7);
             setup.cutsceneActors.cowTranced.updateAnimationState('walk', 1000 / 5);
@@ -223,8 +223,8 @@ export const farmEvents_part3 = [
         type: 'quest',
         step: 17,
         action: (setup) => {
-            setup.sounds.droneControlledSound.pause();
-            setup.sounds.droneSound.play();
+            setup.sounds.droneControlledSfx.pause();
+            setup.sounds.droneIdleSfx.play();
             setup.characters.drone.updateAnimationState('idle', 1000 / 7);
         }
     },
@@ -255,9 +255,9 @@ export const farmEvents_part3 = [
         action: (setup) => {
             if (setup.state.volumeLevel2 > setup.state.minVolumeLevel) {
                 setup.state.volumeLevel2 = Math.max(setup.state.volumeLevel2 - 0.002, setup.state.minVolumeLevel);
-                setup.sounds.droneSound.volume = setup.state.volumeLevel2;
-                setup.sounds.nightMusic.volume = setup.state.volumeLevel2;
-                setup.sounds.eveningSound.volume = setup.state.volumeLevel2;
+                setup.sounds.droneIdleSfx.volume = setup.state.volumeLevel2;
+                setup.sounds.farmNightMusic.volume = setup.state.volumeLevel2;
+                setup.sounds.eveningAmbienceSfx.volume = setup.state.volumeLevel2;
             }
         }
     },
@@ -284,9 +284,9 @@ export const farmEvents_part3 = [
         delay: 7000,
         step: 18,
         action: (setup) => {
-            setup.sounds.eveningSound.pause();
-            setup.sounds.droneSound.pause();
-            setup.sounds.nightMusic.pause();
+            setup.sounds.eveningAmbienceSfx.pause();
+            setup.sounds.droneIdleSfx.pause();
+            setup.sounds.farmNightMusic.pause();
         }
     },
 
@@ -303,7 +303,7 @@ export const farmEvents_part3 = [
             const camArrived = setup.world.camera.moveToX(800, { speed: 3 });
             if (setup.world.camera_x <= 1000) {
                 setup.environment.house.updateAnimationState('doorOpens');
-                setup.sounds.doorOpeningSound.play();
+                setup.sounds.doorOpenSfx.play();
             }
             if (camArrived) setup.world.farmLevelController.questManager.advance(19);
 
@@ -320,7 +320,7 @@ export const farmEvents_part3 = [
         step: 19,
         action: (setup) => {
             setup.environment.house.updateAnimationState('doorCloses');
-            setup.sounds.doorClosingSound.play();
+            setup.sounds.doorCloseSfx.play();
         }
     },
 

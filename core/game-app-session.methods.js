@@ -63,7 +63,7 @@ export const gameAppSessionMethods = {
      * @returns {void}
      */
     startMenuMusic() {
-        const loop = this.audioManager.get('titleMusicLoop');
+        const loop = this.audioManager.get('uiTitleLoopMusic');
         if (!loop) return;
         loop.currentTime = 0;
         this.audioManager.fadeInAudio(loop, 2000);

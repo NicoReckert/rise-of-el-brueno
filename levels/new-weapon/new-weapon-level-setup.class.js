@@ -53,7 +53,7 @@ export class NewWeaponLevelSetup {
     createSounds() {
         return {
             newWeaponMusic: this.allAudios.newWeaponMusic,
-            newWeaponSpeakSound: this.allAudios.newWeaponSpeakSound
+            voNewWeapon01: this.allAudios.voNewWeapon01
         };
     }
 

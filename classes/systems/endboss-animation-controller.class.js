@@ -77,7 +77,7 @@ export class EndbossAnimationController {
         const shootFrame = 13;
         if (prevFrame !== shootFrame) return;
         if (this.endboss.hasFiredThisAttack) return;
-        const audio = this.endboss.allAudios.fireballShotSound.cloneNode();
+        const audio = this.endboss.allAudios.fireballShotSfx.cloneNode();
         audio.play();
         const target = this.endboss.world?.character;
         this.endboss.combatCtrl?.shootProjectile(target);

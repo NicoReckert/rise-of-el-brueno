@@ -155,8 +155,8 @@ export class EndbossFireball extends Projectile {
      */
     explode() {
         if (this.currentAnimation === "explode") return;
-        if (this.allAudios?.explodeSound) {
-            const audio = this.allAudios.explodeSound.cloneNode();
+        if (this.allAudios?.explodeSfx) {
+            const audio = this.allAudios.explodeSfx.cloneNode();
             audio.volume = 0.9;
             audio.play();
         }

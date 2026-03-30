@@ -66,8 +66,8 @@ export class StableLevelSetup {
      */
     createSounds() {
         return {
-            chickSound: this.allAudios.chickSound,
-            chickenSound: this.allAudios.chickenSound
+            chickSfx: this.allAudios.chickSfx,
+            chickenSfx: this.allAudios.chickenSfx
         };
     }
 

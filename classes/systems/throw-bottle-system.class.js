@@ -160,7 +160,7 @@ export class ThrowBottleSystem {
      */
     finishBottleSpawn(bottle, char) {
         this.setup.state.throwableObjects.push(bottle);
-        this.world.audioManager.playOneShot('bottleThrowSound', { volume: 0.6 });
+        this.world.audioManager.playOneShot('bottleThrowSfx', { volume: 0.6 });
         char._thrownThisAnim = true;
     }
 

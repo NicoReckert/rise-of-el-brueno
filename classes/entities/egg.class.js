@@ -88,12 +88,12 @@ export class Egg extends MovableObject {
         this.fallingSoundPlayed = false;
         this.impactSoundPlayed = false;
         this.crackSoundPlayed = false;
-        const eggFall = this.audios.eggFallingSound;
-        const eggImpact = this.audios.eggImpactSound;
-        const eggCrack = this.audios.eggCrackSound;
-        this.eggFallingSound = eggFall?.cloneNode?.() || eggFall;
-        this.eggImpactSound = eggImpact?.cloneNode?.() || eggImpact;
-        this.eggCrackSound = eggCrack?.cloneNode?.() || eggCrack;
+        const eggFall = this.audios.eggFallingSfx;
+        const eggImpact = this.audios.eggImpactSfx;
+        const eggCrack = this.audios.eggCrackSfx;
+        this.eggFallingSfx = eggFall?.cloneNode?.() || eggFall;
+        this.eggImpactSfx = eggImpact?.cloneNode?.() || eggImpact;
+        this.eggCrackSfx = eggCrack?.cloneNode?.() || eggCrack;
     }
 
     /**
@@ -170,7 +170,7 @@ export class Egg extends MovableObject {
      */
     playFallingSound() {
         if (this.fallingSoundPlayed) return;
-        const sound = this.eggFallingSound;
+        const sound = this.eggFallingSfx;
         if (!sound) return;
         this.fallingSoundPlayed = true;
         sound.currentTime = 0;
@@ -236,7 +236,7 @@ export class Egg extends MovableObject {
      */
     playImpactSound() {
         if (this.impactSoundPlayed) return;
-        const sound = this.eggImpactSound;
+        const sound = this.eggImpactSfx;
         if (!sound) return;
         this.impactSoundPlayed = true;
         sound.currentTime = 0;
@@ -248,7 +248,7 @@ export class Egg extends MovableObject {
      */
     playCrackSound() {
         if (this.crackSoundPlayed) return;
-        const sound = this.eggCrackSound;
+        const sound = this.eggCrackSfx;
         if (!sound) return;
         this.crackSoundPlayed = true;
         sound.currentTime = 0;

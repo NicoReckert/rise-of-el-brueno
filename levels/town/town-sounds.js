@@ -19,10 +19,10 @@ export function createTownSounds(allAudios) {
  */
 function createTownCoreSounds(allAudios) {
     return {
-        taskCompletedSound: allAudios.taskCompletedSound,
-        newTaskSound: allAudios.newTaskSound,
-        houseFireSound: allAudios.houseFireSound,
-        healSound: allAudios.healSound,
+        taskCompletedSfx: allAudios.taskCompletedSfx,
+        newTaskSfx: allAudios.newTaskSfx,
+        houseFireSfx: allAudios.houseFireSfx,
+        healSfx: allAudios.healSfx,
         spiritAppearsSound: allAudios.spiritAppearsSound
     };
 }
@@ -34,10 +34,10 @@ function createTownCoreSounds(allAudios) {
  */
 function createTownCharacterSounds(allAudios) {
     return {
-        soulSpeakSound: allAudios.soulSpeakSound,
-        nayelisSpiritSpeakSound: allAudios.nayelisSpiritSpeakSound,
-        nayelisSpiritSpeakSound_B: allAudios.nayelisSpiritSpeakSound_B,
-        tadeosSpeakSound: allAudios.tadeosSpeakSound
+        voSoulSpeak01: allAudios.voSoulSpeak01,
+        voNayeliSpirit01: allAudios.voNayeliSpirit01,
+        voNayeliSpirit02: allAudios.voNayeliSpirit02,
+        voTadeoSpeak01: allAudios.voTadeoSpeak01
     };
 }
 
@@ -48,10 +48,11 @@ function createTownCharacterSounds(allAudios) {
  */
 function createTownBattleSounds(allAudios) {
     return {
-        enemyHurtSound: allAudios.enemyHurtSound,
-        attackSound: allAudios.attackSound,
-        endbossFlappingWingsSound: allAudios.endbossFlappingWingsSound,
-        fireballChargeSound: allAudios.fireballChargeSound
+        enemyHurtSfx: allAudios.enemyHurtSfx,
+        attackSfx: allAudios.attackSfx,
+        bossFlappingWingsSfx: allAudios.bossFlappingWingsSfx,
+        fireballChargeStartSfx: allAudios.fireballChargeStartSfx,
+        bossFireballChargeSfx: allAudios.bossFireballChargeSfx
     };
 }
 
@@ -62,18 +63,18 @@ function createTownBattleSounds(allAudios) {
  */
 function createTownMusicSounds(allAudios) {
     return {
-        soulMusic: allAudios.soulMusic,
-        tadeosMusic: allAudios.tadeosMusic,
+        soulThemeMusic: allAudios.soulThemeMusic,
+        tadeoThemeMusic: allAudios.tadeoThemeMusic,
         tadeoHoldStoneMusic: allAudios.tadeoHoldStoneMusic,
         musicianTownMusic: allAudios.musicianTownMusic,
-        sollitasMusic: allAudios.sollitasMusic,
+        sollitaThemeMusic: allAudios.sollitaThemeMusic,
         airHitStunMusic: allAudios.airHitStunMusic,
-        backgroundMusic: allAudios.backgroundMusic,
+        townDayMusic: allAudios.townDayMusic,
         sadMomentMusic: allAudios.sadMomentMusic,
-        nayelisMusic: allAudios.nayelisMusic,
+        nayeliThemeMusic: allAudios.nayeliThemeMusic,
         stormHazardMusic: allAudios.stormHazardMusic,
         finalStormHazardMusic: allAudios.finalStormHazardMusic,
-        endbossMusic: allAudios.endbossMusic,
+        bossBattleMusic: allAudios.bossBattleMusic,
         endSceneMusic: allAudios.endSceneMusic,
         sollitaSpiritEchoSpeakSound: allAudios.sollitaSpiritEchoSpeakSound,
         tadeoSpiritEchoSpeakSound: allAudios.tadeoSpiritEchoSpeakSound,
