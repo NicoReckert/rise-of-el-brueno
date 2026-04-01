@@ -263,18 +263,21 @@ export const gameAppUiBindingMethods = {
      */
     bindReturnToMenuButtons() {
         const handler = () => this.returnToMainMenu();
-        this.inputManager.levelCompleteMenuButton(handler);
+        this.inputManager.listenLevelCompleteMenuButton(handler);
+        this.inputManager.listenEndCreditsMenuButton(handler);
         this.inputManager.listenPauseMenuMainButton(handler);
     },
 
     /**
-     * Binds the mute toggle button to update the audio muted state.
+     * Binds a listener to toggle the global muted state.
      * @returns {void}
      */
     bindMuteToggleButton() {
         this.inputManager.listenMuteToggleButton(() => {
             const newMuted = !this.audioManager.isMuted;
+            const creditsVideo = this.world?.endCreditsSetup?.video;
             this.audioManager.setMutedState(newMuted);
+            if (creditsVideo) creditsVideo.muted = newMuted;
         });
     }
 }

@@ -21,7 +21,7 @@ export class NayelisHouseLevelSetup {
         this.characters = this.createCharacters();
         this.speechBubbles = {};
         this.sounds = this.createSounds();
-        this.video = this.allVideos.nayelis_house_video || null;
+        this.video = this.allVideos.nayelis_house_bg_video || null;
         this.comeFromNewWeapon = false;
         this.hints = this.createHints();
     }

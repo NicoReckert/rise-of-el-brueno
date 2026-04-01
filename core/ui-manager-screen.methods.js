@@ -33,7 +33,14 @@ export const uiManagerScreenMethods = {
      * Hides the level complete button box.
      */
     hideLevelCompleteActions() {
-        this.dom.LevelCompleteActions.classList.add('d-none');
+        this.dom.levelCompleteActions.classList.add('d-none');
+    },
+
+    /**
+     * Hides the end credits actions element.
+     */
+    hideEndCreditsActions() {
+        this.dom.endCreditsActions.classList.add('d-none');
     },
 
     /**

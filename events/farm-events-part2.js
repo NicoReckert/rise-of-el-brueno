@@ -289,8 +289,8 @@ export const farmEvents_part2 = [
             setup.environment.campfire.updateAnimationState('fireGoesOn');
             setup.sounds.happyTogetherMusic.play();
             setup.sounds.farmDayMusic.loop = false;
-            setup.sounds.eveningAmbienceSfx.loop = true;
-            setup.sounds.eveningAmbienceSfx.play();
+            setup.sounds.farmNightAmbience.loop = true;
+            setup.sounds.farmNightAmbience.play();
             setup.characters.cow.updateAnimationState('swingToMusic', 1000 / 6.5);
             setup.characters.pollito.updateAnimationState('swingToMusic', 1000 / 6.5);
             setup.characters.juanito.updateAnimationState('swingToMusic', 1000 / 6.5);

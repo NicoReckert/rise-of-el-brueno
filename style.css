@@ -322,6 +322,17 @@ body {
   transition: all 0.2s ease;
 }
 
+.end-credits-actions {
+  position: absolute;
+  display: flex;
+  bottom: 0px;
+  justify-content: flex-end;
+  align-items: center;
+  width: 100%;
+  padding-right: 64px;
+  padding-bottom: 48px;
+}
+
 .pause-toggle-button,
 .mute-toggle-button,
 .fullscreen-toggle-button {
@@ -1962,7 +1973,7 @@ body.fullscreen-active .portal-video {
   .detail-card {
     margin: 0 6px;
   }
-  
+
   .detail-card__title {
     font-size: 20px;
   }
@@ -1980,12 +1991,12 @@ body.fullscreen-active .portal-video {
     padding: 6px 6px;
   }
 
-    .ornament-left {
+  .ornament-left {
     display: none;
   }
 
   .ornament-right {
-   display: none;
+    display: none;
   }
 
 }

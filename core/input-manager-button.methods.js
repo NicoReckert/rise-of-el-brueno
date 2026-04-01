@@ -167,8 +167,16 @@ export const inputManagerButtonMethods = {
      * @param {Function} onClick Click handler.
      * @returns {void}
      */
-    levelCompleteMenuButton(onClick) {
+    listenLevelCompleteMenuButton(onClick) {
         this.bindClick(this.uiManager.dom.levelCompleteMenuButton, onClick);
+    },
+
+    /**
+     * Binds a click handler to the end credits menu button.
+     * @param {Function} onClick Click handler.
+     */
+    listenEndCreditsMenuButton(onClick) {
+        this.bindClick(this.uiManager.dom.endCreditsMenuButton, onClick);
     },
 
     /**

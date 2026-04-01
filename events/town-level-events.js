@@ -361,7 +361,7 @@ export const townEvents =
                 setup.world.audioManager.fadeOutAudio(setup.sounds.finalStormHazardMusic, 1000);
                 setup.sounds.nayeliThemeMusic.loop = true;
                 setup.world.audioManager.fadeInAudio(setup.sounds.nayeliThemeMusic, 2000, 0.3);
-                setup.sounds.spiritAppearsSound.play();
+                setup.sounds.spiritAppearsSfx.play();
                 setup.environment.nayeliSpirit.updateAnimationState('walk', 1000 / 10);
                 setup.world.townLevelController.questManager.advance(7)
             }
@@ -396,7 +396,7 @@ export const townEvents =
             action: (setup) => {
                 setup.dialogManager.startDialog(1, setup.world.timestamp, () => {
                     setup.environment.nayeliSpirit.updateAnimationState('blessing', 1000 / 6);
-                    setup.sounds.spiritAppearsSound.play();
+                    setup.sounds.spiritAppearsSfx.play();
                     setup.environment.nayeliSpirit.fadeOut(setup.world.timestamp, 1600);
                     setup.world.townLevelController.questManager.advance(9);
                 })
@@ -514,7 +514,7 @@ export const townEvents =
                 setup.characters.tadeo.updateAnimationState('stoneActivated', 1000 / 5.5);
                 setup.panel.activate(performance.now());
                 setup.world.townLevelController.magicShield.start();
-                setup.world.audioManager.playOneShot("shieldLoadingSound", 0.7);
+                setup.world.audioManager.playOneShot("shieldChargeSfx", 0.7);
                 setup.speechBubblesTadeo[0].start(1000);
                 setup.dialogManager.startDialog(2, setup.world.timestamp);
             }
@@ -638,7 +638,7 @@ export const townEvents =
                 const idx = (Math.random() * bubbles.length) | 0;
                 setup.state.tadeoAfraidIdx = idx;
                 bubbles[idx].start();
-                setup.world.audioManager.playOneShot(`vo_tadeo_afraid_0${idx + 1}`, { volume: 0.9 });
+                setup.world.audioManager.playOneShot(`voTadeoAfraid0${idx + 1}`, { volume: 0.9 });
                 setup.world.townLevelController.eventManager.emitNow("tadeoAfraidBubbleRender");
             }
         },
@@ -754,7 +754,7 @@ export const townEvents =
                 const idx = (Math.random() * bubbles.length) | 0;
                 setup.state.tadeoPanicProjIdx = idx;
                 bubbles[idx].start();
-                setup.world.audioManager.playOneShot(`vo_tadeo_panic_0${idx + 1}`, { volume: 1.0 });
+                setup.world.audioManager.playOneShot(`voTadeoPanic0${idx + 1}`, { volume: 1.0 });
                 setup.world.townLevelController.eventManager.emitNow("tadeoPanicProjBubbleRender");
             }
         },
@@ -785,7 +785,7 @@ export const townEvents =
                 const idx = (Math.random() * bubbles.length) | 0;
                 setup.state.tadeoPanicNearIdx = idx;
                 bubbles[idx].start();
-                setup.world.audioManager.playOneShot(`vo_tadeo_panic_0${idx + 1}`, { volume: 1.0 });
+                setup.world.audioManager.playOneShot(`voTadeoPanic0${idx + 1}`, { volume: 1.0 });
                 setup.world.townLevelController.eventManager.emitNow("tadeoPanicNearBubbleRender");
             }
         },
@@ -941,6 +941,7 @@ export const townEvents =
             objectA: 'character',
             objectB: 'musician',
             toleranceB: { x: -150, width: -150 },
+            step: 12,
             once: false,
             cooldown: 500,
             action: (setup) => {
@@ -970,6 +971,7 @@ export const townEvents =
             objectA: 'character',
             objectB: 'sollita',
             toleranceB: { x: -80, width: -80 },
+            step: 12,
             once: false,
             cooldown: 500,
             action: (setup) => {
@@ -1018,40 +1020,6 @@ export const townEvents =
 
             }
         },
-
-        // {
-        //     type: "quest",
-        //     action: (setup) => {
-        //         setup.world.character.y = 165;
-        //         setup.world.character.yNormal = 165;
-        //         setup.world.character.yVoidless = 282;
-        //         setup.characters.endboss.x = 23850
-        //         setup.characters.endboss.isFireballAttack = true;
-        //         setup.world.townLevelController.questManager.advance(20);
-        //     }
-        // },
-
-        // {
-        //     type: "quest",
-        //     once: false,
-        //     action: (setup) => {
-        //         setup.characters.endboss.isFireballAttack = true;
-        //     }
-        // },
-
-        // {
-        //     type: "time",
-        //     delay: 5000,
-        //     step: 20,
-        //     action: (setup) => {
-        //         setup.world.character.isAirHitStun = true;
-        //         setup.environment.juanitoSpirit.updateAnimationState('spiritCuddle', 1000 / 4);
-        //         setup.environment.pollitoSpirit.updateAnimationState('spiritCuddle', 1000 / 4);
-        //         setup.environment.lolaSpirit.updateAnimationState('spiritCuddle', 1000 / 4);
-        //         fadeOutAudio(setup.townDayMusic, 1000);
-        //         fadeInAudio(setup.sounds.airHitStunMusic, 2000, 1.0);
-        //     }
-        // },
 
         /**
          * Quest event that moves the endboss to the target position
@@ -1120,6 +1088,7 @@ export const townEvents =
                 const macuahuitl = setup.environment.macuahuitl;
                 const arriveY = macuahuitl.moveToY(150, { speed: 0.5 });
                 if (arriveY) {
+                    setup.world.audioManager.fadeAudioTo(setup.sounds.endSceneMusic, 2000, 0.4);
                     setup.world.townLevelController.questManager.advance(16);
                 }
             }
@@ -1152,7 +1121,7 @@ export const townEvents =
             action: (setup) => {
                 setup.environment.sollitaSpiritEcho.updateAnimationState('spiritCuddle', 1000 / 5.5);
                 setup.environment.sollitaSpiritEcho.fadeIn(setup.world.timestamp, 4000);
-                setup.sounds.sollitaSpiritEchoSpeakSound.play();
+                setup.sounds.voSollitaSpiritEcho01.play();
             },
         },
 
@@ -1172,7 +1141,7 @@ export const townEvents =
             action: (setup) => {
                 setup.environment.tadeoSpiritEcho.updateAnimationState('spiritCuddle', 1000 / 5.5);
                 setup.environment.tadeoSpiritEcho.fadeIn(setup.world.timestamp, 4000);
-                setup.sounds.tadeoSpiritEchoSpeakSound.play();
+                setup.sounds.voTadeoSpiritEcho01.play();
             },
         },
 
@@ -1203,6 +1172,7 @@ export const townEvents =
             delay: 4000,
             step: 17,
             action: (setup) => {
+                setup.world.audioManager.fadeAudioTo(setup.sounds.endSceneMusic, 2000, 1);
                 setup.environment.tadeoSpiritEcho.fadeOut(setup.world.timestamp, 4000);
                 setup.world.character.isStandUpAfterPainStun = true;
             },
@@ -1288,7 +1258,7 @@ export const townEvents =
                 soul.x = boss.x + 75;
                 soul.y = boss.y + 200;
                 setup.sounds.soulThemeMusic.loop = true;
-                setup.world.audioManager.fadeInAudio(setup.sounds.soulThemeMusic, 2000, 0.1);
+                setup.world.audioManager.fadeInAudio(setup.sounds.soulThemeMusic, 2000, 0.4);
 
             },
         },
@@ -1321,7 +1291,7 @@ export const townEvents =
             step: 19,
             once: false,
             action: (setup) => {
-                const arriveY = setup.characters.soul.moveToY(250, { speed: 1.5 });
+                const arriveY = setup.characters.soul.moveToY(250, { speed: 0.5 });
                 if (arriveY) {
                     setup.world.townLevelController.questManager.advance(20);
                 }
@@ -1355,7 +1325,7 @@ export const townEvents =
             once: false,
             action: (setup) => {
                 setup.characters.endboss.opacity = Math.max(
-                    0, (setup.characters.endboss.opacity ?? 1) - 0.0005);
+                    0, (setup.characters.endboss.opacity ?? 1) - 0.001);
             }
         },
 
@@ -1386,11 +1356,52 @@ export const townEvents =
             delay: 1000,
             step: 23,
             action: (setup) => {
+                setup.characters.sollita.x = 26800;
+                setup.characters.sollita.isFlipped = true;
+                setup.characters.sollita.updateAnimationState('walk');
                 setup.world.audioManager.fadeOutAudio(setup.sounds.soulThemeMusic, 1000);
                 setup.world.audioManager.fadeInAudio(setup.sounds.happyEndMusic, 2000);
                 setup.world.character.isMeditation = false;
                 setup.townLevel.sky.usePreset('desertDay');
                 setup.townLevel.grounds.townGrass.opacity = 1;
+            }
+        },
+
+        {
+            type: 'time',
+            delay: 5000,
+            step: 23,
+            once: false,
+            action: (setup) => {
+                const arriveX = setup.characters.sollita.moveToX(27380, { speed: 1 });
+                if (arriveX) {
+                    setup.world.character.isFlipped = true;
+                    setup.characters.sollita.updateAnimationState('idle');
+                    setup.world.audioManager.fadeAudioTo(setup.sounds.happyEndMusic, 2000, 0.6);
+                    setup.sounds.voSollitaSpeak02.play();
+                    setup.world.townLevelController.questManager.advance(24);
+                }
+            }
+        },
+
+        {
+            type: 'time',
+            delay: 4000,
+            step: 24,
+            condition: (setup) => setup.sounds.voSollitaSpeak02.ended,
+            action: (setup) => {
+                setup.whiteFlashTransition.start(setup.world.timestamp);
+                setup.world.audioManager.fadeOutAudio(setup.sounds.happyEndMusic, 1000);
+            }
+        },
+
+        {
+            type: 'time',
+            delay: 7000,
+            step: 24,
+            condition: (setup) => setup.sounds.voSollitaSpeak02.ended,
+            action: (setup) => {
+                setup.world.currentScene = 'endCredits';
             }
         },
 

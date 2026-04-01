@@ -32,6 +32,7 @@ export class PauseManager {
         this.uiManager.setMoveButtonsActive(false);
         world.pauseGame?.();
         this.audioManager.pauseAllAudios(this.audios);
+        world.endCreditsSetup?.video?.pause();
     }
 
     /**
@@ -45,6 +46,7 @@ export class PauseManager {
         this.uiManager.setMoveButtonsActive(true);
         world.resumeGame?.();
         this.audioManager.resumeAllAudios(this.audios);
+        world.endCreditsSetup?.video?.play();
     }
 
     /**

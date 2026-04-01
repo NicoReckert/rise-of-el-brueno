@@ -66,7 +66,8 @@ export const uiManagerDomMethods = {
             fullscreenToggleButton: document.getElementById('fullscreen-toggle-button'),
             muteToggleButton: document.getElementById('mute-toggle-button'),
             nextLevelButton: document.getElementById('next-level-button'),
-            LevelCompleteActions: document.getElementById('level-complete-actions'),
+            levelCompleteActions: document.getElementById('level-complete-actions'),
+            endCreditsActions: document.getElementById('end-credits-actions')
         };
     },
 
@@ -81,7 +82,8 @@ export const uiManagerDomMethods = {
             restartLevelButton: document.getElementById('restart-level-button'),
             pauseRestartButton: document.getElementById('pause-restart-button'),
             levelCompleteMenuButton: document.getElementById('level-complete-menu-button'),
-            pauseMenuMainButton: document.getElementById('pause-menu-main-button'),
+            endCreditsMenuButton: document.getElementById('end-credits-menu-button'),
+            pauseMenuMainButton: document.getElementById('pause-menu-main-button')
         };
     },
 

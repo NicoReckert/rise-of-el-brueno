@@ -31,7 +31,7 @@ export const townHelper = {
         setup.world.audioManager.fadeOutAudio(setup.sounds.finalStormHazardMusic, 1000);
         setup.sounds.nayeliThemeMusic.loop = true;
         setup.world.audioManager.fadeInAudio(setup.sounds.nayeliThemeMusic, 2000, 0.3);
-        setup.sounds.spiritAppearsSound.play();
+        setup.sounds.spiritAppearsSfx.play();
     },
 
     /**
@@ -182,6 +182,6 @@ export const townHelper = {
         const idx = (Math.random() * bubbles.length) | 0;
         setup._tadeoHelpIdx = idx;
         bubbles[idx].start();
-        audio.playOneShot(`vo_tadeo_help_0${idx + 1}`, { volume: 0.95 });
+        audio.playOneShot(`voTadeoHelp0${idx + 1}`, { volume: 0.95 });
     }
 }

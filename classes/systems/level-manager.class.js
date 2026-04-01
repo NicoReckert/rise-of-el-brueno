@@ -11,6 +11,8 @@ import { NewWeaponLevelSetup } from '../../levels/new-weapon/new-weapon-level-se
 import { NewWeaponLevelController } from '../../levels/new-weapon/new-weapon-level-controller.class.js';
 import { LevelCompleteSetup } from '../../levels/level-complete/level-complete-setup.class.js';
 import { LevelCompleteController } from '../../levels/level-complete/level-complete-controller.class.js';
+import { EndCreditsSetup } from '../../levels/end-credits/end-credits-setup.class.js';
+import { EndCreditsController } from '../../levels/end-credits/end-credits-controller.class.js';
 
 /**
  * Manages level state and transitions.
@@ -43,14 +45,13 @@ export class LevelManager {
         world.townLevelSetup = new TownLevelSetup(world);
         world.townLevelController = new TownLevelController(world.townLevelSetup);
         world.nayelisHouseLevelSetup = new NayelisHouseLevelSetup(world);
-        world.nayelisHouseLevelController =
-            new NayelisHouseLevelController(world.nayelisHouseLevelSetup);
+        world.nayelisHouseLevelController = new NayelisHouseLevelController(world.nayelisHouseLevelSetup);
         world.newWeaponLevelSetup = new NewWeaponLevelSetup(world);
-        world.newWeaponLevelController =
-            new NewWeaponLevelController(world.newWeaponLevelSetup);
+        world.newWeaponLevelController = new NewWeaponLevelController(world.newWeaponLevelSetup);
         world.levelCompleteSetup = new LevelCompleteSetup(world);
-        world.levelCompleteController =
-            new LevelCompleteController(world.levelCompleteSetup);
+        world.levelCompleteController = new LevelCompleteController(world.levelCompleteSetup);
+        world.endCreditsSetup = new EndCreditsSetup(world);
+        world.endCreditsController = new EndCreditsController(world.endCreditsSetup);
     }
 
     /**
@@ -124,6 +125,7 @@ export class LevelManager {
             nayelisHouseLevel: () => this.initNayelisHouseLevelRestart(),
             newWeaponLevel: () => this.initNewWeaponLevelRestart(),
             levelComplete: () => this.initLevelCompleteRestart(),
+            endCredits: () => this.initEndCreditsRestart()
         };
         const initFn = map[levelName];
         if (initFn) initFn();
@@ -184,6 +186,16 @@ export class LevelManager {
         world.levelCompleteSetup = new LevelCompleteSetup(world);
         world.levelCompleteController =
             new LevelCompleteController(world.levelCompleteSetup);
+    }
+
+    /**
+     * Initializes the end credits restart setup and controller.
+     */
+    initEndCreditsRestart() {
+        const world = this.world;
+        world.endCreditsSetup = new EndCreditsSetup(world);
+        world.endCreditsController =
+            new EndCreditsController(world.endCreditsSetup);
     }
 
     /**

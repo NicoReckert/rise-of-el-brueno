@@ -257,7 +257,7 @@ export const farmEvents_part3 = [
                 setup.state.volumeLevel2 = Math.max(setup.state.volumeLevel2 - 0.002, setup.state.minVolumeLevel);
                 setup.sounds.droneIdleSfx.volume = setup.state.volumeLevel2;
                 setup.sounds.farmNightMusic.volume = setup.state.volumeLevel2;
-                setup.sounds.eveningAmbienceSfx.volume = setup.state.volumeLevel2;
+                setup.sounds.farmNightAmbience.volume = setup.state.volumeLevel2;
             }
         }
     },
@@ -284,7 +284,7 @@ export const farmEvents_part3 = [
         delay: 7000,
         step: 18,
         action: (setup) => {
-            setup.sounds.eveningAmbienceSfx.pause();
+            setup.sounds.farmNightAmbience.pause();
             setup.sounds.droneIdleSfx.pause();
             setup.sounds.farmNightMusic.pause();
         }

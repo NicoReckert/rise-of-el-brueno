@@ -283,7 +283,8 @@ export class World {
             townLevel: this.townLevelController,
             nayelisHouseLevel: this.nayelisHouseLevelController,
             newWeaponLevel: this.newWeaponLevelController,
-            levelComplete: this.levelCompleteController
+            levelComplete: this.levelCompleteController,
+            endCredits: this.endCreditsController
         };
         return map[this.currentScene] ?? null;
     }
@@ -324,7 +325,8 @@ export class World {
             townLevel: this.townLevelSetup,
             nayelisHouseLevel: this.nayelisHouseLevelSetup,
             newWeaponLevel: this.newWeaponLevelSetup,
-            levelComplete: this.levelCompleteSetup
+            levelComplete: this.levelCompleteSetup,
+            endCredits: this.endCreditsSetup
         };
         return map[scene] ?? null;
     }
@@ -335,7 +337,7 @@ export class World {
      * @returns {void}
      */
     restartLevel(levelName) {
-        const name = ['townLevel', 'nayelisHouseLevel', 'newWeaponLevel'].includes(levelName)
+        const name = ['townLevel', 'nayelisHouseLevel', 'newWeaponLevel', 'endCredits'].includes(levelName)
             ? 'townLevel'
             : 'farmLevel';
         this.levelManager.restartLevel(name);

@@ -36,7 +36,7 @@ function createFarmAmbientSounds(allAudios) {
     return {
         droneIdleSfx: allAudios.droneIdleSfx,
         droneControlledSfx: allAudios.droneControlledSfx,
-        eveningAmbienceSfx: allAudios.eveningAmbienceSfx,
+        farmNightAmbience: allAudios.farmNightAmbience,
         yawningSfx: allAudios.yawningSfx,
         snoringSfx: allAudios.snoringSfx,
         earthquakeSfx: allAudios.earthquakeSfx,

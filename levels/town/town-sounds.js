@@ -23,7 +23,7 @@ function createTownCoreSounds(allAudios) {
         newTaskSfx: allAudios.newTaskSfx,
         houseFireSfx: allAudios.houseFireSfx,
         healSfx: allAudios.healSfx,
-        spiritAppearsSound: allAudios.spiritAppearsSound
+        spiritAppearsSfx: allAudios.spiritAppearsSfx
     };
 }
 
@@ -76,8 +76,9 @@ function createTownMusicSounds(allAudios) {
         finalStormHazardMusic: allAudios.finalStormHazardMusic,
         bossBattleMusic: allAudios.bossBattleMusic,
         endSceneMusic: allAudios.endSceneMusic,
-        sollitaSpiritEchoSpeakSound: allAudios.sollitaSpiritEchoSpeakSound,
-        tadeoSpiritEchoSpeakSound: allAudios.tadeoSpiritEchoSpeakSound,
-        happyEndMusic: allAudios.happyEndMusic
+        voSollitaSpiritEcho01: allAudios.voSollitaSpiritEcho01,
+        voTadeoSpiritEcho01: allAudios.voTadeoSpiritEcho01,
+        happyEndMusic: allAudios.happyEndMusic,
+        voSollitaSpeak02: allAudios.voSollitaSpeak02
     };
 }

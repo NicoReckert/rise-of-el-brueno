@@ -7,6 +7,8 @@ export const gameAppSessionMethods = {
     restartGameFromCurrentLevel() {
         if (!this.world) return;
         this.uiManager.hideLevelCompleteActions();
+        this.uiManager.hideEndCreditsActions();
+        this.stopEndCreditsVideoAudio();
         this.uiManager.hidePauseOverlay();
         this.uiManager.showGameControls();
         this.audioManager.resetAllAudios(this.audioManager.audios);
@@ -20,9 +22,11 @@ export const gameAppSessionMethods = {
     returnToMainMenu() {
         if (!this.world) return;
         this.uiManager.hideLevelCompleteActions();
+        this.uiManager.hideEndCreditsActions();
         this.uiManager.hidePauseOverlay();
         this.uiManager.hideGameControls();
         this.stopLevelCompleteMusic();
+        this.stopEndCreditsVideoAudio();
         this.exitFullscreenIfNeeded();
         this.resetWorldStateForMenu();
         this.uiManager.showMainMenuScreen();
@@ -37,6 +41,15 @@ export const gameAppSessionMethods = {
         const music = this.world?.levelCompleteSetup?.sounds?.levelCompleteMusic;
         if (!music) return;
         this.audioManager.fadeOutAudio(music, 1000);
+    },
+
+    /**
+     * Stops the end credits video audio with a fade-out.
+     */
+    stopEndCreditsVideoAudio() {
+        const video = this.world?.endCreditsSetup?.video;
+        if (!video) return;
+        this.audioManager.fadeOutAudio(video, 1000);
     },
 
     /**
