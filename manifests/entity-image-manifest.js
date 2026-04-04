@@ -414,6 +414,10 @@ export const otherLevelEntityManifestLazy = {
     spiritCuddleLoop: {
       type: 'sheet',
       json: './assets/img/entities/nayeli_spirit/spirit_cuddle_loop/spirit_cuddle_loop_sheet.json'
+    },
+    spiritOffering: {
+      type: 'sheet',
+      json: './assets/img/entities/nayeli_spirit/spirit_offering/spirit_offering_sheet.json'
     }
   },
 
@@ -470,6 +474,10 @@ export const otherLevelEntityManifestLazy = {
     fireBreathAttack: {
       type: 'sheet',
       json: './assets/img/4_enemie_boss_chicken/fly_and_fireball_attack/fly_and_fireball_attack_sheet.json'
+    },
+    rage: {
+      type: 'sheet',
+      json: './assets/img/4_enemie_boss_chicken/rage/rage_sheet.json'
     }
   },
 
@@ -633,6 +641,10 @@ export const otherLevelEntityManifestLazy = {
   },
 
   tadeoSpirit: {
+    idle: {
+      type: 'sheet',
+      json: './assets/img/entities/tadeo_spirit/idle/idle_sheet.json'
+    },
     spiritCuddle: {
       type: 'sheet',
       json: './assets/img/entities/tadeo_spirit/spirit_cuddle/spirit_cuddle_sheet.json'
@@ -640,6 +652,10 @@ export const otherLevelEntityManifestLazy = {
     spiritCuddleLoop: {
       type: 'sheet',
       json: './assets/img/entities/tadeo_spirit/spirit_cuddle_loop/spirit_cuddle_loop_sheet.json'
+    },
+    spiritOffering: {
+      type: 'sheet',
+      json: './assets/img/entities/tadeo_spirit/spirit_offering/spirit_offering_sheet.json'
     }
   },
 
@@ -668,6 +684,10 @@ export const otherLevelEntityManifestLazy = {
   },
 
   sollitaSpirit: {
+    idle: {
+      type: 'sheet',
+      json: './assets/img/entities/sollita_spirit/idle/idle_sheet.json'
+    },
     spiritCuddle: {
       type: 'sheet',
       json: './assets/img/entities/sollita_spirit/spirit_cuddle/spirit_cuddle_sheet.json'
@@ -675,6 +695,10 @@ export const otherLevelEntityManifestLazy = {
     spiritCuddleLoop: {
       type: 'sheet',
       json: './assets/img/entities/sollita_spirit/spirit_cuddle_loop/spirit_cuddle_loop_sheet.json'
+    },
+    spiritOffering: {
+      type: 'sheet',
+      json: './assets/img/entities/sollita_spirit/spirit_offering/spirit_offering_sheet.json'
     }
   },
 
@@ -723,6 +747,10 @@ export const otherLevelEntityManifestLazy = {
     spiritCuddleLoop: {
       type: 'sheet',
       json: './assets/img/entities/juanito_spirit/idle_and_spirit_cuddle/idle_and_spirit_cuddle_sheet.json'
+    },
+    spiritOffering: {
+      type: 'sheet',
+      json: './assets/img/entities/juanito_spirit/spirit_offering/spirit_offering_sheet.json'
     }
   },
 
@@ -738,6 +766,10 @@ export const otherLevelEntityManifestLazy = {
     spiritCuddleLoop: {
       type: 'sheet',
       json: './assets/img/entities/pollito_spirit/idle_and_spirit_cuddle/idle_and_spirit_cuddle_sheet.json'
+    },
+    spiritOffering: {
+      type: 'sheet',
+      json: './assets/img/entities/pollito_spirit/spirit_offering/spirit_offering_sheet.json'
     }
   },
 
@@ -753,6 +785,10 @@ export const otherLevelEntityManifestLazy = {
     spiritCuddleLoop: {
       type: 'sheet',
       json: './assets/img/entities/lola_spirit/idle_and_spirit_cuddle/idle_and_spirit_cuddle_sheet.json'
+    },
+    spiritOffering: {
+      type: 'sheet',
+      json: './assets/img/entities/lola_spirit/spirit_offering/spirit_offering_sheet.json'
     }
   },
 

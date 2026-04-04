@@ -75,6 +75,7 @@ function initTownEnvironmentState(environment) {
     environment.nayeliSpirit.opacity = 0;
     environment.nayeliSpiritEcho.opacity = 0;
     environment.sollitaSpiritEcho.opacity = 0;
+    environment.tadeoSpiritEcho.opacity = 0;
     environment.nayeliSpiritEcho.isFlipped = false
     environment.juanitoSpirit.opacity = 0;
     environment.pollitoSpirit.opacity = 0;

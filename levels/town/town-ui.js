@@ -6,11 +6,18 @@ import { DialogManager } from '../../classes/ui/dialog-manager.class.js';
 import { HollowHint } from '../../classes/ui/hollow-hint.class.js';
 import {
     createTownSpeechBubblesCharacter,
-    createTownSpeechBubblesNayeli,
+    createTownSpeechBubblesNayeliSpirit,
+    createTownSpeechBubblesNayeliSpiritEcho,
+    createTownSpeechBubblesSollita,
+    createTownSpeechBubblesSollitaSpiritEcho,
     createTownSpeechBubblesTadeo,
     createTownSpeechBubblesTadeoAfraid,
     createTownSpeechBubblesTadeoPanic,
-    createTownSpeechBubblesTadeoHelp
+    createTownSpeechBubblesTadeoHelp,
+    createTownSpeechBubblesTadeoSpiritEcho,
+    createTownSpeechBubblesJuanito,
+    createTownSpeechBubblesPollito,
+    createTownSpeechBubblesLola
 } from './town-speech-bubbles.js';
 
 /**
@@ -49,11 +56,18 @@ function createTownBarsAndDialog(setup) {
 function createTownSpeechBubbles(setup) {
     return {
         speechBubblesCharacter: createTownSpeechBubblesCharacter(setup.world.character, setup.world.audioManager),
-        speechBubblesNayeli: createTownSpeechBubblesNayeli(setup.environment.nayeliSpirit),
+        speechBubblesNayeliSpirit: createTownSpeechBubblesNayeliSpirit(setup.environment.nayeliSpirit),
+        speechBubblesNayeliSpiritEcho: createTownSpeechBubblesNayeliSpiritEcho(setup.environment.nayeliSpiritEcho),
+        speechBubblesSollita: createTownSpeechBubblesSollita(setup.characters.sollita),
+        speechBubblesSollitaSpiritEcho: createTownSpeechBubblesSollitaSpiritEcho(setup.environment.sollitaSpiritEcho),
         speechBubblesTadeo: createTownSpeechBubblesTadeo(setup.characters.tadeo),
         speechBubblesTadeoAfraid: createTownSpeechBubblesTadeoAfraid(setup.characters.tadeo),
         speechBubblesTadeoPanic: createTownSpeechBubblesTadeoPanic(setup.characters.tadeo),
-        speechBubblesTadeoHelp: createTownSpeechBubblesTadeoHelp(setup.characters.tadeo)
+        speechBubblesTadeoHelp: createTownSpeechBubblesTadeoHelp(setup.characters.tadeo),
+        speechBubblesTadeoSpiritEcho: createTownSpeechBubblesTadeoSpiritEcho(setup.environment.tadeoSpiritEcho), 
+        speechBubblesJuanito: createTownSpeechBubblesJuanito(setup.environment.juanitoSpirit),
+        speechBubblesPollito: createTownSpeechBubblesPollito(setup.environment.pollitoSpirit),
+        speechBubblesLola: createTownSpeechBubblesLola(setup.environment.lolaSpirit)
     }
 }
 

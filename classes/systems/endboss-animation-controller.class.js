@@ -19,6 +19,7 @@ export class EndbossAnimationController {
         if (this.endboss.isDead) return this.playDeathAnimation();
         if (this.endboss.isHurt) return this.playHurtAnimation();
         if (this.endboss.isFireBreath) return this.setAnimation('fireBreathAttack', 5);
+        if (this.endboss.isRage) return this.playRageAnimation();
         if (this.endboss.isFly) return this.playFlyAnimation();
         if (this.endboss.isFireballAttack) return this.playFireballAttackAnimation()
         if (this.endboss.isJumping) return this.setAnimation('jump', 10);
@@ -41,7 +42,7 @@ export class EndbossAnimationController {
             return;
         }
         const prevFrame = this.endboss.frameIndex;
-        this.endboss.updateAnimationFromSourceGeneric(anim);
+        this.updateCurrentAnimation(anim);
         this.handleFireballProjectile(prevFrame);
         this.updateDeadAnimationReady();
         this.endboss.lastFrameTime = timestamp;
@@ -65,6 +66,33 @@ export class EndbossAnimationController {
     isFrameTooEarly(timestamp) {
         const deltaTime = timestamp - this.endboss.lastFrameTime;
         return deltaTime <= this.endboss.frameInterval;
+    }
+
+    /**
+     * Updates the current animation if no transition is handled.
+     * @param {*} anim Animation source.
+     * @returns {void}
+     */
+    updateCurrentAnimation(anim) {
+        const handled = this.tryHandleAnimationTransition(anim);
+        if (handled) return;
+        this.endboss.updateAnimationFromSourceGeneric(anim);
+    }
+
+    /**
+     * Checks whether the current animation transition should be handled.
+     * @param {*} anim Animation source.
+     * @returns {boolean} True if the transition was handled, otherwise false.
+     */
+    tryHandleAnimationTransition(anim) {
+        if (this.endboss.currentAnimation === 'rage') {
+            this.endboss.updateAnimationFromSourceGeneric(anim, {
+                isOneShot: true,
+                onFinished: () => this.setAnimation('rageLoop', 6)
+            });
+            return true;
+        }
+        return false;
     }
 
     /**
@@ -129,7 +157,6 @@ export class EndbossAnimationController {
         this.setAnimation('findsPeace', 6);
         const anim = this.endboss.findsPeaceImages;
         if (!anim) return;
-
         if (anim.type === 'sheetSequence') {
             this.handleFindsPeaceSheet();
         } else {
@@ -256,6 +283,17 @@ export class EndbossAnimationController {
     }
 
     /**
+     * Plays the rage state animation.
+     * @returns {*} Result of setting the animation.
+     */
+    playRageAnimation() {
+        if (this.endboss.currentAnimation === 'rageLoop') {
+            return this.setAnimation('rageLoop', 6);
+        }
+        return this.setAnimation('rage', 6);
+    }
+
+    /**
      * Handles sheet-based fireball attack animation completion.
      * @returns {void}
      */
@@ -328,6 +366,9 @@ export class EndbossAnimationController {
             case 'findsPeace': return this.endboss.findsPeaceImages;
             case 'fireballAttack': return this.endboss.fireballAttackImages;
             case 'fireBreathAttack': return this.endboss.fireBreathAttackImages;
+            case 'rage':
+            case 'rageLoop':
+                return this.endboss.rageImages;
             case 'idle': return this.endboss.idleImages;
         }
     }

@@ -1,0 +1,16 @@
+﻿{
+    "frameHeight":  512,
+    "columns":  4,
+    "frameWidth":  512,
+    "animations":  {
+                       "spiritOffering":  {
+                                       "loop":  false,
+                                       "from":  0,
+                                       "to":  28,
+                                       "fps":  12
+                                   }
+                   },
+    "image":  "spirit_offering_sheet.webp",
+    "frames":  29,
+    "rows":  8
+}

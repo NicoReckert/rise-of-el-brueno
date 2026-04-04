@@ -67,7 +67,8 @@ export const uiManagerDomMethods = {
             muteToggleButton: document.getElementById('mute-toggle-button'),
             nextLevelButton: document.getElementById('next-level-button'),
             levelCompleteActions: document.getElementById('level-complete-actions'),
-            endCreditsActions: document.getElementById('end-credits-actions')
+            endCreditsActions: document.getElementById('end-credits-actions'),
+            endCreditsVideo: document.getElementById('end-credits-video')
         };
     },
 

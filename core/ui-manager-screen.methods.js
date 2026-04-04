@@ -44,6 +44,14 @@ export const uiManagerScreenMethods = {
     },
 
     /**
+     * Hides the end credits video element.
+     * @returns {void}
+     */
+    hideEndCreditsVideo() {
+        this.dom.endCreditsVideo.classList.add('d-none');
+    },
+
+    /**
      * Checks whether the pause overlay is currently visible.
      * @returns {boolean} True if the pause overlay is open, otherwise false.
      */

@@ -8,6 +8,7 @@ export const gameAppSessionMethods = {
         if (!this.world) return;
         this.uiManager.hideLevelCompleteActions();
         this.uiManager.hideEndCreditsActions();
+        this.uiManager.hideEndCreditsVideo();
         this.stopEndCreditsVideoAudio();
         this.uiManager.hidePauseOverlay();
         this.uiManager.showGameControls();
@@ -23,6 +24,7 @@ export const gameAppSessionMethods = {
         if (!this.world) return;
         this.uiManager.hideLevelCompleteActions();
         this.uiManager.hideEndCreditsActions();
+        this.uiManager.hideEndCreditsVideo();
         this.uiManager.hidePauseOverlay();
         this.uiManager.hideGameControls();
         this.stopLevelCompleteMusic();

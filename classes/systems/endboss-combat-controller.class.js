@@ -89,7 +89,7 @@ export class EndbossCombatController {
         const character = setup.world.character;
         const seq = setup.state.spiritEssenceSeq;
         if (!seq?.active && character.isAirHitStun) {
-            setup.dialogManager.startDialog(3, timestamp, () => {
+            setup.dialogManager.startDialog('character:endScene:part01', timestamp, () => {
                 setup.world.townLevelController.questManager.advance(15);
                 setup.world.townLevelController.spiritEssenceCtrl.startSpiritEssenceSequence(timestamp);
             });

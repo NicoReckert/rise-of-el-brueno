@@ -27,6 +27,7 @@ export class EndbossFireBeam extends MovableObject {
         this.width = 500;
         this.baseWidth = 500;
         this.height = 500;
+        this.baseHeight = 500;
         this.offset = { top: 40, left: 0, right: 0, bottom: 40 };
         this.animations = this.entityImages.fire || {};
         this.currentAnimation = 'idle';
@@ -63,7 +64,8 @@ export class EndbossFireBeam extends MovableObject {
         const baseX = this.owner.x + this.owner.width * -1.15;
         const rightEdgeX = baseX + this.baseWidth;
         this.x = rightEdgeX - this.width;
-        this.y = mouthY;
+        const anchorY = mouthY + this.baseHeight * 0.55;
+        this.y = anchorY - this.height * 0.55;
     }
 
     /**

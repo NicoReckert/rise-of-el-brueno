@@ -179,6 +179,7 @@ export class EndbossConfig {
         this.endboss.fireballAttackImages = this.entityImages.endboss?.fireballAttack ?? [];
         this.endboss.fireBreathAttackImages = this.entityImages.endboss?.fireBreathAttack ?? [];
         this.endboss.jumpImages = this.entityImages.endboss?.jump ?? [];
+        this.endboss.rageImages = this.entityImages.endboss?.rage ?? null;
     }
 
     /**
@@ -207,6 +208,7 @@ export class EndbossConfig {
         this.endboss.isUnderTheGround = false;
         this.endboss.isFindsPeace = false;
         this.endboss.isFly = false;
+        this.endboss.isRage = false;
         this.endboss.isFireballAttack = false;
     }
 

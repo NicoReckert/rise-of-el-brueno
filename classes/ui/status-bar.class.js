@@ -19,6 +19,7 @@ export class StatusBar extends DrawableObject {
         this.spriteSheet = spriteSheet;
         this.statusImages = null;
         this.animPrefix = animPrefix;
+        this.opacity = 1;
     }
 
     /**

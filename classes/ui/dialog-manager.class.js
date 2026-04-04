@@ -28,8 +28,9 @@ export class DialogManager {
      * @returns {void}
      */
     initDialogState() {
-        this.dialogs = [];
+        this.dialogs = {};
         this.currentDialog = null;
+        this.currentDialogKey = null;
         this.currentIndex = 0;
         this.active = false;
         this.onComplete = null;
@@ -39,30 +40,36 @@ export class DialogManager {
     }
 
     /**
-     * Adds a dialog sequence.
+     * Adds a dialog entry.
+     * @param {string} key Dialog key.
      * @param {Array} sequence Dialog sequence.
-     * @param {{ autoStart?: boolean, onComplete?: Function | null }} [options={}] Dialog options.
-     * @returns {void}
+     * @param {Object} [options={}] Dialog options.
+     * @returns {string | null} Dialog key or null.
      */
-    addDialog(sequence, options = {}) {
-        this.dialogs.push({
+    addDialog(key, sequence, options = {}) {
+        if (!key || typeof key !== "string") return null;
+        if (!Array.isArray(sequence)) return null;
+        this.dialogs[key] = {
+            key,
             sequence,
             autoStart: options.autoStart ?? false,
             onComplete: options.onComplete ?? null
-        });
+        };
+        return key;
     }
 
     /**
-     * Starts a dialog sequence.
-     * @param {number} [index=0] Dialog sequence index.
-     * @param {number} [now=performance.now()] Current time value.
-     * @param {Function | null} [onCompleteOverride=null] Completion callback override.
+     * Starts a dialog.
+     * @param {string} key Dialog key.
+     * @param {number} [now=performance.now()] Current timestamp.
+     * @param {?Function} [onCompleteOverride=null] Completion callback override.
      * @returns {void}
      */
-    startDialog(index = 0, now = performance.now(), onCompleteOverride = null) {
-        const dialog = this.dialogs[index];
+    startDialog(key, now = performance.now(), onCompleteOverride = null) {
+        const dialog = this.dialogs[key];
         if (!dialog) return;
         this.currentDialog = dialog;
+        this.currentDialogKey = key;
         this.currentIndex = 0;
         this.active = true;
         this.onComplete = onCompleteOverride ?? dialog.onComplete;
@@ -120,17 +127,19 @@ export class DialogManager {
     }
 
     /**
-     * Creates a dialog bubble from a step definition.
-     * @param {Object} step Dialog step.
-     * @returns {SpeechBubble} Created dialog bubble.
+     * Creates a speech bubble from a step definition.
+     * @param {Object} step Step data.
+     * @returns {*} Speech bubble instance.
      */
     createBubbleFromStep(step) {
         return new SpeechBubble(
             step.text ?? "",
             step.target ?? "canvas",
             step.bubbleType ?? "speech",
-            step.allAudios ?? this.world.allAudios ?? null,
-            step.yOffset ?? 32
+            {
+                audioManager: step.allAudios ?? this.world.allAudios ?? null,
+                yOffset: step.yOffset ?? 40
+            }
         );
     }
 
@@ -189,7 +198,7 @@ export class DialogManager {
 
     /**
      * Advances to the next dialog step.
-     * @param {number} [now=performance.now()] Current time value.
+     * @param {number} [now=performance.now()] Current timestamp.
      * @returns {void}
      */
     next(now = performance.now()) {
@@ -198,6 +207,7 @@ export class DialogManager {
         if (this.currentIndex >= this.currentDialog.sequence.length) {
             this.active = false;
             this.currentDialog = null;
+            this.currentDialogKey = null;
             this.pauseUntil = null;
             if (this.onComplete) this.onComplete(this.world);
             this.onComplete = null;
@@ -304,7 +314,7 @@ export class DialogManager {
             const step = this.getCurrentStep();
             if (step?.type !== "pause" && step?.type !== "callback") {
                 const bubble = this.resolveStepBubble(step);
-                if (bubble) bubble.render(ctx, camX);
+                if (bubble) bubble.render(ctx, camX, step?.yOffset ?? null);
             }
         }
         if (this.currentBubble) {

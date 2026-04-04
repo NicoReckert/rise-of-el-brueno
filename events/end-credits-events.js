@@ -7,6 +7,8 @@ export const endCreditsEvents =
             type: 'quest',
             action: (setup) => {
                 if (!setup.video) return;
+                setup.video.classList.remove('d-none');
+                setup.video.currentTime = 0;
                 setup.video.loop = false;
                 setup.video.play();
                 document.getElementById('end-credits-actions').classList.remove('d-none');

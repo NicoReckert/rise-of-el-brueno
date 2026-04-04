@@ -12,6 +12,11 @@ export class EndCreditsSetup {
         this.world = world;
         this.allVideos = world.allVideos;
         this.endCreditsEvents = endCreditsEvents;
-        this.video = this.allVideos.end_credits_bg_video || null;
+        this.video = document.getElementById('end-credits-video');
+        this.sourceVideo = this.allVideos.end_credits_bg_video || null;
+        if (this.video && this.sourceVideo?.dataset?.src) {
+            this.video.src = this.sourceVideo.dataset.src;
+            this.video.load();
+        }
     }
 }

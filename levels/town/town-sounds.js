@@ -76,9 +76,13 @@ function createTownMusicSounds(allAudios) {
         finalStormHazardMusic: allAudios.finalStormHazardMusic,
         bossBattleMusic: allAudios.bossBattleMusic,
         endSceneMusic: allAudios.endSceneMusic,
+        endSceneMusic02: allAudios.endSceneMusic02,
         voSollitaSpiritEcho01: allAudios.voSollitaSpiritEcho01,
         voTadeoSpiritEcho01: allAudios.voTadeoSpiritEcho01,
         happyEndMusic: allAudios.happyEndMusic,
-        voSollitaSpeak02: allAudios.voSollitaSpeak02
+        voSollitaSpeak02: allAudios.voSollitaSpeak02,
+        voNayeliSpiritEcho01: allAudios.voNayeliSpiritEcho01,
+        voSollitaSpiritEcho02: allAudios.voSollitaSpiritEcho02,
+        voTadeoSpiritEcho02: allAudios.voTadeoSpiritEcho02
     };
 }

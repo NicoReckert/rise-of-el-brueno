@@ -27,22 +27,11 @@ export class EndCreditsController {
     }
 
     /**
-     * Updates the end credits state and renders the frame.
+     * Updates the scene.
+     * @returns {void}
      */
     update() {
         this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-        this.renderVideoBackground();
         this.eventManager.update();
-    }
-
-    /**
-     * Renders the video background if available.
-     */
-    renderVideoBackground() {
-        const video = this.setup.video;
-        if (!video || video.readyState < 2) return;
-        this.ctx.save();
-        this.ctx.drawImage(video, 0, 0, this.canvas.width, this.canvas.height);
-        this.ctx.restore();
     }
 }

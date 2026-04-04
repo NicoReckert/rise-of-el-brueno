@@ -15,7 +15,8 @@ export class EntityAnimationTransitions {
             afraid: { skipIfCurrent: 'afraidLoop', next: 'afraidLoop' },
             standUp: { skipIfCurrent: 'idleWithStone', next: 'idleWithStone' }
         },
-        sustain: { skipIfCurrent: 'sustainLoop', next: 'sustainLoop' }
+        sustain: { skipIfCurrent: 'sustainLoop', next: 'sustainLoop' },
+        spiritOffering: { next: 'idle' }
     };
 
     /**

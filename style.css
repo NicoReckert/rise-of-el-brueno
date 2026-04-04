@@ -329,6 +329,7 @@ body {
   justify-content: flex-end;
   align-items: center;
   width: 100%;
+  z-index: 5;
   padding-right: 64px;
   padding-bottom: 48px;
 }
@@ -395,6 +396,16 @@ canvas {
   display: none;
   width: 100%;
   height: 100dvh;
+}
+
+.end-credits-video {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: fill;
+  z-index: 4;
+  background: black;
 }
 
 .start-screen-overlay {

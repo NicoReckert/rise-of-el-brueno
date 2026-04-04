@@ -54,7 +54,7 @@ export const townEvents =
                 setup.world.character.isMovingLeft = false
                 setup.world.character.isMovingRight = false
                 setup.world.isKeysStopp = true;
-                setup.dialogManager.startDialog(0, setup.world.timestamp, () => {
+                setup.dialogManager.startDialog('character:01', setup.world.timestamp, () => {
                     setup.world.isKeysStopp = false;
                 });
             }
@@ -394,7 +394,7 @@ export const townEvents =
             type: "quest",
             step: 8,
             action: (setup) => {
-                setup.dialogManager.startDialog(1, setup.world.timestamp, () => {
+                setup.dialogManager.startDialog('nayeliSpirit:01', setup.world.timestamp, () => {
                     setup.environment.nayeliSpirit.updateAnimationState('blessing', 1000 / 6);
                     setup.sounds.spiritAppearsSfx.play();
                     setup.environment.nayeliSpirit.fadeOut(setup.world.timestamp, 1600);
@@ -516,7 +516,7 @@ export const townEvents =
                 setup.world.townLevelController.magicShield.start();
                 setup.world.audioManager.playOneShot("shieldChargeSfx", 0.7);
                 setup.speechBubblesTadeo[0].start(1000);
-                setup.dialogManager.startDialog(2, setup.world.timestamp);
+                setup.dialogManager.startDialog('tadeo:01', setup.world.timestamp);
             }
         },
 
@@ -1069,6 +1069,25 @@ export const townEvents =
         },
 
         {
+            type: "quest",
+            step: 14,
+            condition: (setup) => setup.world.character?.isCapturedByTornado,
+            once: false,
+            action: (setup) => {
+                const items = [
+                    setup.statusBarCharacter,
+                    setup.statusBarEndboss,
+                    setup.coinBar,
+                    setup.bottleBar
+                ]
+                items.forEach(item => {
+                    if (!item) return;
+                    item.opacity = Math.max(0, (item.opacity ?? 1) - 0.005);
+                });
+            }
+        },
+
+        {
             type: "time",
             delay: 4000,
             step: 15,
@@ -1102,6 +1121,7 @@ export const townEvents =
                 setup.environment.nayeliSpiritEcho.updateAnimationState('spiritCuddle', 1000 / 5.5);
                 setup.environment.nayeliSpiritEcho.fadeIn(setup.world.timestamp, 4000);
                 setup.sounds.voNayeliSpirit01.play();
+                setup.dialogManager.startDialog('nayeliSpiritEcho:01', setup.world.timestamp);
             },
         },
 
@@ -1122,6 +1142,7 @@ export const townEvents =
                 setup.environment.sollitaSpiritEcho.updateAnimationState('spiritCuddle', 1000 / 5.5);
                 setup.environment.sollitaSpiritEcho.fadeIn(setup.world.timestamp, 4000);
                 setup.sounds.voSollitaSpiritEcho01.play();
+                setup.dialogManager.startDialog('sollitaSpiritEcho:01', setup.world.timestamp);
             },
         },
 
@@ -1142,6 +1163,7 @@ export const townEvents =
                 setup.environment.tadeoSpiritEcho.updateAnimationState('spiritCuddle', 1000 / 5.5);
                 setup.environment.tadeoSpiritEcho.fadeIn(setup.world.timestamp, 4000);
                 setup.sounds.voTadeoSpiritEcho01.play();
+                setup.dialogManager.startDialog('tadeoSpiritEcho:01', setup.world.timestamp);
             },
         },
 
@@ -1172,9 +1194,63 @@ export const townEvents =
             delay: 4000,
             step: 17,
             action: (setup) => {
-                setup.world.audioManager.fadeAudioTo(setup.sounds.endSceneMusic, 2000, 1);
+                // setup.world.audioManager.fadeAudioTo(setup.sounds.endSceneMusic, 2000, 1);
+                // setup.world.audioManager.fadeOutAudio(setup.sounds.endSceneMusic, 1000);
+                // setup.world.audioManager.fadeInAudio(setup.sounds.endSceneMusic02, 2000);
                 setup.environment.tadeoSpiritEcho.fadeOut(setup.world.timestamp, 4000);
+                setup.environment.juanitoSpirit.fadeOut(setup.world.timestamp, 4000);
+                setup.environment.lolaSpirit.fadeOut(setup.world.timestamp, 4000);
+                setup.environment.pollitoSpirit.fadeOut(setup.world.timestamp, 4000);
                 setup.world.character.isStandUpAfterPainStun = true;
+                setup.world.audioManager.fadeAudioTo(setup.sounds.endSceneMusic, 2000, 0.8);
+
+            },
+        },
+
+        {
+            type: "time",
+            delay: 8000,
+            step: 17,
+            action: (setup) => {
+                setup.environment.nayeliSpiritEcho.updateAnimationState('idle');
+                setup.environment.sollitaSpiritEcho.updateAnimationState('idle');
+                setup.environment.tadeoSpiritEcho.updateAnimationState('idle');
+                setup.environment.nayeliSpiritEcho.x = 26970;
+                setup.environment.nayeliSpiritEcho.width = 200;
+                setup.environment.nayeliSpiritEcho.height = 200;
+                setup.environment.sollitaSpiritEcho.width = 200;
+                setup.environment.sollitaSpiritEcho.height = 200;
+                setup.environment.tadeoSpiritEcho.width = 150;
+                setup.environment.tadeoSpiritEcho.height = 150;
+                setup.environment.sollitaSpiritEcho.x = 26970;
+                setup.environment.tadeoSpiritEcho.x = 27095;
+                setup.environment.nayeliSpiritEcho.y = 170;
+                setup.environment.sollitaSpiritEcho.y = 370;
+                setup.environment.tadeoSpiritEcho.y = 295;
+                setup.environment.tadeoSpiritEcho.isFlipped = false;
+
+                setup.environment.lolaSpirit.updateAnimationState('idle', 1000 / 4.5);
+                setup.environment.juanitoSpirit.updateAnimationState('idle', 1000 / 4.5);
+                setup.environment.pollitoSpirit.updateAnimationState('idle', 1000 / 4.5);
+
+                setup.environment.lolaSpirit.x = 27120
+                setup.environment.juanitoSpirit.x = 27145
+                setup.environment.pollitoSpirit.x = 27195
+
+                setup.environment.lolaSpirit.y = 400
+                setup.environment.juanitoSpirit.y = 145
+                setup.environment.pollitoSpirit.y = 320
+                setup.environment.juanitoSpirit.isFlipped = false;
+                setup.environment.pollitoSpirit.isFlipped = true;
+
+
+                setup.environment.nayeliSpiritEcho.fadeIn(setup.world.timestamp, 4000);
+                setup.environment.sollitaSpiritEcho.fadeIn(setup.world.timestamp, 4000);
+                setup.environment.tadeoSpiritEcho.fadeIn(setup.world.timestamp, 4000);
+                setup.environment.juanitoSpirit.fadeIn(setup.world.timestamp, 4000);
+                setup.environment.lolaSpirit.fadeIn(setup.world.timestamp, 4000);
+                setup.environment.pollitoSpirit.fadeIn(setup.world.timestamp, 4000);
+
             },
         },
 
@@ -1184,6 +1260,7 @@ export const townEvents =
             step: 17,
             action: (setup) => {
                 setup.environment.fireBlue.fadeIn(setup.world.timestamp, 4000);
+                setup.world.audioManager.playOneShot('beamChargeSfx', { volume: 0.8 });
             }
         },
 
@@ -1194,7 +1271,7 @@ export const townEvents =
             once: false,
             action: (setup) => {
                 const beam = setup.state.effectsBehind[0];
-                if (beam && beam.width >= 380) {
+                if (beam && beam.width >= 300) {
                     beam.width -= 0.5;
                 }
             }
@@ -1202,16 +1279,323 @@ export const townEvents =
 
         {
             type: "time",
-            delay: 27000,
+            delay: 16000,
             step: 17,
             action: (setup) => {
-                setup.environment.fireBlue.updateAnimationState('sustain', 1000 / 12);
+                setup.dialogManager.startDialog('character:endScene:part02', setup.world.timestamp);
+            }
+        },
+
+        {
+            type: "time",
+            delay: 30000,
+            step: 17,
+            action: (setup) => {
+                setup.world.audioManager.playOneShot('beamChargeSfx', { volume: 0.8 });
+            }
+        },
+
+        {
+            type: "time",
+            delay: 30000,
+            step: 17,
+            once: false,
+            action: (setup) => {
+                if (setup.environment.fireBlue.width <= 250) {
+                    setup.environment.fireBlue.width += 0.5;
+                }
+            }
+        },
+
+        {
+            type: "time",
+            delay: 30000,
+            step: 17,
+            once: false,
+            action: (setup) => {
+                const beam = setup.state.effectsBehind[0];
+                if (beam && beam.width >= 250) {
+                    beam.width -= 0.5;
+                }
+            }
+        },
+
+        {
+            type: "time",
+            delay: 32000,
+            step: 17,
+            action: (setup) => {
+                setup.characters.endboss.isFireBreath = false;
+                setup.characters.endboss.isRage = true;
+                setup.world.audioManager.playOneShot('bossRoarSfx', { volume: 0.8 });
+                setup.world.audioManager.playOneShot('bossBeamChargeSfx', { volume: 0.8 });
+            }
+        },
+
+        {
+            type: "time",
+            delay: 32000,
+            step: 17,
+            once: false,
+            action: (setup) => {
+                const beam = setup.state.effectsBehind[0];
+                if (beam && beam.height <= 700) {
+                    beam.height += 0.5;
+                }
+            }
+        },
+
+        {
+            type: "time",
+            delay: 35000,
+            step: 17,
+            action: (setup) => {
+                setup.environment.juanitoSpirit.updateAnimationState('spiritOffering', 1000 / 6);
+                setup.dialogManager.playBubble(setup.speechBubblesJuanito[0], {
+                    duration: 2000, now: setup.world.timestamp
+                });
+                setup.world.audioManager.playOneShot('chickenSfx', { volume: 1 });
+                setup.world.audioManager.playOneShot('beamChargeSfx', { volume: 0.8 });
+            }
+        },
+
+
+        {
+            type: "time",
+            delay: 37000,
+            step: 17,
+            action: (setup) => {
+                const beam = setup.environment.fireBlue;
+                const char = setup.world.character;
+                beam.updateAnimationState('sustain', 1000 / 12);
+                beam.height = 250;
+                const anchorY = char.y - 36;
+                beam.y = Math.round(anchorY + (500 - beam.height) / 2);
+            }
+        },
+
+        {
+            type: "time",
+            delay: 38000,
+            step: 17,
+            action: (setup) => {
+                setup.environment.juanitoSpirit.fadeOut(setup.world.timestamp, 4000);
+            }
+        },
+
+        {
+            type: "time",
+            delay: 39000,
+            step: 17,
+            action: (setup) => {
+                setup.environment.pollitoSpirit.updateAnimationState('spiritOffering', 1000 / 6);
+                setup.dialogManager.playBubble(setup.speechBubblesPollito[0], {
+                    duration: 2000, now: setup.world.timestamp
+                });
+                setup.world.audioManager.playOneShot('chickSfx', { volume: 1 });
+                setup.world.audioManager.playOneShot('beamChargeSfx', { volume: 0.8 });
+            }
+        },
+
+        {
+            type: "time",
+            delay: 40000,
+            step: 17,
+            action: (setup) => {
+                setup.environment.pollitoSpirit.fadeOut(setup.world.timestamp, 4000);
+            }
+        },
+
+        {
+            type: "time",
+            delay: 41000,
+            step: 17,
+            once: false,
+            action: (setup) => {
+                const beam = setup.environment.fireBlue;
+                const char = setup.world.character;
+                if (!beam || !char) return;
+                if (beam && beam.height < 300) {
+                    beam.height += 0.5;
+                }
+                const anchorY = char.y - 37;
+                beam.y = Math.round(anchorY + (500 - beam.height) / 2);
+            }
+        },
+
+        {
+            type: "time",
+            delay: 43000,
+            step: 17,
+            action: (setup) => {
+                setup.environment.lolaSpirit.updateAnimationState('spiritOffering', 1000 / 6);
+                setup.dialogManager.playBubble(setup.speechBubblesLola[0], {
+                    duration: 2000, now: setup.world.timestamp
+                });
+                setup.world.audioManager.playOneShot('cowSfx01', { volume: 1 });
+                setup.world.audioManager.playOneShot('beamChargeSfx', { volume: 0.8 });
+            }
+        },
+
+        {
+            type: "time",
+            delay: 44000,
+            step: 17,
+            action: (setup) => {
+                setup.environment.lolaSpirit.fadeOut(setup.world.timestamp, 4000);
+            }
+        },
+
+        {
+            type: "time",
+            delay: 45000,
+            step: 17,
+            once: false,
+            action: (setup) => {
+                const beam = setup.environment.fireBlue;
+                const char = setup.world.character;
+                if (!beam || !char) return;
+                if (beam && beam.height < 350) {
+                    beam.height += 0.5;
+                }
+                const anchorY = char.y - 38;
+                beam.y = Math.round(anchorY + (500 - beam.height) / 2);
+            }
+        },
+
+        {
+            type: "time",
+            delay: 47000,
+            step: 17,
+            action: (setup) => {
+                setup.environment.nayeliSpiritEcho.updateAnimationState('spiritOffering', 1000 / 6);
+                setup.sounds.voNayeliSpiritEcho01.play();
+                setup.dialogManager.playBubble(setup.speechBubblesNayeliSpiritEcho[3], {
+                    duration: 2000, now: setup.world.timestamp
+                });
+                setup.world.audioManager.playOneShot('beamChargeSfx', { volume: 0.8 });
+            }
+        },
+
+        {
+            type: "time",
+            delay: 48000,
+            step: 17,
+            action: (setup) => {
+                setup.environment.nayeliSpiritEcho.fadeOut(setup.world.timestamp, 4000);
+            }
+        },
+
+        {
+            type: "time",
+            delay: 49000,
+            step: 17,
+            once: false,
+            action: (setup) => {
+                const beam = setup.environment.fireBlue;
+                const char = setup.world.character;
+                if (!beam || !char) return;
+                if (beam && beam.height < 400) {
+                    beam.height += 0.5;
+                }
+                const anchorY = char.y - 39;
+                beam.y = Math.round(anchorY + (500 - beam.height) / 2);
+            }
+        },
+
+        {
+            type: "time",
+            delay: 51000,
+            step: 17,
+            action: (setup) => {
+                setup.environment.sollitaSpiritEcho.updateAnimationState('spiritOffering', 1000 / 6);
+                setup.sounds.voSollitaSpiritEcho02.play();
+                setup.dialogManager.playBubble(setup.speechBubblesSollitaSpiritEcho[5], {
+                    duration: 2000, now: setup.world.timestamp
+                });
+                setup.world.audioManager.playOneShot('beamChargeSfx', { volume: 0.8 });
+
+            }
+        },
+
+        {
+            type: "time",
+            delay: 52000,
+            step: 17,
+            action: (setup) => {
+                setup.environment.sollitaSpiritEcho.fadeOut(setup.world.timestamp, 4000);
+            }
+        },
+
+        {
+            type: "time",
+            delay: 53000,
+            step: 17,
+            once: false,
+            action: (setup) => {
+                const beam = setup.environment.fireBlue;
+                const char = setup.world.character;
+                if (!beam || !char) return;
+                if (beam && beam.height < 450) {
+                    beam.height += 0.5;
+                }
+                const anchorY = char.y - 40;
+                beam.y = Math.round(anchorY + (500 - beam.height) / 2);
+            }
+        },
+
+        {
+            type: "time",
+            delay: 55000,
+            step: 17,
+            action: (setup) => {
+                setup.environment.tadeoSpiritEcho.updateAnimationState('spiritOffering', 1000 / 6);
+                setup.sounds.voTadeoSpiritEcho02.play();
+                setup.dialogManager.playBubble(setup.speechBubblesTadeoSpiritEcho[5], {
+                    duration: 2000, now: setup.world.timestamp
+                });
+                setup.world.audioManager.playOneShot('beamChargeSfx', { volume: 0.8 });
+            }
+        },
+
+        {
+            type: "time",
+            delay: 56000,
+            step: 17,
+            action: (setup) => {
+                setup.environment.tadeoSpiritEcho.fadeOut(setup.world.timestamp, 4000);
+            }
+        },
+
+        {
+            type: "time",
+            delay: 57000,
+            step: 17,
+            once: false,
+            action: (setup) => {
+                const beam = setup.environment.fireBlue;
+                const char = setup.world.character;
+                if (!beam || !char) return;
+                if (beam && beam.height < 500) {
+                    beam.height += 0.5;
+                }
+                const anchorY = char.y - 41;
+                beam.y = Math.round(anchorY + (500 - beam.height) / 2);
+            }
+        },
+
+        {
+            type: "time",
+            delay: 59000,
+            step: 17,
+            action: (setup) => {
+                setup.world.audioManager.playOneShot('beamChargeFinalSfx', { volume: 0.8 });
             },
         },
 
         {
             type: "time",
-            delay: 27000,
+            delay: 59000,
             step: 17,
             once: false,
             action: (setup) => {
@@ -1223,7 +1607,16 @@ export const townEvents =
 
         {
             type: "time",
-            delay: 35000,
+            delay: 63000,
+            step: 17,
+            action: (setup) => {
+                setup.world.audioManager.playOneShot('bossHurtSfx', { volume: 0.8 });
+            },
+        },
+
+        {
+            type: "time",
+            delay: 65000,
             step: 17,
             action: (setup) => {
                 setup.whiteFlashTransition.start(setup.world.timestamp);
@@ -1232,7 +1625,7 @@ export const townEvents =
 
         {
             type: "time",
-            delay: 36000,
+            delay: 66000,
             step: 17,
             action: (setup) => {
                 setup.world.character.isAttackEndScene = false;
@@ -1241,9 +1634,6 @@ export const townEvents =
                 setup.environment.rockyDesertPedestal.opacity = 0;
                 setup.world.audioManager.fadeOutAudio(setup.sounds.endSceneMusic, 1000);
                 setup.state.effectsBehind[0].opacity = 0;
-                setup.environment.juanitoSpirit.opacity = 0;
-                setup.environment.pollitoSpirit.opacity = 0;
-                setup.environment.lolaSpirit.opacity = 0;
                 setup.characters.endboss.isDead = true;
                 setup.world.townLevelController.questManager.advance(18);
             },
@@ -1325,7 +1715,7 @@ export const townEvents =
             once: false,
             action: (setup) => {
                 setup.characters.endboss.opacity = Math.max(
-                    0, (setup.characters.endboss.opacity ?? 1) - 0.001);
+                    0, (setup.characters.endboss.opacity ?? 1) - 0.0015);
             }
         },
 
@@ -1379,6 +1769,7 @@ export const townEvents =
                     setup.characters.sollita.updateAnimationState('idle');
                     setup.world.audioManager.fadeAudioTo(setup.sounds.happyEndMusic, 2000, 0.6);
                     setup.sounds.voSollitaSpeak02.play();
+                    setup.dialogManager.startDialog('sollita:endScene', setup.world.timestamp);
                     setup.world.townLevelController.questManager.advance(24);
                 }
             }
@@ -1397,7 +1788,7 @@ export const townEvents =
 
         {
             type: 'time',
-            delay: 7000,
+            delay: 5500,
             step: 24,
             condition: (setup) => setup.sounds.voSollitaSpeak02.ended,
             action: (setup) => {

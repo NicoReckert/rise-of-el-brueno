@@ -143,9 +143,9 @@ export class TownSpiritEssenceController {
     }
 
     /**
-     * Returns data for the current spirit essence sequence step.
-     * @param {Object} seq Spirit essence sequence state.
-     * @returns {Object|null} Step data or null if invalid.
+     * Returns data for the current spirit essence step.
+     * @param {Object} seq Sequence data.
+     * @returns {{i: number, e: *, s: *, tx: number, ty: number} | null} Step data or null.
      */
     getSpiritEssenceStepData(seq) {
         const i = seq.index;
@@ -154,7 +154,9 @@ export class TownSpiritEssenceController {
         const off = seq.targetOffsets[i];
         if (!e || !s || !off) return null;
         const hero = this.character;
-        return { i, e, s, tx: hero.x + off.x, ty: hero.y + off.y };
+        const spiritX = hero.x + off.x;
+        const spiritY = hero.y + off.y;
+        return { i, e, s, tx: spiritX + s.width * 0.2, ty: spiritY + s.height * 0.25 };
     }
 
     /**
@@ -193,19 +195,23 @@ export class TownSpiritEssenceController {
     }
 
     /**
-     * Handles spirit essence arrival and fade-out before revealing the spirit.
-     * @param {Object} seq Spirit essence sequence state.
-     * @param {{i:number, e:Object, s:Object, tx:number, ty:number}} data Step data.
+     * Updates spirit essence arrival and reveals the spirit after fade-out.
+     * @param {Object} seq Sequence data.
+     * @param {{i: number, e: *, s: *}} step Current step data.
      * @param {number} timestamp Frame timestamp.
      * @returns {void}
      */
-    updateSpiritEssenceArrival(seq, { i, e, s, tx, ty }, timestamp) {
+    updateSpiritEssenceArrival(seq, { i, e, s }, timestamp) {
         if (!seq.fadeOuts[i]) {
             seq.fadeOuts[i] = { start: timestamp, dur: seq.fadeOutDur, from: e.opacity ?? 1 };
         }
         const done = this.updateSpiritEssenceFadeOut(seq, i, e, timestamp);
         if (!done) return;
-        this.revealSpiritAfterEssence(seq, i, s, tx, ty, timestamp);
+        const hero = this.character;
+        const off = seq.targetOffsets[i];
+        const spiritX = hero.x + off.x;
+        const spiritY = hero.y + off.y;
+        this.revealSpiritAfterEssence(seq, i, s, spiritX, spiritY, timestamp);
     }
 
     /**
