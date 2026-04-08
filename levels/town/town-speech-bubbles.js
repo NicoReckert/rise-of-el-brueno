@@ -25,8 +25,11 @@ export function townSpeechBubblesCharacterPart01(character, audioManager) {
         new SpeechBubble("Hier hat jemand gewütet…", character, 'speech', { audioManager }),
         new SpeechBubble("Kratzspuren… Federn… und Blut.", character, 'speech', { audioManager }),
         new SpeechBubble("Ich darf keine Zeit verlieren.", character, 'speech', { audioManager }),
-        new SpeechBubble("Es tut mir so leid …", character, 'speech', { audioManager }),
-        new SpeechBubble("Ich hätte euch beschützen müssen, aber ich habe versagt.", character, 'speech', { audioManager })
+        new SpeechBubble("Oh ein Sandsturm...", character, 'speech', { audioManager }),
+        new SpeechBubble("Der Sandsturm wird sehr viel stärker...", character, 'speech', { audioManager }),
+        new SpeechBubble("Dieser Sturm… ich kann kaum noch stehen…", character, 'speech', { audioManager }),
+        new SpeechBubble("Nein… ich darf jetzt nicht aufgeben…", character, 'speech', { audioManager }),
+        new SpeechBubble("Meine Kraft… verlässt mich…", character, 'speech', { audioManager }),
     ];
 }
 
@@ -38,6 +41,10 @@ export function townSpeechBubblesCharacterPart01(character, audioManager) {
  */
 export function townSpeechBubblesCharacterPart02(character, audioManager) {
     return [
+        new SpeechBubble("Tadeo… du hast mich gerettet…", character, 'speech', { audioManager }),
+        new SpeechBubble("Ich dachte schon, es wäre vorbei…", character, 'speech', { audioManager }),
+        new SpeechBubble("Es tut mir so leid …", character, 'speech', { audioManager }),
+        new SpeechBubble("Ich hätte euch beschützen müssen, aber ich habe versagt.", character, 'speech', { audioManager }),
         new SpeechBubble("Nicht ein Tag vergeht, ohne dass ich an euch denke und daran zerbreche.", character, 'speech', { audioManager }),
         new SpeechBubble("Wenn ich stärker gewesen wäre, wärt ihr jetzt noch bei mir.", character, 'speech', { audioManager }),
         new SpeechBubble("Bitte … sagt mir, dass ihr mich noch nicht ganz verlassen habt.", character, 'speech', { audioManager }),
@@ -143,9 +150,20 @@ export function createTownSpeechBubblesSollitaSpiritEcho(sollitaSpiritEcho) {
  */
 export function createTownSpeechBubblesTadeo(tadeo) {
     return [
+        new SpeechBubble("Brünö...!", tadeo, 'speech'),
+        new SpeechBubble("Halte durch!", tadeo, 'speech'),
         new SpeechBubble("Tonatiuh...", tadeo, 'speech'),
         new SpeechBubble("Schütze uns!", tadeo, 'speech'),
-        new SpeechBubble("Gib uns deinen Schild!", tadeo, 'speech')
+        new SpeechBubble("Gib uns deinen Schild!", tadeo, 'speech'),
+        new SpeechBubble("Geschafft… der Schild hält!", tadeo, 'speech'),
+        new SpeechBubble("Jetzt kann dir der Sturm nichts mehr tun.", tadeo, 'speech'),
+        new SpeechBubble("Komm, Brünö...", tadeo, 'speech'),
+        new SpeechBubble("Ich bringe dich zu Nayeli.", tadeo, 'speech'),
+        new SpeechBubble("Dort sind wir sicher.", tadeo, 'speech'),
+        new SpeechBubble("Übrigens... ich bin Tadeo.", tadeo, 'speech'),
+        new SpeechBubble("Da sind wir, Brünö.", tadeo, 'speech'),
+        new SpeechBubble("Geh hinein...", tadeo, 'speech'),
+        new SpeechBubble("Nayeli wartet auf dich.", tadeo, 'speech')
     ];
 }
 

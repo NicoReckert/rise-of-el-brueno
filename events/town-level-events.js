@@ -234,6 +234,21 @@ export const townEvents =
         },
 
         /**
+         * Time-based event that plays a character speech bubble after a delay.
+         */
+        {
+
+            type: 'time',
+            delay: 4000,
+            step: 1,
+            action: (setup) => {
+                setup.dialogManager.playBubble(setup.speechBubblesCharacter[4], {
+                    duration: 4500, now: setup.world.timestamp
+                });
+            }
+        },
+
+        /**
          * Position-based quest event that advances the quest
          * when the character enters the defined area.
          */
@@ -278,6 +293,9 @@ export const townEvents =
             area: { x: 5000, width: 2000 },
             step: 3,
             action: (setup) => {
+                setup.dialogManager.playBubble(setup.speechBubblesCharacter[5], {
+                    duration: 4500, now: setup.world.timestamp
+                });
                 setup.world.townLevelController.questManager.advance(4)
             }
         },
@@ -340,14 +358,23 @@ export const townEvents =
 
         {
             type: "position",
-            area: { x: 13000, width: 100 },
+            area: { x: 12800, width: 100 },
             step: 6,
             action: (setup) => {
                 setup.world.townLevelController.stormHazards.enabled = false;
+            }
+        },
+
+        {
+            type: "position",
+            area: { x: 13000, width: 100 },
+            step: 6,
+            action: (setup) => {
                 setup.world.character.speedX = 1.5;
                 setup.world.character.isWalkInStorm = true;
+                setup.dialogManager.startDialog('character:02', setup.world.timestamp);
                 setup.world.audioManager.fadeOutAudio(setup.sounds.finalStormHazardMusic, 1000);
-                setup.world.audioManager.fadeInAudio(setup.sounds.townDayMusic, 2000, 0.8);
+                setup.world.audioManager.fadeInAudio(setup.sounds.airHitStunMusic, 2000, 0.8);
             }
         },
 
@@ -498,6 +525,17 @@ export const townEvents =
             }
         },
 
+        {
+            type: "position",
+            objectA: 'tadeo',
+            area: { x: 15620, width: 100 },
+            step: 9,
+            action: (setup) => {
+                setup.sounds.voTadeoSpeak01.play();
+                setup.dialogManager.startDialog('tadeo:01', setup.world.timestamp);
+            }
+        },
+
         /**
          * Time event that transitions the background music
          * from Nayeli's theme to Tadeo's theme.
@@ -524,13 +562,12 @@ export const townEvents =
                 setup.sounds.tadeoHoldStoneMusic.loop = true;
                 setup.world.audioManager.fadeInAudio(setup.sounds.tadeoHoldStoneMusic, 2000, 0.6);
                 setup.world.audioManager.fadeOutAudio(setup.sounds.tadeoThemeMusic, 1000);
-                setup.sounds.voTadeoSpeak01.play();
+                setup.sounds.voTadeoSpeak02.play();
                 setup.characters.tadeo.updateAnimationState('stoneActivated', 1000 / 5.5);
                 setup.panel.activate(performance.now());
                 setup.world.townLevelController.magicShield.start();
                 setup.world.audioManager.playOneShot("shieldChargeSfx", 0.7);
-                setup.speechBubblesTadeo[0].start(1000);
-                setup.dialogManager.startDialog('tadeo:01', setup.world.timestamp);
+                setup.dialogManager.startDialog('tadeo:02', setup.world.timestamp);
             }
         },
 
@@ -544,13 +581,35 @@ export const townEvents =
             step: 10,
             action: (setup) => {
                 setup.world.character.speedX = 3;
-                setup.world.character.isCollapse = false;
-                setup.world.isKeysStopp = false;
-                setup.world.character.isStandUpAfterCollapse = true;
                 setup.world.character.isWalkInStorm = false;
-                setup.characters.tadeo.updateAnimationState('walkWithStone');
-                setup.characters.tadeo.isFlipped = false;
-                setup.world.townLevelController.questManager.advance(11);
+                setup.characters.tadeo.updateAnimationState('idleWithStone');
+                setup.sounds.voTadeoSpeak03.play();
+                setup.dialogManager.startDialog('tadeo:03', setup.world.timestamp);
+            }
+        },
+
+        {
+            type: "time",
+            delay: 20000,
+            step: 10,
+            action: (setup) => {
+                setup.world.character.isCollapse = false;
+                setup.world.character.isStandUpAfterCollapse = true;
+                setup.sounds.voTadeoSpeak04.play();
+                setup.dialogManager.startDialog('tadeo:04', setup.world.timestamp);
+            }
+        },
+
+        {
+            type: "time",
+            delay: 30000,
+            step: 10,
+            action: (setup) => {
+                setup.dialogManager.startDialog('character:03', setup.world.timestamp, () => {
+                    setup.world.isKeysStopp = false;
+                    setup.characters.tadeo.isFlipped = false;
+                    setup.world.townLevelController.questManager.advance(11);
+                });
             }
         },
 
@@ -567,18 +626,32 @@ export const townEvents =
             once: false,
             action: (setup) => {
                 const tadeo = setup.characters.tadeo;
-                const arriveX = tadeo.moveToX(20250, { speed: 0.8 });
+                const arriveX = tadeo.moveToX(20350, { speed: 0.8 });
                 if (setup.state.isTadeoAfraid || setup.state.isTadeoPanic) {
                     tadeo.isMovingRight = false;
                     return;
                 }
                 if (!arriveX) setup.characters.tadeo.updateAnimationState('walkWithStone');
-                if (arriveX) setup.characters.tadeo.updateAnimationState('idleWithStone');
+                if (arriveX && !setup.state.isTadeoArrivedNayelisHouse) {
+                    setup.characters.tadeo.updateAnimationState('idleWithStone');
+                    setup.state.isTadeoArrivedNayelisHouse = true;
+                }
             },
             onLeave: (setup) => {
                 if (setup.state.isTadeoAfraid || setup.state.isTadeoPanic) return;
                 setup.characters.tadeo.isMovingRight = false;
                 setup.characters.tadeo.updateAnimationState('idleWithStone');
+            }
+        },
+
+        {
+            type: 'quest',
+            step: 11,
+            condition: (setup) => setup.state.isTadeoArrivedNayelisHouse,
+            action: (setup) => {
+                setup.characters.tadeo.isFlipped = true;
+                setup.sounds.voTadeoSpeak05.play();
+                setup.dialogManager.startDialog('tadeo:05', setup.world.timestamp);
             }
         },
 
@@ -2338,7 +2411,9 @@ export const townEvents =
                 char.isDead = true;
                 setup.world.audioManager.fadeOutAudio(setup.sounds.townDayMusic, 1000);
                 setup.world.audioManager.fadeOutAudio(setup.sounds.bossBattleMusic, 1000);
+                setup.world.audioManager.fadeOutAudio(setup.sounds.stormHazardMusic, 1000);
                 setup.world.audioManager.fadeOutAudio(setup.sounds.finalStormHazardMusic, 1000);
+                setup.world.audioManager.fadeOutAudio(setup.sounds.tadeoHoldStoneMusic, 1000);
             }
         },
 

@@ -37,7 +37,11 @@ function createTownCharacterSounds(allAudios) {
         voSoulSpeak01: allAudios.voSoulSpeak01,
         voNayeliSpirit01: allAudios.voNayeliSpirit01,
         voNayeliSpirit02: allAudios.voNayeliSpirit02,
-        voTadeoSpeak01: allAudios.voTadeoSpeak01
+        voTadeoSpeak01: allAudios.voTadeoSpeak01,
+        voTadeoSpeak02: allAudios.voTadeoSpeak02,
+        voTadeoSpeak03: allAudios.voTadeoSpeak03,
+        voTadeoSpeak04: allAudios.voTadeoSpeak04,
+        voTadeoSpeak05: allAudios.voTadeoSpeak05
     };
 }
 

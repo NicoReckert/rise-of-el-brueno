@@ -136,7 +136,7 @@ export class World {
      * Starts the game.
      */
     startGame() {
-        this.currentScene = 'nayelisHouseLevel';
+        this.currentScene = 'townLevel';
         this.levelManager.initLevels();
         this.draw();
     }

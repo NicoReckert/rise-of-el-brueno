@@ -27,7 +27,7 @@ export const townHelper = {
      * @param {Object} setup Setup context object.
      */
     startNayeliSpiritAudio(setup) {
-        setup.world.audioManager.fadeOutAudio(setup.sounds.townDayMusic, 1000);
+        setup.world.audioManager.fadeOutAudio(setup.sounds.airHitStunMusic, 1000);
         setup.sounds.nayeliThemeMusic.loop = true;
         setup.world.audioManager.fadeInAudio(setup.sounds.nayeliThemeMusic, 2000, 0.3);
         setup.sounds.spiritAppearsSfx.play();

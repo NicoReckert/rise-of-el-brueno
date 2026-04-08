@@ -18,17 +18,54 @@ export function registerTownDialogs(setup) {
 }
 
 /**
- * Registers dialog steps for the main character.
- * @param {Object} setup Town level setup reference.
- * @returns {Object} Registered dialog instance.
+ * Registers character dialogs.
+ * @param {Object} setup Dialog setup.
+ * @returns {{part01: *, part02: *, part03: *}} Registered dialog parts.
  */
 function registerCharacterDialogs(setup) {
-    return setup.dialogManager.addDialog('character:01', [
+    const part01 = setup.dialogManager.addDialog('character:01', characterDialogsPart01(setup));
+    const part02 = setup.dialogManager.addDialog('character:02', characterDialogsPart02(setup));
+    const part03 = setup.dialogManager.addDialog('character:03', characterDialogsPart03(setup));
+    return { part01, part02, part03 };
+}
+
+/**
+ * Creates the first part of character dialog steps.
+ * @param {Object} setup Dialog setup.
+ * @returns {Array} Dialog steps.
+ */
+function characterDialogsPart01(setup) {
+    return [
         bubbleStep({ bubble: setup.speechBubblesCharacter[0], duration: 4500 }),
         bubbleStep({ bubble: setup.speechBubblesCharacter[1], duration: 4500 }),
         bubbleStep({ bubble: setup.speechBubblesCharacter[2], duration: 4500 }),
         bubbleStep({ bubble: setup.speechBubblesCharacter[3], duration: 4500 })
-    ]);
+    ];
+}
+
+/**
+ * Creates the second part of character dialog steps.
+ * @param {Object} setup Dialog setup.
+ * @returns {Array} Dialog steps.
+ */
+function characterDialogsPart02(setup) {
+    return [
+        bubbleStep({ bubble: setup.speechBubblesCharacter[6], duration: 6000 }),
+        bubbleStep({ bubble: setup.speechBubblesCharacter[7], duration: 6000 }),
+        bubbleStep({ bubble: setup.speechBubblesCharacter[8], duration: 6000 })
+    ];
+}
+
+/**
+ * Creates the third part of character dialog steps.
+ * @param {Object} setup Dialog setup.
+ * @returns {Array} Dialog steps.
+ */
+function characterDialogsPart03(setup) {
+    return [
+        bubbleStep({ bubble: setup.speechBubblesCharacter[9], duration: 4500 }),
+        bubbleStep({ bubble: setup.speechBubblesCharacter[10], duration: 4500 })
+    ];
 }
 
 /**
@@ -77,16 +114,81 @@ function registerSollitaSpiritEchoDialogs(setup) {
 }
 
 /**
- * Registers dialog steps for Tadeo.
- * @param {Object} setup Town level setup reference.
- * @returns {Object} Registered dialog instance.
+ * Registers Tadeo dialogs.
+ * @param {Object} setup Dialog setup.
+ * @returns {*} Registered dialog result.
  */
 function registerTadeoDialogs(setup) {
-    return setup.dialogManager.addDialog('tadeo:01', [
+    const part01 = setup.dialogManager.addDialog('tadeo:01', tadeoDialogsPart01(setup));
+    const part02 = setup.dialogManager.addDialog('tadeo:02', tadeoDialogsPart02(setup));
+    const part03 = setup.dialogManager.addDialog('tadeo:03', tadeoDialogsPart03(setup));
+    const part04 = setup.dialogManager.addDialog('tadeo:04', tadeoDialogsPart04(setup));
+    const part05 = setup.dialogManager.addDialog('tadeo:05', tadeoDialogsPart05(setup));
+    return (part01, part02, part03, part04, part05);
+}
+
+/**
+ * Creates the first part of Tadeo dialog steps.
+ * @param {Object} setup Dialog setup.
+ * @returns {Array} Dialog steps.
+ */
+function tadeoDialogsPart01(setup) {
+    return [
         bubbleStep({ bubble: setup.speechBubblesTadeo[0], duration: 1000, yOffset: 10 }),
-        bubbleStep({ bubble: setup.speechBubblesTadeo[1], duration: 600, yOffset: 10 }),
-        bubbleStep({ bubble: setup.speechBubblesTadeo[2], duration: 1500, yOffset: 10 })
-    ]);
+        bubbleStep({ bubble: setup.speechBubblesTadeo[1], duration: 1500, yOffset: 10 }),
+    ];
+}
+
+/**
+ * Creates the second part of Tadeo dialog steps.
+ * @param {Object} setup Dialog setup.
+ * @returns {Array} Dialog steps.
+ */
+function tadeoDialogsPart02(setup) {
+    return [
+        bubbleStep({ bubble: setup.speechBubblesTadeo[2], duration: 1000, yOffset: 10 }),
+        bubbleStep({ bubble: setup.speechBubblesTadeo[3], duration: 600, yOffset: 10 }),
+        bubbleStep({ bubble: setup.speechBubblesTadeo[4], duration: 1500, yOffset: 10 })
+    ];
+}
+
+/**
+ * Creates the third part of Tadeo dialog steps.
+ * @param {Object} setup Dialog setup.
+ * @returns {Array} Dialog steps.
+ */
+function tadeoDialogsPart03(setup) {
+    return [
+        bubbleStep({ bubble: setup.speechBubblesTadeo[5], duration: 2500, yOffset: 10 }),
+        bubbleStep({ bubble: setup.speechBubblesTadeo[6], duration: 3500, yOffset: 10 })
+    ]
+}
+
+/**
+ * Creates the fourth part of Tadeo dialog steps.
+ * @param {Object} setup Dialog setup.
+ * @returns {Array} Dialog steps.
+ */
+function tadeoDialogsPart04(setup) {
+    return [
+        bubbleStep({ bubble: setup.speechBubblesTadeo[7], duration: 1000, yOffset: 10 }),
+        bubbleStep({ bubble: setup.speechBubblesTadeo[8], duration: 1500, yOffset: 10 }),
+        bubbleStep({ bubble: setup.speechBubblesTadeo[9], duration: 1500, yOffset: 10 }),
+        bubbleStep({ bubble: setup.speechBubblesTadeo[10], duration: 2500, yOffset: 10 })
+    ]
+}
+
+/**
+ * Creates the fifth part of Tadeo dialog steps.
+ * @param {Object} setup Dialog setup.
+ * @returns {Array} Dialog steps.
+ */
+function tadeoDialogsPart05(setup) {
+    return [
+        bubbleStep({ bubble: setup.speechBubblesTadeo[11], duration: 1200, yOffset: 10 }),
+        bubbleStep({ bubble: setup.speechBubblesTadeo[12], duration: 800, yOffset: 10 }),
+        bubbleStep({ bubble: setup.speechBubblesTadeo[13], duration: 2000, yOffset: 10 })
+    ]
 }
 
 /**
@@ -123,15 +225,15 @@ function registerCharacterEndSceneDialogs(setup) {
 function characterEndSceneDialogsPart01(setup) {
     return [
         pauseStep(2000),
-        bubbleStep({ bubble: setup.speechBubblesCharacter[4], duration: 4500, yOffset: 30 }),
+        bubbleStep({ bubble: setup.speechBubblesCharacter[11], duration: 4500, yOffset: 30 }),
         pauseStep(1000),
-        bubbleStep({ bubble: setup.speechBubblesCharacter[5], duration: 4500, yOffset: 30 }),
+        bubbleStep({ bubble: setup.speechBubblesCharacter[12], duration: 4500, yOffset: 30 }),
         pauseStep(1000),
-        bubbleStep({ bubble: setup.speechBubblesCharacter[6], duration: 4500, yOffset: 30 }),
+        bubbleStep({ bubble: setup.speechBubblesCharacter[13], duration: 4500, yOffset: 30 }),
         pauseStep(1000),
-        bubbleStep({ bubble: setup.speechBubblesCharacter[7], duration: 4500, yOffset: 30 }),
+        bubbleStep({ bubble: setup.speechBubblesCharacter[14], duration: 4500, yOffset: 30 }),
         pauseStep(1000),
-        bubbleStep({ bubble: setup.speechBubblesCharacter[8], duration: 4500, yOffset: 30 })
+        bubbleStep({ bubble: setup.speechBubblesCharacter[15], duration: 4500, yOffset: 30 })
     ];
 }
 
@@ -142,9 +244,9 @@ function characterEndSceneDialogsPart01(setup) {
  */
 function characterEndSceneDialogsPart02(setup) {
     return [
-        bubbleStep({ bubble: setup.speechBubblesCharacter[9], duration: 4500 }),
-        bubbleStep({ bubble: setup.speechBubblesCharacter[10], duration: 4500 }),
-        bubbleStep({ bubble: setup.speechBubblesCharacter[11], duration: 4500 })
+        bubbleStep({ bubble: setup.speechBubblesCharacter[16], duration: 4500 }),
+        bubbleStep({ bubble: setup.speechBubblesCharacter[17], duration: 4500 }),
+        bubbleStep({ bubble: setup.speechBubblesCharacter[18], duration: 4500 })
     ];
 }
 
