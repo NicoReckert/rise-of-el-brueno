@@ -194,6 +194,7 @@ export class CharacterConfig {
         this.char.isFlipped = false;
         this.char.isMoving = false;
         this.char.throwableBottles = 0;
+        this.isDeadFinished = false;
     }
 
     /**

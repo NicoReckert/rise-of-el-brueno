@@ -17,6 +17,7 @@ export class CharacterAnimationTransitions {
      * @param {string} anim Animation state identifier.
      */
     handleAnimationTransition(anim) {
+        if (this.handleDeathTransition(anim)) return;
         if (this.handleDuckTransitions(anim)) return;
         if (this.handleDeterminedTransitions(anim)) return;
         if (this.handleEmotionalTransitions(anim)) return;
@@ -238,6 +239,18 @@ export class CharacterAnimationTransitions {
     handleAttackEndSceneTransition(anim) {
         if (anim !== 'attack-end-scene') return false;
         return this.setTransition('attack-end-scene-loop', 6);
+    }
+
+    /**
+     * Handles death animation transition.
+     * @param {*} anim Animation state.
+     * @returns {boolean} True if handled, otherwise false.
+     */
+    handleDeathTransition(anim) {
+        if (anim !== 'dead') return false;
+        this.char.frameIndex = Math.max(0, this.char.frameIndex - 1);
+        this.char.isDeadFinished = true;
+        return true;
     }
 
     /**

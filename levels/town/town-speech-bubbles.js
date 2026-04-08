@@ -239,3 +239,18 @@ export function createTownSpeechBubblesLola(lolaSpirit) {
         new SpeechBubble("Liebe!", lolaSpirit, 'speech', { yOffset: -35 })
     ];
 }
+
+/**
+ * Creates town speech bubbles for a soul.
+ * @param {*} soul Soul instance.
+ * @returns {Array} Speech bubble instances.
+ */
+export function createTownSpeechBubblesSoul(soul) {
+    return [
+        new SpeechBubble("Ich Grüße dich aus dem Licht Brünö.", soul, 'speech'),
+        new SpeechBubble("Danke das du mich aus den Fängen des Bösen befreit hast.", soul, 'speech'),
+        new SpeechBubble("Viele andere leiden noch wie ich.", soul, 'speech'),
+        new SpeechBubble("Ich hoffe du kannst auch ihnen helfen.", soul, 'speech'),
+        new SpeechBubble("Indem du meditierst, kannst du mir Ruhe schenken.", soul, 'speech')
+    ];
+}

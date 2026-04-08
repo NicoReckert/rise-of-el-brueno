@@ -11,6 +11,8 @@ import { NewWeaponLevelSetup } from '../../levels/new-weapon/new-weapon-level-se
 import { NewWeaponLevelController } from '../../levels/new-weapon/new-weapon-level-controller.class.js';
 import { LevelCompleteSetup } from '../../levels/level-complete/level-complete-setup.class.js';
 import { LevelCompleteController } from '../../levels/level-complete/level-complete-controller.class.js';
+import { GameOverSetup } from '../../levels/game-over/game-over-setup.class.js';
+import { GameOverController } from '../../levels/game-over/game-over-controller.class.js';
 import { EndCreditsSetup } from '../../levels/end-credits/end-credits-setup.class.js';
 import { EndCreditsController } from '../../levels/end-credits/end-credits-controller.class.js';
 
@@ -50,6 +52,8 @@ export class LevelManager {
         world.newWeaponLevelController = new NewWeaponLevelController(world.newWeaponLevelSetup);
         world.levelCompleteSetup = new LevelCompleteSetup(world);
         world.levelCompleteController = new LevelCompleteController(world.levelCompleteSetup);
+        world.gameOverSetup = new GameOverSetup(world);
+        world.gameOverController = new GameOverController(world.gameOverSetup);
         world.endCreditsSetup = new EndCreditsSetup(world);
         world.endCreditsController = new EndCreditsController(world.endCreditsSetup);
     }
@@ -125,6 +129,7 @@ export class LevelManager {
             nayelisHouseLevel: () => this.initNayelisHouseLevelRestart(),
             newWeaponLevel: () => this.initNewWeaponLevelRestart(),
             levelComplete: () => this.initLevelCompleteRestart(),
+            gameOver: () => this.initGameOverRestart(),
             endCredits: () => this.initEndCreditsRestart()
         };
         const initFn = map[levelName];
@@ -186,6 +191,17 @@ export class LevelManager {
         world.levelCompleteSetup = new LevelCompleteSetup(world);
         world.levelCompleteController =
             new LevelCompleteController(world.levelCompleteSetup);
+    }
+
+    /**
+     * Initializes game over restart.
+     * @returns {void}
+     */
+    initGameOverRestart() {
+        const world = this.world;
+        world.gameOverSetup = new GameOverSetup(world);
+        world.gameOverController =
+            new GameOverController(world.gameOverSetup);
     }
 
     /**

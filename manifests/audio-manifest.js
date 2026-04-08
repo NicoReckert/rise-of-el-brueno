@@ -63,6 +63,7 @@ export const otherLevelAudioManifestLazy = {
     endSceneMusic02: './assets/audio/music/town/end-scene-02.opus',
     happyEndMusic: './assets/audio/music/town/happy-end.opus',
     airHitStunMusic: './assets/audio/music/town/air-hit-stun.opus',
+    gameOverMusic: './assets/audio/music/town/game-over.opus',
     voSoulSpeak01: './assets/audio/vo/soul/speak-01.opus',
     voNayeliSpeak01: './assets/audio/vo/nayeli/speak-01.opus',
     voNewWeapon01: './assets/audio/vo/system/new-weapon-01.opus',

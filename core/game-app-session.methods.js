@@ -7,8 +7,12 @@ export const gameAppSessionMethods = {
     restartGameFromCurrentLevel() {
         if (!this.world) return;
         this.uiManager.hideLevelCompleteActions();
+        this.uiManager.hideGameOverActions();
+        this.uiManager.hideGameOverVideoAndEffects();
         this.uiManager.hideEndCreditsActions();
         this.uiManager.hideEndCreditsVideo();
+        this.stopLevelCompleteMusic();
+        this.stopGameOverMusic();
         this.stopEndCreditsVideoAudio();
         this.uiManager.hidePauseOverlay();
         this.uiManager.showGameControls();
@@ -23,11 +27,14 @@ export const gameAppSessionMethods = {
     returnToMainMenu() {
         if (!this.world) return;
         this.uiManager.hideLevelCompleteActions();
+        this.uiManager.hideGameOverActions();
+        this.uiManager.hideGameOverVideoAndEffects();
         this.uiManager.hideEndCreditsActions();
         this.uiManager.hideEndCreditsVideo();
         this.uiManager.hidePauseOverlay();
         this.uiManager.hideGameControls();
         this.stopLevelCompleteMusic();
+        this.stopGameOverMusic();
         this.stopEndCreditsVideoAudio();
         this.exitFullscreenIfNeeded();
         this.resetWorldStateForMenu();
@@ -41,6 +48,16 @@ export const gameAppSessionMethods = {
      */
     stopLevelCompleteMusic() {
         const music = this.world?.levelCompleteSetup?.sounds?.levelCompleteMusic;
+        if (!music) return;
+        this.audioManager.fadeOutAudio(music, 1000);
+    },
+
+    /**
+     * Stops the game over music.
+     * @returns {void}
+     */
+    stopGameOverMusic() {
+        const music = this.world?.gameOverSetup?.sounds?.gameOverMusic;
         if (!music) return;
         this.audioManager.fadeOutAudio(music, 1000);
     },

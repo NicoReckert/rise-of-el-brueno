@@ -14,5 +14,6 @@ export const farmVideoManifestDeferred = {
     nayelis_house_bg_video: './assets/videos/level_nayelis_house_background_video.mp4',
     new_weapon_bg_video: './assets/videos/level_new_weapon_background_video.mp4',
     complete_bg_video: './assets/videos/level_complete_background_video.mp4',
-    end_credits_bg_video: './assets/videos/level_end_credits_background_video.mp4'
+    end_credits_bg_video: './assets/videos/level_end_credits_background_video.mp4',
+    game_over_bg_video: './assets/videos/level_game_over_background_video.mp4'
 };

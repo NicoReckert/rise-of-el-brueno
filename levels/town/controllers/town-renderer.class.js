@@ -116,10 +116,10 @@ export class TownRenderer {
         this.renderTownCollections();
         this.renderBehindEffects();
         this.renderTownPreCharacterActors();
+        this.renderTownFrontActors();
         this.renderTownCharacter();
         this.renderFrontEffects();
         this.renderTownSpirits();
-        this.renderTownFrontActors();
         this.ctx.restore();
         this.renderShieldAndSandstorm(cameraX);
         this.renderWhiteFlashTransition();
@@ -221,6 +221,7 @@ export class TownRenderer {
      * @returns {void}
      */
     renderFrontEffects() {
+        this.addToWorld(this.setup.environment.rockyDesertPedestal);
         this.addToWorld(this.setup.environment.fireBlue);
         this.addObject(this.setup.state.effectsFront);
     }
@@ -257,11 +258,8 @@ export class TownRenderer {
      * @returns {void}
      */
     renderTownFrontActors() {
-        this.addToWorld(this.setup.environment.rockyDesertPedestal);
-        if (!this.setup.characters.endboss.isUnderTheGround) {
-            this.addToWorld(this.setup.characters.soul);
-            this.addToWorld(this.setup.characters.endboss);
-        }
+        this.addToWorld(this.setup.characters.soul);
+        this.addToWorld(this.setup.characters.endboss);
     }
 
     /**

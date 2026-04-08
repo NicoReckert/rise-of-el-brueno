@@ -17,7 +17,8 @@ import {
     createTownSpeechBubblesTadeoSpiritEcho,
     createTownSpeechBubblesJuanito,
     createTownSpeechBubblesPollito,
-    createTownSpeechBubblesLola
+    createTownSpeechBubblesLola,
+    createTownSpeechBubblesSoul
 } from './town-speech-bubbles.js';
 
 /**
@@ -67,7 +68,8 @@ function createTownSpeechBubbles(setup) {
         speechBubblesTadeoSpiritEcho: createTownSpeechBubblesTadeoSpiritEcho(setup.environment.tadeoSpiritEcho), 
         speechBubblesJuanito: createTownSpeechBubblesJuanito(setup.environment.juanitoSpirit),
         speechBubblesPollito: createTownSpeechBubblesPollito(setup.environment.pollitoSpirit),
-        speechBubblesLola: createTownSpeechBubblesLola(setup.environment.lolaSpirit)
+        speechBubblesLola: createTownSpeechBubblesLola(setup.environment.lolaSpirit),
+        speechBubblesSoul: createTownSpeechBubblesSoul(setup.characters.soul)
     }
 }
 

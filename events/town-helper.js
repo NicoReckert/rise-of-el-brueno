@@ -15,7 +15,6 @@ export const townHelper = {
      * @param {Object} setup Setup context object.
      */
     prepareNayeliSpiritCutscene(setup) {
-        setup.world.townLevelController.stormHazards.enabled = false;
         setup.characters.tadeo.updateAnimationState('walk');
         setup.world.character.isCollapse = true;
         setup.world.character.isMovingLeft = false;
@@ -28,7 +27,7 @@ export const townHelper = {
      * @param {Object} setup Setup context object.
      */
     startNayeliSpiritAudio(setup) {
-        setup.world.audioManager.fadeOutAudio(setup.sounds.finalStormHazardMusic, 1000);
+        setup.world.audioManager.fadeOutAudio(setup.sounds.townDayMusic, 1000);
         setup.sounds.nayeliThemeMusic.loop = true;
         setup.world.audioManager.fadeInAudio(setup.sounds.nayeliThemeMusic, 2000, 0.3);
         setup.sounds.spiritAppearsSfx.play();
@@ -101,30 +100,32 @@ export const townHelper = {
     },
 
     /**
-     * Triggers Tadeo's help sequence, including state changes,
-     * bottle rewards, audio, and speech bubble display.
-     * @param {Object} setup Setup context object.
+     * Triggers Tadeo help.
+     * @param {Object} setup Setup data.
+     * @returns {void}
      */
     triggerTadeoHelp(setup) {
+        const duration = 2800;
         const now = performance.now();
-        const ctx = townHelper.getTadeoHelpContext(setup, now);
+        const ctx = townHelper.getTadeoHelpContext(setup, now, duration);
         townHelper.applyTadeoHelpState(ctx);
         townHelper.giveTadeoHelpBottles(ctx);
         townHelper.playTadeoHelpBottleAudio(ctx.audio);
         townHelper.startTadeoHelpBubble(ctx);
-        setup.world.townLevelController.eventManager.emitNow("tadeoHelpBubbleRender");
     },
 
     /**
-     * Creates the context object for Tadeo's help sequence.
-     * @param {Object} setup Setup context object.
+     * Returns the context for Tadeo help.
+     * @param {Object} setup Setup data.
      * @param {number} now Current timestamp.
-     * @returns {Object} Context data for the help sequence.
+     * @param {number} duration Duration.
+     * @returns {Object} Context data.
      */
-    getTadeoHelpContext(setup, now) {
+    getTadeoHelpContext(setup, now, duration) {
         return {
             setup,
             now,
+            duration,
             char: setup.world.character,
             audio: setup.world.audioManager,
             give: 2
@@ -132,15 +133,17 @@ export const townHelper = {
     },
 
     /**
-     * Applies state updates for Tadeo's help sequence.
-     * @param {Object} context Help context object.
-     * @param {Object} context.setup Setup context object.
+     * Applies Tadeo help state.
+     * @param {Object} context Help context.
+     * @param {Object} context.setup Setup data.
      * @param {number} context.now Current timestamp.
+     * @param {number} context.duration Duration.
+     * @returns {void}
      */
-    applyTadeoHelpState({ setup, now }) {
-        setup.state.tadeoHelpUntil = Math.max(setup.state.tadeoHelpUntil ?? 0, now + 2000);
+    applyTadeoHelpState({ setup, now, duration }) {
+        setup.state.tadeoHelpUntil = Math.max(setup.state.tadeoHelpUntil ?? 0, now + duration);
         setup.state.tadeoHelpGivenEmpty = true;
-        const lockUntil = now + 2200;
+        const lockUntil = now + duration + 600;
         setup.state.tadeoSpeechLockUntil = Math.max(setup.state.tadeoSpeechLockUntil ?? 0, lockUntil);
         setup.state.tadeoPanicUntil = Math.max(setup.state.tadeoPanicUntil ?? 0, lockUntil);
     },
@@ -172,16 +175,19 @@ export const townHelper = {
     },
 
     /**
-     * Starts a random Tadeo help speech bubble and plays the corresponding audio.
-     * @param {Object} context Help context object.
-     * @param {Object} context.setup Setup context object.
-     * @param {Object} context.audio Audio manager instance.
+     * Starts a Tadeo help bubble.
+     * @param {Object} context Help context.
+     * @param {Object} context.setup Setup data.
+     * @param {*} context.audio Audio manager instance.
+     * @param {number} context.now Current timestamp.
+     * @param {number} context.duration Bubble duration.
+     * @returns {void}
      */
-    startTadeoHelpBubble({ setup, audio }) {
+    startTadeoHelpBubble({ setup, audio, now, duration }) {
         const bubbles = setup.speechBubblesTadeoHelp;
         const idx = (Math.random() * bubbles.length) | 0;
-        setup._tadeoHelpIdx = idx;
-        bubbles[idx].start();
+        setup.state.tadeoHelpIdx = idx;
+        setup.dialogManager.playBubble(bubbles[idx], { now, duration });
         audio.playOneShot(`voTadeoHelp0${idx + 1}`, { volume: 0.95 });
     }
 }

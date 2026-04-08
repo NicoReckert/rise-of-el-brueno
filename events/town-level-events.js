@@ -21,7 +21,7 @@ export const townEvents =
                 setup.world.camera_x = setup.state.comeFromNayelisHouse ? 20015 : 0; //0 // 18400 //22900
                 setup.world.character.isWalkDetermined = false;
                 setup.characters.tadeo.updateAnimationState('idle', 1000 / 5);
-                setup.world.character.speedX = 5;
+                setup.world.character.speedX = 3;
                 setup.world.initTasks();
                 setup.world.taskWindow.y = 180;
                 setup.state.comeFromNayelisHouse = false;
@@ -185,6 +185,10 @@ export const townEvents =
             objectA: 'character',
             objectB: 'houseDestroyed',
             toleranceB: { x: 45, width: 30 },
+            condition: (setup) => {
+                const questManager = setup.world.townLevelController.questManager;
+                return questManager.step < 5;
+            },
             once: false,
             action: (setup) => {
                 setup.world.character.walkOnDestroyedHouse = true;
@@ -192,7 +196,7 @@ export const townEvents =
             },
             onLeave: (setup) => {
                 setup.world.character.walkOnDestroyedHouse = false;
-                setup.world.character.speedX = 5;
+                setup.world.character.speedX = 3;
             }
         },
 
@@ -271,7 +275,7 @@ export const townEvents =
          */
         {
             type: "position",
-            area: { x: 5000, width: 100 },
+            area: { x: 5000, width: 2000 },
             step: 3,
             action: (setup) => {
                 setup.world.townLevelController.questManager.advance(4)
@@ -297,8 +301,6 @@ export const townEvents =
                 const ctrl = setup.world.townLevelController;
                 const sandstormCtrl = setup.world.townLevelController.sandstormCtrl;
                 sandstormCtrl.setSandstorm(1.0);
-                // setup.world.character.isWalkInStorm = true;
-                setup.world.character.speedX = 5; //2
                 ctrl.questManager.advance(5);
             }
         },
@@ -309,7 +311,7 @@ export const townEvents =
          */
         {
             type: "position",
-            area: { x: 6000, width: 100 },
+            area: { x: 6000, width: 2000 },
             step: 5,
             action: (setup) => {
                 setup.world.townLevelController.stormHazards.enabled = true;
@@ -333,6 +335,19 @@ export const townEvents =
                 setup.world.audioManager.fadeOutAudio(setup.sounds.stormHazardMusic, 1000);
                 setup.sounds.finalStormHazardMusic.loop = true;
                 setup.world.audioManager.fadeInAudio(setup.sounds.finalStormHazardMusic, 1000, 0.8);
+            }
+        },
+
+        {
+            type: "position",
+            area: { x: 13000, width: 100 },
+            step: 6,
+            action: (setup) => {
+                setup.world.townLevelController.stormHazards.enabled = false;
+                setup.world.character.speedX = 1.5;
+                setup.world.character.isWalkInStorm = true;
+                setup.world.audioManager.fadeOutAudio(setup.sounds.finalStormHazardMusic, 1000);
+                setup.world.audioManager.fadeInAudio(setup.sounds.townDayMusic, 2000, 0.8);
             }
         },
 
@@ -478,7 +493,6 @@ export const townEvents =
                 const arriveX = tadeo.moveToX(15020, { speed: 5 });
                 if (arriveX) {
                     setup.characters.tadeo.updateAnimationState('idle');
-                    // setup.speechBubbles[0].start(4500);
                     setup.world.townLevelController.questManager.advance(10);
                 }
             }
@@ -529,6 +543,7 @@ export const townEvents =
             delay: 13000,
             step: 10,
             action: (setup) => {
+                setup.world.character.speedX = 3;
                 setup.world.character.isCollapse = false;
                 setup.world.isKeysStopp = false;
                 setup.world.character.isStandUpAfterCollapse = true;
@@ -581,7 +596,7 @@ export const townEvents =
             action: (setup, tadeo) => {
                 const wasAfraid = !!setup.state.isTadeoAfraid;
                 setup.state.isTadeoAfraid = true;
-                if (setup.state.isTadeoPanic) return
+                if (setup.state.isTadeoPanic) return;
                 if (!wasAfraid) {
                     tadeo.updateAnimationState('afraid', 1000 / 6);
                 } else {
@@ -632,36 +647,14 @@ export const townEvents =
             },
             action: (setup) => {
                 const now = performance.now();
-                const lockUntil = now + 2200;
+                const duration = 2600;
+                const lockUntil = now + duration + 600;
                 setup.state.tadeoSpeechLockUntil = Math.max(setup.state.tadeoSpeechLockUntil ?? 0, lockUntil);
                 const bubbles = setup.speechBubblesTadeoAfraid;
                 const idx = (Math.random() * bubbles.length) | 0;
                 setup.state.tadeoAfraidIdx = idx;
-                bubbles[idx].start();
+                setup.dialogManager.playBubble(bubbles[idx], { now, duration });
                 setup.world.audioManager.playOneShot(`voTadeoAfraid0${idx + 1}`, { volume: 0.9 });
-                setup.world.townLevelController.eventManager.emitNow("tadeoAfraidBubbleRender");
-            }
-        },
-
-        /**
-         * Time event that renders Tadeo's afraid speech bubble
-         * during the active speech interval.
-         */
-        {
-            type: "time",
-            resetOn: "tadeoAfraidBubbleRender",
-            manual: true,
-            once: false,
-            from: 0,
-            to: 2600,
-            step: 11,
-            action: (setup) => {
-                const i = setup.state.tadeoAfraidIdx ?? 0;
-                setup.speechBubblesTadeoAfraid[i].render(
-                    setup.world.ctx,
-                    setup.world.townLevelController.renderCameraX,
-                    -40
-                );
             }
         },
 
@@ -722,7 +715,8 @@ export const townEvents =
             once: true,
             action: (setup) => {
                 setup.state.isTadeoPanic = false;
-                setup.state.tadeoPanicUntil = Math.max(setup.state.tadeoPanicUntil ?? 0, performance.now() + 200); if (setup.state.isTadeoAfraid) {
+                setup.state.tadeoPanicUntil = Math.max(setup.state.tadeoPanicUntil ?? 0, performance.now() + 200);
+                if (setup.state.isTadeoAfraid) {
                     setup.characters.tadeo.updateAnimationState('afraidLoop', 1000 / 6);
                 }
             }
@@ -748,14 +742,14 @@ export const townEvents =
             },
             action: (setup) => {
                 const now = performance.now();
-                const lockUntil = now + 2200;
+                const duration = 2000;
+                const lockUntil = now + duration + 600;
                 setup.state.tadeoSpeechLockUntil = Math.max(setup.state.tadeoSpeechLockUntil ?? 0, lockUntil);
                 const bubbles = setup.speechBubblesTadeoPanic;
                 const idx = (Math.random() * bubbles.length) | 0;
                 setup.state.tadeoPanicProjIdx = idx;
-                bubbles[idx].start();
+                setup.dialogManager.playBubble(bubbles[idx], { now, duration });
                 setup.world.audioManager.playOneShot(`voTadeoPanic0${idx + 1}`, { volume: 1.0 });
-                setup.world.townLevelController.eventManager.emitNow("tadeoPanicProjBubbleRender");
             }
         },
 
@@ -779,58 +773,14 @@ export const townEvents =
             },
             action: (setup) => {
                 const now = performance.now();
-                const lockUntil = now + 2200;
+                const duration = 2000;
+                const lockUntil = now + duration + 600;
                 setup.state.tadeoSpeechLockUntil = Math.max(setup.state.tadeoSpeechLockUntil ?? 0, lockUntil);
                 const bubbles = setup.speechBubblesTadeoPanic;
                 const idx = (Math.random() * bubbles.length) | 0;
                 setup.state.tadeoPanicNearIdx = idx;
-                bubbles[idx].start();
+                setup.dialogManager.playBubble(bubbles[idx], { now, duration });
                 setup.world.audioManager.playOneShot(`voTadeoPanic0${idx + 1}`, { volume: 1.0 });
-                setup.world.townLevelController.eventManager.emitNow("tadeoPanicNearBubbleRender");
-            }
-        },
-
-        /**
-         * Time event that renders Tadeo's panic speech bubble
-         * for projectile-related panic during the active interval.
-         */
-        {
-            type: "time",
-            resetOn: "tadeoPanicProjBubbleRender",
-            manual: true,
-            once: false,
-            from: 0,
-            to: 2000,
-            step: 11,
-            action: (setup) => {
-                const i = setup.state.tadeoPanicProjIdx ?? 0;
-                setup.speechBubblesTadeoPanic[i].render(
-                    setup.world.ctx,
-                    setup.world.townLevelController.renderCameraX,
-                    -40
-                );
-            }
-        },
-
-        /**
-         * Time event that renders Tadeo's panic speech bubble
-         * for nearby-enemy panic during the active interval.
-         */
-        {
-            type: "time",
-            resetOn: "tadeoPanicNearBubbleRender",
-            manual: true,
-            once: false,
-            from: 0,
-            to: 2000,
-            step: 11,
-            action: (setup) => {
-                const i = setup.state.tadeoPanicNearIdx ?? 0;
-                setup.speechBubblesTadeoPanic[i].render(
-                    setup.world.ctx,
-                    setup.world.townLevelController.renderCameraX,
-                    -40
-                );
             }
         },
 
@@ -868,31 +818,6 @@ export const townEvents =
                 if ((c.throwableBottles ?? 0) > 0) {
                     setup.state.tadeoHelpGivenEmpty = false;
                 }
-            }
-        },
-
-        /**
-         * Time event that renders Tadeo's help speech bubble
-         * during the active help interval.
-         */
-        {
-            name: "tadeo_help_bubble_render",
-            type: "time",
-            resetOn: "tadeoHelpBubbleRender",
-            manual: true,
-            once: false,
-            from: 0,
-            to: 2800,
-            step: 11,
-            action: (setup) => {
-                const now = performance.now();
-                if (now > (setup.state.tadeoHelpUntil ?? 0)) return;
-                const i = setup._tadeoHelpIdx ?? 0;
-                setup.speechBubblesTadeoHelp[i].render(
-                    setup.world.ctx,
-                    setup.world.townLevelController.renderCameraX,
-                    -40
-                );
             }
         },
 
@@ -1693,6 +1618,7 @@ export const townEvents =
             step: 20,
             action: (setup) => {
                 setup.world.audioManager.safePlay(setup.sounds.voSoulSpeak01);
+                setup.dialogManager.startDialog('soul:01', setup.world.timestamp);
             }
         },
 
@@ -2390,4 +2316,61 @@ export const townEvents =
                 setup.world.audioManager.playOneShot("bottleEmptySfx", { volume: 0.6 });
             }
         },
+
+        {
+            name: "town_start_game_over_sequence",
+            type: "quest",
+            once: false,
+            condition: (setup) => {
+                const char = setup.world.character;
+                return !!char &&
+                    char.energy <= 0 &&
+                    !char.isDead &&
+                    !setup.state.isGameOverSequenceStarted;
+            },
+            action: (setup) => {
+                const char = setup.world.character;
+                if (!char) return;
+                setup.state.isGameOverSequenceStarted = true;
+                char.isMovingLeft = false;
+                char.isMovingRight = false;
+                setup.world.isKeysStopp = true;
+                char.isDead = true;
+                setup.world.audioManager.fadeOutAudio(setup.sounds.townDayMusic, 1000);
+                setup.world.audioManager.fadeOutAudio(setup.sounds.bossBattleMusic, 1000);
+                setup.world.audioManager.fadeOutAudio(setup.sounds.finalStormHazardMusic, 1000);
+            }
+        },
+
+        {
+            name: "town_game_over_flash",
+            type: "quest",
+            once: false,
+            condition: (setup) => {
+                const char = setup.world.character;
+                return !!char &&
+                    setup.state.isGameOverSequenceStarted &&
+                    !setup.state.isGameOverFlashStarted &&
+                    char.currentAnimation === 'dead' &&
+                    char.isDeadFinished;
+            },
+            action: (setup) => {
+                setup.state.isGameOverFlashStarted = true;
+                setup.state.gameOverSwitchAt = setup.world.timestamp + 500;
+                setup.whiteFlashTransition.start(setup.world.timestamp);
+            }
+        },
+
+        {
+            name: "town_switch_to_game_over",
+            type: "quest",
+            once: false,
+            condition: (setup) => {
+                return setup.state.isGameOverFlashStarted &&
+                    setup.world.timestamp >= (setup.state.gameOverSwitchAt ?? Infinity);
+            },
+            action: (setup) => {
+                setup.world.currentScene = 'gameOver';
+            }
+        }
     ];

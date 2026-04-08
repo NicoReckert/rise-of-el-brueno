@@ -14,6 +14,7 @@ export function registerTownDialogs(setup) {
     registerTadeoSpiritEchoDialogs(setup);
     registerCharacterEndSceneDialogs(setup);
     registerSollitaEndSceneDialogs(setup);
+    registerSoulDialogs(setup);
 }
 
 /**
@@ -122,15 +123,15 @@ function registerCharacterEndSceneDialogs(setup) {
 function characterEndSceneDialogsPart01(setup) {
     return [
         pauseStep(2000),
-        bubbleStep({ bubble: setup.speechBubblesCharacter[4], duration: 4500, yOffset: 30}),
+        bubbleStep({ bubble: setup.speechBubblesCharacter[4], duration: 4500, yOffset: 30 }),
         pauseStep(1000),
-        bubbleStep({ bubble: setup.speechBubblesCharacter[5], duration: 4500, yOffset: 30}),
+        bubbleStep({ bubble: setup.speechBubblesCharacter[5], duration: 4500, yOffset: 30 }),
         pauseStep(1000),
-        bubbleStep({ bubble: setup.speechBubblesCharacter[6], duration: 4500, yOffset: 30}),
+        bubbleStep({ bubble: setup.speechBubblesCharacter[6], duration: 4500, yOffset: 30 }),
         pauseStep(1000),
-        bubbleStep({ bubble: setup.speechBubblesCharacter[7], duration: 4500, yOffset: 30}),
+        bubbleStep({ bubble: setup.speechBubblesCharacter[7], duration: 4500, yOffset: 30 }),
         pauseStep(1000),
-        bubbleStep({ bubble: setup.speechBubblesCharacter[8], duration: 4500, yOffset: 30})
+        bubbleStep({ bubble: setup.speechBubblesCharacter[8], duration: 4500, yOffset: 30 })
     ];
 }
 
@@ -189,4 +190,19 @@ function sollitaEndSceneDialogsPart02(setup) {
         bubbleStep({ bubble: setup.speechBubblesSollita[10], duration: 4000, yOffset: 20 }),
         bubbleStep({ bubble: setup.speechBubblesSollita[11], duration: 5000, yOffset: 20 })
     ];
+}
+
+/**
+ * Registers soul dialogs.
+ * @param {Object} setup Dialog setup.
+ * @returns {*} Registered dialog.
+ */
+function registerSoulDialogs(setup) {
+    return setup.dialogManager.addDialog('soul:01', [
+        bubbleStep({ bubble: setup.speechBubblesSoul[0], duration: 3000, yOffset: 20 }),
+        bubbleStep({ bubble: setup.speechBubblesSoul[1], duration: 3500, yOffset: 20 }),
+        bubbleStep({ bubble: setup.speechBubblesSoul[2], duration: 3000, yOffset: 20 }),
+        bubbleStep({ bubble: setup.speechBubblesSoul[3], duration: 2800, yOffset: 20 }),
+        bubbleStep({ bubble: setup.speechBubblesSoul[4], duration: 3000, yOffset: 20 })
+    ])
 }

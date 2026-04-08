@@ -56,6 +56,10 @@
                 </div>
                 <button class="menu-button next-level-button" id="next-level-button">Weiter</button>
             </div>
+            <div class="game-over-actions d-none" id="game-over-actions">
+                <button class="menu-button" id="game-over-restart-button">Neu starten</button>
+                <button class="menu-button" id="game-over-menu-button">Zurück zum Menü</button>
+            </div>
             <div class="end-credits-actions d-none" id="end-credits-actions">
                 <button class="menu-button" id="end-credits-menu-button">Zurück zum Menü</button>
             </div>
@@ -70,6 +74,11 @@
                 </div>
             </div>
             <canvas id="canvas" width="1280" height="720"></canvas>
+            <video class="game-over-video d-none" id="game-over-video" playsinline preload="none"
+                disablePictureInPicture controlsList="nodownload noremoteplayback"></video>
+            <div class="game-over-video-overlay d-none" id="game-over-video-overlay"></div>
+            <div class="game-over-video-vignette d-none" id="game-over-video-vignette"></div>
+            <div class="game-over-video-light d-none" id="game-over-video-light"></div>
             <video class="end-credits-video d-none" id="end-credits-video" playsinline preload="none"
                 disablePictureInPicture controlsList="nodownload noremoteplayback"></video>
         </div>

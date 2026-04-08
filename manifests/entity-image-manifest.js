@@ -313,12 +313,27 @@ export const farmEntityManifestDeferred = {
 export const otherLevelEntityManifestLazy = {
   sandstorm: { texture: Array.from({ length: 1 }, _ => `./assets/img/sandstorm_texture.png`) },
 
+  gameOverCharacterSpirit: {
+    idle: {
+      type: 'sheet',
+      json: './assets/img/entities/game_over_character_spirit/idle/idle_sheet.json'
+    }
+  },
+
+  treeSpirit: {
+    idle: {
+      type: 'sheet',
+      json: './assets/img/entities/tree_spirit/idle/idle_sheet.json'
+    }
+  },
+
   houseDestroyed: {
     idle: {
       type: 'sheet',
       json: './assets/img/entities/house_destroyed/idle/idle_sheet.json'
     }
   },
+
   stableDestroyed: {
     idle: {
       type: 'sheet',
@@ -710,7 +725,7 @@ export const otherLevelEntityManifestLazy = {
   },
 
   rockyDesertPedestal: {
-    idle: Array.from({ length: 1 }, _ => `./assets/img/entities/rocky-desert-pedestal/idle/image_1.png`)
+    idle: Array.from({ length: 1 }, _ => `./assets/img/entities/rocky_desert_pedestal/idle/image_1.png`)
   },
 
   fire: {

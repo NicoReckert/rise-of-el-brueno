@@ -254,6 +254,7 @@ export const gameAppUiBindingMethods = {
     bindRestartButtons() {
         const handler = () => this.restartGameFromCurrentLevel();
         this.inputManager.listenRestartLevelButton(handler);
+        this.inputManager.listenGameOverRestartButton(handler);
         this.inputManager.listenPauseRestartButton(handler);
     },
 
@@ -264,6 +265,7 @@ export const gameAppUiBindingMethods = {
     bindReturnToMenuButtons() {
         const handler = () => this.returnToMainMenu();
         this.inputManager.listenLevelCompleteMenuButton(handler);
+        this.inputManager.listenGameOverMenuButton(handler);
         this.inputManager.listenEndCreditsMenuButton(handler);
         this.inputManager.listenPauseMenuMainButton(handler);
     },

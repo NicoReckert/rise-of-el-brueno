@@ -39,7 +39,10 @@ function createTownFlags() {
         isNearDestroyedHouse: false,
         isTadeoAfraid: false,
         isTadeoPanic: false,
-        comeFromNayelisHouse: false
+        comeFromNayelisHouse: false,
+        isGameOverSequenceStarted: false,
+        isGameOverFlashStarted: false,
+        gameOverSwitchAt: 0
     };
 }
 

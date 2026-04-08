@@ -66,9 +66,17 @@ export const uiManagerDomMethods = {
             fullscreenToggleButton: document.getElementById('fullscreen-toggle-button'),
             muteToggleButton: document.getElementById('mute-toggle-button'),
             nextLevelButton: document.getElementById('next-level-button'),
+            levelCompleteMenuButton: document.getElementById('level-complete-menu-button'),
+            gameOverMenuButton: document.getElementById('game-over-menu-button'),
+            endCreditsMenuButton: document.getElementById('end-credits-menu-button'),
             levelCompleteActions: document.getElementById('level-complete-actions'),
+            gameOverActions: document.getElementById('game-over-actions'),
+            gameOverVideo: document.getElementById('game-over-video'),
+            gameOverVideoOverlay: document.getElementById('game-over-video-overlay'),
+            gameOverVideoVignette: document.getElementById('game-over-video-vignette'),
+            gameOverVideoLight: document.getElementById('game-over-video-light'),
             endCreditsActions: document.getElementById('end-credits-actions'),
-            endCreditsVideo: document.getElementById('end-credits-video')
+            endCreditsVideo: document.getElementById('end-credits-video'),
         };
     },
 
@@ -81,9 +89,8 @@ export const uiManagerDomMethods = {
             pauseOverlay: document.getElementById('pause-overlay'),
             pauseResumeButton: document.getElementById('pause-resume-button'),
             restartLevelButton: document.getElementById('restart-level-button'),
+            gameOverRestartButton: document.getElementById('game-over-restart-button'),
             pauseRestartButton: document.getElementById('pause-restart-button'),
-            levelCompleteMenuButton: document.getElementById('level-complete-menu-button'),
-            endCreditsMenuButton: document.getElementById('end-credits-menu-button'),
             pauseMenuMainButton: document.getElementById('pause-menu-main-button')
         };
     },

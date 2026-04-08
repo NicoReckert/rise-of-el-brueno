@@ -37,10 +37,29 @@ export const uiManagerScreenMethods = {
     },
 
     /**
+     * Hides game over actions.
+     * @returns {void}
+     */
+    hideGameOverActions() {
+        this.dom.gameOverActions.classList.add('d-none');
+    },
+
+    /**
      * Hides the end credits actions element.
      */
     hideEndCreditsActions() {
         this.dom.endCreditsActions.classList.add('d-none');
+    },
+
+    /**
+     * Hides the game over video and related effects.
+     * @returns {void}
+     */
+    hideGameOverVideoAndEffects() {
+        this.dom.gameOverVideo.classList.add('d-none');
+        this.dom.gameOverVideoOverlay.classList.add('d-none');
+        this.dom.gameOverVideoVignette.classList.add('d-none');
+        this.dom.gameOverVideoLight.classList.add('d-none');
     },
 
     /**

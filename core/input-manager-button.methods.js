@@ -155,6 +155,15 @@ export const inputManagerButtonMethods = {
     },
 
     /**
+     * Binds click listener for the game over restart button.
+     * @param {Function} onClick Click handler.
+     * @returns {void}
+     */
+    listenGameOverRestartButton(onClick) {
+        this.bindClick(this.uiManager.dom.gameOverRestartButton, onClick);
+    },
+
+    /**
      * Registers the pause restart button click handler.
      * @param {Function} onClick Callback triggered when the pause restart button is clicked.
      */
@@ -169,6 +178,15 @@ export const inputManagerButtonMethods = {
      */
     listenLevelCompleteMenuButton(onClick) {
         this.bindClick(this.uiManager.dom.levelCompleteMenuButton, onClick);
+    },
+
+    /**
+     * Binds click listener for the game over menu button.
+     * @param {Function} onClick Click handler.
+     * @returns {void}
+     */
+    listenGameOverMenuButton(onClick) {
+        this.bindClick(this.uiManager.dom.gameOverMenuButton, onClick);
     },
 
     /**

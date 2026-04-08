@@ -32,7 +32,7 @@ export class PauseManager {
         this.uiManager.setMoveButtonsActive(false);
         world.pauseGame?.();
         this.audioManager.pauseAllAudios(this.audios);
-        world.endCreditsSetup?.video?.pause();
+        this.pauseSceneVideo(world);
     }
 
     /**
@@ -46,7 +46,37 @@ export class PauseManager {
         this.uiManager.setMoveButtonsActive(true);
         world.resumeGame?.();
         this.audioManager.resumeAllAudios(this.audios);
-        world.endCreditsSetup?.video?.play();
+        this.resumeSceneVideo(world);
+    }
+
+    /**
+     * Pauses the active scene video if needed.
+     * @param {Object} world World instance.
+     * @returns {void}
+     */
+    pauseSceneVideo(world) {
+        if (!world) return;
+        if (world.currentScene === 'gameOver') {
+            world.gameOverSetup?.video?.pause();
+        }
+        if (world.currentScene === 'endCredits') {
+            world.endCreditsSetup?.video?.pause();
+        }
+    }
+
+    /**
+     * Resumes the active scene video if needed.
+     * @param {Object} world World instance.
+     * @returns {void}
+     */
+    resumeSceneVideo(world) {
+        if (!world) return;
+        if (world.currentScene === 'gameOver') {
+            world.gameOverSetup?.video?.play();
+        }
+        if (world.currentScene === 'endCredits') {
+            world.endCreditsSetup?.video?.play();
+        }
     }
 
     /**
