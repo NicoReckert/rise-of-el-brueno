@@ -59,7 +59,7 @@ export function controlsTemplate(controls) {
     let mobileIconClass = "";
     controls.forEach(element => {
         mobileIconClass = element.mobile === 'throw' ? `controls-mobile-throw`
-            : element.mobile === 'right2' || element.mobile === 'left2' ? `controls-mobile-action`
+            : element.mobile === 'right' || element.mobile === 'left' ? `controls-mobile-action`
                 : `controls-mobile-icon`
         controlsActionHtml += `<span class="controls-text">${element.action}</span>`
         controlsKeyHtml += `<img class="controls-img" src="./assets/icons/${element.key}.png" alt=""></img>`

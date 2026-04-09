@@ -3,13 +3,13 @@ export const controls =
         {
             key: 'RightArrow',
             action: 'nach rechts laufen',
-            mobile: 'right2'
+            mobile: 'right'
         },
 
         {
             key: 'LeftArrow',
             action: 'nach links laufen',
-            mobile: 'left2'
+            mobile: 'left'
         },
 
         {

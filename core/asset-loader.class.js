@@ -11,7 +11,7 @@ import { otherLevelEntityManifestLazy } from "../manifests/entity-image-manifest
 import { otherLevelAudioManifestLazy } from "../manifests/audio-manifest.js";
 import { farmAudioManifestDeferred } from "../manifests/audio-manifest.js";
 import { preloadManifestVideos } from "../loader/video-loader.js";
-import { farmVideoManifestDeferred } from "../manifests/video-manifest.js";
+import { videoManifest, farmVideoManifestDeferred } from "../manifests/video-manifest.js";
 import { smartMerge } from "../utils/asset-merge.util.js";
 import { levelVisualImageManifest } from "../manifests/level-visual-image-manifest.js";
 
@@ -32,6 +32,7 @@ export class AssetLoader {
         this.deferredAudios = {};
         this.deferredVideos = {};
         this.lazyAudios = {};
+        this.introVideos = {};
     }
 
     /**
@@ -104,7 +105,8 @@ export class AssetLoader {
             characterManifestImmediate,
             farmEntityManifestImmediate,
             levelVisualImageManifest,
-            farmAudioManifestImmediate
+            farmAudioManifestImmediate,
+            videoManifest
         ];
     }
 
@@ -155,7 +157,8 @@ export class AssetLoader {
             preloadManifestImages(characterManifestImmediate, onFileLoaded),
             preloadManifestImages(farmEntityManifestImmediate, onFileLoaded),
             preloadManifestImages(levelVisualImageManifest, onFileLoaded),
-            preloadManifestAudio(farmAudioManifestImmediate, onFileLoaded)
+            preloadManifestAudio(farmAudioManifestImmediate, onFileLoaded),
+            preloadManifestVideos(videoManifest, onFileLoaded)
         ]);
     }
 
@@ -163,12 +166,14 @@ export class AssetLoader {
      * Applies immediately loaded assets to the caches.
      * @param {Array<PromiseSettledResult>} results Array of settled promises for characters, entities, level images, and farm audio.
      */
-    applyImmediateResults([charsRes, entitiesRes, levelImagesRes, farmAudioRes]) {
+    applyImmediateResults([charsRes, entitiesRes, levelImagesRes, farmAudioRes, introVideosRes]) {
         const chars = this.getSettledValue(charsRes, {});
         const entities = this.getSettledValue(entitiesRes, {});
         const levelImages = this.getSettledValue(levelImagesRes, {});
         const farmAudios = this.getSettledValue(farmAudioRes, {});
+        const introVideos = this.getSettledValue(introVideosRes, {});
         this.immediateAudios = farmAudios;
+        this.introVideos = introVideos;
         Object.assign(this.characterImages, chars);
         smartMerge(this.entityImages, entities);
         smartMerge(this.levelImages, levelImages);

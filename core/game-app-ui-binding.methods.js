@@ -19,6 +19,7 @@ export const gameAppUiBindingMethods = {
         this.bindStartGameButton();
         this.bindNextLevelButton();
         this.bindIntroStartButton();
+        this.bindIntroSkipButton();
         this.bindOpenCharactersButton();
         this.bindOpenStoryButton();
         this.bindOpenControlsButton();
@@ -118,6 +119,18 @@ export const gameAppUiBindingMethods = {
             this.audioManager.playClickSound()
             this.fullscreenManager.setFullscreen(this.uiManager.dom.body);
             this.menuVisuals.startIntro();
+        });
+    },
+
+    /**
+     * Binds intro skip button behavior.
+     * @returns {void}
+     */
+    bindIntroSkipButton() {
+        this.inputManager.listenIntroSkipButton(() => {
+            this.audioManager.playClickSound();
+            this.fullscreenManager.setFullscreen(this.uiManager.dom.body);
+            this.menuVisuals.skipIntro();
         });
     },
 

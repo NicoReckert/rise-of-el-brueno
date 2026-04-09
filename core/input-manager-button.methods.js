@@ -53,6 +53,15 @@ export const inputManagerButtonMethods = {
     },
 
     /**
+     * Binds intro skip button listener.
+     * @param {Function} onSkipIntro Skip handler.
+     * @returns {void}
+     */
+    listenIntroSkipButton(onSkipIntro) {
+        this.bindClick(this.uiManager.dom.introSkipButton, onSkipIntro);
+    },
+
+    /**
      * Registers a click listener for the open characters button.
      * @param {Function} onClick Click handler.
      * @returns {void}

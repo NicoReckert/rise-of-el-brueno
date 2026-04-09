@@ -10,6 +10,7 @@ export class AudioManager {
         this.uiManager = uiManager;
         this.audios = {};
         this.pools = {};
+        this.titleCueTriggered = false;
     }
 
     /**
@@ -271,26 +272,40 @@ export class AudioManager {
         uiTitleIntroMusic.addEventListener("ended", () => {
             uiTitleLoopMusic.currentTime = 0;
             uiTitleLoopMusic.loop = true;
-            uiTitleLoopMusic.play();
+            this.safePlay(uiTitleLoopMusic);
         });
     }
 
     /**
-     * Sets up a timed cue during the title intro track.
-     * @param {Function} [callback] Optional callback triggered when the cue fires.
+     * Sets up the title intro cue.
+     * @param {Function} callback Cue callback.
+     * @returns {void}
      */
     setupTitleIntroCue(callback) {
         const uiTitleIntroMusic = this.get('uiTitleIntroMusic');
         const uiTitleHitSfx = this.get('uiTitleHitSfx');
         if (!uiTitleIntroMusic || !uiTitleHitSfx) return;
+        this.titleCueTriggered = false;
         const handler = () => {
-            if (uiTitleIntroMusic.currentTime >= 22.8 && uiTitleHitSfx.paused) {
-                uiTitleHitSfx.play();
-                callback?.();
-                uiTitleIntroMusic.removeEventListener('timeupdate', handler);
-            }
-        }
+            this.handleTitleIntroCue(uiTitleIntroMusic, uiTitleHitSfx, callback);
+            if (this.titleCueTriggered) uiTitleIntroMusic.removeEventListener('timeupdate', handler);
+        };
         uiTitleIntroMusic.addEventListener('timeupdate', handler);
+    }
+
+    /**
+     * Handles the title intro cue.
+     * @param {*} uiTitleIntroMusic Intro music instance.
+     * @param {*} uiTitleHitSfx Hit sound instance.
+     * @param {Function} callback Cue callback.
+     * @returns {void}
+     */
+    handleTitleIntroCue(uiTitleIntroMusic, uiTitleHitSfx, callback) {
+        if (this.titleCueTriggered) return;
+        if (uiTitleIntroMusic.currentTime < 22.8 || !uiTitleHitSfx.paused) return;
+        this.titleCueTriggered = true;
+        this.safePlay(uiTitleHitSfx);
+        callback?.();
     }
 
     /**
@@ -299,8 +314,9 @@ export class AudioManager {
      */
     playClickSound() {
         const uiIntroStartButtonClickSfx = this.get('uiIntroStartButtonClickSfx');
+        if (!uiIntroStartButtonClickSfx) return;
         uiIntroStartButtonClickSfx.currentTime = 0;
-        uiIntroStartButtonClickSfx.play();
+        this.safePlay(uiIntroStartButtonClickSfx);
     }
 
     /**

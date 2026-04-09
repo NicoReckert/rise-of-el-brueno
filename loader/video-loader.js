@@ -64,18 +64,15 @@ function ensureVideoElement(video, reject) {
 }
 
 /**
- * Resolves immediately if the video is already loaded.
- * @param {HTMLVideoElement} video Video element to check.
+ * Checks if the video is already loaded.
+ * @param {*} video Video instance.
  * @param {Function} resolve Promise resolve function.
- * @returns {boolean}
+ * @returns {boolean} True if already loaded, otherwise false.
  */
 function ensureAlreadyLoaded(video, resolve) {
-    if (video.readyState >= 2) {
+    if (video.readyState >= 4) {
         resolve(video);
         return true;
-    }
-    if (video.src || video.querySelector("source")) {
-        return false;
     }
     return false;
 }
@@ -125,15 +122,16 @@ function prepareVideoSource(video, src) {
 }
 
 /**
- * Attaches load and error listeners to a video element.
- * @param {HTMLVideoElement} video Video element.
- * @param {string} src Video source path.
+ * Attaches video event listeners.
+ * @param {*} video Video instance.
+ * @param {*} src Video source.
  * @param {Function} resolve Promise resolve function.
  * @param {Function} reject Promise reject function.
+ * @returns {void}
  */
 function attachVideoListeners(video, src, resolve, reject) {
     const { onReady, onError } = createVideoHandlers(video, src, resolve, reject);
-    video.addEventListener("loadeddata", onReady, { once: true });
+    video.addEventListener("canplaythrough", onReady, { once: true });
     video.addEventListener("error", onError, { once: true });
 }
 
@@ -161,13 +159,14 @@ function createVideoHandlers(video, src, resolve, reject) {
 }
 
 /**
- * Removes previously attached video event listeners.
- * @param {HTMLVideoElement} video Video element.
+ * Removes video event listeners.
+ * @param {*} video Video instance.
  * @param {Function} onReady Ready event handler.
  * @param {Function} onError Error event handler.
+ * @returns {void}
  */
 function removeVideoListeners(video, onReady, onError) {
-    video.removeEventListener("loadeddata", onReady);
+    video.removeEventListener("canplaythrough", onReady);
     video.removeEventListener("error", onError);
 }
 

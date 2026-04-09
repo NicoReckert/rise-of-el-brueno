@@ -36,7 +36,8 @@ export const uiManagerDomMethods = {
             introVideo: document.getElementById('intro-video'),
             gameTitle: document.getElementById('game-title'),
             startScreenOverlay: document.getElementById('start-screen-overlay'),
-            introOverlay: document.getElementById('intro-overlay')
+            introOverlay: document.getElementById('intro-overlay'),
+            introActions: document.getElementById('intro-actions')
         };
     },
 
@@ -47,6 +48,7 @@ export const uiManagerDomMethods = {
     cacheMenuButtonElements() {
         return {
             introStartButton: document.getElementById('intro-start-button'),
+            introSkipButton: document.getElementById('intro-skip-button'),
             startGameButton: document.getElementById('start-game-button'),
             openCharactersButton: document.getElementById('open-characters-button'),
             openStoryButton: document.getElementById('open-story-button'),

@@ -101,28 +101,6 @@ body {
     0 2px 6px rgba(0, 0, 0, .45);
 }
 
-.intro-start-button {
-  font-size: 60px;
-  font-weight: bolder;
-  text-align: center;
-  color: white;
-  margin: 10px;
-  padding: 15px 45px;
-  border-radius: 10px;
-  background-size: 200% auto;
-  box-shadow: 0 0 20px #eee;
-  transition: 0.5s;
-  background-image: linear-gradient(to right, #314755 0%, #26a0da 51%, #314755 100%);
-  cursor: pointer;
-  font-family: 'Bangers';
-  z-index: 2;
-}
-
-.intro-start-button:hover {
-  background-position: right center;
-  color: #fff;
-}
-
 .all-content {
   display: flex;
   flex-direction: column;
@@ -441,11 +419,9 @@ canvas {
   z-index: 2;
   pointer-events: none;
   background:
-    radial-gradient(
-      circle at 50% 42%,
-      rgba(0,0,0,0) 18%,
-      rgba(0,0,0,0.72) 82%
-    );
+    radial-gradient(circle at 50% 42%,
+      rgba(0, 0, 0, 0) 18%,
+      rgba(0, 0, 0, 0.72) 82%);
   mix-blend-mode: multiply;
 }
 
@@ -455,11 +431,9 @@ canvas {
   z-index: 2;
   pointer-events: none;
   background:
-    radial-gradient(
-      circle at 50% 30%,
+    radial-gradient(circle at 50% 30%,
       rgba(180, 220, 255, 0.22) 0%,
-      rgba(180, 220, 255, 0) 28%
-    );
+      rgba(180, 220, 255, 0) 28%);
   mix-blend-mode: screen;
 }
 
@@ -752,6 +726,40 @@ canvas {
   align-items: center;
   flex-direction: column;
   width: 100%;
+}
+
+.intro-start-button {
+  font-size: 60px;
+  font-weight: bolder;
+  text-align: center;
+  color: white;
+  margin: 10px;
+  padding: 15px 45px;
+  border-radius: 10px;
+  background-size: 200% auto;
+  box-shadow: 0 0 20px #eee;
+  transition: 0.5s;
+  background-image: linear-gradient(to right, #314755 0%, #26a0da 51%, #314755 100%);
+  cursor: pointer;
+  font-family: 'Bangers';
+  z-index: 2;
+}
+
+.intro-start-button:hover {
+  background-position: right center;
+  color: #fff;
+}
+
+.intro-actions {
+  position: absolute;
+  display: flex;
+  bottom: 0px;
+  justify-content: flex-end;
+  align-items: center;
+  width: 100%;
+  z-index: 5;
+  padding-right: 64px;
+  padding-bottom: 48px;
 }
 
 .opening-background-video {

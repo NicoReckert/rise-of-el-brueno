@@ -39,22 +39,25 @@ function createAudioElement(src) {
 }
 
 /**
- * Sets up ready and error handlers for an audio element.
- * @param {HTMLAudioElement} audio Audio element.
- * @param {string} src Audio source path.
+ * Sets up audio event handlers.
+ * @param {*} audio Audio instance.
+ * @param {*} src Audio source.
  * @param {Function} resolve Promise resolve function.
+ * @returns {void}
  */
 function setupAudioHandlers(audio, src, resolve) {
-  audio.oncanplay = () => {
-    audio.oncanplay = null;
-    audio.onerror = null;
+  const onReady = () => {
+    audio.removeEventListener("canplaythrough", onReady);
+    audio.removeEventListener("error", onError);
     handleAudioReady(audio, resolve);
   };
-  audio.onerror = () => {
-    audio.oncanplay = null;
-    audio.onerror = null;
+  const onError = () => {
+    audio.removeEventListener("canplaythrough", onReady);
+    audio.removeEventListener("error", onError);
     handleAudioError(src, resolve);
   };
+  audio.addEventListener("canplaythrough", onReady, { once: true });
+  audio.addEventListener("error", onError, { once: true });
 }
 
 /**

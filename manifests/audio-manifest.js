@@ -1,4 +1,5 @@
 export const introAudioManifest = {
+    uiIntroStartButtonClickSfx: './assets/audio/sfx/ui/intro-start-button-click.opus',
     uiTitleIntroMusic: "./assets/audio/music/ui/title-intro.opus",
     uiTitleLoopMusic: './assets/audio/music/ui/title-loop.opus',
     nayeliThemeMusic: './assets/audio/music/town/nayeli-theme.opus',
@@ -15,8 +16,7 @@ export const introAudioManifest = {
     narratorNayeliIntroVoice: './assets/audio/vo/narrator/characters/nayeli-intro.opus',
     narratorTadeoIntroVoice: './assets/audio/vo/narrator/characters/tadeo-intro.opus',
     narratorStoryVoice: './assets/audio/vo/narrator/story/story.opus',
-    uiTitleHitSfx: './assets/audio/sfx/ui/title-hit.opus',
-    uiIntroStartButtonClickSfx: './assets/audio/sfx/ui/intro-start-button-click.opus'
+    uiTitleHitSfx: './assets/audio/sfx/ui/title-hit.opus'
 };
 
 export const farmAudioManifestImmediate = {
