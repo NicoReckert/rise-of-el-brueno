@@ -39,9 +39,10 @@ export const newWeaponEvents =
             type: 'time',
             delay: 21000,
             action: (setup) => {
-                setup.world.currentScene = 'nayelisHouseLevel';
                 setup.world.nayelisHouseLevelSetup.comeFromNewWeapon = true;
                 setup.world.nayelisHouseLevelController.eventManager.resetEventByName('init');
+                setup.world.nayelisHouseLevelController.questManager.advance(3);
+                setup.world.currentScene = 'nayelisHouseLevel';
             }
         }
     ];

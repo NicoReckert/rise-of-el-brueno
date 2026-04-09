@@ -81,6 +81,7 @@ export class FarmLevelController {
         this.updateWorld(timestamp);
         this.renderLateFrame();
         this.updateUi();
+        this.renderer.handleCutsceneIndicator();
     }
 
     /**

@@ -62,6 +62,7 @@ export const farmEvents_part2 = [
             setup.world.isKeysStopp = true;
             setup.world.character.isFlipped = false;
             setup.characters.cow.isFlipped = true;
+            setup.cutsceneIndicator.show({ skippable: false });
         }
     },
 
@@ -336,16 +337,29 @@ export const farmEvents_part2 = [
     },
 
     /**
+     * Quest event that shows the cutscene indicator when the moon cycle is finished.
+     */
+    {
+        type: 'quest',
+        step: 10,
+        condition: (setup) => setup.moonCycle.finished,
+        action: (setup) => {
+            setup.cutsceneIndicator.show({ skippable: true });
+        }
+    },
+
+    /**
      * Input-based quest event that skips to the end of the music
      * when the moon cycle is finished and the F key is pressed.
      */
     {
         type: 'input',
         step: 10,
-        key: 'F',
+        key: 'X',
         condition: (setup) => setup.moonCycle.finished,
         action: (setup) => {
             setup.sounds.happyTogetherMusic.currentTime = 97.0;
+            setup.cutsceneIndicator.show({ skippable: false });
         }
     },
 

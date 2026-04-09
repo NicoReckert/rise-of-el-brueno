@@ -115,6 +115,7 @@ body {
   background-image: linear-gradient(to right, #314755 0%, #26a0da 51%, #314755 100%);
   cursor: pointer;
   font-family: 'Bangers';
+  z-index: 2;
 }
 
 .intro-start-button:hover {
@@ -126,6 +127,7 @@ body {
   display: flex;
   flex-direction: column;
   width: 100%;
+  background-color: black;
   flex: 1;
 }
 
@@ -147,6 +149,7 @@ body {
   justify-content: space-between;
   align-items: flex-end;
   width: 100%;
+  z-index: 4;
 }
 
 .touch-controls__movement {
@@ -761,6 +764,7 @@ canvas {
   transform: translate(-50%, -50%);
   object-fit: cover;
   height: 100%;
+  z-index: 1;
 }
 
 .intro-video {
@@ -1424,6 +1428,11 @@ body.fullscreen-active .portal-video {
 
 .d-none {
   display: none;
+}
+
+.touch-controls-cutscene-hidden {
+  display: none !important;
+  pointer-events: none !important;
 }
 
 .overlay-landscape-spinner {

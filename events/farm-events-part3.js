@@ -20,6 +20,7 @@ export const farmEvents_part3 = [
                     char.yVoidless = 487;
                     setup.world.isKeysStopp = false;
                     char.isWalk = false;
+                    setup.cutsceneIndicator.hide();
                     setup.world.farmLevelController.questManager.advance(12);
                 }
             }
@@ -67,6 +68,7 @@ export const farmEvents_part3 = [
             setup.world.farmLevelSetup.sounds.taskCompletedSfx02.currentTime = 0;
             setup.world.farmLevelSetup.sounds.taskCompletedSfx02.play();
             setup.state.popupTexts.push(new PopupText("Aufgabe erledigt!", setup.world.canvas.width / 2, 440));
+            setup.cutsceneIndicator.show({ skippable: false });
             setup.world.farmLevelController.questManager.advance(13);
         }
     },

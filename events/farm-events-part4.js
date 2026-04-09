@@ -158,6 +158,7 @@ export const farmEvents_part4 = [
         step: 19,
         action: (setup) => {
             setup.world.isKeysStopp = false;
+            setup.cutsceneIndicator.hide();
             setup.world.taskWindow.addTask('8. Besuche nochmal den Stall', { active: true })
             setup.sounds.newTaskSfx.play()
             setup.state.popupTexts.push(new PopupText("Neue Aufgabe im Log!", setup.world.canvas.width / 2, 400))

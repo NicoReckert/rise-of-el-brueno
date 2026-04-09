@@ -138,7 +138,7 @@ export class DialogManager {
             step.bubbleType ?? "speech",
             {
                 audioManager: step.allAudios ?? this.world.allAudios ?? null,
-                yOffset: step.yOffset ?? 40
+                yOffset: step.yOffset ?? 50
             }
         );
     }

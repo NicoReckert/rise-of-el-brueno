@@ -7,7 +7,8 @@ const KEY_MAP = {
     s: 'S',
     f: 'F',
     t: 'T',
-    a: 'A'
+    a: 'A',
+    x: 'X'
 };
 
 const MOBILE_BUTTON_MAP = {
@@ -57,6 +58,7 @@ export class Keyboard {
         this.F = false;
         this.T = false;
         this.A = false;
+        this.X = false;
     }
 
     /**
@@ -129,5 +131,26 @@ export class Keyboard {
         element.addEventListener('touchcancel', () => {
             this[key] = false;
         });
+    }
+
+    /**
+     * Triggers a virtual key press.
+     * @param {string} key Key value.
+     * @param {number} [duration=120] Press duration in milliseconds.
+     * @returns {void}
+     */
+    triggerVirtualKeyPress(key, duration = 120) {
+        const mappedKey = this.getMappedKey(key);
+        if (!mappedKey) return;
+        this[mappedKey] = true;
+        window.dispatchEvent(new KeyboardEvent('keydown', {
+            key: key.length === 1 ? key.toLowerCase() : key
+        }));
+        setTimeout(() => {
+            this[mappedKey] = false;
+            window.dispatchEvent(new KeyboardEvent('keyup', {
+                key: key.length === 1 ? key.toLowerCase() : key
+            }));
+        }, duration);
     }
 }

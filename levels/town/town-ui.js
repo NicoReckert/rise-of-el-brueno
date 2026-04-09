@@ -4,6 +4,7 @@ import { CoinBar } from '../../classes/ui/coin-bar.class.js';
 import { BottleBar } from '../../classes/ui/bottle-bar.class.js';
 import { DialogManager } from '../../classes/ui/dialog-manager.class.js';
 import { HollowHint } from '../../classes/ui/hollow-hint.class.js';
+import { CutsceneIndicator } from '../../classes/ui/cutscene-indicator.class.js';
 import {
     createTownSpeechBubblesCharacter,
     createTownSpeechBubblesNayeliSpirit,
@@ -30,7 +31,8 @@ export function createTownUI(setup) {
     return {
         ...createTownBarsAndDialog(setup),
         ...createTownSpeechBubbles(setup),
-        ...createTownHollowHints(setup)
+        ...createTownHollowHints(setup),
+        ...createCutsceneIndicator(setup)
     };
 }
 
@@ -46,7 +48,7 @@ function createTownBarsAndDialog(setup) {
         coinBar: new CoinBar(setup.entityImages),
         bottleBar: new BottleBar(setup.entityImages),
         dialogManager: new DialogManager(setup.world, setup.world.keyboard),
-    }
+    };
 }
 
 /**
@@ -65,12 +67,12 @@ function createTownSpeechBubbles(setup) {
         speechBubblesTadeoAfraid: createTownSpeechBubblesTadeoAfraid(setup.characters.tadeo),
         speechBubblesTadeoPanic: createTownSpeechBubblesTadeoPanic(setup.characters.tadeo),
         speechBubblesTadeoHelp: createTownSpeechBubblesTadeoHelp(setup.characters.tadeo),
-        speechBubblesTadeoSpiritEcho: createTownSpeechBubblesTadeoSpiritEcho(setup.environment.tadeoSpiritEcho), 
+        speechBubblesTadeoSpiritEcho: createTownSpeechBubblesTadeoSpiritEcho(setup.environment.tadeoSpiritEcho),
         speechBubblesJuanito: createTownSpeechBubblesJuanito(setup.environment.juanitoSpirit),
         speechBubblesPollito: createTownSpeechBubblesPollito(setup.environment.pollitoSpirit),
         speechBubblesLola: createTownSpeechBubblesLola(setup.environment.lolaSpirit),
         speechBubblesSoul: createTownSpeechBubblesSoul(setup.characters.soul)
-    }
+    };
 }
 
 /**
@@ -82,5 +84,16 @@ function createTownHollowHints(setup) {
         hints: [
             new HollowHint("Betreten", setup.world.character, 100, 'desert')
         ]
-    }
+    };
+}
+
+/**
+ * Creates the cutscene indicator.
+ * @param {Object} setup Setup data.
+ * @returns {{cutsceneIndicator: *}} Cutscene indicator object.
+ */
+function createCutsceneIndicator(setup) {
+    return {
+        cutsceneIndicator: new CutsceneIndicator(setup.world)
+    };
 }

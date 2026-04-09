@@ -11,7 +11,7 @@ export class SpeechBubble {
      * @param {string} [type="speech"] Dialog type.
      * @param {{ yOffset?: number, audioManager?: Object | null }} [options={}] Dialog options.
      */
-    constructor(text, target = "canvas", type = "speech", { yOffset = 40, audioManager = null } = {}) {
+    constructor(text, target = "canvas", type = "speech", { yOffset = 50, audioManager = null } = {}) {
         this.renderer = new SpeechBubbleRenderer();
         this.initDialogCore(text, target, type, yOffset, audioManager);
         this.initDialogTiming();

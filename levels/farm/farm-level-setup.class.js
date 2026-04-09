@@ -12,6 +12,7 @@ import { createFarmSounds } from './farm-sounds.js';
 import { createFarmSpeechBubbles } from './farm-speech-bubbles.js';
 import { createFarmHints } from './farm-hints.js';
 import { createFarmState } from './farm-state.js';
+import { CutsceneIndicator } from '../../classes/ui/cutscene-indicator.class.js';
 
 /**
  * Sets up and initializes the farm level.
@@ -70,5 +71,6 @@ export class FarmLevelSetup {
         this.sunCycle = new SunCycle(this);
         this.moonCycle = new MoonCycle(this);
         this.lyricsRenderer = new LyricsRenderer(this.world, this.sounds.happyTogetherMusic);
+        this.cutsceneIndicator = new CutsceneIndicator(this.world);
     }
 }

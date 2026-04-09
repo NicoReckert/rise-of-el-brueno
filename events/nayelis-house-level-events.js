@@ -9,7 +9,8 @@ export const nayelisHouseEvents =
             type: 'quest',
             action: (setup) => {
                 setup.world.camera_x = 0;
-                setup.world.character.x = setup.comeFromNewWeapon ? 725 : 300;
+                setup.world.character.x = setup.comeFromNewWeapon ? 710 : 300;
+                setup.world.character.speedX = 2;
                 setup.world.character.y = 370;
                 setup.world.character.level_start_x = 290;
                 setup.world.level_end_x = 845;
@@ -19,9 +20,9 @@ export const nayelisHouseEvents =
                 setup.video.loop = true;
                 setup.video.play();
                 setup.comeFromNewWeapon = false;
-                
-                setup.world.townLevelController.questManager.advance(12); // muss wieder entfernt werden!!
-                setup.world.nayelisHouseLevelController.questManager.advance(2); // muss wieder entfernt werden!!
+
+                // setup.world.townLevelController.questManager.advance(12); // muss wieder entfernt werden!!
+                // setup.world.nayelisHouseLevelController.questManager.advance(2); // muss wieder entfernt werden!!
             }
         },
 
@@ -44,7 +45,7 @@ export const nayelisHouseEvents =
             type: 'position',
             area: { x: 300, width: 50 },
             objectA: 'character',
-            step: 2,
+            step: 3,
             once: false,
             action: (setup) => {
                 setup.hints[0].show();
@@ -61,7 +62,7 @@ export const nayelisHouseEvents =
             name: 'changeLevel',
             type: "position",
             area: { x: 300, width: 50 },
-            step: 2,
+            step: 3,
             requireKey: "F",
             action: (setup) => {
                 setup.world.townLevelSetup.state.comeFromNayelisHouse = true;
@@ -78,12 +79,14 @@ export const nayelisHouseEvents =
          * Collision-based event that triggers Nayeli interaction and advances the quest.
          */
         {
-            type: 'collision',
-            objectA: 'character',
-            objectB: 'nayeli',
-            toleranceB: { x: -80, width: 50 },
+            type: 'position',
+            area: { x: 800, width: 10 },
             action: (setup) => {
+                setup.world.character.isMovingLeft = false;
+                setup.world.character.isMovingRight = false;
+                setup.world.isKeysStopp = true;
                 setup.sounds.voNayeliSpeak01.play();
+                setup.dialogManager.startDialog('nayeli:01', setup.world.timestamp);
                 setup.world.townLevelController.questManager.advance(12);
                 setup.world.nayelisHouseLevelController.questManager.advance(2);
             }
@@ -95,12 +98,40 @@ export const nayelisHouseEvents =
          */
         {
             type: 'time',
-            delay: 8000,
+            delay: 2000,
             step: 2,
+            condition: (setup) => setup.sounds.voNayeliSpeak01.ended,
             action: (setup) => {
                 setup.world.character.isFlipped = false;
                 setup.world.audioManager.fadeOutAudio(setup.sounds.nayeliThemeMusic, 1000);
                 setup.world.currentScene = 'newWeaponLevel';
             },
+        },
+
+        /**
+         * Time-based event that starts the character dialog after a delay.
+         */
+        {
+            type: 'time',
+            delay: 2000,
+            step: 3,
+            action: (setup) => {
+                setup.dialogManager.startDialog('character:01', setup.world.timestamp, () => {
+                    setup.sounds.voNayeliSpeak02.play();
+                    setup.dialogManager.startDialog('nayeli:02', setup.world.timestamp);
+                });
+            }
+        },
+
+        /**
+         * Quest event that unlocks input after the Nayeli voice audio has ended.
+         */
+        {
+            type: 'quest',
+            step: 3,
+            condition: (setup) => setup.sounds.voNayeliSpeak02.ended,
+            action: (setup) => {
+                setup.world.isKeysStopp = false;
+            }
         }
     ];

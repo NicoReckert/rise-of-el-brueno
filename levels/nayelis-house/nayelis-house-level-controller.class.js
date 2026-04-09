@@ -51,6 +51,7 @@ export class NayelisHouseLevelController {
         this.handlePopup();
         this.handleHint();
         this.eventManager.update();
+        this.updateUi(timestamp);
     }
 
     /**
@@ -60,6 +61,16 @@ export class NayelisHouseLevelController {
     updateCamera() {
         this.camera_x = this.setup.world.camera_x;
         this.renderCameraX = Math.round(this.camera_x);
+    }
+
+    /**
+     * Updates UI elements.
+     * @param {number} timestamp Frame timestamp.
+     * @returns {void}
+     */
+    updateUi(timestamp) {
+        this.setup.dialogManager.update(timestamp);
+        this.setup.dialogManager.draw(this.ctx);
     }
 
     /**

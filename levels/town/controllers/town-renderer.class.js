@@ -29,6 +29,7 @@ export class TownRenderer {
         this.renderTownFlowers(cameraX);
         this.renderCharacterAndEntities(cameraX);
         this.handleHint(cameraX);
+        this.handleCutsceneIndicator();
     }
 
     /**
@@ -365,5 +366,13 @@ export class TownRenderer {
      */
     handleHint(cameraX) {
         this.setup.hints.forEach(hint => hint.draw(this.ctx, cameraX));
+    }
+
+    /**
+     * Draws the cutscene indicator.
+     * @returns {void}
+     */
+    handleCutsceneIndicator() {
+        this.setup.cutsceneIndicator.draw(this.ctx);
     }
 }

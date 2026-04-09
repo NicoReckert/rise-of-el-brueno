@@ -161,4 +161,12 @@ export class FarmRenderer {
         this.addToWorld(this.setup.cutsceneActors.cowTranced);
         this.addToWorld(this.setup.cutsceneActors.chickTranced);
     }
+
+    /**
+     * Draws the cutscene indicator.
+     * @returns {void}
+     */
+    handleCutsceneIndicator() {
+        this.setup.cutsceneIndicator.draw(this.ctx);
+    }
 }

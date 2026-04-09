@@ -66,6 +66,7 @@ export const otherLevelAudioManifestLazy = {
     gameOverMusic: './assets/audio/music/town/game-over.opus',
     voSoulSpeak01: './assets/audio/vo/soul/speak-01.opus',
     voNayeliSpeak01: './assets/audio/vo/nayeli/speak-01.opus',
+    voNayeliSpeak02: './assets/audio/vo/nayeli/speak-02.opus',
     voNewWeapon01: './assets/audio/vo/system/new-weapon-01.opus',
     voLevelComplete01: './assets/audio/vo/system/level-complete-01.opus',
     voNayeliSpirit01: './assets/audio/vo/nayeli/spirit-01.opus',
@@ -118,5 +119,7 @@ export const otherLevelAudioManifestLazy = {
     spiritAppearsSfx: './assets/audio/sfx/magic/spirit-appears.opus',
     shieldChargeSfx: './assets/audio/sfx/magic/shield-charge.opus',
     beamChargeSfx: './assets/audio/sfx/magic/beam-charge.opus',
-    beamChargeFinalSfx: './assets/audio/sfx/magic/beam-charge-final.opus'
+    beamChargeFinalSfx: './assets/audio/sfx/magic/beam-charge-final.opus',
+    cutsceneIndicatorOnSfx: './assets/audio/sfx/ui/cutscene-indicator-on.opus',
+    cutsceneIndicatorOffSfx: './assets/audio/sfx/ui/cutscene-indicator-off.opus',
 }
