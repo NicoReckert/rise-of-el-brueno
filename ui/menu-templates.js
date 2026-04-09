@@ -48,41 +48,46 @@ export function storyCardTemplate(storyText) {
 }
 
 /**
- * Returns an HTML template for the controls overview.
- * @param {Array<Object>} controls Control configuration list.
- * @returns {string} HTML template string.
+ * Creates the controls template.
+ * @param {Array<*>} controls Control entries.
+ * @returns {string}
  */
 export function controlsTemplate(controls) {
-    let controlsActionHtml = "";
-    let controlsKeyHtml = "";
-    let controlsMobileHtml = "";
-    let mobileIconClass = "";
-    controls.forEach(element => {
-        mobileIconClass = element.mobile === 'throw' ? `controls-mobile-throw`
-            : element.mobile === 'right' || element.mobile === 'left' ? `controls-mobile-action`
-                : `controls-mobile-icon`
-        controlsActionHtml += `<span class="controls-text">${element.action}</span>`
-        controlsKeyHtml += `<img class="controls-img" src="./assets/icons/${element.key}.png" alt=""></img>`
-        controlsMobileHtml += `<div class="controls-mobile-icon-box">
-                                <img class="${mobileIconClass}" src="./assets/icons/${element.mobile}.png" alt=""></img>
-                               </div>`
-    });
-    return ` <div class="content-card">
-                <div class="controls-text-over-box">
-                    <div class="controls-action-box">
-                        <span >Action</span>
-                        ${controlsActionHtml}
-                    </div>
-                    <div class="controls-key-box">
-                        <img class="controls-keyboard-img" src="./assets/icons/keyboard.png" alt="">
-                        ${controlsKeyHtml}
-                    </div>
-                    <div class="controls-mobile-box">
-                        <img class="controls-mobile-img" src="./assets/icons/mobile.png" alt="">
-                        ${controlsMobileHtml}
+    const rowsHtml = controls.map(control => {
+        const mobileIconClass = control.mobile === 'throw'
+            ? 'controls-mobile-throw'
+            : control.mobile === 'right' || control.mobile === 'left'
+                ? 'controls-mobile-action'
+                : 'controls-mobile-icon';
+
+        return `
+            <div class="controls-grid__row">
+                <div class="controls-grid__action">
+                    <span class="controls-text">${control.action}</span>
+                </div>
+                <div class="controls-grid__key">
+                    <img class="controls-img" src="./assets/icons/${control.key}.png" alt="${control.key}">
+                </div>
+                <div class="controls-grid__mobile">
+                    <div class="controls-mobile-icon-box">
+                        <img class="${mobileIconClass}" src="./assets/icons/${control.mobile}.png" alt="${control.mobile}">
                     </div>
                 </div>
-            </div>`
+            </div>`;
+    }).join('');
+    return `
+        <div class="content-card">
+            <div class="controls-grid">
+                <div class="controls-grid__header controls-grid__header--action">Action</div>
+                <div class="controls-grid__header controls-grid__header--key">
+                    <img class="controls-keyboard-img" src="./assets/icons/keyboard.png" alt="Keyboard">
+                </div>
+                <div class="controls-grid__header controls-grid__header--mobile">
+                    <img class="controls-mobile-img" src="./assets/icons/mobile.png" alt="Mobile">
+                </div>
+                ${rowsHtml}
+            </div>
+        </div>`;
 }
 
 /**

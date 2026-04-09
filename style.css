@@ -1047,37 +1047,16 @@ canvas {
   flex-direction: column;
   width: 100%;
   padding-top: 32px;
-  padding-bottom: 32px;
+  padding-bottom: 56px;
 }
 
-.controls-text-over-box {
-  display: flex;
-  justify-content: center;
-  align-items: flex-start;
-  padding-left: 24px;
-  padding-right: 24px;
-  gap: 280px;
-}
-
-.controls-titles {
-  display: flex;
-  justify-content: center;
-  align-items: flex-start;
-  padding-left: 24px;
-  padding-right: 24px;
-  gap: 32px;
-}
-
-.controls-text-box {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 24px;
+.controls-section .content-card {
+  min-height: 760px;
 }
 
 .controls-text {
   font-family: 'Nunito';
-  font-size: 36px;
+  font-size: 34px;
   font-weight: bold;
   color: #fff3d4;
   filter: drop-shadow(10px 10px 10px rgb(0, 0, 0, 0.5));
@@ -1099,49 +1078,7 @@ canvas {
 }
 
 .controls-img {
-  width: 50px;
-  object-fit: cover;
-}
-
-.controls-action-box {
-  display: flex;
-  justify-content: center;
-  align-items: flex-start;
-  flex-direction: column;
-  gap: 24px;
-}
-
-.controls-action-box:nth-child(1) {
-  color: orange;
-  font-family: 'Nunito';
-  font-size: 42px;
-  font-weight: bold;
-  filter: drop-shadow(10px 10px 10px rgb(0, 0, 0, 0.5));
-  text-shadow:
-    0 2px 2px rgba(0, 0, 0, 0.6),
-    0 4px 6px rgba(0, 0, 0, 0.4),
-    0 0 8px rgba(255, 230, 180, 0.4);
-  -webkit-text-stroke: 0.5px rgba(0, 0, 0, 0.8);
-}
-
-.controls-key-box {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex-direction: column;
-  gap: 24px;
-}
-
-.controls-mobile-box {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex-direction: column;
-  gap: 24px;
-}
-
-.controls-mobile-box:nth-child(1) {
-  width: 100px;
+  width: 46px;
   object-fit: cover;
 }
 
@@ -1149,8 +1086,8 @@ canvas {
   display: flex;
   justify-content: center;
   align-items: center;
-  width: 50px;
-  height: 50px;
+  width: 46px;
+  height: 46px;
   border-radius: 50%;
   background: rgba(255, 255, 255, 0.15);
   backdrop-filter: blur(6px);
@@ -1180,6 +1117,60 @@ canvas {
   object-fit: cover;
   opacity: 0.8;
   pointer-events: none;
+}
+
+.controls-grid {
+  display: grid;
+  grid-template-columns: minmax(560px, 1fr) 160px 160px;
+  column-gap: 150px;
+  row-gap: 14px;
+  align-items: center;
+  padding: 0 10px 6px;
+}
+
+.controls-grid__header {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 2px;
+  padding-top: 6px;
+}
+
+.controls-grid__header--action {
+  justify-content: flex-start;
+  color: orange;
+  font-family: 'Nunito';
+  font-size: 42px;
+  font-weight: bold;
+  filter: drop-shadow(10px 10px 10px rgb(0, 0, 0, 0.5));
+  text-shadow:
+    0 2px 2px rgba(0, 0, 0, 0.6),
+    0 4px 6px rgba(0, 0, 0, 0.4),
+    0 0 8px rgba(255, 230, 180, 0.4);
+  -webkit-text-stroke: 0.5px rgba(0, 0, 0, 0.8);
+}
+
+.controls-grid__row {
+  display: contents;
+}
+
+.controls-grid__action {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+.controls-grid__key,
+.controls-grid__mobile {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.controls-grid__action,
+.controls-grid__key,
+.controls-grid__mobile {
+  min-height: 42px;
 }
 
 .credits-title {
