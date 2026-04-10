@@ -13,19 +13,20 @@ export class DustParticle {
         this.canvas = canvas;
         this.viewportW = canvas.width;
         this.viewportH = canvas.height;
-        this.cameraInfluence = 0.08;
-        this.lastCameraX = null;
         this.particles = this.createParticles(count);
+        this.fade = 1;
+        this.fadeTarget = 1;
+        this.fadeSpeed = 0.03;
     }
 
     /**
-     * Creates particle data.
-     * @param {number} count Number of particles.
-     * @returns {Array<Object>} Particle data.
+     * Creates particles.
+     * @param {number} count Particle count.
+     * @returns {Array<Object>}
      */
     createParticles(count) {
         return Array.from({ length: count }, () => ({
-            x: Math.random() * this.viewportW,
+            worldX: Math.random() * this.viewportW,
             y: Math.random() * this.viewportH,
             r: Math.random() * 1.2 + 0.4,
             speedX: (Math.random() - 0.5) * 0.25,
@@ -35,76 +36,54 @@ export class DustParticle {
     }
 
     /**
-     * Updates all particles with camera drift.
-     * @param {CanvasRenderingContext2D} ctx Rendering context.
+     * Updates the particles.
+     * @param {CanvasRenderingContext2D} ctx Canvas rendering context.
      * @param {number} [cameraX=0] Camera x position.
      * @returns {void}
      */
     update(ctx, cameraX = 0) {
-        const screenDrift = this.getScreenDrift(cameraX);
+        this.updateFade();
+        if (this.fade <= 0.001) return;
         ctx.save();
         ctx.globalCompositeOperation = 'lighter';
         const time = performance.now() * 0.002;
-        for (const p of this.particles) this.updateDriftingParticle(ctx, time, p, screenDrift);
+        for (const p of this.particles) this.updateParticle(ctx, time, p, cameraX);
         ctx.restore();
     }
 
     /**
-     * Calculates screen drift based on camera movement.
-     * @param {number} cameraX Camera x position.
-     * @returns {number} Screen drift value.
-     */
-    getScreenDrift(cameraX) {
-        if (this.lastCameraX == null) this.lastCameraX = cameraX;
-        let cameraDx = cameraX - this.lastCameraX;
-        this.lastCameraX = cameraX;
-        cameraDx = Math.max(-40, Math.min(40, cameraDx));
-        return cameraDx * this.cameraInfluence;
-    }
-
-    /**
-     * Updates a particle with camera drift and draws it.
-     * @param {CanvasRenderingContext2D} ctx Rendering context.
-     * @param {number} time Time value.
-     * @param {Object} p Particle data.
-     * @param {number} screenDrift Screen drift value.
-     * @returns {void}
-     */
-    updateDriftingParticle(ctx, time, p, screenDrift) {
-        p.x -= screenDrift;
-        this.updateParticle(ctx, time, p);
-    }
-
-    /**
-     * Updates and draws a particle if visible.
-     * @param {CanvasRenderingContext2D} ctx Rendering context.
-     * @param {number} time Time value.
+     * Updates a particle.
+     * @param {CanvasRenderingContext2D} ctx Canvas rendering context.
+     * @param {number} time Current time.
      * @param {Object} particle Particle data.
+     * @param {number} cameraX Camera x position.
      * @returns {void}
      */
-    updateParticle(ctx, time, particle) {
+    updateParticle(ctx, time, particle, cameraX) {
         this.moveParticle(particle);
-        this.respawnParticleIfNeeded(particle);
-        const screenX = particle.x;
+        this.respawnParticleIfNeeded(particle, cameraX);
+        const screenX = particle.worldX - cameraX;
         if (!this.isParticleVisible(screenX)) return;
-        const flicker = this.getParticleFlicker(time, particle.x);
-        const alpha = particle.alpha * flicker;
+        const flicker = this.getParticleFlicker(time, particle.worldX);
+        const alpha = particle.alpha * flicker * this.fade;
         ctx.globalAlpha = alpha;
         this.drawParticle(ctx, screenX, particle.y, particle.r, alpha);
     }
 
     /**
-     * Respawns a particle if it leaves the viewport bounds.
+     * Respawns a particle if needed.
      * @param {Object} p Particle data.
+     * @param {number} cameraX Camera x position.
      * @returns {void}
      */
-    respawnParticleIfNeeded(p) {
-        if (p.x < -20) {
-            p.x = this.viewportW + Math.random() * 80;
+    respawnParticleIfNeeded(p, cameraX) {
+        const screenX = p.worldX - cameraX;
+        if (screenX < -20) {
+            p.worldX = cameraX + this.viewportW + Math.random() * 300;
             p.y = Math.random() * this.viewportH;
         }
-        if (p.x > this.viewportW + 120) {
-            p.x = -Math.random() * 80;
+        if (screenX > this.viewportW + 120) {
+            p.worldX = cameraX - Math.random() * 300;
             p.y = Math.random() * this.viewportH;
         }
         if (p.y < -10 || p.y > this.viewportH + 10) {
@@ -150,12 +129,32 @@ export class DustParticle {
     }
 
     /**
-     * Moves a particle based on its speed.
+     * Moves a particle.
      * @param {Object} p Particle data.
      * @returns {void}
      */
     moveParticle(p) {
-        p.x += p.speedX;
+        p.worldX += p.speedX;
         p.y += p.speedY;
+    }
+
+    /**
+     * Sets visibility state.
+     * @param {boolean} visible Visibility flag.
+     * @returns {void}
+     */
+    setVisible(visible) {
+        this.fadeTarget = visible ? 1 : 0;
+    }
+
+    /**
+     * Updates the fade value.
+     * @returns {void}
+     */
+    updateFade() {
+        this.fade += (this.fadeTarget - this.fade) * this.fadeSpeed;
+        if (Math.abs(this.fadeTarget - this.fade) < 0.001) {
+            this.fade = this.fadeTarget;
+        }
     }
 }

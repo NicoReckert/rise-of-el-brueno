@@ -58,8 +58,10 @@ export class AssetLoader {
      * @returns {Promise<void>}
      */
     async prepareIntroPhase() {
-        await this.runFakeIntroProgress();
-        await this.preloadIntroAssets();
+        await Promise.all([
+            this.runFakeIntroProgress(),
+            this.preloadIntroAssets()
+        ]);
     }
 
     /**
@@ -269,11 +271,8 @@ export class AssetLoader {
      */
     async loadDeferredManifests() {
         const charDeferred = await preloadManifestImages(characterManifestDeferred, { concurrency: 1, manifestConcurrency: 1 });
-        await this.waitForIdle(300);
         const entityDeferred = await preloadManifestImages(farmEntityManifestDeferred, { concurrency: 1, manifestConcurrency: 1 });
-        await this.waitForIdle(300);
         const deferredAudios = await preloadManifestAudio(farmAudioManifestDeferred, { preload: 'metadata', readyEvent: 'canplay', concurrency: 1 });
-        await this.waitForIdle(300);
         const deferredVideos = await preloadManifestVideos(farmVideoManifestDeferred, { preload: 'metadata', readyEvent: 'loadedmetadata', concurrency: 1 });
         this.deferredAudios = deferredAudios;
         this.deferredVideos = deferredVideos;
@@ -291,22 +290,14 @@ export class AssetLoader {
     }
 
     /**
-     * Loads lazy image and audio manifests after an optional wait, updating the lazy caches.
-     * @returns {Promise<{charLazy: Object, entityLazy: Object, lazyAudios: Object}>} Loaded lazy assets.
+     * Loads lazy manifests.
+     * @returns {Promise<{charLazy: *, entityLazy: *, lazyAudios: Object}>}
      */
     async loadLazyManifests() {
-        await this._waitBeforeLoad();
         const [charRes, entityRes, audioRes] = await this._loadLazyManifests();
         const { charLazy, entityLazy, lazyAudios } = this._processLazyResults(charRes, entityRes, audioRes);
         this.lazyAudios = lazyAudios;
         return { charLazy, entityLazy, lazyAudios };
-    }
-
-    /**
-     * Waits for a short idle period before starting lazy loading.
-     */
-    async _waitBeforeLoad() {
-        await this.waitForIdle(1500);
     }
 
     /**
@@ -315,9 +306,7 @@ export class AssetLoader {
      */
     async _loadLazyManifests() {
         const charRes = await preloadManifestImages(otherLevelCharacterManifestLazy, { concurrency: 1, manifestConcurrency: 1 });
-        await this.waitForIdle(300);
         const entityRes = await preloadManifestImages(otherLevelEntityManifestLazy, { concurrency: 1, manifestConcurrency: 1 });
-        await this.waitForIdle(300);
         const audioRes = await preloadManifestAudio(otherLevelAudioManifestLazy, { preload: 'metadata', readyEvent: 'canplay', concurrency: 1 });
         return [charRes, entityRes, audioRes];
     }
@@ -347,14 +336,5 @@ export class AssetLoader {
                 ? requestIdleCallback(r, { timeout })
                 : setTimeout(r, timeout)
         );
-    }
-
-    /**
-     * Delays execution for a specified time.
-     * @param {number} ms Delay in milliseconds.
-     * @returns {Promise<void>}
-     */
-    sleep(ms) {
-        return new Promise(resolve => setTimeout(resolve, ms));
     }
 }

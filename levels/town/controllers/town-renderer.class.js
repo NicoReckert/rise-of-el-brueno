@@ -69,7 +69,9 @@ export class TownRenderer {
      */
     renderParticleEffects(cameraX) {
         if (this.questManager.step >= 13) {
+            this.setup.windParticleEffect.setVisible(true);
             this.setup.windParticleEffect.draw(this.ctx, cameraX);
+            this.setup.dustParticleEffect.setVisible(true);
             this.setup.dustParticleEffect.update(this.ctx, cameraX);
         }
     }
@@ -331,7 +333,7 @@ export class TownRenderer {
      */
     renderStatusBar() {
         this.addToWorld(this.setup.statusBarCharacter);
-        if (this.questManager.step >= 10) this.addToWorld(this.setup.statusBarEndboss);
+        if (this.questManager.step >= 13) this.addToWorld(this.setup.statusBarEndboss);
         this.addToWorld(this.setup.coinBar);
         this.addToWorld(this.setup.bottleBar);
     }

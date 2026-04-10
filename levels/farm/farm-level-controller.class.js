@@ -58,7 +58,7 @@ export class FarmLevelController {
      * @returns {void}
      */
     initWind() {
-        this.windParticleEffect = new WindParticleEffect(this.canvas.width * 9, this.canvas.height, 1000);
+        this.windParticleEffect = new WindParticleEffect(this.canvas.width, this.canvas.height, 250);
         this.renderer.windParticleEffect = this.windParticleEffect;
     }
 
@@ -68,7 +68,7 @@ export class FarmLevelController {
      */
     initEffects() {
         this.earthquake = new EarthquakeEffect(this.setup, this.ctx);
-        this.dustParticle = new DustParticle(this.canvas);
+        this.dustParticle = new DustParticle(this.canvas, 80);
     }
 
     /**

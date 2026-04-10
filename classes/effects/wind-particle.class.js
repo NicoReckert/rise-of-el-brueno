@@ -15,11 +15,11 @@ class WindParticle {
     }
 
     /**
-     * Resets particle properties.
+     * Resets the particle.
      * @returns {void}
      */
     reset() {
-        this.x = Math.random() * this.viewportW;
+        this.worldX = Math.random() * this.viewportW;
         this.y = Math.random() * this.viewportH;
         this.size = Math.random() * 3 + 1;
         this.speedX = -(Math.random() * 0.8 + 0.2);
@@ -30,34 +30,38 @@ class WindParticle {
     }
 
     /**
-     * Updates particle position and respawns if needed.
+     * Updates the particle.
+     * @param {number} cameraX Camera x position.
      * @returns {void}
      */
-    update() {
-        this.x += this.speedX;
+    update(cameraX) {
+        this.worldX += this.speedX;
         this.y += this.speedY;
         this.rotation += this.rotationSpeed;
-        if (this.x < -50 || this.y < -50 || this.y > this.viewportH + 50) {
+        const screenX = this.worldX - cameraX;
+        if (screenX < -50 || this.y < -50 || this.y > this.viewportH + 50) {
             this.reset();
-            this.x = this.viewportW + 10 + Math.random() * 80;
+            this.worldX = cameraX + this.viewportW + 10 + Math.random() * 300;
         }
     }
 
     /**
-     * Draws the particle if visible.
-     * @param {CanvasRenderingContext2D} ctx Rendering context.
+     * Draws the particle.
+     * @param {CanvasRenderingContext2D} ctx Canvas rendering context.
      * @param {number} canvasWidth Canvas width.
      * @param {number} canvasHeight Canvas height.
+     * @param {number} cameraX Camera x position.
+     * @param {number} [fade=1] Fade value.
      * @returns {void}
      */
-    draw(ctx, canvasWidth, canvasHeight) {
-        const screenX = this.x;
+    draw(ctx, canvasWidth, canvasHeight, cameraX, fade = 1) {
+        const screenX = this.worldX - cameraX;
         if (screenX < -50 || screenX > canvasWidth + 50) return;
         if (this.y < -50 || this.y > canvasHeight + 50) return;
         ctx.save();
         ctx.translate(screenX, this.y);
         ctx.rotate(this.rotation);
-        ctx.globalAlpha = this.alpha;
+        ctx.globalAlpha = this.alpha * fade;
         ctx.fillStyle = 'rgba(255, 255, 255, 0.9)';
         ctx.beginPath();
         ctx.ellipse(0, 0, this.size * 1.5, this.size * 0.6, 0, 0, 2 * Math.PI);
@@ -81,41 +85,54 @@ export class WindParticleEffect {
     constructor(viewportW, viewportH, particleCount = 200, _parallaxFactor = 1) {
         this.viewportW = viewportW;
         this.viewportH = viewportH;
-        this.cameraInfluence = 0.22;
-        this.lastCameraX = null;
         this.particles = Array.from({ length: particleCount }, () =>
             new WindParticle(viewportW, viewportH)
         );
+        this.fade = 0;
+        this.fadeTarget = 0;
+        this.fadeSpeed = 0.03;
     }
 
     /**
-     * Updates particles with camera influence.
+     * Updates the particles.
      * @param {number} [cameraX=0] Camera x position.
      * @returns {void}
      */
     update(cameraX = 0) {
-        if (this.lastCameraX == null) {
-            this.lastCameraX = cameraX;
-        }
-        let cameraDx = cameraX - this.lastCameraX;
-        this.lastCameraX = cameraX;
-        cameraDx = Math.max(-40, Math.min(40, cameraDx));
-        const screenDrift = cameraDx * this.cameraInfluence;
-        this.particles.forEach(p => {
-            p.x -= screenDrift;
-            p.update();
-        });
+        this.updateFade();
+        this.particles.forEach(p => p.update(cameraX));
     }
 
     /**
-     * Draws all particles.
-     * @param {CanvasRenderingContext2D} ctx Rendering context.
-     * @param {number} [_cameraX=0] Camera x position.
+     * Draws the particles.
+     * @param {CanvasRenderingContext2D} ctx Canvas rendering context.
+     * @param {number} [cameraX=0] Camera x position.
      * @returns {void}
      */
-    draw(ctx, _cameraX = 0) {
+    draw(ctx, cameraX = 0) {
+        if (this.fade <= 0.001) return;
         const canvasWidth = ctx.canvas.width;
         const canvasHeight = ctx.canvas.height;
-        this.particles.forEach(p => p.draw(ctx, canvasWidth, canvasHeight));
+        this.particles.forEach(p => p.draw(ctx, canvasWidth, canvasHeight, cameraX, this.fade));
+    }
+
+    /**
+     * Sets visibility state.
+     * @param {boolean} visible Visibility flag.
+     * @returns {void}
+     */
+    setVisible(visible) {
+        this.fadeTarget = visible ? 1 : 0;
+    }
+
+    /**
+     * Updates the fade value.
+     * @returns {void}
+     */
+    updateFade() {
+        this.fade += (this.fadeTarget - this.fade) * this.fadeSpeed;
+        if (Math.abs(this.fadeTarget - this.fade) < 0.001) {
+            this.fade = this.fadeTarget;
+        }
     }
 }
