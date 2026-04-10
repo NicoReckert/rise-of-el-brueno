@@ -78,7 +78,7 @@ export class AssetLoader {
      * Preloads intro audio assets from the manifest.
      */
     async preloadIntroAssets() {
-        const introAudios = await preloadManifestAudio(introAudioManifest);
+        const introAudios = await preloadManifestAudio(introAudioManifest, { preload: 'auto', readyEvent: 'canplaythrough' });
         this.introAudios = introAudios;
     }
 
@@ -154,11 +154,11 @@ export class AssetLoader {
      */
     async loadImmediateFiles(onFileLoaded) {
         return Promise.allSettled([
-            preloadManifestImages(characterManifestImmediate, onFileLoaded),
-            preloadManifestImages(farmEntityManifestImmediate, onFileLoaded),
-            preloadManifestImages(levelVisualImageManifest, onFileLoaded),
-            preloadManifestAudio(farmAudioManifestImmediate, onFileLoaded),
-            preloadManifestVideos(videoManifest, onFileLoaded)
+            preloadManifestImages(characterManifestImmediate, { onFileLoaded, concurrency: 4 }),
+            preloadManifestImages(farmEntityManifestImmediate, { onFileLoaded, concurrency: 4 }),
+            preloadManifestImages(levelVisualImageManifest, { onFileLoaded, concurrency: 3 }),
+            preloadManifestAudio(farmAudioManifestImmediate, { onFileLoaded, preload: 'auto', readyEvent: 'canplaythrough' }),
+            preloadManifestVideos(videoManifest, { onFileLoaded, preload: 'auto' })
         ]);
     }
 
@@ -270,10 +270,10 @@ export class AssetLoader {
      */
     async loadDeferredManifests() {
         const results = await this.loadAllDeferred([
-            { fn: () => preloadManifestImages(characterManifestDeferred), defaultValue: {} },
-            { fn: () => preloadManifestImages(farmEntityManifestDeferred), defaultValue: {} },
-            { fn: () => preloadManifestAudio(farmAudioManifestDeferred), defaultValue: {} },
-            { fn: () => preloadManifestVideos(farmVideoManifestDeferred), defaultValue: {} }
+            { fn: () => preloadManifestImages(characterManifestDeferred, { concurrency: 2 }), defaultValue: {} },
+            { fn: () => preloadManifestImages(farmEntityManifestDeferred, { concurrency: 2 }), defaultValue: {} },
+            { fn: () => preloadManifestAudio(farmAudioManifestDeferred, { preload: 'metadata', readyEvent: 'canplay' }), defaultValue: {} },
+            { fn: () => preloadManifestVideos(farmVideoManifestDeferred, { preload: 'metadata' }), defaultValue: {} }
         ]);
         const [charDeferred, entityDeferred, deferredAudios, deferredVideos] = results;
         this.deferredAudios = deferredAudios;
@@ -316,9 +316,9 @@ export class AssetLoader {
      */
     async _loadLazyManifests() {
         return Promise.allSettled([
-            preloadManifestImages(otherLevelCharacterManifestLazy),
-            preloadManifestImages(otherLevelEntityManifestLazy),
-            preloadManifestAudio(otherLevelAudioManifestLazy)
+            preloadManifestImages(otherLevelCharacterManifestLazy, { concurrency: 1 }),
+            preloadManifestImages(otherLevelEntityManifestLazy, { concurrency: 1 }),
+            preloadManifestAudio(otherLevelAudioManifestLazy, { preload: 'metadata', readyEvent: 'canplay' })
         ]);
     }
 

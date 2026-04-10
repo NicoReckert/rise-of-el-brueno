@@ -1,38 +1,54 @@
 const audioCache = new Map();
 
 /**
- * Loads an audio file with caching support.
+ * Loads an audio file.
  * @param {string} src Audio source path.
+ * @param {{preload?: string, readyEvent?: string}} [options={}] Options object.
  * @returns {Promise<HTMLAudioElement|null>}
  */
-export function loadAudio(src) {
-  if (audioCache.has(src)) return audioCache.get(src);
-  const promise = createAndLoadAudio(src);
-  audioCache.set(src, promise);
+export function loadAudio(src, options = {}) {
+  const cacheKey = createAudioCacheKey(src, options);
+  if (audioCache.has(cacheKey)) return audioCache.get(cacheKey);
+  const promise = createAndLoadAudio(src, options);
+  audioCache.set(cacheKey, promise);
   return promise;
 }
 
 /**
- * Creates and loads an audio element.
+ * Creates an audio cache key.
  * @param {string} src Audio source path.
+ * @param {{preload?: string, readyEvent?: string}} [options={}] Options object.
+ * @returns {string}
+ */
+function createAudioCacheKey(src, options = {}) {
+  const preload = options.preload ?? "auto";
+  const readyEvent = options.readyEvent ?? "canplaythrough";
+  return `${src}::${preload}::${readyEvent}`;
+}
+
+/**
+ * Creates and loads an audio file.
+ * @param {string} src Audio source path.
+ * @param {{preload?: string, readyEvent?: string}} [options={}] Options object.
  * @returns {Promise<HTMLAudioElement|null>}
  */
-function createAndLoadAudio(src) {
+function createAndLoadAudio(src, options = {}) {
   return new Promise((resolve) => {
-    const audio = createAudioElement(src);
-    setupAudioHandlers(audio, src, resolve);
+    const audio = createAudioElement(src, options);
+    setupAudioHandlers(audio, src, resolve, options);
     audio.load();
   });
 }
 
 /**
- * Creates and configures an audio element.
+ * Creates an audio element.
  * @param {string} src Audio source path.
+ * @param {{preload?: string}} [options={}] Options object.
  * @returns {HTMLAudioElement}
  */
-function createAudioElement(src) {
+function createAudioElement(src, options = {}) {
   const audio = new Audio();
-  audio.preload = "auto";
+  audio.preload = options.preload ?? "auto";
   audio.crossOrigin = "anonymous";
   audio.src = src;
   return audio;
@@ -40,72 +56,63 @@ function createAudioElement(src) {
 
 /**
  * Sets up audio event handlers.
- * @param {*} audio Audio instance.
- * @param {*} src Audio source.
+ * @param {HTMLAudioElement} audio Audio element.
+ * @param {string} src Audio source path.
  * @param {Function} resolve Promise resolve function.
+ * @param {{preload?: string, readyEvent?: string}} [options={}] Options object.
  * @returns {void}
  */
-function setupAudioHandlers(audio, src, resolve) {
-  const onReady = () => {
-    audio.removeEventListener("canplaythrough", onReady);
-    audio.removeEventListener("error", onError);
-    handleAudioReady(audio, resolve);
-  };
-  const onError = () => {
-    audio.removeEventListener("canplaythrough", onReady);
-    audio.removeEventListener("error", onError);
-    handleAudioError(src, resolve);
-  };
-  audio.addEventListener("canplaythrough", onReady, { once: true });
+function setupAudioHandlers(audio, src, resolve, options = {}) {
+  const readyEvent = options.readyEvent ?? "canplaythrough";
+  const cacheKey = createAudioCacheKey(src, options);
+  const cleanup = () => removeAudioHandlers(audio, readyEvent, onReady, onError);
+  const onReady = () => { cleanup(); resolve(audio); };
+  const onError = () => { cleanup(); audioCache.delete(cacheKey); resolve(null); };
+  audio.addEventListener(readyEvent, onReady, { once: true });
   audio.addEventListener("error", onError, { once: true });
 }
 
 /**
- * Resolves a loaded audio element.
- * @param {HTMLAudioElement} audio Loaded audio element.
- * @param {Function} resolve Promise resolve function.
+ * Removes audio event handlers.
+ * @param {HTMLAudioElement} audio Audio element.
+ * @param {string} readyEvent Ready event name.
+ * @param {Function} onReady Ready event handler.
+ * @param {Function} onError Error event handler.
+ * @returns {void}
  */
-function handleAudioReady(audio, resolve) {
-  resolve(audio);
+function removeAudioHandlers(audio, readyEvent, onReady, onError) {
+  audio.removeEventListener(readyEvent, onReady);
+  audio.removeEventListener("error", onError);
 }
 
 /**
- * Handles audio load failure by clearing the cache entry.
- * @param {string} src Audio source path.
- * @param {Function} resolve Promise resolve function.
- */
-function handleAudioError(src, resolve) {
-  audioCache.delete(src);
-  resolve(null);
-}
-
-/**
- * Preloads audio files defined in a manifest.
- * @param {Object} manifest Audio manifest configuration.
- * @param {Function} [onFileLoaded] Optional callback triggered after each file.
+ * Preloads audio from a manifest.
+ * @param {Object} manifest Manifest data.
+ * @param {{onFileLoaded?: Function|null, preload?: string, readyEvent?: string}} [options={}] Options object.
  * @returns {Promise<Object>}
  */
-export async function preloadManifestAudio(manifest, onFileLoaded) {
+export async function preloadManifestAudio(manifest, options = {}) {
+  const { onFileLoaded = null, preload = "auto", readyEvent = "canplaythrough" } = options;
   const entries = Object.entries(manifest);
   const results = await Promise.all(
     entries.map(([key, paths]) =>
-      loadManifestEntry(key, paths, onFileLoaded)
+      loadManifestEntry(key, paths, { onFileLoaded, preload, readyEvent })
     )
   );
   return Object.fromEntries(results);
 }
 
 /**
- * Loads and normalizes a single audio manifest entry.
- * @param {string} key Manifest entry key.
- * @param {string|string[]} paths Audio source path(s).
- * @param {Function} [onFileLoaded] Optional callback triggered after each file.
- * @returns {Promise<[string, HTMLAudioElement|HTMLAudioElement[]|null]>}
+ * Loads an audio manifest entry.
+ * @param {*} key Entry key.
+ * @param {string|string[]} paths Audio source path or paths.
+ * @param {{onFileLoaded?: Function|null, preload?: string, readyEvent?: string}} options Options object.
+ * @returns {Promise<[*, *]>}
  */
-async function loadManifestEntry(key, paths, onFileLoaded) {
+async function loadManifestEntry(key, paths, options) {
   const sources = Array.isArray(paths) ? paths : [paths];
   const loaded = await Promise.all(
-    sources.map(src => loadSingleAudio(src, onFileLoaded))
+    sources.map(src => loadSingleAudio(src, options))
   );
   const filtered = loaded.filter(Boolean);
   const audio = filtered.length === 0
@@ -117,18 +124,19 @@ async function loadManifestEntry(key, paths, onFileLoaded) {
 }
 
 /**
- * Loads a single audio file and triggers an optional callback.
+ * Loads a single audio file.
  * @param {string} src Audio source path.
- * @param {Function} [onFileLoaded] Optional callback triggered after load.
- * @returns {Promise<HTMLAudioElement|null>}
+ * @param {{onFileLoaded?: Function|null, preload?: string, readyEvent?: string}} [options={}] Options object.
+ * @returns {Promise<*|null>}
  */
-async function loadSingleAudio(src, onFileLoaded) {
+async function loadSingleAudio(src, options = {}) {
+  const { onFileLoaded } = options;
   try {
-    const audio = await loadAudio(src);
-    if (typeof onFileLoaded === "function") onFileLoaded();
+    const audio = await loadAudio(src, options);
+    if (onFileLoaded) onFileLoaded();
     return audio;
   } catch {
-    if (typeof onFileLoaded === "function") onFileLoaded();
+    if (onFileLoaded) onFileLoaded();
     return null;
   }
 }

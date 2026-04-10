@@ -2,101 +2,108 @@ const imageCache = new Map();
 const jsonCache = new Map();
 
 /**
- * Loads an image with optional progress callback, using cache.
- * @param {string} src Image source URL.
- * @param {Function} [onProgress] Optional progress callback.
- * @returns {Promise<HTMLImageElement|null>} Loaded image.
+ * Loads an image.
+ * @param {string} src Image source path.
+ * @param {{onFileLoaded?: Function|null}} [options={}] Options object.
+ * @returns {Promise<HTMLImageElement|null>}
  */
-function loadImage(src, onProgress) {
+function loadImage(src, options = {}) {
+    const { onFileLoaded = null } = options;
     if (imageCache.has(src)) return imageCache.get(src);
-    const promise = createImagePromise(src, onProgress);
+    const promise = createImagePromise(src, { onFileLoaded });
     imageCache.set(src, promise);
     return promise;
 }
 
 /**
- * Creates a promise to load an image.
- * @param {string} src Image source URL.
- * @param {Function} [onProgress] Optional progress callback.
- * @returns {Promise<HTMLImageElement|null>} Promise resolving with the loaded image.
+ * Creates an image loading promise.
+ * @param {string} src Image source path.
+ * @param {{onFileLoaded?: Function|null}} [options={}] Options object.
+ * @returns {Promise<HTMLImageElement|null>}
  */
-function createImagePromise(src, onProgress) {
+function createImagePromise(src, options = {}) {
+    const { onFileLoaded = null } = options;
     return new Promise((resolve) => {
         const img = new Image();
-        setupImageHandlers(img, src, onProgress, resolve);
+        setupImageHandlers(img, src, { onFileLoaded }, resolve);
         img.src = src;
     });
 }
 
 /**
- * Sets up load and error handlers for an image.
+ * Sets up image event handlers.
  * @param {HTMLImageElement} img Image element.
- * @param {string} src Image source URL.
- * @param {Function} [onProgress] Optional progress callback.
+ * @param {string} src Image source path.
+ * @param {{onFileLoaded?: Function|null}} [options={}] Options object.
  * @param {Function} resolve Promise resolve function.
+ * @returns {void}
  */
-function setupImageHandlers(img, src, onProgress, resolve) {
-    img.onload = () => handleImageLoad(src, onProgress, resolve, img);
-    img.onerror = () => handleImageError(src, onProgress, resolve);
+function setupImageHandlers(img, src, options = {}, resolve) {
+    const { onFileLoaded = null } = options;
+    img.onload = () => handleImageLoad(onFileLoaded, resolve, img);
+    img.onerror = () => handleImageError(src, onFileLoaded, resolve);
 }
 
 /**
- * Handles successful image load.
- * @param {string} src Image source URL.
- * @param {Function} [onProgress] Optional progress callback.
+ * Handles image load.
+ * @param {Function|null} onFileLoaded Load callback.
  * @param {Function} resolve Promise resolve function.
- * @param {HTMLImageElement} img Loaded image element.
+ * @param {HTMLImageElement} img Image element.
+ * @returns {void}
  */
-function handleImageLoad(src, onProgress, resolve, img) {
-    if (onProgress) onProgress(src);
+function handleImageLoad(onFileLoaded, resolve, img) {
+    if (onFileLoaded) onFileLoaded();
     resolve(img);
 }
 
 /**
  * Handles image load errors by removing from cache and resolving null.
  * @param {string} src Image source URL.
- * @param {Function} [onProgress] Optional progress callback.
+ * @param {Function} [onFileLoaded] Optional progress callback.
  * @param {Function} resolve Promise resolve function.
  */
-function handleImageError(src, onProgress, resolve) {
-    if (onProgress) onProgress(src);
+function handleImageError(src, onFileLoaded, resolve) {
+    if (onFileLoaded) onFileLoaded();
     imageCache.delete(src);
     resolve(null);
 }
 
 /**
- * Preloads images defined in a manifest.
- * @param {Object} manifest Image manifest configuration.
- * @param {Function} [onProgress] Optional progress callback.
- * @returns {Promise<Object>}
+ * Preloads images from a manifest.
+ * @param {*} manifest Manifest data.
+ * @param {{onFileLoaded?: Function|null, concurrency?: number}} [options={}] Options object.
+ * @returns {Promise<*>}
  */
-export async function preloadManifestImages(manifest, onProgress) {
-    return processManifestNode(manifest, onProgress);
+export async function preloadManifestImages(manifest, options = {}) {
+    const { onFileLoaded = null, concurrency = 4 } = options;
+    return processManifestNode(manifest, onFileLoaded, { concurrency });
 }
 
 /**
- * Processes a manifest node based on its structure.
+ * Processes a manifest node.
  * @param {*} node Manifest node.
- * @param {Function} [onProgress] Optional progress callback.
- * @returns {Promise<*>}
+ * @param {Function} onFileLoaded Progress callback.
+ * @param {Object} [config={}] Configuration object.
+ * @returns {Promise<*|null>}
  */
-async function processManifestNode(node, onProgress) {
-    if (Array.isArray(node)) return processArrayNode(node, onProgress);
-    if (isSheetNode(node)) return processSheetNode(node, onProgress);
-    if (isSheetSequenceNode(node)) return processSheetSequenceNode(node, onProgress);
-    if (isPlainObject(node)) return processObjectNode(node, onProgress);
+async function processManifestNode(node, onFileLoaded, config = {}) {
+    if (Array.isArray(node)) return processArrayNode(node, onFileLoaded, config);
+    if (isSheetNode(node)) return processSheetNode(node, onFileLoaded);
+    if (isSheetSequenceNode(node)) return processSheetSequenceNode(node, onFileLoaded);
+    if (isPlainObject(node)) return processObjectNode(node, onFileLoaded, config);
     return null;
 }
 
 /**
- * Processes an array node of image sources.
- * @param {Array<string>} list Image source list.
- * @param {Function} [onProgress] Optional progress callback.
- * @returns {Promise<Array<HTMLImageElement>>} Loaded images.
+ * Processes a manifest array node.
+ * @param {Array<*>} list Manifest list.
+ * @param {Function} onFileLoaded Progress callback.
+ * @param {Object} [config={}] Configuration object.
+ * @returns {Promise<Array<*>>}
  */
-async function processArrayNode(list, onProgress) {
-    const concurrency = 4;
-    const state = { list, onProgress, results: new Array(list.length), nextIndex: 0, };
+async function processArrayNode(list, onFileLoaded, config = {}) {
+    const concurrency = config.concurrency ?? 4;
+    const state = { list, onFileLoaded, results: new Array(list.length), nextIndex: 0, };
     const workers = createWorkers(
         Math.min(concurrency, list.length),
         () => workerLoop(state)
@@ -106,8 +113,9 @@ async function processArrayNode(list, onProgress) {
 }
 
 /**
- * Worker loop that loads images from the list.
- * @param {{list:Array<string>, onProgress:Function, results:Array, nextIndex:number}} state Worker state object.
+ * Processes image loading tasks in a worker loop.
+ * @param {{list: Array<*>, onFileLoaded?: Function|null, results: Array<*>, nextIndex: number}} state Worker state.
+ * @returns {Promise<void>}
  */
 async function workerLoop(state) {
     for (let currentIndex = getNextIndex(state);
@@ -116,7 +124,7 @@ async function workerLoop(state) {
         try {
             state.results[currentIndex] = await loadImage(
                 state.list[currentIndex],
-                state.onProgress
+                { onFileLoaded: state.onFileLoaded }
             );
         } catch {
             state.results[currentIndex] = null;
@@ -145,16 +153,16 @@ function createWorkers(count, createWorker) {
 }
 
 /**
- * Processes a sprite sheet node.
- * @param {Object} node Sprite sheet configuration.
- * @param {Function} [onProgress] Optional progress callback.
- * @returns {Promise<Object|null>}
+ * Processes a sheet node.
+ * @param {{json: string, anim?: *}} node Sheet node.
+ * @param {Function|null} onFileLoaded Load callback.
+ * @returns {Promise<{type: string, meta: *, image: HTMLImageElement, anim: *}|null>}
  */
-async function processSheetNode(node, onProgress) {
+async function processSheetNode(node, onFileLoaded) {
     const meta = await loadJSON(node.json);
     if (!meta) return null;
     const imageSrc = node.json.replace(/\.json$/, '.webp');
-    const image = await loadImage(imageSrc, onProgress);
+    const image = await loadImage(imageSrc, { onFileLoaded });
     if (!image) return null;
     return { type: 'sheet', meta, image, anim: node.anim ?? null };
 }
@@ -162,13 +170,13 @@ async function processSheetNode(node, onProgress) {
 /**
  * Processes a sprite sheet sequence node.
  * @param {Object} node Sheet sequence configuration.
- * @param {Function} [onProgress] Optional progress callback.
+ * @param {Function} [onFileLoaded] Optional progress callback.
  * @returns {Promise<Object|null>}
  */
-async function processSheetSequenceNode(node, onProgress) {
+async function processSheetSequenceNode(node, onFileLoaded) {
     const sheets = [];
     for (const entry of node.sheets) {
-        const sheet = await loadSequenceEntry(entry, onProgress);
+        const sheet = await loadSequenceEntry(entry, onFileLoaded);
         if (sheet) sheets.push(sheet);
     }
     if (!sheets.length) return null;
@@ -180,53 +188,56 @@ async function processSheetSequenceNode(node, onProgress) {
 }
 
 /**
- * Loads a single sprite sheet sequence entry.
- * @param {Object} entry Sequence entry configuration.
- * @param {Function} [onProgress] Optional progress callback.
- * @returns {Promise<Object|null>}
+ * Loads a sequence entry.
+ * @param {{json: string}} entry Sequence entry.
+ * @param {Function|null} onFileLoaded Load callback.
+ * @returns {Promise<{type: string, meta: *, image: HTMLImageElement}|null>}
  */
-async function loadSequenceEntry(entry, onProgress) {
+async function loadSequenceEntry(entry, onFileLoaded) {
     const meta = await loadJSON(entry.json);
     if (!meta) return null;
     const imageSrc = entry.json.replace(/\.json$/, '.webp');
-    const image = await loadImage(imageSrc, onProgress);
+    const image = await loadImage(imageSrc, { onFileLoaded });
     if (!image) return null;
     return { type: 'sheet', meta, image };
 }
 
 /**
- * Processes an object node of image sources or nested nodes.
- * @param {Object} obj Object with values to process.
- * @param {Function} [onProgress] Optional progress callback.
- * @returns {Promise<Object>} Processed results object.
+ * Processes a manifest object node.
+ * @param {Object} obj Manifest object.
+ * @param {Function} onFileLoaded Progress callback.
+ * @param {Object} [config={}] Configuration object.
+ * @returns {Promise<Object>}
  */
-async function processObjectNode(obj, onProgress) {
+async function processObjectNode(obj, onFileLoaded, config = {}) {
     const entries = Object.entries(obj);
-    const settled = await processEntries(entries, onProgress);
+    const settled = await processEntries(entries, onFileLoaded, config);
     return buildResultFromSettled(settled);
 }
 
 /**
- * Processes multiple object entries concurrently.
- * @param {Array<[string, *]>} entries Key-value pairs to process.
- * @param {Function} [onProgress] Optional progress callback.
- * @returns {Promise<Array<PromiseSettledResult>>} Settled results.
+ * Processes manifest entries.
+ * @param {Array<*>} entries Manifest entries.
+ * @param {Function} onFileLoaded Progress callback.
+ * @param {Object} [config={}] Configuration object.
+ * @returns {Promise<Array<PromiseSettledResult<*>>>}
  */
-async function processEntries(entries, onProgress) {
+async function processEntries(entries, onFileLoaded, config = {}) {
     return Promise.allSettled(
-        entries.map(([key, value]) => processEntry(key, value, onProgress))
+        entries.map(([key, value]) => processEntry(key, value, onFileLoaded, config))
     );
 }
 
 /**
- * Processes a single object entry.
- * @param {string} key Entry key.
+ * Processes a manifest entry.
+ * @param {*} key Entry key.
  * @param {*} value Entry value.
- * @param {Function} [onProgress] Optional progress callback.
- * @returns {Promise<[string, *]>} Key and processed value.
+ * @param {Function} onFileLoaded Progress callback.
+ * @param {Object} [config={}] Configuration object.
+ * @returns {Promise<[*, *]>}
  */
-async function processEntry(key, value, onProgress) {
-    const processed = await processManifestNode(value, onProgress);
+async function processEntry(key, value, onFileLoaded, config = {}) {
+    const processed = await processManifestNode(value, onFileLoaded, config);
     return [key, processed];
 }
 

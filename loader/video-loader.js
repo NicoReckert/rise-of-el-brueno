@@ -35,17 +35,18 @@ function getOrCreateConfiguredVideo(container, src) {
 }
 
 /**
- * Loads a video element asynchronously.
- * @param {HTMLVideoElement} video Video element to load.
+ * Loads a video.
+ * @param {HTMLVideoElement} video Video element.
+ * @param {{preload?: string, readyEvent?: string}} [options={}]
  * @returns {Promise<HTMLVideoElement>}
  */
-export function loadVideo(video) {
+export function loadVideo(video, options = {}) {
     return new Promise((resolve, reject) => {
         if (!ensureVideoElement(video, reject)) return;
-        if (ensureAlreadyLoaded(video, resolve)) return;
+        if (ensureAlreadyLoaded(video, resolve, options)) return;
         const src = getVideoSource(video, reject);
         if (!src) return;
-        initAndLoadVideo(video, src, resolve, reject);
+        initAndLoadVideo(video, src, resolve, reject, options);
     });
 }
 
@@ -65,16 +66,38 @@ function ensureVideoElement(video, reject) {
 
 /**
  * Checks if the video is already loaded.
- * @param {*} video Video instance.
+ * @param {HTMLVideoElement} video Video element.
  * @param {Function} resolve Promise resolve function.
+ * @param {{readyEvent?: string}} [options={}] Options object.
  * @returns {boolean} True if already loaded, otherwise false.
  */
-function ensureAlreadyLoaded(video, resolve) {
-    if (video.readyState >= 4) {
+function ensureAlreadyLoaded(video, resolve, options = {}) {
+    const readyEvent = options.readyEvent ?? "canplaythrough";
+    const requiredReadyState = getRequiredReadyState(readyEvent);
+    if (video.readyState >= requiredReadyState) {
         resolve(video);
         return true;
     }
     return false;
+}
+
+/**
+ * Gets the required ready state for a video event.
+ * @param {string} readyEvent Ready event name.
+ * @returns {number}
+ */
+function getRequiredReadyState(readyEvent) {
+    switch (readyEvent) {
+        case "loadedmetadata":
+            return 1;
+        case "loadeddata":
+            return 2;
+        case "canplay":
+            return 3;
+        case "canplaythrough":
+        default:
+            return 4;
+    }
 }
 
 /**
@@ -93,16 +116,18 @@ function getVideoSource(video, reject) {
 }
 
 /**
- * Initializes and starts loading a video element.
+ * Initializes and loads a video.
  * @param {HTMLVideoElement} video Video element.
  * @param {string} src Video source path.
  * @param {Function} resolve Promise resolve function.
  * @param {Function} reject Promise reject function.
+ * @param {{preload?: string, readyEvent?: string}} [options={}] Options object.
+ * @returns {void}
  */
-function initAndLoadVideo(video, src, resolve, reject) {
+function initAndLoadVideo(video, src, resolve, reject, options = {}) {
     prepareVideoSource(video, src);
-    attachVideoListeners(video, src, resolve, reject);
-    video.preload = "auto";
+    attachVideoListeners(video, src, resolve, reject, options);
+    video.preload = options.preload ?? "auto";
     video.load();
 }
 
@@ -123,29 +148,32 @@ function prepareVideoSource(video, src) {
 
 /**
  * Attaches video event listeners.
- * @param {*} video Video instance.
- * @param {*} src Video source.
- * @param {Function} resolve Promise resolve function.
- * @param {Function} reject Promise reject function.
- * @returns {void}
- */
-function attachVideoListeners(video, src, resolve, reject) {
-    const { onReady, onError } = createVideoHandlers(video, src, resolve, reject);
-    video.addEventListener("canplaythrough", onReady, { once: true });
-    video.addEventListener("error", onError, { once: true });
-}
-
-/**
- * Creates ready and error handlers for a video element.
  * @param {HTMLVideoElement} video Video element.
  * @param {string} src Video source path.
  * @param {Function} resolve Promise resolve function.
  * @param {Function} reject Promise reject function.
+ * @param {{readyEvent?: string}} [options={}] Options object.
+ * @returns {void}
+ */
+function attachVideoListeners(video, src, resolve, reject, options = {}) {
+    const readyEvent = options.readyEvent ?? "canplaythrough";
+    const { onReady, onError } = createVideoHandlers(video, src, resolve, reject, readyEvent);
+    video.addEventListener(readyEvent, onReady, { once: true });
+    video.addEventListener("error", onError, { once: true });
+}
+
+/**
+ * Creates video event handlers.
+ * @param {HTMLVideoElement} video Video element.
+ * @param {string} src Video source path.
+ * @param {Function} resolve Promise resolve function.
+ * @param {Function} reject Promise reject function.
+ * @param {string} readyEvent Ready event name.
  * @returns {{onReady: Function, onError: Function}}
  */
-function createVideoHandlers(video, src, resolve, reject) {
+function createVideoHandlers(video, src, resolve, reject, readyEvent) {
     const cleanup = (onReady, onError) => {
-        removeVideoListeners(video, onReady, onError);
+        removeVideoListeners(video, readyEvent, onReady, onError);
     };
     const onReady = () => {
         cleanup(onReady, onError);
@@ -160,83 +188,103 @@ function createVideoHandlers(video, src, resolve, reject) {
 
 /**
  * Removes video event listeners.
- * @param {*} video Video instance.
+ * @param {HTMLVideoElement} video Video element.
+ * @param {string} readyEvent Ready event name.
  * @param {Function} onReady Ready event handler.
  * @param {Function} onError Error event handler.
  * @returns {void}
  */
-function removeVideoListeners(video, onReady, onError) {
-    video.removeEventListener("canplaythrough", onReady);
+function removeVideoListeners(video, readyEvent, onReady, onError) {
+    video.removeEventListener(readyEvent, onReady);
     video.removeEventListener("error", onError);
 }
 
 /**
- * Preloads videos defined in a manifest.
- * @param {Object} manifest Video manifest configuration.
- * @param {Function} [onFileLoaded] Optional callback triggered after each file.
+ * Preloads videos from a manifest.
+ * @param {Object} manifest Manifest data.
+ * @param {{onFileLoaded?: Function|null, preload?: string, readyEvent?: string}} [options={}] Options object.
  * @returns {Promise<Object>}
  */
-export async function preloadManifestVideos(manifest, onFileLoaded) {
+export async function preloadManifestVideos(manifest, options = {}) {
+    const { onFileLoaded = null, preload = "auto", readyEvent = "canplaythrough" } = options;
     const entries = Object.entries(manifest);
     const results = await Promise.all(
         entries.map(([key, src]) =>
-            loadVideoManifestEntry(key, src, onFileLoaded)
+            loadVideoManifestEntry(key, src, { onFileLoaded, preload, readyEvent })
         )
     );
     return Object.fromEntries(results);
 }
 
 /**
- * Loads a single video manifest entry.
- * @param {string} key Manifest entry key.
+ * Loads a video manifest entry.
+ * @param {*} key Entry key.
  * @param {string} src Video source path.
- * @param {Function} [onFileLoaded] Optional callback triggered after load.
- * @returns {Promise<[string, HTMLVideoElement|null]>}
+ * @param {{onFileLoaded?: Function|null, preload?: string, readyEvent?: string}} [options={}] Options object.
+ * @returns {Promise<[*, HTMLVideoElement|null]>}
  */
-async function loadVideoManifestEntry(key, src, onFileLoaded) {
-    const video = await loadCachedVideo(src);
-    if (typeof onFileLoaded === "function") onFileLoaded();
+async function loadVideoManifestEntry(key, src, options = {}) {
+    const { onFileLoaded } = options;
+    const video = await loadCachedVideo(src, options);
+    if (onFileLoaded) onFileLoaded();
     return [key, video];
 }
 
 /**
  * Creates a preconfigured video element.
  * @param {string} src Video source path.
+ * @param {{preload?: string}} [options={}] Options object.
  * @returns {HTMLVideoElement}
  */
-function createPreconfiguredVideo(src) {
+function createPreconfiguredVideo(src, options = {}) {
     const video = document.createElement("video");
-    video.preload = "auto";
+    video.preload = options.preload ?? "auto";
     video.playsInline = true;
-    video.muted = false;
+    video.muted = true;
     video.dataset.src = src;
     return video;
 }
 
 /**
- * Loads a video with caching.
- * @param {string} src Video source URL.
- * @returns {Promise<HTMLVideoElement>} Loaded video element.
+ * Loads a cached video.
+ * @param {string} src Video source path.
+ * @param {{preload?: string, readyEvent?: string}} [options={}] Options object.
+ * @returns {Promise<HTMLVideoElement|null>}
  */
-function loadCachedVideo(src) {
-    if (videoCache.has(src)) return videoCache.get(src);
-    const promise = createAndLoadCachedVideo(src);
-    videoCache.set(src, promise);
+function loadCachedVideo(src, options = {}) {
+    const cacheKey = createVideoCacheKey(src, options);
+    if (videoCache.has(cacheKey)) return videoCache.get(cacheKey);
+    const promise = createAndLoadCachedVideo(src, options);
+    videoCache.set(cacheKey, promise);
     return promise;
 }
 
 /**
- * Creates and loads a cached video element.
- * @param {string} src Video source URL.
- * @returns {Promise<HTMLVideoElement|null>} Loaded video or null on failure.
+ * Creates a video cache key.
+ * @param {string} src Video source path.
+ * @param {{preload?: string, readyEvent?: string}} [options={}] Options object.
+ * @returns {string}
  */
-function createAndLoadCachedVideo(src) {
+function createVideoCacheKey(src, options = {}) {
+    const preload = options.preload ?? "auto";
+    const readyEvent = options.readyEvent ?? "canplaythrough";
+    return `${src}::${preload}::${readyEvent}`;
+}
+
+/**
+ * Creates and loads a cached video.
+ * @param {string} src Video source path.
+ * @param {{preload?: string, readyEvent?: string}} [options={}] Options object.
+ * @returns {Promise<HTMLVideoElement|null>}
+ */
+function createAndLoadCachedVideo(src, options = {}) {
+    const cacheKey = createVideoCacheKey(src, options);
     return new Promise((resolve) => {
-        const video = createPreconfiguredVideo(src);
-        loadVideo(video)
+        const video = createPreconfiguredVideo(src, options);
+        loadVideo(video, options)
             .then(resolve)
             .catch(() => {
-                videoCache.delete(src);
+                videoCache.delete(cacheKey);
                 resolve(null);
             });
     });

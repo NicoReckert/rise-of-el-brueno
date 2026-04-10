@@ -1,12 +1,12 @@
 export const gameAppAssetMethods = {
 
     /**
-     * Starts background loading of deferred and lazy assets.
-     * @returns {void}
+     * Starts background asset loading.
+     * @returns {Promise<void>}
      */
-    startBackgroundAssetLoading() {
-        this.loadDeferredIntoWorld();
-        this.loadLazyIntoWorld();
+    async startBackgroundAssetLoading() {
+        await this.loadDeferredIntoWorld();
+        await this.loadLazyIntoWorld();
     },
 
     /**
