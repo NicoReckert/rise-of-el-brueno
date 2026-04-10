@@ -98,7 +98,7 @@ export class CharacterMovementController {
      */
     moveLeft() {
         const isMobile = window.innerWidth <= 900;
-        const cameraOffset = isMobile ? 920 : 1060;
+        const cameraOffset = isMobile ? 725 : 1060;
         const t = 0.05 * (this.char.deltaTime * 60);
         this.char.isFlipped = true;
         const speed = this.getEffectiveMoveSpeed();
@@ -113,7 +113,7 @@ export class CharacterMovementController {
      */
     moveRight() {
         const isMobile = window.innerWidth <= 900;
-        const cameraOffset = isMobile ? 150 : 100;
+        const cameraOffset = isMobile ? 275 : 100;
         const t = 0.05 * (this.char.deltaTime * 60);
         this.char.isFlipped = false;
         const speed = this.getEffectiveMoveSpeed();
