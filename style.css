@@ -141,6 +141,7 @@ body {
 }
 
 .touch-controls__actions {
+  position: relative;
   display: flex;
   justify-content: center;
   align-items: flex-end;
@@ -152,6 +153,7 @@ body {
 }
 
 .touch-controls__primary-actions {
+  position: relative;
   display: flex;
   justify-content: center;
   align-items: flex-end;
@@ -159,11 +161,11 @@ body {
 }
 
 .touch-controls__secondary-actions {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex-direction: column;
-  gap: 3px;
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  width: 120px;
+  height: 200px;
 }
 
 .touch-button {
@@ -235,24 +237,42 @@ body {
   box-shadow: 0 0 10px rgba(255, 200, 100, 0.4);
 }
 
-
 .touch-button--small {
   width: 45px;
   height: 45px;
+}
+
+.touch-button--throw {
+  position: absolute;
+  top: 9px;
+  right: -4px;
+  width: 50px;
+  height: 50px;
+}
+
+.touch-button--protect {
+  position: absolute;
+  top: 80px;
+  right: 60px;
+}
+
+.touch-button--jump {
+  position: absolute;
+  top: 60px;
+  right: 0px;
+}
+
+.touch-button--duck {
+  position: absolute;
+  top: 140px;
+  right: 81px;
 }
 
 .touch-button--attack {
   width: 80px;
   height: 80px;
   border-color: orangered;
-}
-
-.touch-button--offset-sm {
-  margin-right: -32px;
-}
-
-.touch-button--offset-lg {
-  margin-right: -72px;
+  margin-left: 59px;
 }
 
 .touch-button__icon {
