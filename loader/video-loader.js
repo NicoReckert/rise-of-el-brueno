@@ -202,18 +202,34 @@ function removeVideoListeners(video, readyEvent, onReady, onError) {
 /**
  * Preloads videos from a manifest.
  * @param {Object} manifest Manifest data.
- * @param {{onFileLoaded?: Function|null, preload?: string, readyEvent?: string}} [options={}] Options object.
+ * @param {{onFileLoaded?: Function|null, preload?: string, readyEvent?: string, concurrency?: number}} [options={}] Options object.
  * @returns {Promise<Object>}
  */
 export async function preloadManifestVideos(manifest, options = {}) {
-    const { onFileLoaded = null, preload = "auto", readyEvent = "canplaythrough" } = options;
+    const { onFileLoaded = null, preload = "auto", readyEvent = "canplaythrough", concurrency = 2 } = options;
     const entries = Object.entries(manifest);
-    const results = await Promise.all(
-        entries.map(([key, src]) =>
-            loadVideoManifestEntry(key, src, { onFileLoaded, preload, readyEvent })
-        )
+    const results = new Array(entries.length);
+    let nextIndex = 0;
+    const workers = Array.from({ length: Math.min(concurrency, entries.length) }, () =>
+        runManifestVideoWorker(entries, results, () => nextIndex++, { onFileLoaded, preload, readyEvent })
     );
+    await Promise.all(workers);
     return Object.fromEntries(results);
+}
+
+/**
+ * Processes video manifest entries in a worker loop.
+ * @param {Array<*>} entries Manifest entries.
+ * @param {Array<*>} results Result list.
+ * @param {Function} getNextIndex Index provider.
+ * @param {{onFileLoaded?: Function|null, preload?: string, readyEvent?: string}} options Options object.
+ * @returns {Promise<void>}
+ */
+async function runManifestVideoWorker(entries, results, getNextIndex, options) {
+    for (let currentIndex = getNextIndex(); currentIndex < entries.length; currentIndex = getNextIndex()) {
+        const [key, src] = entries[currentIndex];
+        results[currentIndex] = await loadVideoManifestEntry(key, src, options);
+    }
 }
 
 /**

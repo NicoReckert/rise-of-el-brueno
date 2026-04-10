@@ -88,18 +88,34 @@ function removeAudioHandlers(audio, readyEvent, onReady, onError) {
 /**
  * Preloads audio from a manifest.
  * @param {Object} manifest Manifest data.
- * @param {{onFileLoaded?: Function|null, preload?: string, readyEvent?: string}} [options={}] Options object.
+ * @param {{onFileLoaded?: Function|null, preload?: string, readyEvent?: string, concurrency?: number}} [options={}] Options object.
  * @returns {Promise<Object>}
  */
 export async function preloadManifestAudio(manifest, options = {}) {
-  const { onFileLoaded = null, preload = "auto", readyEvent = "canplaythrough" } = options;
+  const { onFileLoaded = null, preload = "auto", readyEvent = "canplaythrough", concurrency = 2 } = options;
   const entries = Object.entries(manifest);
-  const results = await Promise.all(
-    entries.map(([key, paths]) =>
-      loadManifestEntry(key, paths, { onFileLoaded, preload, readyEvent })
-    )
+  const results = new Array(entries.length);
+  let nextIndex = 0;
+  const workers = Array.from({ length: Math.min(concurrency, entries.length) }, () =>
+    runManifestAudioWorker(entries, results, () => nextIndex++, { onFileLoaded, preload, readyEvent })
   );
+  await Promise.all(workers);
   return Object.fromEntries(results);
+}
+
+/**
+ * Processes audio manifest entries in a worker loop.
+ * @param {Array<*>} entries Manifest entries.
+ * @param {Array<*>} results Result list.
+ * @param {Function} getNextIndex Index provider.
+ * @param {{onFileLoaded?: Function|null, preload?: string, readyEvent?: string}} options Options object.
+ * @returns {Promise<void>}
+ */
+async function runManifestAudioWorker(entries, results, getNextIndex, options) {
+  for (let currentIndex = getNextIndex(); currentIndex < entries.length; currentIndex = getNextIndex()) {
+    const [key, paths] = entries[currentIndex];
+    results[currentIndex] = await loadManifestEntry(key, paths, options);
+  }
 }
 
 /**

@@ -4,79 +4,49 @@ const jsonCache = new Map();
 /**
  * Loads an image.
  * @param {string} src Image source path.
- * @param {{onFileLoaded?: Function|null}} [options={}] Options object.
+ * @param {{onFileLoaded?: Function|null}} [param1={}] Options object.
  * @returns {Promise<HTMLImageElement|null>}
  */
-function loadImage(src, options = {}) {
-    const { onFileLoaded = null } = options;
+function loadImage(src, { onFileLoaded = null } = {}) {
     if (imageCache.has(src)) return imageCache.get(src);
-    const promise = createImagePromise(src, { onFileLoaded });
-    imageCache.set(src, promise);
-    return promise;
-}
-
-/**
- * Creates an image loading promise.
- * @param {string} src Image source path.
- * @param {{onFileLoaded?: Function|null}} [options={}] Options object.
- * @returns {Promise<HTMLImageElement|null>}
- */
-function createImagePromise(src, options = {}) {
-    const { onFileLoaded = null } = options;
-    return new Promise((resolve) => {
+    const promise = new Promise((resolve) => {
         const img = new Image();
-        setupImageHandlers(img, src, { onFileLoaded }, resolve);
+        setupImageHandlers(img, src, onFileLoaded, resolve);
         img.src = src;
     });
+    imageCache.set(src, promise);
+    return promise;
 }
 
 /**
  * Sets up image event handlers.
  * @param {HTMLImageElement} img Image element.
  * @param {string} src Image source path.
- * @param {{onFileLoaded?: Function|null}} [options={}] Options object.
- * @param {Function} resolve Promise resolve function.
- * @returns {void}
- */
-function setupImageHandlers(img, src, options = {}, resolve) {
-    const { onFileLoaded = null } = options;
-    img.onload = () => handleImageLoad(onFileLoaded, resolve, img);
-    img.onerror = () => handleImageError(src, onFileLoaded, resolve);
-}
-
-/**
- * Handles image load.
  * @param {Function|null} onFileLoaded Load callback.
  * @param {Function} resolve Promise resolve function.
- * @param {HTMLImageElement} img Image element.
  * @returns {void}
  */
-function handleImageLoad(onFileLoaded, resolve, img) {
-    if (onFileLoaded) onFileLoaded();
-    resolve(img);
-}
-
-/**
- * Handles image load errors by removing from cache and resolving null.
- * @param {string} src Image source URL.
- * @param {Function} [onFileLoaded] Optional progress callback.
- * @param {Function} resolve Promise resolve function.
- */
-function handleImageError(src, onFileLoaded, resolve) {
-    if (onFileLoaded) onFileLoaded();
-    imageCache.delete(src);
-    resolve(null);
+function setupImageHandlers(img, src, onFileLoaded, resolve) {
+    img.onload = () => {
+        if (onFileLoaded) onFileLoaded();
+        resolve(img);
+    };
+    img.onerror = () => {
+        if (onFileLoaded) onFileLoaded();
+        imageCache.delete(src);
+        resolve(null);
+    };
 }
 
 /**
  * Preloads images from a manifest.
  * @param {*} manifest Manifest data.
- * @param {{onFileLoaded?: Function|null, concurrency?: number}} [options={}] Options object.
+ * @param {{onFileLoaded?: Function|null, concurrency?: number, manifestConcurrency?: number}} [options={}] Options object.
  * @returns {Promise<*>}
  */
 export async function preloadManifestImages(manifest, options = {}) {
-    const { onFileLoaded = null, concurrency = 4 } = options;
-    return processManifestNode(manifest, onFileLoaded, { concurrency });
+    const { onFileLoaded = null, concurrency = 4, manifestConcurrency = Infinity } = options;
+    return processManifestNode(manifest, onFileLoaded, { concurrency, manifestConcurrency });
 }
 
 /**
@@ -89,7 +59,7 @@ export async function preloadManifestImages(manifest, options = {}) {
 async function processManifestNode(node, onFileLoaded, config = {}) {
     if (Array.isArray(node)) return processArrayNode(node, onFileLoaded, config);
     if (isSheetNode(node)) return processSheetNode(node, onFileLoaded);
-    if (isSheetSequenceNode(node)) return processSheetSequenceNode(node, onFileLoaded);
+    if (isSheetSequenceNode(node)) return processSheetSequenceNode(node, onFileLoaded, config);
     if (isPlainObject(node)) return processObjectNode(node, onFileLoaded, config);
     return null;
 }
@@ -133,13 +103,12 @@ async function workerLoop(state) {
 }
 
 /**
- * Returns the next index to process from the state.
- * @param {{list:Array, nextIndex:number}} state Worker state object.
- * @returns {number|null} Next index or null if finished.
+ * Gets the next index from state.
+ * @param {{nextIndex: number, list: Array<*>}} state State object.
+ * @returns {number|null}
  */
 function getNextIndex(state) {
-    if (state.nextIndex >= state.list.length) return null;
-    return state.nextIndex++;
+    return state.nextIndex < state.list.length ? state.nextIndex++ : null;
 }
 
 /**
@@ -168,32 +137,51 @@ async function processSheetNode(node, onFileLoaded) {
 }
 
 /**
- * Processes a sprite sheet sequence node.
- * @param {Object} node Sheet sequence configuration.
- * @param {Function} [onFileLoaded] Optional progress callback.
- * @returns {Promise<Object|null>}
+ * Processes a sheet sequence node.
+ * @param {{sheets?: Array<*>, loop?: boolean}} node Sheet sequence node.
+ * @param {Function|null} onFileLoaded Load callback.
+ * @param {{concurrency?: number}} [config={}] Configuration object.
+ * @returns {Promise<{type: string, loop: boolean, sheets: Array<*>}|null>}
  */
-async function processSheetSequenceNode(node, onFileLoaded) {
-    const sheets = [];
-    for (const entry of node.sheets) {
-        const sheet = await loadSequenceEntry(entry, onFileLoaded);
-        if (sheet) sheets.push(sheet);
-    }
+async function processSheetSequenceNode(node, onFileLoaded, config = {}) {
+    const entries = node.sheets ?? [];
+    const concurrency = config.concurrency ?? 4;
+    const results = new Array(entries.length);
+    let nextIndex = 0;
+    const workers = createWorkers(Math.min(concurrency, entries.length), () =>
+        runSheetSequenceWorker(entries, results, () => nextIndex++, onFileLoaded)
+    );
+    await Promise.all(workers);
+    const sheets = results.filter(Boolean);
     if (!sheets.length) return null;
-    return {
-        type: 'sheetSequence',
-        loop: node.loop !== false,
-        sheets
-    };
+    return { type: 'sheetSequence', loop: node.loop !== false, sheets };
+}
+
+/**
+ * Processes sheet sequence entries in a worker loop.
+ * @param {Array<*>} entries Sequence entries.
+ * @param {Array<*>} results Result list.
+ * @param {Function} getNextIndex Index provider.
+ * @param {Function|null} onFileLoaded Load callback.
+ * @returns {Promise<void>}
+ */
+async function runSheetSequenceWorker(entries, results, getNextIndex, onFileLoaded) {
+    for (
+        let currentIndex = getNextManifestIndex(entries.length, getNextIndex);
+        currentIndex !== null;
+        currentIndex = getNextManifestIndex(entries.length, getNextIndex)
+    ) {
+        results[currentIndex] = await loadSequenceEntry(entries[currentIndex], { onFileLoaded });
+    }
 }
 
 /**
  * Loads a sequence entry.
  * @param {{json: string}} entry Sequence entry.
- * @param {Function|null} onFileLoaded Load callback.
+ * @param {{onFileLoaded?: Function|null}} [param1={}] Options object.
  * @returns {Promise<{type: string, meta: *, image: HTMLImageElement}|null>}
  */
-async function loadSequenceEntry(entry, onFileLoaded) {
+async function loadSequenceEntry(entry, { onFileLoaded } = {}) {
     const meta = await loadJSON(entry.json);
     if (!meta) return null;
     const imageSrc = entry.json.replace(/\.json$/, '.webp');
@@ -218,14 +206,68 @@ async function processObjectNode(obj, onFileLoaded, config = {}) {
 /**
  * Processes manifest entries.
  * @param {Array<*>} entries Manifest entries.
- * @param {Function} onFileLoaded Progress callback.
- * @param {Object} [config={}] Configuration object.
- * @returns {Promise<Array<PromiseSettledResult<*>>>}
+ * @param {Function|null} onFileLoaded Load callback.
+ * @param {{concurrency?: number, manifestConcurrency?: number}} [config={}] Configuration object.
+ * @returns {Promise<Array<*>>}
  */
 async function processEntries(entries, onFileLoaded, config = {}) {
-    return Promise.allSettled(
-        entries.map(([key, value]) => processEntry(key, value, onFileLoaded, config))
-    );
+    const state = createProcessEntriesState(entries, config);
+    const workers = createWorkers(state.workerCount, async () => {
+        for (
+            let currentIndex = getNextManifestIndex(entries.length, () => state.nextIndex++);
+            currentIndex !== null;
+            currentIndex = getNextManifestIndex(entries.length, () => state.nextIndex++)
+        ) {
+            await processEntryAtIndex(entries, currentIndex, onFileLoaded, config, state.results);
+        }
+    });
+    await Promise.all(workers);
+    return state.results;
+}
+
+/**
+ * Creates the processing state for manifest entries.
+ * @param {Array<*>} entries Manifest entries.
+ * @param {{manifestConcurrency?: number}} config Configuration object.
+ * @returns {{results: Array<*>, nextIndex: number, workerCount: number}}
+ */
+function createProcessEntriesState(entries, config) {
+    const manifestConcurrency = config.manifestConcurrency ?? Infinity;
+    return {
+        results: new Array(entries.length),
+        nextIndex: 0,
+        workerCount: Math.min(manifestConcurrency, entries.length)
+    };
+}
+
+/**
+ * Gets the next manifest index.
+ * @param {number} length Total length.
+ * @param {Function} getIndex Index provider.
+ * @returns {number|null}
+ */
+function getNextManifestIndex(length, getIndex) {
+    const index = getIndex();
+    return index >= length ? null : index;
+}
+
+/**
+ * Processes a manifest entry at a specific index.
+ * @param {Array<*>} entries Manifest entries.
+ * @param {number} currentIndex Entry index.
+ * @param {Function|null} onFileLoaded Load callback.
+ * @param {{concurrency?: number, manifestConcurrency?: number}} config Configuration object.
+ * @param {Array<*>} results Result list.
+ * @returns {Promise<void>}
+ */
+async function processEntryAtIndex(entries, currentIndex, onFileLoaded, config, results) {
+    try {
+        const [key, value] = entries[currentIndex];
+        const processed = await processEntry(key, value, onFileLoaded, config);
+        results[currentIndex] = { status: "fulfilled", value: processed };
+    } catch (reason) {
+        results[currentIndex] = { status: "rejected", reason };
+    }
 }
 
 /**
@@ -290,7 +332,6 @@ function isSheetSequenceNode(node) {
  */
 async function loadJSON(src) {
     if (jsonCache.has(src)) return jsonCache.get(src);
-
     const promise = fetchJSON(src);
     jsonCache.set(src, promise);
     return promise;

@@ -18,6 +18,14 @@ export const characterManifestImmediate = {
     duckWalkSheet: {
         type: 'sheet',
         json: './assets/img/2_character_pepe/duck_walk/duck_walk_sheet.json'
+    },
+        attackStaffSheet: {
+        type: 'sheet',
+        json: './assets/img/2_character_pepe/attack_staff/attack_staff_sheet.json'
+    },
+        protectSheet: {
+        type: 'sheet',
+        json: './assets/img/2_character_pepe/protect/protect_sheet.json'
     }
 }
 
@@ -50,10 +58,6 @@ export const characterManifestDeferred = {
         type: 'sheet',
         json: './assets/img/2_character_pepe/walk_and_stand_determined/walk_and_stand_determined_sheet.json'
     },
-    attackStaffSheet: {
-        type: 'sheet',
-        json: './assets/img/2_character_pepe/attack_staff/attack_staff_sheet.json'
-    }
 }
 
 export const otherLevelCharacterManifestLazy = {
@@ -101,10 +105,6 @@ export const otherLevelCharacterManifestLazy = {
     standUpAfterCollapseSheet: {
         type: 'sheet',
         json: './assets/img/2_character_pepe/stand_up_after_collapse/stand_up_after_collapse_sheet.json'
-    },
-    protectSheet: {
-        type: 'sheet',
-        json: './assets/img/2_character_pepe/protect/protect_sheet.json'
     },
     airHitPainStunSheet: {
         type: 'sheet',

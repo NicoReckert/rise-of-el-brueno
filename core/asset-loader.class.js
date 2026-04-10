@@ -78,7 +78,7 @@ export class AssetLoader {
      * Preloads intro audio assets from the manifest.
      */
     async preloadIntroAssets() {
-        const introAudios = await preloadManifestAudio(introAudioManifest, { preload: 'auto', readyEvent: 'canplaythrough' });
+        const introAudios = await preloadManifestAudio(introAudioManifest, { preload: 'auto', readyEvent: 'canplaythrough', concurrency: 6 });
         this.introAudios = introAudios;
     }
 
@@ -154,11 +154,11 @@ export class AssetLoader {
      */
     async loadImmediateFiles(onFileLoaded) {
         return Promise.allSettled([
-            preloadManifestImages(characterManifestImmediate, { onFileLoaded, concurrency: 4 }),
-            preloadManifestImages(farmEntityManifestImmediate, { onFileLoaded, concurrency: 4 }),
-            preloadManifestImages(levelVisualImageManifest, { onFileLoaded, concurrency: 3 }),
-            preloadManifestAudio(farmAudioManifestImmediate, { onFileLoaded, preload: 'auto', readyEvent: 'canplaythrough' }),
-            preloadManifestVideos(videoManifest, { onFileLoaded, preload: 'auto' })
+            preloadManifestImages(characterManifestImmediate, { onFileLoaded, concurrency: 6, manifestConcurrency: 4 }),
+            preloadManifestImages(farmEntityManifestImmediate, { onFileLoaded, concurrency: 6, manifestConcurrency: 4 }),
+            preloadManifestImages(levelVisualImageManifest, { onFileLoaded, concurrency: 6, manifestConcurrency: 3 }),
+            preloadManifestAudio(farmAudioManifestImmediate, { onFileLoaded, preload: 'auto', readyEvent: 'canplaythrough', concurrency: 3 }),
+            preloadManifestVideos(videoManifest, { onFileLoaded, preload: 'auto', readyEvent: 'canplaythrough', concurrency: 2 })
         ]);
     }
 
@@ -264,18 +264,17 @@ export class AssetLoader {
     }
 
     /**
-     * Loads all deferred image, audio, and video manifests using a unified loader.
-     * Updates deferred caches and returns loaded assets.
-     * @returns {Promise<{charDeferred: Object, entityDeferred: Object, deferredAudios: Object, deferredVideos: Object}>}
+     * Loads deferred manifests.
+     * @returns {Promise<{charDeferred: *, entityDeferred: *, deferredAudios: Object, deferredVideos: Object}>}
      */
     async loadDeferredManifests() {
-        const results = await this.loadAllDeferred([
-            { fn: () => preloadManifestImages(characterManifestDeferred, { concurrency: 2 }), defaultValue: {} },
-            { fn: () => preloadManifestImages(farmEntityManifestDeferred, { concurrency: 2 }), defaultValue: {} },
-            { fn: () => preloadManifestAudio(farmAudioManifestDeferred, { preload: 'metadata', readyEvent: 'canplay' }), defaultValue: {} },
-            { fn: () => preloadManifestVideos(farmVideoManifestDeferred, { preload: 'metadata' }), defaultValue: {} }
-        ]);
-        const [charDeferred, entityDeferred, deferredAudios, deferredVideos] = results;
+        const charDeferred = await preloadManifestImages(characterManifestDeferred, { concurrency: 1, manifestConcurrency: 1 });
+        await this.waitForIdle(300);
+        const entityDeferred = await preloadManifestImages(farmEntityManifestDeferred, { concurrency: 1, manifestConcurrency: 1 });
+        await this.waitForIdle(300);
+        const deferredAudios = await preloadManifestAudio(farmAudioManifestDeferred, { preload: 'metadata', readyEvent: 'canplay', concurrency: 1 });
+        await this.waitForIdle(300);
+        const deferredVideos = await preloadManifestVideos(farmVideoManifestDeferred, { preload: 'metadata', readyEvent: 'loadedmetadata', concurrency: 1 });
         this.deferredAudios = deferredAudios;
         this.deferredVideos = deferredVideos;
         return { charDeferred, entityDeferred, deferredAudios, deferredVideos };
@@ -311,15 +310,16 @@ export class AssetLoader {
     }
 
     /**
-     * Loads lazy image and audio manifests concurrently.
-     * @returns {Promise<Array<PromiseSettledResult>>} Settled results for characters, entities, and audio.
+     * Loads lazy manifests.
+     * @returns {Promise<[*, *, Object]>}
      */
     async _loadLazyManifests() {
-        return Promise.allSettled([
-            preloadManifestImages(otherLevelCharacterManifestLazy, { concurrency: 1 }),
-            preloadManifestImages(otherLevelEntityManifestLazy, { concurrency: 1 }),
-            preloadManifestAudio(otherLevelAudioManifestLazy, { preload: 'metadata', readyEvent: 'canplay' })
-        ]);
+        const charRes = await preloadManifestImages(otherLevelCharacterManifestLazy, { concurrency: 1, manifestConcurrency: 1 });
+        await this.waitForIdle(300);
+        const entityRes = await preloadManifestImages(otherLevelEntityManifestLazy, { concurrency: 1, manifestConcurrency: 1 });
+        await this.waitForIdle(300);
+        const audioRes = await preloadManifestAudio(otherLevelAudioManifestLazy, { preload: 'metadata', readyEvent: 'canplay', concurrency: 1 });
+        return [charRes, entityRes, audioRes];
     }
 
     /**
@@ -347,5 +347,14 @@ export class AssetLoader {
                 ? requestIdleCallback(r, { timeout })
                 : setTimeout(r, timeout)
         );
+    }
+
+    /**
+     * Delays execution for a specified time.
+     * @param {number} ms Delay in milliseconds.
+     * @returns {Promise<void>}
+     */
+    sleep(ms) {
+        return new Promise(resolve => setTimeout(resolve, ms));
     }
 }
