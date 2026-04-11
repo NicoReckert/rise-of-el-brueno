@@ -1,3 +1,5 @@
+import { farmHelper } from "../../../events/farm-helper.js";
+
 /**
  * Renders farm level elements and integrates them into the world renderer.
  */
@@ -68,7 +70,10 @@ export class FarmRenderer {
         this.renderCharacterBlock(questStep);
         this.addToWorld(this.setup.environment.pond);
         this.ctx.restore();
-        if (questStep >= 20) this.windParticleEffect.draw(this.ctx, cameraX);
+        if (questStep >= 20) {
+            this.windParticleEffect.setVisible(true);
+            this.windParticleEffect.draw(this.ctx, cameraX);
+        }
     }
 
     /**
@@ -168,5 +173,35 @@ export class FarmRenderer {
      */
     handleCutsceneIndicator() {
         this.setup.cutsceneIndicator.draw(this.ctx);
+    }
+
+    /**
+     * Renders the prolog video.
+     * @returns {void}
+     */
+    renderPrologVideo() {
+        const video = this.setup.video;
+        if (!video) return;
+        if (video.readyState < 2) return;
+        if (video.paused || video.ended) return;
+        this.ctx.drawImage(video, 0, 0, this.world.canvas.width, this.world.canvas.height);
+    }
+
+    /**
+     * Renders the currently active portrait with radial fade.
+     * Clears the portrait reference after fade-out has finished.
+     * @returns {void}
+     */
+    renderActivePortrait() {
+        const portrait = this.setup.state.activePortrait;
+        if (!portrait) return;
+        if (portrait.opacity > 0 || portrait.fading) {
+            farmHelper.renderPortraitWithRadialFade(this.setup, portrait, {
+                opacity: portrait.opacity
+            });
+        }
+        if (!portrait.fading && portrait.opacity <= 0) {
+            this.setup.state.activePortrait = null;
+        }
     }
 }

@@ -148,7 +148,7 @@ export class TownLevelController {
         this.handlePopup();
         this.updateDamageTexts(timestamp);
         this.setup.dialogManager.update(timestamp);
-        this.setup.dialogManager.draw(this.ctx);
+        this.setup.dialogManager.draw(this.ctx, this.renderCameraX);
     }
 
     /**

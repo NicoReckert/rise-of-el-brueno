@@ -1,20 +1,6 @@
 import { PopupText } from "../classes/ui/popup-text.class.js";
-import { farmHelper } from "./farm-helper.js";
 
 export const farmEvents_part4 = [
-    /**
-     * Time-based quest event that sets the character
-     * to a kneel-and-cry state after a delay.
-     */
-    {
-        type: 'time',
-        delay: 16000,
-        step: 19,
-        action: (setup) => {
-            setup.world.character.isKneelAndCry = true;
-        }
-    },
-
     /**
      * Time-based quest event that ends the kneel-and-cry state
      * and sets the character to a determined stance after a delay.
@@ -30,62 +16,15 @@ export const farmEvents_part4 = [
     },
 
     /**
-     * Time-range event that starts, updates, and renders
-     * the sixth farm speech bubble during the specified interval.
+     * Time-based event that starts the third character dialog
+     * after the specified delay.
      */
     {
         type: 'time',
-        from: 36000,
-        to: 41000,
+        delay: 36000,
         step: 19,
-        once: false,
         action: (setup) => {
-            setup.world.ctx.save();
-            setup.world.ctx.translate(-setup.world.farmLevelController.renderCameraX, 0);
-            if (!setup.speechBubbles[5].startTime) {
-                setup.speechBubbles[5].start();
-            }
-            setup.speechBubbles[5].update(performance.now());
-            setup.speechBubbles[5].draw(setup.world.ctx, 0);
-            setup.world.ctx.restore();
-        }
-    },
-
-    /**
-     * Time-range event that starts, updates, and renders
-     * the seventh farm speech bubble during the specified interval.
-     */
-    {
-        type: 'time',
-        from: 41000,
-        to: 46000,
-        step: 19,
-        once: false,
-        action: (setup) => {
-            setup.world.ctx.save();
-            setup.world.ctx.translate(-setup.world.farmLevelController.renderCameraX, 0);
-            if (!setup.speechBubbles[6].startTime) {
-                setup.speechBubbles[6].start();
-            }
-            setup.speechBubbles[6].update(performance.now());
-            setup.speechBubbles[6].draw(setup.world.ctx, 0);
-            setup.world.ctx.restore();
-        }
-    },
-
-    /**
-     * Time-range event that starts and renders
-     * the eighth farm speech bubble during the specified interval.
-     */
-    {
-        type: 'time',
-        from: 46000,
-        to: 51000,
-        step: 19,
-        once: false,
-        action: (setup) => {
-            setup.speechBubbles[7].start(5000)
-            setup.speechBubbles[7].render(setup.world.ctx, setup.world.farmLevelController.renderCameraX, 0);
+            setup.dialogManager.startDialog('character:03', setup.world.timestamp);
         }
     },
 
@@ -112,51 +51,60 @@ export const farmEvents_part4 = [
         delay: 52000,
         step: 19,
         action: (setup) => {
+            setup.state.prologVideoStarted = true;
             setup.video.play();
             setup.world.character.isLookDeterminedAndStandUp = false;
+            setup.cutsceneIndicator.show({ skippable: true });
         }
     },
 
     /**
-     * Time-range event that renders the video frame
-     * onto the canvas while playback is active.
+     * Quest event that marks the prolog video as finished
+     * after playback has ended.
      */
     {
-        type: 'time',
-        from: 52000,
-        to: 82000,
+        type: 'quest',
         step: 19,
-        once: false,
+        condition: (setup) =>
+            setup.state.prologVideoStarted &&
+            setup.video &&
+            setup.video.ended,
         action: (setup) => {
-            if (setup.video.readyState >= 2 && !setup.video.paused && !setup.video.ended) {
-                setup.world.ctx.save();
-                setup.world.ctx.drawImage(setup.video, 0, 0, setup.world.canvas.width, setup.world.canvas.height);
-                setup.world.ctx.restore();
-            }
-        },
+            setup.state.prologVideoFinished = true;
+        }
     },
 
     /**
-     * Time-based quest event that fades out the sad music after a delay.
+     * Input-based event that pauses the prolog video
+     * and marks it as finished while it is playing.
      */
     {
-        type: 'time',
-        delay: 82000,
+        type: 'input',
+        key: 'X',
         step: 19,
+        condition: (setup) =>
+            setup.state.prologVideoStarted &&
+            setup.video &&
+            setup.video.readyState >= 2 &&
+            !setup.video.paused &&
+            !setup.video.ended,
+        action: (setup) => {
+            setup.video.pause();
+            setup.state.prologVideoFinished = true;
+        }
+    },
+
+    /**
+     * Quest event that restores input, hides the cutscene indicator,
+     * adds a new task, shows feedback, and advances the quest
+     * after the prolog video has finished.
+     */
+    {
+        type: 'quest',
+        step: 19,
+        condition: (setup) => setup.state.prologVideoFinished,
         action: (setup) => {
             setup.world.audioManager.fadeOutAudio(setup.sounds.sadMusic, 4000);
-        }
-    },
-
-    /**
-     * Time-based quest event that restores controls, adds a new task,
-     * plays a sound, shows a popup, and advances the quest after a delay.
-     */
-    {
-        type: 'time',
-        delay: 84000,
-        step: 19,
-        action: (setup) => {
             setup.world.isKeysStopp = false;
             setup.cutsceneIndicator.hide();
             setup.world.taskWindow.addTask('8. Besuche nochmal den Stall', { active: true })
@@ -202,10 +150,11 @@ export const farmEvents_part4 = [
                 char.movementCtrl.clampX(char, 2800, 3000);
             } else {
                 setup.world.character.isWalkDetermined = true;
-                setup.sounds.determinedMusic.play();
+                setup.world.audioManager.fadeInAudio(setup.sounds.determinedMusic, 2000, 0.6);
                 setup.world.character.isMovingLeft = false
                 setup.world.character.isMovingRight = false
                 setup.world.isKeysStopp = true;
+                setup.cutsceneIndicator.show({ skippable: false });
                 setup.world.farmLevelController.questManager.advance(21);
             }
         }
@@ -229,8 +178,8 @@ export const farmEvents_part4 = [
     },
 
     /**
-     * Quest event that switches the character to a determined stance
-     * and activates portrait animations with a fade-in effect.
+     * Quest event that updates the character state
+     * and switches portraits to their portrait animation.
      */
     {
         type: 'quest',
@@ -238,7 +187,6 @@ export const farmEvents_part4 = [
         action: (setup) => {
             setup.world.character.isWalkDetermined = false;
             setup.world.character.isStandDetermined = true;
-            setup.characters.portraits.pollito.fadeIn(setup.world.farmLevelController.timestamp, 10000);
             setup.characters.portraits.pollito.updateAnimationState('portrait', 1000 / 5);
             setup.characters.portraits.juanito.updateAnimationState('portrait', 1000 / 5);
             setup.characters.portraits.cow.updateAnimationState('portrait', 1000 / 5);
@@ -246,104 +194,101 @@ export const farmEvents_part4 = [
     },
 
     /**
-     * Time-based quest event that starts the ninth farm speech bubble after a short delay.
+     * Time-based event that starts the fourth character dialog
+     * after the specified delay.
      */
     {
         type: 'time',
         delay: 500,
         step: 22,
-        action: (setup) => setup.speechBubbles[8].start(4500)
+        action: (setup) => setup.dialogManager.startDialog('character:04', setup.world.timestamp)
     },
 
     /**
-     * Time-range event that renders the pollito portrait with radial fade
-     * and displays the ninth farm speech bubble during the specified interval.
+     * Time-based event that activates the Pollito portrait
+     * and fades it in after the specified delay.
      */
     {
         type: 'time',
-        from: 500,
-        to: 5500,
-        once: false,
+        delay: 500,
         step: 22,
         action: (setup) => {
-            farmHelper.renderPortraitWithRadialFade(setup, setup.characters.portraits.pollito)
-            setup.speechBubbles[8].render(setup.world.ctx, setup.world.farmLevelController.renderCameraX, 0);
+            const portrait = setup.characters.portraits.pollito;
+            setup.state.activePortrait = portrait;
+            portrait.fadeIn(setup.world.timestamp, 1500);
         }
     },
 
     /**
-     * Time-based quest event that starts the tenth farm speech bubble after a delay.
+     * Time-based event that fades out the Pollito portrait
+     * after the specified delay.
+     */
+    {
+        type: 'time',
+        delay: 4000,
+        step: 22,
+        action: (setup) => {
+            const portrait = setup.characters.portraits.pollito;
+            portrait.fadeOut(setup.world.timestamp, 1500);
+        }
+    },
+
+    /**
+     * Time-based event that activates the Juanito portrait
+     * and fades it in after the specified delay.
      */
     {
         type: 'time',
         delay: 5500,
         step: 22,
-        action: (setup) => setup.speechBubbles[9].start(4500)
-    },
-
-    /**
-     * Time-range event that renders the Juanito portrait with radial fade
-     * and displays the tenth farm speech bubble during the specified interval.
-     */
-    {
-        type: 'time',
-        from: 5500,
-        to: 10500,
-        once: false,
-        step: 22,
         action: (setup) => {
-            farmHelper.renderPortraitWithRadialFade(setup, setup.characters.portraits.juanito);
-            setup.speechBubbles[9].render(setup.world.ctx, setup.world.farmLevelController.renderCameraX, 0);
+            const portrait = setup.characters.portraits.juanito;
+            setup.state.activePortrait = portrait;
+            portrait.fadeIn(setup.world.timestamp, 1500);
         }
     },
 
     /**
-     * Time-based quest event that starts the eleventh farm speech bubble after a delay.
+     * Time-based event that fades out the Juanito portrait
+     * after the specified delay.
+     */
+    {
+        type: 'time',
+        delay: 9000,
+        step: 22,
+        action: (setup) => {
+            const portrait = setup.characters.portraits.juanito;
+            portrait.fadeOut(setup.world.timestamp, 1500);
+        }
+    },
+
+    /**
+     * Time-based event that activates the cow portrait
+     * and fades it in after the specified delay.
      */
     {
         type: 'time',
         delay: 10500,
         step: 22,
-        action: (setup) => setup.speechBubbles[10].start(4500)
-    },
-
-    /**
-     * Time-range event that renders the cow portrait with radial fade
-     * and displays the eleventh farm speech bubble during the specified interval.
-     */
-    {
-        type: 'time',
-        from: 10500,
-        to: 15500,
-        once: false,
-        step: 22,
         action: (setup) => {
-            farmHelper.renderPortraitWithRadialFade(setup, setup.characters.portraits.cow);
-            setup.speechBubbles[10].render(setup.world.ctx, setup.world.farmLevelController.renderCameraX, 0);
+            const portrait = setup.characters.portraits.cow;
+            setup.state.activePortrait = portrait;
+            portrait.fadeIn(setup.world.timestamp, 1500);
         }
     },
 
     /**
-     * Time-based quest event that restarts the eighth farm speech bubble after a delay.
+     * Time-based event that fades out the cow portrait
+     * after the specified delay.
      */
     {
         type: 'time',
-        delay: 15500,
+        delay: 14000,
         step: 22,
-        action: (setup) => setup.speechBubbles[7].start(4500)
-    },
-
-    /**
-     * Time-range event that renders the eighth farm speech bubble
-     * during the specified interval.
-     */
-    {
-        type: 'time',
-        from: 15500,
-        to: 20500,
-        once: false,
-        step: 22,
-        action: (setup) => setup.speechBubbles[7].render(setup.world.ctx, setup.world.farmLevelController.renderCameraX, -20)
+        action: (setup) => {
+            const portrait = setup.characters.portraits.cow;
+            portrait.fadeOut(setup.world.timestamp, 1500);
+        }
     },
 
     /**

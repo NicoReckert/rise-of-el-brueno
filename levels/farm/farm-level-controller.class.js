@@ -23,7 +23,7 @@ export class FarmLevelController {
         this.gameplayInputController = this.world.gameplayInputController;
         this.renderer = new FarmRenderer(this.setup, this.world);
         this.init();
-        this.eventManager.debug = true;
+        this.eventManager.debug = false;
     }
 
     /**
@@ -49,7 +49,6 @@ export class FarmLevelController {
         this.eventManager = new EventManager(this.setup);
         this.questManager = new QuestManager(this.setup, this.eventManager, this.setup.farmEvents);
         this.eventManager.questManager = this.questManager;
-        this.questManager.step = 1;
         this.timerManager = this.setup.timerManager;
     }
 
@@ -80,7 +79,9 @@ export class FarmLevelController {
         this.prepareFrame(timestamp);
         this.updateWorld(timestamp);
         this.renderLateFrame();
-        this.updateUi();
+        this.renderer.renderActivePortrait();
+        this.updateUi(timestamp);
+        this.renderer.renderPrologVideo();
         this.renderer.handleCutsceneIndicator();
     }
 
@@ -103,7 +104,6 @@ export class FarmLevelController {
     renderFrame(timestamp) {
         this.earthquake.render(timestamp, () => {
             this.renderer.render(this.renderCameraX, this.questManager.step);
-            this.renderStatusBar();
         });
         this.dustParticle.update(this.ctx, this.renderCameraX);
     }
@@ -133,12 +133,15 @@ export class FarmLevelController {
     }
 
     /**
-     * Updates UI elements such as hints and popups.
+     * Updates the UI.
+     * @param {number} timestamp Current timestamp.
      * @returns {void}
      */
-    updateUi() {
+    updateUi(timestamp) {
         this.handleHint();
         this.handlePopup();
+        this.setup.dialogManager.update(timestamp);
+        this.setup.dialogManager.draw(this.ctx, this.renderCameraX);
     }
 
     /**
@@ -209,7 +212,7 @@ export class FarmLevelController {
      * @returns {void}
      */
     updateWind() {
-        if (this.questManager.step >= 20) this.windParticleEffect.update();
+        if (this.questManager.step >= 20) this.windParticleEffect.update(this.renderCameraX);
     }
 
     /**
@@ -230,17 +233,6 @@ export class FarmLevelController {
     updateCamera() {
         this.camera_x = this.setup.world.camera_x;
         this.renderCameraX = Math.round(this.camera_x);
-    }
-
-    /**
-     * Renders the status bar if the character is not inside the house.
-     * @returns {void}
-     */
-    renderStatusBar() {
-        if (this.setup.state.isGameCharacterInHouse) {
-            return;
-        }
-        this.addToWorld(this.setup.statusBarCharacter);
     }
 
     /**

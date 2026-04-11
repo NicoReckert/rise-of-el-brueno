@@ -13,6 +13,6 @@ export function createFarmHints(character, characters) {
     new HollowHint("Warten", characters.cow, 120, 'desert'),
     new HollowHint("Belohnen", characters.cow, 80, 'rose'),
     new HollowHint("Haus Betreten", character, 80, 'desert'),
-    new HollowHint("Noch nicht", character, 100, 'desert'),
+    new HollowHint("Nicht Jetzt", character, 100, 'desert'),
   ];
 }

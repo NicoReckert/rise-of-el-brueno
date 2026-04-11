@@ -312,29 +312,13 @@ export class AssetLoader {
     }
 
     /**
-     * Processes settled lazy manifest results and returns the resolved values.
-     * @param {PromiseSettledResult} charRes Character manifest result.
-     * @param {PromiseSettledResult} entityRes Entity manifest result.
-     * @param {PromiseSettledResult} audioRes Audio manifest result.
-     * @returns {{charLazy: Object, entityLazy: Object, lazyAudios: Object}} Processed lazy assets.
+     * Processes lazy loading results.
+     * @param {*} charLazy Character lazy data.
+     * @param {*} entityLazy Entity lazy data.
+     * @param {*} lazyAudios Lazy audio data.
+     * @returns {{charLazy: *, entityLazy: *, lazyAudios: *}}
      */
-    _processLazyResults(charRes, entityRes, audioRes) {
-        const charLazy = this.getSettledValue(charRes, {});
-        const entityLazy = this.getSettledValue(entityRes, {});
-        const lazyAudios = this.getSettledValue(audioRes, {});
-        return { charLazy, entityLazy, lazyAudios };
-    }
-
-    /**
-     * Waits until the browser is idle or a timeout is reached.
-     * @param {number} [timeout=1500] Maximum wait time in milliseconds.
-     * @returns {Promise<void>}
-     */
-    waitForIdle(timeout = 1500) {
-        return new Promise(r =>
-            ("requestIdleCallback" in window)
-                ? requestIdleCallback(r, { timeout })
-                : setTimeout(r, timeout)
-        );
+    _processLazyResults(charLazy, entityLazy, lazyAudios) {
+        return { charLazy: charLazy || {}, entityLazy: entityLazy || {}, lazyAudios: lazyAudios || {} };
     }
 }

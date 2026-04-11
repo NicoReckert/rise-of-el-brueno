@@ -65,8 +65,7 @@ export const farmEvents_part3 = [
             setup.environment.house.updateAnimationState('doorCloses');
             setup.sounds.doorCloseSfx.play();
             setup.world.taskWindow.markDone(6)
-            setup.world.farmLevelSetup.sounds.taskCompletedSfx02.currentTime = 0;
-            setup.world.farmLevelSetup.sounds.taskCompletedSfx02.play();
+            setup.world.audioManager.playOneShot(setup.sounds.taskCompletedSfx);
             setup.state.popupTexts.push(new PopupText("Aufgabe erledigt!", setup.world.canvas.width / 2, 440));
             setup.cutsceneIndicator.show({ skippable: false });
             setup.world.farmLevelController.questManager.advance(13);
@@ -126,8 +125,8 @@ export const farmEvents_part3 = [
     },
 
     /**
-     * Time-based quest event that renders the drone, moves the camera toward it,
-     * and advances the quest once the camera reaches the target.
+     * Time-based event that moves the camera to the drone
+     * and advances the quest when the target position is reached.
      */
     {
         type: 'time',
@@ -136,10 +135,6 @@ export const farmEvents_part3 = [
         once: false,
         action: (setup) => {
             const drone = setup.characters.drone;
-            setup.world.ctx.save();
-            setup.world.ctx.translate(-setup.world.farmLevelController.renderCameraX, 0);
-            setup.world.renderer.addToWorld(drone);
-            setup.world.ctx.restore();
             const camArrived = setup.world.camera.moveToX(drone.x - 300, { speed: 10 });
             if (camArrived) setup.world.farmLevelController.questManager.advance(15);
         }
@@ -163,19 +158,17 @@ export const farmEvents_part3 = [
     },
 
     /**
-     * Quest event that switches background audio,
-     * pauses farm music, and starts drone and night ambience sounds.
+     * Quest event that starts the drone idle sound
+     * and fades in the farm night music.
      */
     {
         type: 'quest',
         step: 15,
         action: (setup) => {
-            setup.sounds.farmDayMusic.pause();
             setup.sounds.droneIdleSfx.loop = true;
             setup.sounds.droneIdleSfx.play();
             setup.sounds.farmNightMusic.loop = true;
-            setup.sounds.farmNightMusic.volume = 0.6;
-            setup.sounds.farmNightMusic.play();
+            setup.world.audioManager.fadeInAudio(setup.sounds.farmNightMusic, 2000, 0.6);
         }
     },
 
@@ -209,11 +202,11 @@ export const farmEvents_part3 = [
         once: false,
         action: (setup) => {
             setup.cutsceneActors.chickenTranced.moveToX(2600, { speed: 1.5 });
+            setup.cutsceneActors.chickTranced.moveToX(2600, { speed: 1.5 });
             setup.cutsceneActors.cowTranced.moveToX(2600, {
                 speed: 1.5,
                 onArrive: () => setup.world.farmLevelController.questManager.advance(17)
             })
-            setup.cutsceneActors.chickTranced.moveToX(2600, { speed: 1.5 });
         }
     },
 
@@ -247,20 +240,16 @@ export const farmEvents_part3 = [
     },
 
     /**
-     * Quest event that gradually lowers drone and ambience audio volumes
-     * until the minimum level is reached.
+     * Quest event that fades out the drone idle sound,
+     * farm night music, and farm night ambience.
      */
     {
         type: 'quest',
         step: 18,
-        once: false,
         action: (setup) => {
-            if (setup.state.volumeLevel2 > setup.state.minVolumeLevel) {
-                setup.state.volumeLevel2 = Math.max(setup.state.volumeLevel2 - 0.002, setup.state.minVolumeLevel);
-                setup.sounds.droneIdleSfx.volume = setup.state.volumeLevel2;
-                setup.sounds.farmNightMusic.volume = setup.state.volumeLevel2;
-                setup.sounds.farmNightAmbience.volume = setup.state.volumeLevel2;
-            }
+            setup.world.audioManager.fadeOutAudio(setup.sounds.droneIdleSfx, 4000);
+            setup.world.audioManager.fadeOutAudio(setup.sounds.farmNightMusic, 4000);
+            setup.world.audioManager.fadeOutAudio(setup.sounds.farmNightAmbience, 4000);
         }
     },
 
@@ -275,20 +264,6 @@ export const farmEvents_part3 = [
         action: (setup) => {
             setup.state.isNight = false;
             setup.sounds.sadMusic.play();
-        }
-    },
-
-    /**
-     * Time-based quest event that pauses drone and ambience sounds after a delay.
-     */
-    {
-        type: 'time',
-        delay: 7000,
-        step: 18,
-        action: (setup) => {
-            setup.sounds.farmNightAmbience.pause();
-            setup.sounds.droneIdleSfx.pause();
-            setup.sounds.farmNightMusic.pause();
         }
     },
 
@@ -327,68 +302,28 @@ export const farmEvents_part3 = [
     },
 
     /**
-     * Time-range event that starts, updates, and renders
-     * the third farm speech bubble during the specified interval.
+     * Time-based event that starts the second character dialog
+     * after the specified delay.
      */
     {
         type: 'time',
-        from: 4000,
-        to: 9000,
+        delay: 4000,
         step: 19,
-        once: false,
         action: (setup) => {
-            setup.world.ctx.save();
-            setup.world.ctx.translate(-setup.world.farmLevelController.renderCameraX, 0);
-            if (!setup.speechBubbles[2].startTime) {
-                setup.speechBubbles[2].start();
-            }
-            setup.speechBubbles[2].update(performance.now());
-            setup.speechBubbles[2].draw(setup.world.ctx);
-            setup.world.ctx.restore();
+            setup.dialogManager.startDialog('character:02', setup.world.timestamp);
         }
     },
 
     /**
-     * Time-range event that starts, updates, and renders
-     * the fourth farm speech bubble during the specified interval.
+     * Time-based quest event that sets the character
+     * to a kneel-and-cry state after a delay.
      */
     {
         type: 'time',
-        from: 9000,
-        to: 14000,
+        delay: 16000,
         step: 19,
-        once: false,
         action: (setup) => {
-            setup.world.ctx.save();
-            setup.world.ctx.translate(-setup.world.farmLevelController.renderCameraX, 0);
-            if (!setup.speechBubbles[3].startTime) {
-                setup.speechBubbles[3].start();
-            }
-            setup.speechBubbles[3].update(performance.now());
-            setup.speechBubbles[3].draw(setup.world.ctx);
-            setup.world.ctx.restore();
+            setup.world.character.isKneelAndCry = true;
         }
     },
-
-    /**
-     * Time-range event that starts, updates, and renders
-     * the fifth farm speech bubble during the specified interval.
-     */
-    {
-        type: 'time',
-        from: 14000,
-        to: 30000,
-        step: 19,
-        once: false,
-        action: (setup) => {
-            setup.world.ctx.save();
-            setup.world.ctx.translate(-setup.world.farmLevelController.renderCameraX, 0);
-            if (!setup.speechBubbles[4].startTime) {
-                setup.speechBubbles[4].start();
-            }
-            setup.speechBubbles[4].update(performance.now());
-            setup.speechBubbles[4].draw(setup.world.ctx, 40);
-            setup.world.ctx.restore();
-        }
-    }
 ];

@@ -5,9 +5,9 @@
 export function createFarmState() {
     return {
         ...createFarmFlags(),
-        ...createFarmAudioState(),
         ...createFarmEffectState(),
-        popupTexts: []
+        popupTexts: [],
+        activePortrait: null
     };
 }
 
@@ -21,19 +21,9 @@ function createFarmFlags() {
         doorState: 'closed',
         timeOnStable: null,
         isNight: false,
-        comeFromStable: false
-    };
-}
-
-/**
- * Creates the farm audio state.
- * @returns {Object} Farm audio state.
- */
-function createFarmAudioState() {
-    return {
-        volumeLevel: 0.6,
-        volumeLevel2: 0.8,
-        minVolumeLevel: 0
+        comeFromStable: false,
+        prologVideoStarted: false,
+        prologVideoFinished: false,
     };
 }
 
@@ -45,6 +35,7 @@ function createFarmEffectState() {
     return {
         darknessLevel: 0,
         maxDarkness: 0.9,
+        lastDarknessTimestamp: null,
         earthquakeStart: false,
         shakeIntensity: 20
     };

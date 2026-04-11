@@ -52,8 +52,7 @@ function createFarmAmbientSounds(allAudios) {
 function createFarmActionSounds(allAudios) {
     return {
         newTaskSfx: allAudios.newTaskSfx,
-        taskCompletedSfx01: allAudios.taskCompletedSfx,
-        taskCompletedSfx02: allAudios.taskCompletedSfx.cloneNode(),
+        taskCompletedSfx: allAudios.taskCompletedSfx,
         doorOpenSfx: allAudios.doorOpenSfx,
         doorCloseSfx: allAudios.doorCloseSfx,
         attackSfx: allAudios.attackSfx

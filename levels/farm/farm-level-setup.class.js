@@ -1,5 +1,6 @@
 import { LifeEnergyCharacterBar } from '../../classes/ui/life-energy-character-bar.class.js';
 import { TimerManager } from '../../classes/systems/timer-manager.class.js';
+import { DialogManager } from '../../classes/ui/dialog-manager.class.js';
 import { SunCycle } from '../../classes/effects/sun-cycle.class.js';
 import { MoonCycle } from '../../classes/effects/moon-cycle.class.js';
 import { LyricsRenderer } from '../../classes/effects/lyrics-renderer.class.js';
@@ -13,6 +14,8 @@ import { createFarmSpeechBubbles } from './farm-speech-bubbles.js';
 import { createFarmHints } from './farm-hints.js';
 import { createFarmState } from './farm-state.js';
 import { CutsceneIndicator } from '../../classes/ui/cutscene-indicator.class.js';
+import { registerFarmDialogs } from './farm-dialogs.js';
+
 
 /**
  * Sets up and initializes the farm level.
@@ -42,6 +45,7 @@ export class FarmLevelSetup {
         this.initEntities();
         this.initUIAudio();
         this.initSystems();
+        registerFarmDialogs(this);
     }
 
     /**
@@ -58,9 +62,8 @@ export class FarmLevelSetup {
      */
     initUIAudio() {
         this.sounds = createFarmSounds(this.allAudios);
-        this.speechBubbles = createFarmSpeechBubbles(this.world.character, this.allAudios);
+        this.speechBubbles = createFarmSpeechBubbles(this.world.character, this.world.audioManager);
         this.hints = createFarmHints(this.world.character, this.characters);
-        this.statusBarCharacter = new LifeEnergyCharacterBar(this.entityImages);
     }
 
     /**
@@ -68,6 +71,7 @@ export class FarmLevelSetup {
      */
     initSystems() {
         this.timerManager = new TimerManager();
+        this.dialogManager = new DialogManager(this.world, this.world.keyboard);
         this.sunCycle = new SunCycle(this);
         this.moonCycle = new MoonCycle(this);
         this.lyricsRenderer = new LyricsRenderer(this.world, this.sounds.happyTogetherMusic);

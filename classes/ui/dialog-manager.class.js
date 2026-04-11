@@ -304,12 +304,12 @@ export class DialogManager {
     }
 
     /**
-     * Draws the active dialog content.
-     * @param {CanvasRenderingContext2D} ctx Rendering context.
+     * Draws the dialog.
+     * @param {CanvasRenderingContext2D} ctx Canvas rendering context.
+     * @param {number} [camX=0] Camera x position.
      * @returns {void}
      */
-    draw(ctx) {
-        const camX = this.world.townLevelController?.renderCameraX ?? 0;
+    draw(ctx, camX = 0) {
         if (this.active && this.currentDialog) {
             const step = this.getCurrentStep();
             if (step?.type !== "pause" && step?.type !== "callback") {

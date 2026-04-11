@@ -3,8 +3,8 @@ import { farmHelper } from "./farm-helper.js";
 
 export const farmEvents_part2 = [
     /**
-     * Collision-based quest event that guides the cow back,
-     * completes the task upon arrival, and restores hint and animation on leave.
+     * Collision-based event that moves the cow, updates task progress,
+     * and advances the quest when the target position is reached.
      */
     {
         type: 'collision',
@@ -15,13 +15,13 @@ export const farmEvents_part2 = [
         once: false,
         action: (setup) => {
             setup.hints[1].hide();
-            if (setup.characters.cow.x >= 500) {
-                setup.characters.cow.isMovingLeft = true;
-                setup.characters.cow.updateAnimationState('walk');
+            const cow = setup.characters.cow
+            const arrivedX = cow.moveToX(500);
+            if (!arrivedX) {
+                setup.characters.cow.updateAnimationState('walk')
             } else {
-                setup.characters.cow.isMovingLeft = false;
                 setup.world.taskWindow.markDone(5);
-                setup.sounds.taskCompletedSfx01.play();
+                setup.sounds.taskCompletedSfx.play();
                 setup.state.popupTexts.push(new PopupText("Aufgabe erledigt!", setup.world.canvas.width / 2, 400));
                 setup.characters.cow.updateAnimationState('idle');
                 setup.world.farmLevelController.questManager.advance(8)
@@ -67,56 +67,22 @@ export const farmEvents_part2 = [
     },
 
     /**
-     * Time-based quest event that starts the first farm speech bubble after a delay.
+     * Time-based event that starts the first character dialog
+     * after the specified delay.
      */
     {
         type: 'time',
         delay: 2000,
         step: 8,
         action: (setup) => {
-            setup.speechBubbles[0].start(4500)
+            setup.dialogManager.startDialog('character:01', setup.world.timestamp);
         }
     },
 
     /**
-     * Time-range event that renders the first farm speech bubble
-     * during the specified interval.
-     */
-    {
-        type: 'time',
-        from: 2000,
-        to: 7000,
-        once: false,
-        step: 8,
-        action: (setup) => setup.speechBubbles[0].render(setup.world.ctx, setup.world.farmLevelController.renderCameraX)
-    },
-
-    /**
-     * Time-based quest event that starts the second farm speech bubble after a delay.
-     */
-    {
-        type: 'time',
-        delay: 7000,
-        step: 8,
-        action: (setup) => setup.speechBubbles[1].start(4500)
-    },
-
-    /**
-     * Time-range event that renders the second farm speech bubble
-     * during the specified interval.
-     */
-    {
-        type: 'time',
-        from: 7000,
-        to: 12000,
-        once: false,
-        step: 8,
-        action: (setup) => setup.speechBubbles[1].render(setup.world.ctx, setup.world.farmLevelController.renderCameraX)
-    },
-
-    /**
-     * Time-based quest event that starts movement animations and
-     * moves Juanito and Pollito in opposite directions after a delay.
+     * Time-based event that updates Juanito and Pollito,
+     * sets their movement speed, and adjusts their direction
+     * after the specified delay.
      */
     {
         type: 'time',
@@ -135,31 +101,21 @@ export const farmEvents_part2 = [
     },
 
     /**
-     * Time-based event that stops Juanito and Pollito
-     * once they reach their target positions.
+     * Time-based event that moves Juanito and Pollito
+     * to their target positions and advances the quest
+     * when both have arrived.
      */
     {
         type: 'time',
-        delay: 6000,
+        delay: 12000,
         step: 8,
         once: false,
         action: (setup) => {
-            if (setup.characters.juanito.x <= 500) setup.characters.juanito.isMovingLeft = false;
-            if (setup.characters.pollito.x <= 575) setup.characters.pollito.isMovingLeft = false;
-        }
-    },
-
-    /**
-     * Position-based quest event that advances the quest
-     * when Pollito reaches the defined area.
-     */
-    {
-        type: 'position',
-        objectA: 'pollito',
-        area: { x: 525, width: 50 },
-        step: 8,
-        action: (setup) => {
-            setup.world.farmLevelController.questManager.advance(9)
+            const arrivedXJuanito = setup.characters.juanito.moveToX(500);
+            const arrivedXPollito = setup.characters.pollito.moveToX(575);
+            if (arrivedXJuanito) setup.characters.juanito.isMovingLeft = false;
+            if (arrivedXPollito) setup.characters.pollito.isMovingLeft = false;
+            if (arrivedXJuanito && arrivedXPollito) setup.world.farmLevelController.questManager.advance(9)
         }
     },
 
@@ -181,28 +137,6 @@ export const farmEvents_part2 = [
     },
 
     /**
-     * Quest event that flips the character
-     * once the defined position is reached.
-     */
-    {
-        type: 'quest',
-        step: 9,
-        condition: (setup) => setup.world.character.x >= 788,
-        action: (setup) => setup.world.character.isFlipped = true
-    },
-
-    /**
-     * Quest event that resets the character orientation
-     * when returning past the defined position.
-     */
-    {
-        type: 'quest',
-        step: 9,
-        condition: (setup) => setup.world.character.x <= 788,
-        action: (setup) => setup.world.character.isFlipped = false
-    },
-
-    /**
      * Quest event that transitions the character
      * to the campfire scene.
      */
@@ -216,27 +150,15 @@ export const farmEvents_part2 = [
     },
 
     /**
-     * Quest event that starts the sun cycle.
+     * Quest event that starts the sun cycle
+     * and fades out the farm day music.
      */
     {
         type: 'quest',
         step: 10,
-        action: (setup) => setup.sunCycle.start()
-    },
-
-    /**
-     * Quest event that gradually lowers the farm music volume
-     * until the minimum level is reached.
-     */
-    {
-        type: 'quest',
-        step: 10,
-        once: false,
         action: (setup) => {
-            if (setup.state.volumeLevel > setup.state.minVolumeLevel) {
-                setup.state.volumeLevel = Math.max(setup.state.volumeLevel - 0.005, setup.state.minVolumeLevel);
-                setup.sounds.farmDayMusic.volume = setup.state.volumeLevel;
-            }
+            setup.sunCycle.start();
+            setup.world.audioManager.fadeOutAudio(setup.sounds.farmDayMusic, 2000);
         }
     },
 
@@ -261,20 +183,13 @@ export const farmEvents_part2 = [
     },
 
     /**
-     * Quest event that dynamically adjusts and renders a darkness overlay
-     * based on the current quest step and night state.
+     * Quest event that updates the darkness overlay.
      */
     {
         type: 'quest',
         once: false,
         action: (setup) => {
-            if ([10, 11, 12, 13, 14, 15, 16, 17].includes(setup.world.farmLevelController.questManager.step) && setup.state.isNight) {
-                if (setup.state.darknessLevel < setup.state.maxDarkness) setup.state.darknessLevel += 0.005;
-            } else {
-                if (setup.state.darknessLevel > 0) setup.state.darknessLevel -= 0.005;
-            }
-            setup.world.ctx.fillStyle = `rgba(10,10,40,${setup.state.darknessLevel})`;
-            setup.world.ctx.fillRect(0, 0, setup.world.canvas.width, setup.world.canvas.height);
+            farmHelper.syncDarknessOverlay(setup);
         }
     },
 
@@ -289,7 +204,6 @@ export const farmEvents_part2 = [
         action: (setup) => {
             setup.environment.campfire.updateAnimationState('fireGoesOn');
             setup.sounds.happyTogetherMusic.play();
-            setup.sounds.farmDayMusic.loop = false;
             setup.sounds.farmNightAmbience.loop = true;
             setup.sounds.farmNightAmbience.play();
             setup.characters.cow.updateAnimationState('swingToMusic', 1000 / 6.5);
@@ -331,6 +245,7 @@ export const farmEvents_part2 = [
                 setup.world.character.isStandUp = true;
                 setup.environment.house.updateAnimationState('doorOpens');
                 setup.sounds.doorOpenSfx.play();
+                setup.cutsceneIndicator.show({ skippable: false });
                 setup.world.farmLevelController.questManager.advance(11);
             }
         }

@@ -20,6 +20,7 @@ export class StableLevelController {
         this.eventManager = new EventManager(this.setup);
         this.questManager = new QuestManager(this.setup, this.eventManager, this.setup.stableEvents);
         this.eventManager.questManager = this.questManager;
+        this.eventManager.debug = false;
     }
 
     /**
@@ -40,14 +41,14 @@ export class StableLevelController {
         this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
         this.updateCamera();
         this.renderBackgrounds();
-        this.renderStatusBar();
         this.renderCharacterAndEntities();
         this.updateCharacter(timestamp);
         this.updateEntities(timestamp);
         this.handleHint();
         this.handlePopup();
         this.eventManager.update();
-        this.eventManager.debug = true;
+        this.renderMemoryVideo();
+        this.handleCutsceneIndicator();
     }
 
     /**
@@ -69,14 +70,6 @@ export class StableLevelController {
         this.addObject(this.setup.stableLevel.grounds);
         this.addToWorld(this.setup.stableLevel.sceneryObjects[0]);
         this.ctx.restore();
-    }
-
-    /**
-     * Renders the status bar UI element.
-     * @returns {void}
-     */
-    renderStatusBar() {
-        this.addToWorld(this.setup.statusBarCharacter);
     }
 
     /**
@@ -155,5 +148,25 @@ export class StableLevelController {
      */
     handleHint() {
         this.setup.hints.forEach(hint => hint.draw(this.ctx, this.renderCameraX));
+    }
+
+    /**
+     * Draws the cutscene indicator.
+     * @returns {void}
+     */
+    handleCutsceneIndicator() {
+        this.setup.cutsceneIndicator.draw(this.ctx);
+    }
+
+    /**
+     * Renders the memory video while it is playing.
+     * @returns {void}
+     */
+    renderMemoryVideo() {
+        const video = this.setup.video;
+        if (!video) return;
+        if (video.readyState < 2) return;
+        if (video.paused || video.ended) return;
+        this.ctx.drawImage(video, 0, 0, this.canvas.width, this.canvas.height);
     }
 }

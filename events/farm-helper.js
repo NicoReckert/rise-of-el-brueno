@@ -239,5 +239,68 @@ export const farmHelper = {
         ctx.drawImage(offscreen, portrait.x, portrait.y);
         ctx.shadowBlur = 0;
         ctx.globalAlpha = 1.0;
+    },
+
+    /**
+     * Updates and draws the darkness overlay.
+     * @param {*} setup Configuration or state setup object.
+     * @returns {void}
+     */
+    syncDarknessOverlay(setup) {
+        const dt = farmHelper.getDarknessDeltaSeconds(setup);
+        const shouldDarken = farmHelper.shouldDarkenFarm(setup);
+        farmHelper.updateDarknessLevel(setup, shouldDarken, dt);
+        farmHelper.drawDarknessOverlay(setup);
+    },
+
+    /**
+     * Returns elapsed seconds since the last darkness update.
+     * @param {*} setup Configuration or state setup object.
+     * @returns {number}
+     */
+    getDarknessDeltaSeconds(setup) {
+        const now = setup.world.timestamp;
+        const last = setup.state.lastDarknessTimestamp ?? now;
+        setup.state.lastDarknessTimestamp = now;
+        return (now - last) / 1000;
+    },
+
+    /**
+     * Determines whether the farm darkness should increase.
+     * @param {*} setup Configuration or state setup object.
+     * @returns {boolean}
+     */
+    shouldDarkenFarm(setup) {
+        const step = setup.world.farmLevelController.questManager.step;
+        const darkSteps = [10, 11, 12, 13, 14, 15, 16, 17];
+        return darkSteps.includes(step) && setup.state.isNight;
+    },
+
+    /**
+     * Updates the darkness level using timestamp-based fading.
+     * @param {*} setup Configuration or state setup object.
+     * @param {boolean} shouldDarken Whether darkness should increase.
+     * @param {number} dt Elapsed seconds since last update.
+     * @param {number} [speed=0.3] Fade speed per second.
+     * @returns {void}
+     */
+    updateDarknessLevel(setup, shouldDarken, dt, speed = 0.3) {
+        const state = setup.state;
+        const delta = speed * dt;
+        const next = shouldDarken
+            ? state.darknessLevel + delta
+            : state.darknessLevel - delta;
+        state.darknessLevel = Math.max(0, Math.min(next, state.maxDarkness));
+    },
+
+    /**
+     * Draws the darkness overlay on the farm canvas.
+     * @param {*} setup Configuration or state setup object.
+     * @returns {void}
+     */
+    drawDarknessOverlay(setup) {
+        const { ctx, canvas } = setup.world;
+        ctx.fillStyle = `rgba(10,10,40,${setup.state.darknessLevel})`;
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
     }
 }

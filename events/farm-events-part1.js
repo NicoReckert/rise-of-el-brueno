@@ -25,8 +25,7 @@ export const farmEvents_part1 = [
         type: 'quest',
         action: (setup) => {
             setup.sounds.farmDayMusic.loop = true;
-            setup.sounds.farmDayMusic.volume = 0.6;
-            setup.sounds.farmDayMusic.play();
+            setup.world.audioManager.fadeInAudio(setup.sounds.farmDayMusic, 2000, 0.6);
         }
     },
 
@@ -228,7 +227,7 @@ export const farmEvents_part1 = [
             setup.hints[1].hide();
             setup.world.taskWindow.markDone(2);
             setup.state.popupTexts.push(new PopupText("Aufgabe Erledigt!", setup.world.canvas.width / 2, 400));
-            setup.sounds.taskCompletedSfx01.play();
+            setup.sounds.taskCompletedSfx.play();
             setup.characters.cow.isMovingRight = false;
             setup.characters.cow.updateAnimationState('eat', 1000 / 5.5);
         }
@@ -279,7 +278,7 @@ export const farmEvents_part1 = [
         action: (setup) => {
             setup.hints[2].hide();
             setup.world.taskWindow.markDone(3)
-            setup.sounds.taskCompletedSfx01.play()
+            setup.sounds.taskCompletedSfx.play()
             setup.state.popupTexts.push(new PopupText("Aufgabe erledigt!", setup.world.canvas.width / 2, 400))
         }
     },
@@ -366,7 +365,7 @@ export const farmEvents_part1 = [
         action: (setup) => {
             setup.hints[3].hide();
             setup.world.taskWindow.markDone(4);
-            setup.sounds.taskCompletedSfx01.play();
+            setup.sounds.taskCompletedSfx.play();
             setup.state.popupTexts.push(new PopupText("Aufgabe erledigt!", setup.world.canvas.width / 2, 400));
         },
     },

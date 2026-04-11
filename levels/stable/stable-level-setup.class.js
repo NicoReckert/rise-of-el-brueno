@@ -3,6 +3,7 @@ import { AnimatedEntity } from '../../classes/entities/animated-entity.class.js'
 import { HollowHint } from '../../classes/ui/hollow-hint.class.js';
 import { createStableLevel } from './stable-level.js'
 import { stableEvents } from '../../events/stable-level-events.js';
+import { CutsceneIndicator } from '../../classes/ui/cutscene-indicator.class.js';
 
 /**
  * Sets up the stable level including characters, environment, sounds, and UI elements.
@@ -19,12 +20,12 @@ export class StableLevelSetup {
         this.allAudios = this.world.allAudios;
         this.allVideos = this.world.allVideos;
         this.initStableData();
-        this.statusBarCharacter = new LifeEnergyCharacterBar(this.entityImages);
         this.characters = this.createCharacters();
         this.environment = this.createEnvironment();
         this.sounds = this.createSounds();
         this.video = this.allVideos.memory || null;
         this.hints = this.createHints();
+        this.cutsceneIndicator = new CutsceneIndicator(this.world);
     }
 
     /**
@@ -35,6 +36,7 @@ export class StableLevelSetup {
         this.stableLevel = createStableLevel({ levelImages: this.levelImages });
         this.popupTexts = [];
         this.stableEvents = stableEvents;
+        this.memoryVideoStarted = false;
     }
 
     /**
@@ -43,7 +45,7 @@ export class StableLevelSetup {
      */
     createCharacters() {
         const characters = {
-            juanito: new AnimatedEntity(this.entityImages, 'juanito', 150, 150, 635, 460, 0, 100, -20, 0),
+            juanito: new AnimatedEntity(this.entityImages, 'juanito', 150, 150, 635, 460),
             pollito: new AnimatedEntity(this.entityImages, 'pollito', 120, 120, 805, 515)
         };
         characters.pollito.isFlipped = false;

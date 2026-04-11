@@ -124,7 +124,7 @@ function registerTadeoDialogs(setup) {
     const part03 = setup.dialogManager.addDialog('tadeo:03', tadeoDialogsPart03(setup));
     const part04 = setup.dialogManager.addDialog('tadeo:04', tadeoDialogsPart04(setup));
     const part05 = setup.dialogManager.addDialog('tadeo:05', tadeoDialogsPart05(setup));
-    return (part01, part02, part03, part04, part05);
+    return { part01, part02, part03, part04, part05 };
 }
 
 /**
