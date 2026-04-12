@@ -269,6 +269,9 @@ export const gameAppUiBindingMethods = {
         this.inputManager.listenRestartLevelButton(handler);
         this.inputManager.listenGameOverRestartButton(handler);
         this.inputManager.listenPauseRestartButton(handler);
+        this.inputManager.listenGameOverCheckpointButton(() => {
+            this.restartGameFromTownCheckpoint();
+        });
     },
 
     /**

@@ -99,5 +99,15 @@ export const gameAppSessionMethods = {
         if (!loop) return;
         loop.currentTime = 0;
         this.audioManager.fadeInAudio(loop, 2000);
+    },
+
+    /**
+     * Restarts the game from the town checkpoint.
+     * @returns {void}
+     */
+    restartGameFromTownCheckpoint() {
+        if (!this.world?.townCheckpoint) return;
+        this.world.resumeFromTownCheckpoint = true;
+        this.restartGameFromCurrentLevel();
     }
 }

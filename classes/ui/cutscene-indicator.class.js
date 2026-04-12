@@ -49,17 +49,19 @@ export class CutsceneIndicator {
     }
 
     /**
-     * Shows the panel.
-     * @param {Object} [options={}] Show options.
-     * @param {boolean} [options.skippable=false] Whether the panel can be skipped.
+     * Shows the cutscene indicator.
+     * @param {{skippable?: boolean, silent?: boolean}} [param0={}] Options object.
+     * @returns {void}
      */
-    show({ skippable = false } = {}) {
+    show({ skippable = false, silent = false } = {}) {
         const wasInactive = !this.active && !this.showing;
         this.showing = true;
         this.active = true;
         this.showSkip = skippable;
         this.updatePanelTouchState(skippable);
-        if (wasInactive) this.playPanelShowSfx();
+        if (wasInactive && !silent) {
+            this.playPanelShowSfx();
+        }
     }
 
     /**
@@ -80,14 +82,21 @@ export class CutsceneIndicator {
     }
 
     /**
-     * Hides the panel.
+     * Hides the cutscene indicator.
+     * @param {{silent?: boolean, immediate?: boolean}} [param0={}] Options object.
+     * @returns {void}
      */
-    hide() {
+    hide({ silent = false, immediate = false } = {}) {
         const wasShowing = this.active || this.showing;
         this.showing = false;
         this.showSkip = false;
         this.unbindPanelTouch();
-        if (wasShowing) {
+        if (immediate) {
+            this.opacity = 0;
+            this.active = false;
+            this.showTouchControls();
+        }
+        if (wasShowing && !silent) {
             this.world.audioManager?.playOneShot("cutsceneIndicatorOffSfx", { volume: 0.45 });
         }
     }

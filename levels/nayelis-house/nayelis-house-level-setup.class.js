@@ -5,6 +5,7 @@ import { HollowHint } from '../../classes/ui/hollow-hint.class.js';
 import { SpeechBubble } from '../../classes/ui/speech-bubble.class.js';
 import { DialogManager } from '../../classes/ui/dialog-manager.class.js';
 import { bubbleStep } from '../../utils/dialog-step-helpers.js';
+import { CutsceneIndicator } from '../../classes/ui/cutscene-indicator.class.js';
 
 /**
  * Sets up Nayeli's house level.
@@ -54,6 +55,7 @@ export class NayelisHouseLevelSetup {
         this.nayelisHouseLevel = createNayelisHouseLevel({ levelImages: this.levelImages });
         this.nayelisHouseEvents = nayelisHouseEvents;
         this.popupTexts = [];
+        this.cutsceneIndicator = new CutsceneIndicator(this.world);
     }
 
     /**

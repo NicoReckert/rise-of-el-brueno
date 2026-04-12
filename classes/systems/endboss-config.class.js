@@ -150,8 +150,8 @@ export class EndbossConfig {
      * Sets size and initial position.
      */
     setSizeAndPosition() {
-        this.endboss.x = 27000;
-        this.endboss.y = 205;
+        this.endboss.x = 26000;
+        this.endboss.y = -100;
         this.endboss.width = 350;
         this.endboss.height = 500;
     }

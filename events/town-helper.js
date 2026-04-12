@@ -20,6 +20,7 @@ export const townHelper = {
         setup.world.character.isMovingLeft = false;
         setup.world.character.isMovingRight = false;
         setup.world.isKeysStopp = true;
+        setup.cutsceneIndicator.show({ skippable: false });
     },
 
     /**
@@ -189,5 +190,66 @@ export const townHelper = {
         setup.state.tadeoHelpIdx = idx;
         setup.dialogManager.playBubble(bubbles[idx], { now, duration });
         audio.playOneShot(`voTadeoHelp0${idx + 1}`, { volume: 0.95 });
-    }
+    },
+
+    /**
+     * Restores the town checkpoint.
+     * @param {*} setup Setup object.
+     * @returns {void}
+     */
+    restoreTownCheckpoint(setup) {
+        const cp = setup.world.townCheckpoint;
+        if (!cp) return;
+        const world = setup.world;
+        const char = world.character;
+        townHelper.restoreTownCheckpointPosition(cp, world, char);
+        townHelper.restoreTownCheckpointBars(setup, cp);
+        townHelper.restoreTownCheckpointProgressState(setup);
+        setup.world.townLevelController.questManager.step = cp.step;
+    },
+
+    /**
+     * Restores the town checkpoint position.
+     * @param {*} cp Checkpoint data.
+     * @param {*} world World instance.
+     * @param {*} char Character instance.
+     * @returns {void}
+     */
+    restoreTownCheckpointPosition(cp, world, char) {
+        char.x = cp.x;
+        char.y = cp.y;
+        world.camera_x = cp.cameraX;
+        world.level_start_x = cp.levelStartX;
+        world.camera_start_x = cp.cameraStartX;
+        char.energy = cp.energy;
+        char.throwableBottles = cp.throwableBottles;
+    },
+
+    /**
+     * Restores the town checkpoint bars.
+     * @param {*} setup Setup object.
+     * @param {*} cp Checkpoint data.
+     * @returns {void}
+     */
+    restoreTownCheckpointBars(setup, cp) {
+        setup.statusBarCharacter?.setPercentage(cp.energy);
+        setup.coinBar?.setPercentage(cp.coinBar);
+        setup.bottleBar?.setPercentage(cp.bottleBar);
+    },
+
+    /**
+     * Restores the town checkpoint progress state.
+     * @param {*} setup Setup object.
+     * @returns {void}
+     */
+    restoreTownCheckpointProgressState(setup) {
+        const char = setup.world.character;
+        setup.sandstormFar.setEnabled(false);
+        setup.sandstorm.setEnabled(false);
+        setup.sandstormNear.setEnabled(false);
+        setup.state.enemyHealth = 2;
+        char.isHaveSword = true;
+        char.config.initCombatConfig();
+        char.speedX = 5;
+    },
 }

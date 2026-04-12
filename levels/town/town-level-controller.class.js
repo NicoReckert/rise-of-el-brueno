@@ -42,7 +42,7 @@ export class TownLevelController {
      */
     initManagers() {
         this.eventManager = new EventManager(this.setup);
-        this.eventManager.debug = true;
+        this.eventManager.debug = false;
         this.questManager = new QuestManager(this.setup, this.eventManager, this.setup.townEvents);
         this.eventManager.questManager = this.questManager;
     }
@@ -108,7 +108,9 @@ export class TownLevelController {
      * @returns {void}
      */
     updateScene(timestamp) {
-        this.renderer.render(this.renderCameraX);
+        this.setup.earthquake.render(timestamp, () => {
+            this.renderer.render(this.renderCameraX);
+        });
         this.updateCharacter(timestamp);
         this.updateDynamicObjects(timestamp);
         this.updateEntities(timestamp);

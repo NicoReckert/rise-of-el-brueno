@@ -111,7 +111,11 @@ export class World {
      * Initializes level boundary state.
      */
     initLevelBounds() {
+        this.level_start_x = null;
         this.level_end_x = null;
+        this.camera_start_x = 0;
+        this.townCheckpoint = null;
+        this.resumeFromCheckpoint = false;
     }
 
     /**

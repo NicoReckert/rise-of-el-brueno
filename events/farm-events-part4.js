@@ -318,6 +318,7 @@ export const farmEvents_part4 = [
             const char = setup.world.character;
             const arrivedX = char.movementCtrl.moveToX(6500, { speed: 1, faceTarget: true });
             if (arrivedX) {
+                setup.cutsceneIndicator.hide({ silent: true, immediate: true });
                 setup.world.isKeysStopp = false;
                 setup.world.currentScene = 'levelComplete';
             }

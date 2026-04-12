@@ -9,7 +9,8 @@ import { SpeechBubble } from '../../classes/ui/speech-bubble.class.js';
 export function createTownSpeechBubblesCharacter(character, audioManager) {
     return [
         ...townSpeechBubblesCharacterPart01(character, audioManager),
-        ...townSpeechBubblesCharacterPart02(character, audioManager)
+        ...townSpeechBubblesCharacterPart02(character, audioManager),
+        ...townSpeechBubblesCharacterPart03(character, audioManager)
     ];
 }
 
@@ -25,7 +26,7 @@ export function townSpeechBubblesCharacterPart01(character, audioManager) {
         new SpeechBubble("Hier hat jemand gewütet…", character, 'speech', { audioManager }),
         new SpeechBubble("Kratzspuren… Federn… und Blut.", character, 'speech', { audioManager }),
         new SpeechBubble("Ich darf keine Zeit verlieren.", character, 'speech', { audioManager }),
-        new SpeechBubble("Oh ein Sandsturm...", character, 'speech', { audioManager }),
+        new SpeechBubble("Ein Sandsturm...", character, 'speech', { audioManager }),
         new SpeechBubble("Der Sandsturm wird sehr viel stärker...", character, 'speech', { audioManager }),
         new SpeechBubble("Dieser Sturm… ich kann kaum noch stehen…", character, 'speech', { audioManager }),
         new SpeechBubble("Nein… ich darf jetzt nicht aufgeben…", character, 'speech', { audioManager }),
@@ -43,6 +44,19 @@ export function townSpeechBubblesCharacterPart02(character, audioManager) {
     return [
         new SpeechBubble("Tadeo… du hast mich gerettet…", character, 'speech', { audioManager }),
         new SpeechBubble("Ich dachte schon, es wäre vorbei…", character, 'speech', { audioManager }),
+        new SpeechBubble("Ich bin nicht wegen des Schwertes hier.", character, 'speech', { audioManager }),
+        new SpeechBubble("Ich bin hier, um meine Freunde zurückzuholen.", character, 'speech', { audioManager })
+    ];
+}
+
+/**
+ * Creates character dialog part 03 speech bubbles.
+ * @param {*} character Character instance.
+ * @param {*} audioManager Audio manager instance.
+ * @returns {Array<SpeechBubble>}
+ */
+export function townSpeechBubblesCharacterPart03(character, audioManager) {
+    return [
         new SpeechBubble("Es tut mir so leid …", character, 'speech', { audioManager }),
         new SpeechBubble("Ich hätte euch beschützen müssen, aber ich habe versagt.", character, 'speech', { audioManager }),
         new SpeechBubble("Nicht ein Tag vergeht, ohne dass ich an euch denke und daran zerbreche.", character, 'speech', { audioManager }),
@@ -91,16 +105,34 @@ export function createTownSpeechBubblesNayeliSpiritEcho(nayeliSpiritEcho) {
 export function createTownSpeechBubblesSollita(sollita) {
     return [
         ...townSpeechBubblesSollitaPart01(sollita),
-        ...townSpeechBubblesSollitaPart02(sollita)
+        ...townSpeechBubblesSollitaPart02(sollita),
+        ...townSpeechBubblesSollitaPart03(sollita)
     ];
 }
 
 /**
- * Creates the first part of town speech bubbles for Sollita.
+ * Creates Sollita dialog part 01 speech bubbles.
  * @param {*} sollita Sollita instance.
- * @returns {Array} Speech bubble instances.
+ * @returns {Array<SpeechBubble>}
  */
 export function townSpeechBubblesSollitaPart01(sollita) {
+    return [
+        new SpeechBubble("Von dir habe ich schon gehört.", sollita, 'speech'),
+        new SpeechBubble("Du bist also wirklich hier, Brünö.", sollita, 'speech'),
+        new SpeechBubble("Und du trägst tatsächlich das Schwert der Ahnen.", sollita, 'speech'),
+        new SpeechBubble("Gut. Dann ist noch nicht alles verloren.", sollita, 'speech'),
+        new SpeechBubble("Dann verschwenden wir keine Zeit.", sollita, 'speech'),
+        new SpeechBubble("Wenn du bereit bist, triff mich hinter der Stadt.", sollita, 'speech'),
+        new SpeechBubble("Dort beenden wir das.", sollita, 'speech')
+    ];
+}
+
+/**
+ * Creates Sollita dialog part 02 speech bubbles.
+ * @param {*} sollita Sollita instance.
+ * @returns {Array<SpeechBubble>}
+ */
+export function townSpeechBubblesSollitaPart02(sollita) {
     return [
         new SpeechBubble("Dies war erst der Anfang, Brünö.", sollita, 'speech'),
         new SpeechBubble("Du bist aufgebrochen, um deine Freunde zu finden...", sollita, 'speech'),
@@ -112,11 +144,11 @@ export function townSpeechBubblesSollitaPart01(sollita) {
 }
 
 /**
- * Creates the second part of town speech bubbles for Sollita.
+ * Creates Sollita dialog part 03 speech bubbles.
  * @param {*} sollita Sollita instance.
- * @returns {Array} Speech bubble instances.
+ * @returns {Array<SpeechBubble>}
  */
-export function townSpeechBubblesSollitaPart02(sollita) {
+export function townSpeechBubblesSollitaPart03(sollita) {
     return [
         new SpeechBubble("verborgene Portale werden dich in ferne Teile dieser Welt führen...", sollita, 'speech'),
         new SpeechBubble("...und dunkle Mächte werden sich erheben", sollita, 'speech'),
@@ -163,7 +195,13 @@ export function createTownSpeechBubblesTadeo(tadeo) {
         new SpeechBubble("Übrigens... ich bin Tadeo.", tadeo, 'speech'),
         new SpeechBubble("Da sind wir, Brünö.", tadeo, 'speech'),
         new SpeechBubble("Geh hinein...", tadeo, 'speech'),
-        new SpeechBubble("Nayeli wartet auf dich.", tadeo, 'speech')
+        new SpeechBubble("Nayeli wartet auf dich.", tadeo, 'speech'),
+        new SpeechBubble("Der Sandsturm ist vorbei!", tadeo, 'speech'),
+        new SpeechBubble("Komm, wir können jetzt in die Stadt!", tadeo, 'speech'),
+        new SpeechBubble("Okay, mein Freund.", tadeo, 'speech'),
+        new SpeechBubble("Ich gehe zurück zu Nayeli.", tadeo, 'speech'),
+        new SpeechBubble("Wenn du mich brauchst, komme ich sofort.", tadeo, 'speech'),
+        new SpeechBubble("Du solltest jetzt mit Sollita sprechen.", tadeo, 'speech')
     ];
 }
 
@@ -174,10 +212,10 @@ export function createTownSpeechBubblesTadeo(tadeo) {
  */
 export function createTownSpeechBubblesTadeoAfraid(tadeo) {
     return [
-        new SpeechBubble("Oh oh… bitte nicht…", tadeo, 'speech'),
-        new SpeechBubble("Ähm… bleib bitte weg…", tadeo, 'speech'),
-        new SpeechBubble("Nein… nein… ganz ruhig…", tadeo, 'speech'),
-        new SpeechBubble("Das ist zu nah… viel zu nah…", tadeo, 'speech')
+        new SpeechBubble("Oh oh… bitte nicht…", tadeo, 'speech', { yOffset: 10 }),
+        new SpeechBubble("Ähm… bleib bitte weg…", tadeo, 'speech', { yOffset: 10 }),
+        new SpeechBubble("Nein… nein… ganz ruhig…", tadeo, 'speech', { yOffset: 10 }),
+        new SpeechBubble("Das ist zu nah… viel zu nah…", tadeo, 'speech', { yOffset: 10 })
     ];
 }
 
@@ -188,10 +226,10 @@ export function createTownSpeechBubblesTadeoAfraid(tadeo) {
  */
 export function createTownSpeechBubblesTadeoPanic(tadeo) {
     return [
-        new SpeechBubble("AAAH! Hilfe!", tadeo, 'speech'),
-        new SpeechBubble("Weg! Weg! Weg!", tadeo, 'speech'),
-        new SpeechBubble("Nein!! Bitte!!", tadeo, 'speech'),
-        new SpeechBubble("HILFE!!", tadeo, 'speech')
+        new SpeechBubble("AAAH! Hilfe!", tadeo, 'speech', { yOffset: 10 }),
+        new SpeechBubble("Weg! Weg! Weg!", tadeo, 'speech', { yOffset: 10 }),
+        new SpeechBubble("Nein!! Bitte!!", tadeo, 'speech', { yOffset: 10 }),
+        new SpeechBubble("HILFE!!", tadeo, 'speech', { yOffset: 10 })
     ];
 }
 
@@ -202,9 +240,21 @@ export function createTownSpeechBubblesTadeoPanic(tadeo) {
  */
 export function createTownSpeechBubblesTadeoHelp(tadeo) {
     return [
-        new SpeechBubble("Hier, nimm zwei! Schnell!", tadeo, 'speech'),
-        new SpeechBubble("Ich hab noch welche… nimm die!", tadeo, 'speech'),
-        new SpeechBubble("Nicht ohne Flaschen! Bitte!", tadeo, 'speech')
+        new SpeechBubble("Hier, nimm zwei! Schnell!", tadeo, 'speech', { yOffset: 10 }),
+        new SpeechBubble("Ich hab noch welche… nimm die!", tadeo, 'speech', { yOffset: 10 }),
+        new SpeechBubble("Nicht ohne Flaschen! Bitte!", tadeo, 'speech', { yOffset: 10 })
+    ];
+}
+
+/**
+ * Creates Tadeo encouragement speech bubbles.
+ * @param {*} tadeo Tadeo instance.
+ * @returns {Array<SpeechBubble>}
+ */
+export function createTownSpeechBubblesTadeoEncourage(tadeo) {
+    return [
+        new SpeechBubble("Komm, Brünö! Wir sind gleich da!", tadeo, 'speech', { yOffset: 10 }),
+        new SpeechBubble("Nur noch ein kleines Stück, Brünö!", tadeo, 'speech', { yOffset: 10 })
     ];
 }
 

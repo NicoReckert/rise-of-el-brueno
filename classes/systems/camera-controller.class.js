@@ -110,8 +110,9 @@ export class CameraController {
         const world = this.world;
         const levelEnd = Number(world.level_end_x);
         if (!Number.isFinite(levelEnd)) return;
+        const minCameraX = Number(world.camera_start_x ?? 0);
         const maxCameraX = levelEnd - 720;
         if (!Number.isFinite(world.camera_x)) world.camera_x = 0;
-        world.camera_x = Math.max(0, Math.min(world.camera_x, maxCameraX));
+        world.camera_x = Math.max(minCameraX, Math.min(world.camera_x, maxCameraX));
     }
 }

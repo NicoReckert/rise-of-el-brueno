@@ -13,8 +13,9 @@ export const farmEvents_part1 = [
             setup.state.comeFromStable ? setup.world.character.x = 1700 : setup.world.character.x = 1000;
             setup.world.camera_x = setup.world.character.x - 500;
             setup.world.level_end_x = 6409;
-            setup.world.character.level_start_x = 440;
+            setup.world.level_start_x = 440;
             setup.state.comeFromStable = false;
+            setup.cutsceneIndicator.hide({ silent: true, immediate: true });
         }
     },
 

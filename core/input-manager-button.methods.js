@@ -173,6 +173,15 @@ export const inputManagerButtonMethods = {
     },
 
     /**
+     * Binds game over checkpoint button listener.
+     * @param {Function} onClick Click handler.
+     * @returns {void}
+     */
+    listenGameOverCheckpointButton(onClick) {
+        this.bindClick(this.uiManager.dom.gameOverCheckpointButton, onClick);
+    },
+
+    /**
      * Registers the pause restart button click handler.
      * @param {Function} onClick Callback triggered when the pause restart button is clicked.
      */

@@ -39,7 +39,7 @@ export class TownRenderer {
      */
     renderBackgrounds(cameraX) {
         this.addToWorld(this.setup.townLevel.sky);
-        if (this.questManager.step < 23) {
+        if (this.questManager.step < 31) {
             this.setup.darkEnergyEffect.draw(this.ctx, cameraX);
         }
         this.renderCloudLayer(cameraX);
@@ -55,7 +55,7 @@ export class TownRenderer {
      * @returns {void}
      */
     renderTownFlowers(cameraX) {
-        if (this.questManager.step < 23) return;
+        if (this.questManager.step < 31) return;
         this.ctx.save();
         this.ctx.translate(-cameraX, 0);
         this.addObject(this.setup.environment.flowers);
@@ -68,7 +68,7 @@ export class TownRenderer {
      * @returns {void}
      */
     renderParticleEffects(cameraX) {
-        if (this.questManager.step >= 13) {
+        if (this.questManager.step >= 23) {
             this.setup.windParticleEffect.setVisible(true);
             this.setup.windParticleEffect.draw(this.ctx, cameraX);
             this.setup.dustParticleEffect.setVisible(true);
@@ -215,8 +215,8 @@ export class TownRenderer {
      * @returns {void}
      */
     renderTownSollitaAndMusician() {
-        this.addToWorld(this.setup.characters.sollita);
         this.addToWorld(this.setup.characters.musician);
+        this.addToWorld(this.setup.characters.sollita);
     }
 
     /**
@@ -333,7 +333,7 @@ export class TownRenderer {
      */
     renderStatusBar() {
         this.addToWorld(this.setup.statusBarCharacter);
-        if (this.questManager.step >= 13) this.addToWorld(this.setup.statusBarEndboss);
+        if (this.questManager.step >= 20) this.addToWorld(this.setup.statusBarEndboss);
         this.addToWorld(this.setup.coinBar);
         this.addToWorld(this.setup.bottleBar);
     }

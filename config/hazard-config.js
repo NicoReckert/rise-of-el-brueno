@@ -61,6 +61,9 @@ export const HAZARD_DEFS = {
         },
 
         hit: {
+            damage: 10,
+            protectDamage: 5,
+            invulnMs: 700,
             hurtMs: 350,
             knockback: 12,
             impactSize: { width: 220, height: 220 },
@@ -119,6 +122,9 @@ export const HAZARD_DEFS = {
         },
 
         hit: {
+            damage: 10,
+            protectDamage: 5,
+            invulnMs: 700,
             hurtMs: 280,
             knockback: 10,
             impactSize: { width: 220, height: 220 },
@@ -175,6 +181,9 @@ export const HAZARD_DEFS = {
         },
 
         hit: {
+            damage: 10,
+            protectDamage: 5,
+            invulnMs: 700,
             hurtMs: 320,
             knockback: 14,
             impactSize: { width: 220, height: 220 },
@@ -235,6 +244,9 @@ export const HAZARD_DEFS = {
         },
 
         hit: {
+            damage: 10,
+            protectDamage: 5,
+            invulnMs: 700,
             hurtMs: 280,
             knockback: 10,
             impactSize: { width: 220, height: 220 },
@@ -296,6 +308,9 @@ export const HAZARD_DEFS = {
         },
 
         hit: {
+            damage: 10,
+            protectDamage: 5,
+            invulnMs: 700,
             hurtMs: 320,
             knockback: 12,
             impactSize: { width: 220, height: 220 },
@@ -357,6 +372,9 @@ export const HAZARD_DEFS = {
         },
 
         hit: {
+            damage: 10,
+            protectDamage: 5,
+            invulnMs: 700,
             hurtMs: 260,
             knockback: 8,
             impactSize: { width: 220, height: 220 },

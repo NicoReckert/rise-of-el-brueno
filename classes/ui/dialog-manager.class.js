@@ -198,22 +198,30 @@ export class DialogManager {
 
     /**
      * Advances to the next dialog step.
-     * @param {number} [now=performance.now()] Current timestamp.
+     * @param {number} [now=performance.now()] Current time.
      * @returns {void}
      */
     next(now = performance.now()) {
         if (!this.active || !this.currentDialog) return;
         this.currentIndex++;
         if (this.currentIndex >= this.currentDialog.sequence.length) {
-            this.active = false;
-            this.currentDialog = null;
-            this.currentDialogKey = null;
-            this.pauseUntil = null;
-            if (this.onComplete) this.onComplete(this.world);
-            this.onComplete = null;
-            return;
+            return this.finishCurrentDialog();
         }
         this.startCurrentStep(now);
+    }
+
+    /**
+     * Finishes the current dialog.
+     * @returns {void}
+     */
+    finishCurrentDialog() {
+        const onComplete = this.onComplete;
+        this.active = false;
+        this.currentDialog = null;
+        this.currentDialogKey = null;
+        this.pauseUntil = null;
+        this.onComplete = null;
+        onComplete?.(this.world);
     }
 
     /**

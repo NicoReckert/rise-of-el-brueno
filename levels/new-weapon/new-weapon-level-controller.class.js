@@ -67,6 +67,7 @@ export class NewWeaponLevelController {
         this.updateEntities(timestamp);
         this.animateHeroText();
         this.eventManager.update();
+        this.handleCutsceneIndicator();
     }
 
     /**
@@ -324,5 +325,13 @@ export class NewWeaponLevelController {
         if (this.heroTextAlpha < 1) this.heroTextAlpha += 0.02;
         if (this.heroTextScale < 1) this.heroTextScale += 0.01;
         this.drawHeroText("DAS MACUAHUITL DER AHNEN", this.heroTextAlpha, this.heroTextScale);
+    }
+
+    /**
+     * Draws the cutscene indicator.
+     * @returns {void}
+     */
+    handleCutsceneIndicator() {
+        this.setup.cutsceneIndicator.draw(this.ctx);
     }
 }

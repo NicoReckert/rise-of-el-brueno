@@ -9,12 +9,13 @@ export const newWeaponEvents =
                 setup.world.character.x = 400; //550
                 setup.world.character.y = 250;
                 setup.world.camera_x = 0;
-                setup.world.character.level_start_x = 290;
+                setup.world.level_start_x = 290;
                 setup.world.level_end_x = 845;
                 setup.world.character.isNewWeapon = true;
                 setup.sounds.newWeaponMusic.loop = true;
                 setup.world.audioManager.fadeInAudio(setup.sounds.newWeaponMusic, 2000);
                 setup.sounds.voNewWeapon01.play();
+                setup.cutsceneIndicator.show({ skippable: false, silent: true });
                 setup.video.loop = true;
                 setup.video.play();
             }

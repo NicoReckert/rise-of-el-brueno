@@ -77,7 +77,6 @@ export class CharacterConfig {
         this.char.currentAnimation = 'idle';
         this.char.frameInterval = 1000 / 2.5;
         this.char.frameIndex = 0;
-        this.char.level_start_x = 440;
         this.char.yNormal = 370;
         this.char.yVoidless = 487;
         this.char.sheetIndex = 0;

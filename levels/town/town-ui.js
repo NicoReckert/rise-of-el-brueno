@@ -15,6 +15,7 @@ import {
     createTownSpeechBubblesTadeoAfraid,
     createTownSpeechBubblesTadeoPanic,
     createTownSpeechBubblesTadeoHelp,
+    createTownSpeechBubblesTadeoEncourage,
     createTownSpeechBubblesTadeoSpiritEcho,
     createTownSpeechBubblesJuanito,
     createTownSpeechBubblesPollito,
@@ -67,6 +68,7 @@ function createTownSpeechBubbles(setup) {
         speechBubblesTadeoAfraid: createTownSpeechBubblesTadeoAfraid(setup.characters.tadeo),
         speechBubblesTadeoPanic: createTownSpeechBubblesTadeoPanic(setup.characters.tadeo),
         speechBubblesTadeoHelp: createTownSpeechBubblesTadeoHelp(setup.characters.tadeo),
+        speechBubblesTadeoEncourage: createTownSpeechBubblesTadeoEncourage(setup.characters.tadeo),
         speechBubblesTadeoSpiritEcho: createTownSpeechBubblesTadeoSpiritEcho(setup.environment.tadeoSpiritEcho),
         speechBubblesJuanito: createTownSpeechBubblesJuanito(setup.environment.juanitoSpirit),
         speechBubblesPollito: createTownSpeechBubblesPollito(setup.environment.pollitoSpirit),
@@ -82,7 +84,9 @@ function createTownSpeechBubbles(setup) {
 function createTownHollowHints(setup) {
     return {
         hints: [
-            new HollowHint("Betreten", setup.world.character, 100, 'desert')
+            new HollowHint("Betreten", setup.world.character, 100, 'desert'),
+            new HollowHint("Folgen", setup.characters.tadeo, 100, 'desert'),
+            new HollowHint("Checkpoint", setup.world.character, 100, 'desert')
         ]
     };
 }

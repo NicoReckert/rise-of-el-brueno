@@ -43,7 +43,9 @@ function createTownFlags() {
         comeFromNayelisHouse: false,
         isGameOverSequenceStarted: false,
         isGameOverFlashStarted: false,
-        gameOverSwitchAt: 0
+        gameOverSwitchAt: 0,
+        earthquakeStart: false,
+        shakeIntensity: 0,
     };
 }
 

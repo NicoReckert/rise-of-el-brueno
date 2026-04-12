@@ -41,7 +41,9 @@ function createTownCharacterSounds(allAudios) {
         voTadeoSpeak02: allAudios.voTadeoSpeak02,
         voTadeoSpeak03: allAudios.voTadeoSpeak03,
         voTadeoSpeak04: allAudios.voTadeoSpeak04,
-        voTadeoSpeak05: allAudios.voTadeoSpeak05
+        voTadeoSpeak05: allAudios.voTadeoSpeak05,
+        voTadeoSpeak06: allAudios.voTadeoSpeak06,
+        voTadeoSpeak07: allAudios.voTadeoSpeak07
     };
 }
 
@@ -80,11 +82,14 @@ function createTownMusicSounds(allAudios) {
         finalStormHazardMusic: allAudios.finalStormHazardMusic,
         bossBattleMusic: allAudios.bossBattleMusic,
         endSceneMusic: allAudios.endSceneMusic,
-        endSceneMusic02: allAudios.endSceneMusic02,
         voSollitaSpiritEcho01: allAudios.voSollitaSpiritEcho01,
         voTadeoSpiritEcho01: allAudios.voTadeoSpiritEcho01,
         happyEndMusic: allAudios.happyEndMusic,
+        voSollitaSpeak01: allAudios.voSollitaSpeak01,
         voSollitaSpeak02: allAudios.voSollitaSpeak02,
+        voSollitaSpeak03: allAudios.voSollitaSpeak03,
+        voSollitaSpeak04: allAudios.voSollitaSpeak04,
+        voUnknownSpeak01: allAudios.voUnknownSpeak01,
         voNayeliSpiritEcho01: allAudios.voNayeliSpiritEcho01,
         voSollitaSpiritEcho02: allAudios.voSollitaSpiritEcho02,
         voTadeoSpiritEcho02: allAudios.voTadeoSpiritEcho02

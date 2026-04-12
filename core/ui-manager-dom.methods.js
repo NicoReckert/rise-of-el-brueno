@@ -70,6 +70,7 @@ export const uiManagerDomMethods = {
             nextLevelButton: document.getElementById('next-level-button'),
             levelCompleteMenuButton: document.getElementById('level-complete-menu-button'),
             gameOverMenuButton: document.getElementById('game-over-menu-button'),
+            gameOverCheckpointButton: document.getElementById('game-over-checkpoint-button'),
             endCreditsMenuButton: document.getElementById('end-credits-menu-button'),
             levelCompleteActions: document.getElementById('level-complete-actions'),
             gameOverActions: document.getElementById('game-over-actions'),

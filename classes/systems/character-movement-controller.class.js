@@ -102,7 +102,7 @@ export class CharacterMovementController {
         const t = 0.05 * (this.char.deltaTime * 60);
         this.char.isFlipped = true;
         const speed = this.getEffectiveMoveSpeed();
-        if (this.char.x > this.char.level_start_x) {
+        if (this.char.x > this.world.level_start_x) {
             this.char.x -= speed;
             this.world.camera_x += ((this.char.x - cameraOffset) - this.world.camera_x) * t;
         }
@@ -134,8 +134,9 @@ export class CharacterMovementController {
      * Clamps the camera position within level boundaries.
      */
     clampCamera() {
+        const minCameraX = this.world.camera_start_x ?? 0;
         const maxCameraX = this.world.level_end_x - 720;
-        this.world.camera_x = Math.max(0, Math.min(this.world.camera_x, maxCameraX));
+        this.world.camera_x = Math.max(minCameraX, Math.min(this.world.camera_x, maxCameraX));
     }
 
     /**

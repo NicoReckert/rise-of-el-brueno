@@ -1,7 +1,8 @@
 import { MovableObject } from '../systems/movable-object.class.js';
-import { ImpactEffect } from './impact-effect.class.js';
 import { HAZARD_DEFS } from '../../config/hazard-config.js';
 import { getCachedEntityAnimation } from '../../utils/entity-animation-cache.util.js';
+import { stormHazardRuntimeMethods } from './storm-hazard-runtime.methods.js';
+import { stormHazardHitMethods } from './storm-hazard-hit.methods.js';
 
 /**
  * Represents a storm hazard entity.
@@ -225,7 +226,7 @@ export class StormHazard extends MovableObject {
     }
 
     /**
-     * Updates the hazard state and handles movement, animation, and collisions.
+     * Updates the state.
      * @param {number} timestamp Current timestamp.
      * @returns {void}
      */
@@ -238,59 +239,9 @@ export class StormHazard extends MovableObject {
         if (!this.isWithinActiveWindow(timestamp)) return;
         const char = this.getStateCharacter();
         if (!char) return;
-        if (this.hasCharacterCollision(char)) {
+        if (this.hasCharacterCollision(char) && this.canHitCharacter(char, timestamp)) {
             this.onHitCharacter(char, this.setup, timestamp);
         }
-    }
-
-    /**
-     * Updates the horizontal position based on delta time.
-     * @returns {void}
-     */
-    moveByDelta() {
-        const dt60 = (this.deltaTime ?? 1 / 60) * 60;
-        this.x += (this.speedX ?? 0) * dt60;
-    }
-
-    /**
-     * Checks whether the hazard lifetime has expired and marks it for removal.
-     * @param {number} timestamp Current timestamp.
-     * @returns {boolean} True if the hazard expired.
-     */
-    expireIfNeeded(timestamp) {
-        if (timestamp < this.dieAt) return false;
-        this.markedForRemoval = true;
-        return true;
-    }
-
-    /**
-     * Checks whether the hazard is within its active window.
-     * @param {number} timestamp Current timestamp.
-     * @returns {boolean} True if within the active window.
-     */
-    isWithinActiveWindow(timestamp) {
-        return timestamp >= this.activeFrom && timestamp <= this.activeUntil;
-    }
-
-    /**
-     * Returns the character used for hazard state checks.
-     * @returns {Object|undefined} Character instance.
-     */
-    getStateCharacter() {
-        return this.setup?.world?.character;
-    }
-
-    /**
-     * Checks whether the hazard collides with the character.
-     * @param {Object} char Character instance.
-     * @returns {boolean} True if a collision occurs.
-     */
-    hasCharacterCollision(char) {
-        return this.isColliding(
-            char,
-            { x: 0, y: 0, width: 0, height: 0 },
-            { x: 0, y: 0, width: 0, height: 0 }
-        );
     }
 
     /**
@@ -309,100 +260,9 @@ export class StormHazard extends MovableObject {
         });
         this.lastFrameTime = timestamp;
     }
-
-    /**
-     * Handles collision effects when the hazard hits the character.
-     * @param {Object} character Character instance.
-     * @param {Object} setup Setup reference.
-     * @param {number} now Current timestamp.
-     * @returns {void}
-     */
-    onHitCharacter(character, setup, now) {
-        const hit = this.def?.hit;
-        if (!hit) {
-            this.markedForRemoval = true;
-            return;
-        }
-        this.applyCharacterHurt(character, hit, now);
-        this.applyCharacterKnockback(character, hit);
-        const impactAnim = this.getImpactAnim(hit, setup);
-        if (impactAnim) this.spawnImpactEffect(hit, setup, impactAnim);
-        this.markedForRemoval = true;
-    }
-
-    /**
-     * Applies a hurt state to the character.
-     * @param {Object} character Character instance.
-     * @param {Object} hit Hit configuration.
-     * @param {number} now Current timestamp.
-     * @returns {void}
-     */
-    applyCharacterHurt(character, hit, now) {
-        const hurtMs = hit.hurtMs ?? 300;
-        character.hurtUntil = Math.max(character.hurtUntil ?? 0, now + hurtMs);
-    }
-
-    /**
-     * Applies knockback to the character.
-     * @param {Object} character Character instance.
-     * @param {Object} hit Hit configuration.
-     * @returns {void}
-     */
-    applyCharacterKnockback(character, hit) {
-        const knock = hit.knockback ?? 0;
-        character.knockbackVelocityX = (this.speedX < 0 ? -1 : 1) * knock;
-    }
-
-    /**
-     * Returns the impact animation for a hit configuration.
-     * @param {Object} hit Hit configuration.
-     * @param {Object} setup Setup reference.
-     * @returns {Object|null} Impact animation source.
-     */
-    getImpactAnim(hit, setup) {
-        return hit.getImpactAnim?.({ images: setup.entityImages }) ?? null;
-    }
-
-    /**
-     * Spawns an impact effect at the hazard position.
-     * @param {Object} hit Hit configuration.
-     * @param {Object} setup Setup reference.
-     * @param {Object} impactAnim Impact animation source.
-     * @returns {void}
-     */
-    spawnImpactEffect(hit, setup, impactAnim) {
-        const { cx, cy } = this.getImpactCenter(hit);
-        const size = hit.impactSize ?? { width: 220, height: 220 };
-        setup.state.effectsFront.push(this.createImpactEffect(hit, impactAnim, cx, cy, size));
-    }
-
-    /**
-     * Returns the impact center position.
-     * @param {Object} hit Hit configuration.
-     * @returns {{cx:number,cy:number}} Impact center coordinates.
-     */
-    getImpactCenter(hit) {
-        const cx = (this.getRenderX?.() ?? this.x) + this.width * 0.5;
-        const factorY = hit.impactOffsetFactorY ?? 0.5;
-        const cy = this.y + this.height * factorY;
-        return { cx, cy };
-    }
-
-    /**
-     * Creates an impact effect instance.
-     * @param {Object} hit Hit configuration.
-     * @param {Object} impactAnim Impact animation source.
-     * @param {number} cx Impact center X.
-     * @param {number} cy Impact center Y.
-     * @param {{width:number,height:number}} size Impact size.
-     * @returns {Object} Impact effect instance.
-     */
-    createImpactEffect(hit, impactAnim, cx, cy, size) {
-        return new ImpactEffect(
-            impactAnim,
-            cx - size.width / 2,
-            cy - size.height / 2,
-            { fps: hit.impactFps ?? 18, width: size.width, height: size.height }
-        );
-    }
 }
+
+/**
+ * Assigns runtime and hit methods to the StormHazard prototype.
+ */
+Object.assign(StormHazard.prototype, stormHazardRuntimeMethods, stormHazardHitMethods);

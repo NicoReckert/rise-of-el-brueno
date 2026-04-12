@@ -13,7 +13,7 @@ export const stableEvents =
                 setup.world.camera_x = 0;
                 setup.world.character.x = 380;
                 setup.world.level_end_x = 720;
-                setup.world.character.level_start_x = 360;
+                setup.world.level_start_x = 360;
             }
         },
 

@@ -1,3 +1,5 @@
+import { PopupText } from "../classes/ui/popup-text.class.js";
+
 export const nayelisHouseEvents =
     [
         /**
@@ -12,7 +14,7 @@ export const nayelisHouseEvents =
                 setup.world.character.x = setup.comeFromNewWeapon ? 710 : 300;
                 setup.world.character.speedX = 2;
                 setup.world.character.y = 370;
-                setup.world.character.level_start_x = 290;
+                setup.world.level_start_x = 290;
                 setup.world.level_end_x = 845;
                 setup.characters.nayeli.updateAnimationState('idle', 1000 / 5.2);
                 setup.sounds.nayeliThemeMusic.loop = true;
@@ -20,9 +22,10 @@ export const nayelisHouseEvents =
                 setup.video.loop = true;
                 setup.video.play();
                 setup.comeFromNewWeapon = false;
+                setup.cutsceneIndicator.hide({ silent: true, immediate: true });
 
                 // setup.world.townLevelController.questManager.advance(12); // muss wieder entfernt werden!!
-                // setup.world.nayelisHouseLevelController.questManager.advance(2); // muss wieder entfernt werden!!
+                // setup.world.nayelisHouseLevelController.questManager.advance(3); // muss wieder entfernt werden!!
             }
         },
 
@@ -67,10 +70,10 @@ export const nayelisHouseEvents =
             action: (setup) => {
                 setup.world.townLevelSetup.state.comeFromNayelisHouse = true;
                 setup.world.townLevelController.eventManager.resetEventByName('init');
-                setup.world.townLevelController.eventManager.resetEventByName('changeLevel');
                 setup.world.audioManager.fadeOutAudio(setup.sounds.nayeliThemeMusic, 1000);
                 setup.world.keyboard.F = false;
                 setup.world.character.isFlipped = false;
+                setup.world.townLevelController.questManager.advance(12);
                 setup.world.currentScene = 'townLevel';
             }
         },
@@ -82,12 +85,16 @@ export const nayelisHouseEvents =
             type: 'position',
             area: { x: 800, width: 10 },
             action: (setup) => {
+                setup.world.taskWindow.markDone(2);
+                setup.popupTexts.push(new PopupText("Aufgabe Erledigt!", setup.world.canvas.width / 2, 400));
+                setup.world.audioManager.playOneShot('taskCompletedSfx');
+                setup.world.taskWindow.setActive(0);
                 setup.world.character.isMovingLeft = false;
                 setup.world.character.isMovingRight = false;
                 setup.world.isKeysStopp = true;
+                setup.cutsceneIndicator.show({ skippable: false });
                 setup.sounds.voNayeliSpeak01.play();
                 setup.dialogManager.startDialog('nayeli:01', setup.world.timestamp);
-                setup.world.townLevelController.questManager.advance(12);
                 setup.world.nayelisHouseLevelController.questManager.advance(2);
             }
 
@@ -132,6 +139,7 @@ export const nayelisHouseEvents =
             condition: (setup) => setup.sounds.voNayeliSpeak02.ended,
             action: (setup) => {
                 setup.world.isKeysStopp = false;
+                setup.cutsceneIndicator.hide();
             }
         }
     ];

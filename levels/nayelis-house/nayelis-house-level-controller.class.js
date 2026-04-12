@@ -52,6 +52,7 @@ export class NayelisHouseLevelController {
         this.handleHint();
         this.eventManager.update();
         this.updateUi(timestamp);
+        this.handleCutsceneIndicator();
     }
 
     /**
@@ -240,5 +241,13 @@ export class NayelisHouseLevelController {
      */
     handleHint() {
         this.setup.hints.forEach(hint => hint.draw(this.ctx, this.renderCameraX));
+    }
+
+    /**
+     * Draws the cutscene indicator.
+     * @returns {void}
+     */
+    handleCutsceneIndicator() {
+        this.setup.cutsceneIndicator.draw(this.ctx);
     }
 }

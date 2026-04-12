@@ -1,5 +1,6 @@
 import { AnimatedEntity } from '../../classes/entities/animated-entity.class.js';
 import { newWeaponEvents } from '../../events/new-weapon-events.js';
+import { CutsceneIndicator } from '../../classes/ui/cutscene-indicator.class.js';
 
 /**
  * Sets up the new weapon level environment, sounds, and state.
@@ -16,6 +17,7 @@ export class NewWeaponLevelSetup {
         this.sounds = this.createSounds();
         this.setupSceneState();
         this.newWeaponEvents = newWeaponEvents;
+        this.cutsceneIndicator = new CutsceneIndicator(this.world);
     }
 
     /**

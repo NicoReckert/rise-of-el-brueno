@@ -7,10 +7,10 @@ export const STORM_HAZARD_DIFFICULTY_PROFILES = {
         multiSpawnChance: 0,
     },
     hard: {
-        minDelay: 600,
-        maxDelay: 1000,
-        maxActiveHazards: 6,
-        laneWeights: { LOW: 0.58, MID: 0.27, HIGH: 0.15 },
-        multiSpawnChance: 0.35,
-    },
+        minDelay: 850,
+        maxDelay: 1300,
+        maxActiveHazards: 4,
+        laneWeights: { LOW: 0.48, MID: 0.28, HIGH: 0.24 },
+        multiSpawnChance: 0.12,
+    }
 };

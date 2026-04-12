@@ -17,6 +17,8 @@ export const gameOverEvents = [
             document.getElementById('game-over-video-overlay')?.classList.remove('d-none');
             document.getElementById('game-over-video-vignette')?.classList.remove('d-none');
             document.getElementById('game-over-video-light')?.classList.remove('d-none');
+            const checkpointButton = document.getElementById('game-over-checkpoint-button');
+            checkpointButton?.classList.toggle('d-none', !setup.world?.townCheckpoint);
         }
     }
 ];
