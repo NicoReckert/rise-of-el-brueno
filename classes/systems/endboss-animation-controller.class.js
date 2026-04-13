@@ -352,11 +352,31 @@ export class EndbossAnimationController {
     }
 
     /**
-     * Returns animation images for the given state.
-     * @param {string} state Animation state name.
-     * @returns {*} Animation image source.
+     * Gets the animation images for a state.
+     * @param {string} state Animation state.
+     * @returns {Object|undefined} Animation images for the given state.
      */
     getAnimationImages(state) {
+        if (state === 'rage' || state === 'rageLoop') {
+            return this.getRageAnimationImages();
+        }
+        return this.getBaseAnimationImages(state);
+    }
+
+    /**
+     * Gets the rage animation images.
+     * @returns {Object} Rage animation images.
+     */
+    getRageAnimationImages() {
+        return this.endboss.rageImages;
+    }
+
+    /**
+     * Gets the base animation images for a state.
+     * @param {string} state Animation state.
+     * @returns {Object|undefined} Animation images for the given state.
+     */
+    getBaseAnimationImages(state) {
         switch (state) {
             case 'dead': return this.endboss.deadImages;
             case 'hurt': return this.endboss.hurtImages;
@@ -366,9 +386,6 @@ export class EndbossAnimationController {
             case 'findsPeace': return this.endboss.findsPeaceImages;
             case 'fireballAttack': return this.endboss.fireballAttackImages;
             case 'fireBreathAttack': return this.endboss.fireBreathAttackImages;
-            case 'rage':
-            case 'rageLoop':
-                return this.endboss.rageImages;
             case 'idle': return this.endboss.idleImages;
         }
     }

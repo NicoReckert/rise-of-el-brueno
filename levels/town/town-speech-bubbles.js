@@ -182,21 +182,65 @@ export function createTownSpeechBubblesSollitaSpiritEcho(sollitaSpiritEcho) {
  */
 export function createTownSpeechBubblesTadeo(tadeo) {
     return [
+        ...townSpeechBubblesTadeoPart01(tadeo),
+        ...townSpeechBubblesTadeoPart02(tadeo),
+        ...townSpeechBubblesTadeoPart03(tadeo),
+        ...townSpeechBubblesTadeoPart04(tadeo)
+    ];
+}
+
+/**
+ * Creates Tadeo dialog part 01 speech bubbles.
+ * @param {*} tadeo Tadeo instance.
+ * @returns {Array<SpeechBubble>}
+ */
+export function townSpeechBubblesTadeoPart01(tadeo) {
+    return [
         new SpeechBubble("Brünö...!", tadeo, 'speech'),
         new SpeechBubble("Halte durch!", tadeo, 'speech'),
         new SpeechBubble("Tonatiuh...", tadeo, 'speech'),
         new SpeechBubble("Schütze uns!", tadeo, 'speech'),
-        new SpeechBubble("Gib uns deinen Schild!", tadeo, 'speech'),
+        new SpeechBubble("Gib uns deinen Schild!", tadeo, 'speech')
+    ];
+}
+
+/**
+ * Creates Tadeo dialog part 02 speech bubbles.
+ * @param {*} tadeo Tadeo instance.
+ * @returns {Array<SpeechBubble>}
+ */
+export function townSpeechBubblesTadeoPart02(tadeo) {
+    return [
         new SpeechBubble("Geschafft… der Schild hält!", tadeo, 'speech'),
         new SpeechBubble("Jetzt kann dir der Sturm nichts mehr tun.", tadeo, 'speech'),
         new SpeechBubble("Komm, Brünö...", tadeo, 'speech'),
         new SpeechBubble("Ich bringe dich zu Nayeli.", tadeo, 'speech'),
-        new SpeechBubble("Dort sind wir sicher.", tadeo, 'speech'),
+        new SpeechBubble("Dort sind wir sicher.", tadeo, 'speech')
+    ];
+}
+
+/**
+ * Creates Tadeo dialog part 03 speech bubbles.
+ * @param {*} tadeo Tadeo instance.
+ * @returns {Array<SpeechBubble>}
+ */
+export function townSpeechBubblesTadeoPart03(tadeo) {
+    return [
         new SpeechBubble("Übrigens... ich bin Tadeo.", tadeo, 'speech'),
         new SpeechBubble("Da sind wir, Brünö.", tadeo, 'speech'),
         new SpeechBubble("Geh hinein...", tadeo, 'speech'),
         new SpeechBubble("Nayeli wartet auf dich.", tadeo, 'speech'),
-        new SpeechBubble("Der Sandsturm ist vorbei!", tadeo, 'speech'),
+        new SpeechBubble("Der Sandsturm ist vorbei!", tadeo, 'speech')
+    ];
+}
+
+/**
+ * Creates Tadeo dialog part 04 speech bubbles.
+ * @param {*} tadeo Tadeo instance.
+ * @returns {Array<SpeechBubble>}
+ */
+export function townSpeechBubblesTadeoPart04(tadeo) {
+    return [
         new SpeechBubble("Komm, wir können jetzt in die Stadt!", tadeo, 'speech'),
         new SpeechBubble("Okay, mein Freund.", tadeo, 'speech'),
         new SpeechBubble("Ich gehe zurück zu Nayeli.", tadeo, 'speech'),

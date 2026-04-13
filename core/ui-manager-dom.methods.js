@@ -1,5 +1,4 @@
 export const uiManagerDomMethods = {
-
     /**
      * Caches all required DOM element references and stores them in `this.dom`.
      */
@@ -58,10 +57,21 @@ export const uiManagerDomMethods = {
     },
 
     /**
-     * Caches DOM elements related to game control buttons and UI.
-     * @returns {Object} Object containing game control DOM references.
+     * Caches the game control elements.
+     * @returns {Object} Cached game control elements.
      */
     cacheGameControlElements() {
+        return {
+            ...this.cacheGameControlButtonElements(),
+            ...this.cacheGameControlStateElements()
+        };
+    },
+
+    /**
+     * Caches the game control button elements.
+     * @returns {Object} Cached game control button elements.
+     */
+    cacheGameControlButtonElements() {
         return {
             touchControls: document.getElementById('touch-controls'),
             pauseToggleButton: document.getElementById('pause-toggle-button'),
@@ -71,7 +81,16 @@ export const uiManagerDomMethods = {
             levelCompleteMenuButton: document.getElementById('level-complete-menu-button'),
             gameOverMenuButton: document.getElementById('game-over-menu-button'),
             gameOverCheckpointButton: document.getElementById('game-over-checkpoint-button'),
-            endCreditsMenuButton: document.getElementById('end-credits-menu-button'),
+            endCreditsMenuButton: document.getElementById('end-credits-menu-button')
+        };
+    },
+
+    /**
+     * Caches the game control state elements.
+     * @returns {Object} Cached game control state elements.
+     */
+    cacheGameControlStateElements() {
+        return {
             levelCompleteActions: document.getElementById('level-complete-actions'),
             gameOverActions: document.getElementById('game-over-actions'),
             gameOverVideo: document.getElementById('game-over-video'),
@@ -79,7 +98,7 @@ export const uiManagerDomMethods = {
             gameOverVideoVignette: document.getElementById('game-over-video-vignette'),
             gameOverVideoLight: document.getElementById('game-over-video-light'),
             endCreditsActions: document.getElementById('end-credits-actions'),
-            endCreditsVideo: document.getElementById('end-credits-video'),
+            endCreditsVideo: document.getElementById('end-credits-video')
         };
     },
 

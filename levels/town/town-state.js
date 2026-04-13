@@ -29,10 +29,21 @@ function createTownCollections() {
 }
 
 /**
- * Creates boolean flags used in the town state.
- * @returns {Object} Flag state properties.
+ * Creates the town flag collection.
+ * @returns {Object} Town flag collection.
  */
 function createTownFlags() {
+    return {
+        ...createTownProgressFlags(),
+        ...createTownGameStateFlags()
+    };
+}
+
+/**
+ * Creates the town progress flag collection.
+ * @returns {Object} Town progress flag collection.
+ */
+function createTownProgressFlags() {
     return {
         isNearMusician: false,
         isNearSollita: false,
@@ -40,12 +51,21 @@ function createTownFlags() {
         isTadeoAfraid: false,
         isTadeoPanic: false,
         isTadeoArrivedNayelisHouse: false,
-        comeFromNayelisHouse: false,
+        comeFromNayelisHouse: false
+    };
+}
+
+/**
+ * Creates the town game state flag collection.
+ * @returns {Object} Town game state flag collection.
+ */
+function createTownGameStateFlags() {
+    return {
         isGameOverSequenceStarted: false,
         isGameOverFlashStarted: false,
         gameOverSwitchAt: 0,
         earthquakeStart: false,
-        shakeIntensity: 0,
+        shakeIntensity: 0
     };
 }
 

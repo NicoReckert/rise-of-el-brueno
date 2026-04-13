@@ -106,26 +106,34 @@ export class TownRenderer {
     }
 
     /**
-     * Renders the character and entities with camera offset.
-     * @param {number} cameraX Camera x position.
+     * Renders the character and entities.
+     * @param {number} cameraX Camera X position.
      * @returns {void}
      */
     renderCharacterAndEntities(cameraX) {
         this.ctx.save();
         this.ctx.translate(-cameraX, 0);
+        this.renderTownSceneLayers();
+        this.ctx.restore();
+        this.renderShieldAndSandstorm(cameraX);
+        this.renderWhiteFlashTransition();
+    }
+
+    /**
+     * Renders the town scene layers.
+     * @returns {void}
+     */
+    renderTownSceneLayers() {
         this.renderTownBaseActors();
         this.renderTownEggs();
         this.renderTownEnemies();
         this.renderTownCollections();
         this.renderBehindEffects();
-        this.renderTownPreCharacterActors();
+        this.renderTownSollitaAndMusician();
         this.renderTownFrontActors();
         this.renderTownCharacter();
         this.renderFrontEffects();
         this.renderTownSpirits();
-        this.ctx.restore();
-        this.renderShieldAndSandstorm(cameraX);
-        this.renderWhiteFlashTransition();
     }
 
     /**
@@ -182,18 +190,20 @@ export class TownRenderer {
     }
 
     /**
-     * Renders pre-character actors in the town.
-     * @returns {void}
-     */
-    renderTownPreCharacterActors() {
-        this.renderTownSollitaAndMusician();
-    }
-
-    /**
-     * Renders spirit characters and spirit essence objects.
+     * Renders the town spirits.
      * @returns {void}
      */
     renderTownSpirits() {
+        this.renderTownSpiritActors();
+        this.renderTownSpiritEssences();
+        this.renderTownMacuahuitl();
+    }
+
+    /**
+     * Renders the town spirit actors.
+     * @returns {void}
+     */
+    renderTownSpiritActors() {
         this.addToWorld(this.setup.environment.juanitoSpirit);
         this.addToWorld(this.setup.environment.pollitoSpirit);
         this.addToWorld(this.setup.environment.lolaSpirit);
@@ -201,9 +211,23 @@ export class TownRenderer {
         this.addToWorld(this.setup.environment.nayeliSpiritEcho);
         this.addToWorld(this.setup.environment.sollitaSpiritEcho);
         this.addToWorld(this.setup.environment.tadeoSpiritEcho);
+    }
+
+    /**
+     * Renders the town spirit essences.
+     * @returns {void}
+     */
+    renderTownSpiritEssences() {
         this.addToWorld(this.setup.environment.spiritEssence1);
         this.addToWorld(this.setup.environment.spiritEssence2);
         this.addToWorld(this.setup.environment.spiritEssence3);
+    }
+
+    /**
+     * Renders the town Macuahuitl.
+     * @returns {void}
+     */
+    renderTownMacuahuitl() {
         this.ctx.shadowColor = 'rgba(255, 255, 200, 0.8)';
         this.ctx.shadowBlur = 10;
         this.addToWorld(this.setup.environment.macuahuitl);
@@ -272,7 +296,7 @@ export class TownRenderer {
      */
     renderShieldAndSandstorm(cameraX) {
         const shieldPos = this.getShieldScreenPosition(cameraX);
-        this.drawMagicShieldAt(shieldPos);
+        this.setup.magicShield.draw(this.ctx, shieldPos.x, shieldPos.y);
         const shieldInfo = this.getSandstormShieldInfo(shieldPos);
         this.drawSandstormLayers(cameraX, shieldInfo);
     }
@@ -288,15 +312,6 @@ export class TownRenderer {
             x: tadeo.x - cameraX + tadeo.width / 2,
             y: tadeo.y + tadeo.height * 0.2
         };
-    }
-
-    /**
-     * Draws the magic shield at the specified screen position.
-     * @param {{x:number, y:number}} position Shield screen position.
-     * @returns {void}
-     */
-    drawMagicShieldAt({ x, y }) {
-        this.setup.magicShield.draw(this.ctx, x, y);
     }
 
     /**

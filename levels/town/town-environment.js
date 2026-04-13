@@ -66,26 +66,53 @@ function createTownSceneEnvironment(entityImages) {
 }
 
 /**
- * Initializes the default state values for town environment entities.
- * @param {Object} environment Town environment entities.
+ * Initializes the town environment state.
+ * @param {Object} environment Environment object.
  * @returns {void}
  */
 function initTownEnvironmentState(environment) {
-    environment.rockyDesertPedestal.opacity = 0;
+    initTownSpiritOpacity(environment);
+    initTownSpiritDirection(environment);
+    initTownItemState(environment);
+}
+
+/**
+ * Initializes the opacity of town spirit objects.
+ * @param {Object} environment Environment object.
+ * @returns {void}
+ */
+function initTownSpiritOpacity(environment) {
     environment.nayeliSpirit.opacity = 0;
     environment.nayeliSpiritEcho.opacity = 0;
     environment.sollitaSpiritEcho.opacity = 0;
     environment.tadeoSpiritEcho.opacity = 0;
-    environment.nayeliSpiritEcho.isFlipped = false
     environment.juanitoSpirit.opacity = 0;
     environment.pollitoSpirit.opacity = 0;
     environment.lolaSpirit.opacity = 0;
+}
+
+/**
+ * Initializes the direction of town spirit objects.
+ * @param {Object} environment Environment object.
+ * @returns {void}
+ */
+function initTownSpiritDirection(environment) {
+    environment.nayeliSpiritEcho.isFlipped = false;
+    environment.pollitoSpirit.isFlipped = false;
+}
+
+/**
+ * Initializes the state of town item objects.
+ * @param {Object} environment Environment object.
+ * @returns {void}
+ */
+function initTownItemState(environment) {
+    environment.rockyDesertPedestal.opacity = 0;
     environment.spiritEssence1.opacity = 0;
     environment.spiritEssence2.opacity = 0;
     environment.spiritEssence3.opacity = 0;
     environment.macuahuitl.isFlipped = false;
     environment.macuahuitl.opacity = 0;
-    environment.pollitoSpirit.isFlipped = false;
     environment.fireBlue.opacity = 0;
 }
 

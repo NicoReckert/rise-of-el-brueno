@@ -2,22 +2,58 @@
  * Manages animation transition rules for an entity.
  */
 export class EntityAnimationTransitions {
-    static RULES = {
-        doorOpens: { skipIfCurrent: 'idleOpen', next: 'idleOpen' },
-        doorCloses: { skipIfCurrent: 'idle', next: 'idle' },
-        fireGoesOn: { skipIfCurrent: 'burningFire', next: 'burningFire' },
-        fireGoesOut: { next: 'idle' },
-        findsPeace: { skipIfCurrent: 'findsPeaceLoop', next: 'findsPeaceLoop' },
-        stoneActivated: { skipIfCurrent: 'idleWithStone', next: 'idleWithStone' },
-        broken: { next: 'idle' },
-        spiritCuddle: { skipIfCurrent: 'spiritCuddleLoop', next: 'spiritCuddleLoop' },
-        tadeo: {
+    static RULES = EntityAnimationTransitions.createRules();
+
+    /**
+     * Creates the rule collection.
+     * @returns {Object} Rule collection.
+     */
+    static createRules() {
+        return {
+            ...this.createBaseRulesA(),
+            ...this.createBaseRulesB(),
+            tadeo: this.createTadeoRules()
+        };
+    }
+
+    /**
+     * Creates the base rule collection A.
+     * @returns {Object} Base rule collection A.
+     */
+    static createBaseRulesA() {
+        return {
+            doorOpens: { skipIfCurrent: 'idleOpen', next: 'idleOpen' },
+            doorCloses: { skipIfCurrent: 'idle', next: 'idle' },
+            fireGoesOn: { skipIfCurrent: 'burningFire', next: 'burningFire' },
+            fireGoesOut: { next: 'idle' },
+            findsPeace: { skipIfCurrent: 'findsPeaceLoop', next: 'findsPeaceLoop' }
+        };
+    }
+
+    /**
+     * Creates the base rule collection B.
+     * @returns {Object} Base rule collection B.
+     */
+    static createBaseRulesB() {
+        return {
+            stoneActivated: { skipIfCurrent: 'idleWithStone', next: 'idleWithStone' },
+            broken: { next: 'idle' },
+            spiritCuddle: { skipIfCurrent: 'spiritCuddleLoop', next: 'spiritCuddleLoop' },
+            sustain: { skipIfCurrent: 'sustainLoop', next: 'sustainLoop' },
+            spiritOffering: { next: 'idle' }
+        };
+    }
+
+    /**
+     * Creates the Tadeo rule collection.
+     * @returns {Object} Tadeo rule collection.
+     */
+    static createTadeoRules() {
+        return {
             afraid: { skipIfCurrent: 'afraidLoop', next: 'afraidLoop' },
             standUp: { skipIfCurrent: 'idleWithStone', next: 'idleWithStone' }
-        },
-        sustain: { skipIfCurrent: 'sustainLoop', next: 'sustainLoop' },
-        spiritOffering: { next: 'idle' }
-    };
+        };
+    }
 
     /**
      * Creates a new instance.

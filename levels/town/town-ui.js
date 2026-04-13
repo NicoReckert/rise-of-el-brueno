@@ -53,23 +53,56 @@ function createTownBarsAndDialog(setup) {
 }
 
 /**
- * Creates town speech bubbles and related UI components.
+ * Creates the town speech bubble collection.
  * @param {Object} setup Setup object.
- * @returns {Object} UI components.
+ * @returns {Object} Town speech bubble collection.
  */
 function createTownSpeechBubbles(setup) {
+    return {
+        ...createTownSpeechBubblesCharacterGroup(setup),
+        ...createTownSpeechBubblesTadeoGroup(setup),
+        ...createTownSpeechBubblesSpiritGroup(setup)
+    };
+}
+
+/**
+ * Creates the character speech bubble collection.
+ * @param {Object} setup Setup object.
+ * @returns {Object} Character speech bubble collection.
+ */
+function createTownSpeechBubblesCharacterGroup(setup) {
     return {
         speechBubblesCharacter: createTownSpeechBubblesCharacter(setup.world.character, setup.world.audioManager),
         speechBubblesNayeliSpirit: createTownSpeechBubblesNayeliSpirit(setup.environment.nayeliSpirit),
         speechBubblesNayeliSpiritEcho: createTownSpeechBubblesNayeliSpiritEcho(setup.environment.nayeliSpiritEcho),
         speechBubblesSollita: createTownSpeechBubblesSollita(setup.characters.sollita),
-        speechBubblesSollitaSpiritEcho: createTownSpeechBubblesSollitaSpiritEcho(setup.environment.sollitaSpiritEcho),
+        speechBubblesSollitaSpiritEcho: createTownSpeechBubblesSollitaSpiritEcho(setup.environment.sollitaSpiritEcho)
+    };
+}
+
+/**
+ * Creates the Tadeo speech bubble collection.
+ * @param {Object} setup Setup object.
+ * @returns {Object} Tadeo speech bubble collection.
+ */
+function createTownSpeechBubblesTadeoGroup(setup) {
+    return {
         speechBubblesTadeo: createTownSpeechBubblesTadeo(setup.characters.tadeo),
         speechBubblesTadeoAfraid: createTownSpeechBubblesTadeoAfraid(setup.characters.tadeo),
         speechBubblesTadeoPanic: createTownSpeechBubblesTadeoPanic(setup.characters.tadeo),
         speechBubblesTadeoHelp: createTownSpeechBubblesTadeoHelp(setup.characters.tadeo),
         speechBubblesTadeoEncourage: createTownSpeechBubblesTadeoEncourage(setup.characters.tadeo),
-        speechBubblesTadeoSpiritEcho: createTownSpeechBubblesTadeoSpiritEcho(setup.environment.tadeoSpiritEcho),
+        speechBubblesTadeoSpiritEcho: createTownSpeechBubblesTadeoSpiritEcho(setup.environment.tadeoSpiritEcho)
+    };
+}
+
+/**
+ * Creates the spirit speech bubble collection.
+ * @param {Object} setup Setup object.
+ * @returns {Object} Spirit speech bubble collection.
+ */
+function createTownSpeechBubblesSpiritGroup(setup) {
+    return {
         speechBubblesJuanito: createTownSpeechBubblesJuanito(setup.environment.juanitoSpirit),
         speechBubblesPollito: createTownSpeechBubblesPollito(setup.environment.pollitoSpirit),
         speechBubblesLola: createTownSpeechBubblesLola(setup.environment.lolaSpirit),

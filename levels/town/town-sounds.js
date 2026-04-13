@@ -63,18 +63,42 @@ function createTownBattleSounds(allAudios) {
 }
 
 /**
- * Creates music sound references for the town level.
- * @param {Object} allAudios Audio resources.
- * @returns {Object} Music sound objects.
+ * Creates the town music sound collection.
+ * @param {Object} allAudios Audio source collection.
+ * @returns {Object} Town music sound collection.
  */
 function createTownMusicSounds(allAudios) {
+    return {
+        ...createTownCoreMusicSounds(allAudios),
+        ...createTownEventMusicSounds(allAudios),
+        ...createTownVoiceSoundsA(allAudios),
+        ...createTownVoiceSoundsB(allAudios)
+    };
+}
+
+/**
+ * Creates the town core music sound collection.
+ * @param {Object} allAudios Audio source collection.
+ * @returns {Object} Town core music sound collection.
+ */
+function createTownCoreMusicSounds(allAudios) {
     return {
         soulThemeMusic: allAudios.soulThemeMusic,
         tadeoThemeMusic: allAudios.tadeoThemeMusic,
         tadeoHoldStoneMusic: allAudios.tadeoHoldStoneMusic,
         musicianTownMusic: allAudios.musicianTownMusic,
         sollitaThemeMusic: allAudios.sollitaThemeMusic,
-        airHitStunMusic: allAudios.airHitStunMusic,
+        airHitStunMusic: allAudios.airHitStunMusic
+    };
+}
+
+/**
+ * Creates the town event music sound collection.
+ * @param {Object} allAudios Audio source collection.
+ * @returns {Object} Town event music sound collection.
+ */
+function createTownEventMusicSounds(allAudios) {
+    return {
         townDayMusic: allAudios.townDayMusic,
         sadMomentMusic: allAudios.sadMomentMusic,
         nayeliThemeMusic: allAudios.nayeliThemeMusic,
@@ -82,13 +106,33 @@ function createTownMusicSounds(allAudios) {
         finalStormHazardMusic: allAudios.finalStormHazardMusic,
         bossBattleMusic: allAudios.bossBattleMusic,
         endSceneMusic: allAudios.endSceneMusic,
+        happyEndMusic: allAudios.happyEndMusic
+    };
+}
+
+/**
+ * Creates the town voice sound collection A.
+ * @param {Object} allAudios Audio source collection.
+ * @returns {Object} Town voice sound collection A.
+ */
+function createTownVoiceSoundsA(allAudios) {
+    return {
         voSollitaSpiritEcho01: allAudios.voSollitaSpiritEcho01,
         voTadeoSpiritEcho01: allAudios.voTadeoSpiritEcho01,
-        happyEndMusic: allAudios.happyEndMusic,
         voSollitaSpeak01: allAudios.voSollitaSpeak01,
         voSollitaSpeak02: allAudios.voSollitaSpeak02,
         voSollitaSpeak03: allAudios.voSollitaSpeak03,
-        voSollitaSpeak04: allAudios.voSollitaSpeak04,
+        voSollitaSpeak04: allAudios.voSollitaSpeak04
+    };
+}
+
+/**
+ * Creates the town voice sound collection B.
+ * @param {Object} allAudios Audio source collection.
+ * @returns {Object} Town voice sound collection B.
+ */
+function createTownVoiceSoundsB(allAudios) {
+    return {
         voUnknownSpeak01: allAudios.voUnknownSpeak01,
         voNayeliSpiritEcho01: allAudios.voNayeliSpiritEcho01,
         voSollitaSpiritEcho02: allAudios.voSollitaSpiritEcho02,

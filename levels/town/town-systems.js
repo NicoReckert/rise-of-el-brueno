@@ -10,17 +10,30 @@ import { WhiteFlashTransition } from '../../classes/effects/white-flash-transiti
 import { EarthquakeEffect } from '../../classes/effects/earthquake-effect.class.js';
 
 /**
- * Creates runtime systems used in the town level.
- * @param {Object} setup Town level setup reference.
- * @returns {Object} Town runtime systems.
+ * Creates the town systems.
+ * @param {Object} setup Setup object.
+ * @returns {Object} Town systems.
  */
 export function createTownSystems(setup) {
     const { world, entityImages } = setup;
     const { canvas } = world;
     const sandstorms = createTownSandstorms(canvas, entityImages);
-    const magicShield = createTownMagicShield(canvas, sandstorms);
+    return buildTownSystems(setup, world, canvas, sandstorms);
+}
+
+/**
+ * Builds the town systems.
+ * @param {Object} setup Setup object.
+ * @param {Object} world World object.
+ * @param {HTMLCanvasElement} canvas Canvas element.
+ * @param {Object} sandstorms Sandstorm systems.
+ * @returns {Object} Town systems.
+ */
+function buildTownSystems(setup, world, canvas, sandstorms) {
     return {
-        timerManager: new TimerManager(), ...sandstorms, magicShield,
+        timerManager: new TimerManager(),
+        ...sandstorms,
+        magicShield: createTownMagicShield(canvas, sandstorms),
         windParticleEffect: createTownWindParticleEffect(canvas),
         dustParticleEffect: createTownDustParticleEffect(canvas),
         throwBottleSystem: createTownThrowBottleSystem(world, setup),

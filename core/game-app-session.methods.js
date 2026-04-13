@@ -1,20 +1,12 @@
 export const gameAppSessionMethods = {
-
     /**
      * Restarts the game from the current level.
      * @returns {void}
      */
     restartGameFromCurrentLevel() {
         if (!this.world) return;
-        this.uiManager.hideLevelCompleteActions();
-        this.uiManager.hideGameOverActions();
-        this.uiManager.hideGameOverVideoAndEffects();
-        this.uiManager.hideEndCreditsActions();
-        this.uiManager.hideEndCreditsVideo();
-        this.stopLevelCompleteMusic();
-        this.stopGameOverMusic();
-        this.stopEndCreditsVideoAudio();
-        this.uiManager.hidePauseOverlay();
+        this.resetSessionUiState();
+        this.stopSessionMedia();
         this.uiManager.showGameControls();
         this.audioManager.resetAllAudios(this.audioManager.audios);
         this.world.restartLevel(this.world.currentScene);
@@ -26,20 +18,36 @@ export const gameAppSessionMethods = {
      */
     returnToMainMenu() {
         if (!this.world) return;
+        this.resetSessionUiState();
+        this.uiManager.hideGameControls();
+        this.stopSessionMedia();
+        this.exitFullscreenIfNeeded();
+        this.resetWorldStateForMenu();
+        this.uiManager.showMainMenuScreen();
+        this.startMenuMusic();
+    },
+
+    /**
+     * Resets shared UI state for restart and menu actions.
+     * @returns {void}
+     */
+    resetSessionUiState() {
         this.uiManager.hideLevelCompleteActions();
         this.uiManager.hideGameOverActions();
         this.uiManager.hideGameOverVideoAndEffects();
         this.uiManager.hideEndCreditsActions();
         this.uiManager.hideEndCreditsVideo();
         this.uiManager.hidePauseOverlay();
-        this.uiManager.hideGameControls();
+    },
+
+    /**
+     * Stops session-specific media.
+     * @returns {void}
+     */
+    stopSessionMedia() {
         this.stopLevelCompleteMusic();
         this.stopGameOverMusic();
         this.stopEndCreditsVideoAudio();
-        this.exitFullscreenIfNeeded();
-        this.resetWorldStateForMenu();
-        this.uiManager.showMainMenuScreen();
-        this.startMenuMusic();
     },
 
     /**
@@ -64,6 +72,7 @@ export const gameAppSessionMethods = {
 
     /**
      * Stops the end credits video audio with a fade-out.
+     * @returns {void}
      */
     stopEndCreditsVideoAudio() {
         const video = this.world?.endCreditsSetup?.video;
