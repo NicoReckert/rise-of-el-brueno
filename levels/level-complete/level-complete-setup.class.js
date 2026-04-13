@@ -1,5 +1,5 @@
 import { AnimatedEntity } from '../../classes/entities/animated-entity.class.js';
-import { levelCompleteEvents } from '../../events/level-complete-events.js';
+import { levelCompleteEvents } from '../../events/level-complete/level-complete-events.js';
 
 /**
  * Sets up the level complete scene including characters, sounds, and video.

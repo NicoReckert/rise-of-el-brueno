@@ -1,11 +1,10 @@
-import { LifeEnergyCharacterBar } from '../../classes/ui/life-energy-character-bar.class.js';
 import { TimerManager } from '../../classes/systems/timer-manager.class.js';
 import { DialogManager } from '../../classes/ui/dialog-manager.class.js';
 import { SunCycle } from '../../classes/effects/sun-cycle.class.js';
 import { MoonCycle } from '../../classes/effects/moon-cycle.class.js';
 import { LyricsRenderer } from '../../classes/effects/lyrics-renderer.class.js';
 import { createFarmLevel } from './farm-level.js';
-import { farmEvents } from '../../events/farm-level-events.js';
+import { farmEvents } from '../../events/farm/level-events/farm-level-events.js';
 import { createFarmCharacters } from './farm-characters.js';
 import { createFarmCutsceneActors } from './farm-cutscene-actors.js';
 import { createFarmEnvironment } from './farm-environment.js';
@@ -15,7 +14,6 @@ import { createFarmHints } from './farm-hints.js';
 import { createFarmState } from './farm-state.js';
 import { CutsceneIndicator } from '../../classes/ui/cutscene-indicator.class.js';
 import { registerFarmDialogs } from './farm-dialogs.js';
-
 
 /**
  * Sets up and initializes the farm level.

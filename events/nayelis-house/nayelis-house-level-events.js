@@ -1,4 +1,4 @@
-import { PopupText } from "../classes/ui/popup-text.class.js";
+import { PopupText } from "../../classes/ui/popup-text.class.js";
 
 export const nayelisHouseEvents =
     [

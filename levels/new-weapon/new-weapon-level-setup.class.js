@@ -1,5 +1,5 @@
 import { AnimatedEntity } from '../../classes/entities/animated-entity.class.js';
-import { newWeaponEvents } from '../../events/new-weapon-events.js';
+import { newWeaponEvents } from '../../events/new-weapon/new-weapon-events.js';
 import { CutsceneIndicator } from '../../classes/ui/cutscene-indicator.class.js';
 
 /**

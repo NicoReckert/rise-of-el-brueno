@@ -1,5 +1,5 @@
-import { PopupText } from "../classes/ui/popup-text.class.js";
-import { farmHelper } from "./farm-helper.js";
+import { PopupText } from "../../../classes/ui/popup-text.class.js";
+import { farmHelper } from "../helpers/farm-helper.js";
 
 export const farmEvents_part2 = [
     /**

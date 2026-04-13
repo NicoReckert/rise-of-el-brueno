@@ -1,4 +1,4 @@
-import { farmHelper } from "../../../events/farm-helper.js";
+import { farmHelper } from "../../../events/farm/helpers/farm-helper.js";
 
 /**
  * Renders farm level elements and integrates them into the world renderer.

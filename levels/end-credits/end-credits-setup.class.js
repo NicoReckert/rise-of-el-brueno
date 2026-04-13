@@ -1,4 +1,4 @@
-import { endCreditsEvents } from "../../events/end-credits-events.js";
+import { endCreditsEvents } from "../../events/end-credits/end-credits-events.js";
 
 /**
  * Represents the end credits setup.

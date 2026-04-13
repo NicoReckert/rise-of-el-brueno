@@ -1,6 +1,6 @@
 import { AnimatedEntity } from '../../classes/entities/animated-entity.class.js';
 import { createNayelisHouseLevel } from './nayelis-house-level.js';
-import { nayelisHouseEvents } from '../../events/nayelis-house-level-events.js';
+import { nayelisHouseEvents } from '../../events/nayelis-house/nayelis-house-level-events.js';
 import { HollowHint } from '../../classes/ui/hollow-hint.class.js';
 import { SpeechBubble } from '../../classes/ui/speech-bubble.class.js';
 import { DialogManager } from '../../classes/ui/dialog-manager.class.js';

@@ -1,4 +1,4 @@
-import { gameOverEvents } from "../../events/game-over-events.js";
+import { gameOverEvents } from "../../events/game-over/game-over-events.js";
 import { AnimatedEntity } from "../../classes/entities/animated-entity.class.js";
 
 /**

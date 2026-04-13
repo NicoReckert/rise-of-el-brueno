@@ -1,48 +1,4 @@
-export const townHelper = {
-    /**
-     * Starts the Nayeli spirit cutscene and advances the quest.
-     * @param {Object} setup Setup context object.
-     */
-    startNayeliSpiritCutscene(setup) {
-        townHelper.prepareNayeliSpiritCutscene(setup);
-        townHelper.startNayeliSpiritAudio(setup);
-        townHelper.startNayeliSpiritVisuals(setup);
-        setup.world.townLevelController.questManager.advance(7);
-    },
-
-    /**
-     * Prepares the world and character state for the Nayeli spirit cutscene.
-     * @param {Object} setup Setup context object.
-     */
-    prepareNayeliSpiritCutscene(setup) {
-        setup.characters.tadeo.updateAnimationState('walk');
-        setup.world.character.isCollapse = true;
-        setup.world.character.isMovingLeft = false;
-        setup.world.character.isMovingRight = false;
-        setup.world.isKeysStopp = true;
-        setup.cutsceneIndicator.show({ skippable: false });
-    },
-
-    /**
-     * Starts the audio sequence for the Nayeli spirit cutscene.
-     * @param {Object} setup Setup context object.
-     */
-    startNayeliSpiritAudio(setup) {
-        setup.world.audioManager.fadeOutAudio(setup.sounds.airHitStunMusic, 1000);
-        setup.sounds.nayeliThemeMusic.loop = true;
-        setup.world.audioManager.fadeInAudio(setup.sounds.nayeliThemeMusic, 2000, 0.3);
-        setup.sounds.spiritAppearsSfx.play();
-    },
-
-    /**
-     * Starts the visual sequence for the Nayeli spirit cutscene.
-     * @param {Object} setup Setup context object.
-     */
-    startNayeliSpiritVisuals(setup) {
-        setup.environment.nayeliSpirit.fadeIn(setup.world.timestamp, 2000);
-        setup.environment.nayeliSpirit.updateAnimationState('walk', 1000 / 10);
-    },
-
+export const townTadeoHelperMethods = {
     /**
      * Checks whether Tadeo should trigger a warning based on enemy proximity.
      * @param {Object} setup Setup context object.
@@ -193,63 +149,100 @@ export const townHelper = {
     },
 
     /**
-     * Restores the town checkpoint.
-     * @param {*} setup Setup object.
+     * Plays the Tadeo dialog 06 sequence.
+     * @param {Object} setup Setup object.
      * @returns {void}
      */
-    restoreTownCheckpoint(setup) {
-        const cp = setup.world.townCheckpoint;
-        if (!cp) return;
-        const world = setup.world;
-        const char = world.character;
-        townHelper.restoreTownCheckpointPosition(cp, world, char);
-        townHelper.restoreTownCheckpointBars(setup, cp);
-        townHelper.restoreTownCheckpointProgressState(setup);
-        setup.world.townLevelController.questManager.step = cp.step;
+    playTadeoDialog06Sequence(setup) {
+        townHelper.prepareTadeoDialog06(setup);
+        townHelper.startTadeoDialog06(setup);
     },
 
     /**
-     * Restores the town checkpoint position.
-     * @param {*} cp Checkpoint data.
-     * @param {*} world World instance.
-     * @param {*} char Character instance.
+     * Prepares dialog 06 for Tadeo.
+     * @param {Object} setup Setup object.
      * @returns {void}
      */
-    restoreTownCheckpointPosition(cp, world, char) {
-        char.x = cp.x;
-        char.y = cp.y;
-        world.camera_x = cp.cameraX;
-        world.level_start_x = cp.levelStartX;
-        world.camera_start_x = cp.cameraStartX;
-        char.energy = cp.energy;
-        char.throwableBottles = cp.throwableBottles;
+    prepareTadeoDialog06(setup) {
+        setup.world.character.isFlipped = false;
+        setup.world.character.speedX = 5;
+        setup.world.character.isMovingLeft = false;
+        setup.world.character.isMovingRight = false;
+        setup.world.isKeysStopp = true;
+        setup.cutsceneIndicator.show({ skippable: false });
     },
 
     /**
-     * Restores the town checkpoint bars.
-     * @param {*} setup Setup object.
-     * @param {*} cp Checkpoint data.
+     * Starts dialog 06 for Tadeo.
+     * @param {Object} setup Setup object.
      * @returns {void}
      */
-    restoreTownCheckpointBars(setup, cp) {
-        setup.statusBarCharacter?.setPercentage(cp.energy);
-        setup.coinBar?.setPercentage(cp.coinBar);
-        setup.bottleBar?.setPercentage(cp.bottleBar);
+    startTadeoDialog06(setup) {
+        setup.sounds.voTadeoSpeak06.play();
+        setup.dialogManager.startDialog('tadeo:06', setup.world.timestamp, () => {
+            townHelper.finishTadeoDialog06(setup);
+        });
     },
 
     /**
-     * Restores the town checkpoint progress state.
-     * @param {*} setup Setup object.
+     * Finishes dialog 06 for Tadeo.
+     * @param {Object} setup Setup object.
      * @returns {void}
      */
-    restoreTownCheckpointProgressState(setup) {
-        const char = setup.world.character;
-        setup.sandstormFar.setEnabled(false);
-        setup.sandstorm.setEnabled(false);
-        setup.sandstormNear.setEnabled(false);
-        setup.state.enemyHealth = 2;
-        char.isHaveSword = true;
-        char.config.initCombatConfig();
-        char.speedX = 5;
+    finishTadeoDialog06(setup) {
+        setup.characters.tadeo.isFlipped = false;
+        setup.world.isKeysStopp = false;
+        setup.cutsceneIndicator.hide();
+        setup.characters.tadeo.updateAnimationState('walk');
+        setup.world.townLevelController.questManager.advance(14);
     },
-}
+
+    /**
+     * Plays the Tadeo dialog 07 sequence.
+     * @param {Object} setup Setup object.
+     * @returns {void}
+     */
+    playTadeoDialog07Sequence(setup) {
+        townHelper.prepareTadeoDialog07(setup);
+        townHelper.startTadeoDialog07(setup);
+    },
+
+    /**
+     * Prepares dialog 07 for Tadeo.
+     * @param {Object} setup Setup object.
+     * @returns {void}
+     */
+    prepareTadeoDialog07(setup) {
+        setup.world.level_start_x = 22300;
+        setup.world.camera_start_x = 22100;
+        setup.world.character.isMovingLeft = false;
+        setup.world.character.isMovingRight = false;
+        setup.world.isKeysStopp = true;
+        setup.cutsceneIndicator.show({ skippable: false });
+    },
+
+    /**
+     * Starts dialog 07 for Tadeo.
+     * @param {Object} setup Setup object.
+     * @returns {void}
+     */
+    startTadeoDialog07(setup) {
+        setup.characters.tadeo.updateAnimationState('idle');
+        setup.characters.tadeo.isFlipped = true;
+        setup.sounds.voTadeoSpeak07.play();
+        setup.dialogManager.startDialog('tadeo:07', setup.world.timestamp, () => {
+            townHelper.finishTadeoDialog07(setup);
+        });
+    },
+
+    /**
+     * Finishes dialog 07 for Tadeo.
+     * @param {Object} setup Setup object.
+     * @returns {void}
+     */
+    finishTadeoDialog07(setup) {
+        setup.world.isKeysStopp = false;
+        setup.cutsceneIndicator.hide();
+        setup.world.townLevelController.questManager.advance(16);
+    }
+};

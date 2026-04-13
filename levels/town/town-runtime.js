@@ -1,6 +1,6 @@
 import { EndbossAttack } from '../../classes/effects/endboss-attack.class.js';
 import { ComicPanel } from '../../classes/ui/comic-panel.class.js';
-import { townEvents } from '../../events/town-level-events.js';
+import { townEvents } from '../../events/town/level-events/town-level-events.js';
 
 /**
  * Applies runtime objects and references to the town setup.

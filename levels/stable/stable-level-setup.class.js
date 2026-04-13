@@ -1,8 +1,7 @@
-import { LifeEnergyCharacterBar } from '../../classes/ui/life-energy-character-bar.class.js';
 import { AnimatedEntity } from '../../classes/entities/animated-entity.class.js';
 import { HollowHint } from '../../classes/ui/hollow-hint.class.js';
 import { createStableLevel } from './stable-level.js'
-import { stableEvents } from '../../events/stable-level-events.js';
+import { stableEvents } from '../../events/stable/stable-level-events.js';
 import { CutsceneIndicator } from '../../classes/ui/cutscene-indicator.class.js';
 
 /**
