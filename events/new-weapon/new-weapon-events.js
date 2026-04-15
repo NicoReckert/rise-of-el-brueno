@@ -6,7 +6,7 @@ export const newWeaponEvents =
         {
             type: 'quest',
             action: (setup) => {
-                setup.world.character.x = 400; //550
+                setup.world.character.x = 400;
                 setup.world.character.y = 250;
                 setup.world.camera_x = 0;
                 setup.world.level_start_x = 290;
