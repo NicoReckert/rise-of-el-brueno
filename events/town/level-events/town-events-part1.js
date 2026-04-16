@@ -214,6 +214,7 @@ export const townEvents_part1 = [
         area: { x: 20275, width: 95 },
         requireKey: "F",
         action: (setup) => {
+            setup.hints[0].hide();
             setup.world.audioManager.fadeOutAudio(setup.sounds.tadeoHoldStoneMusic, 1000);
             setup.world.audioManager.fadeOutAudio(setup.sounds.townDayMusic, 1000);
             setup.world.nayelisHouseLevelController.eventManager.resetEventByName('init');

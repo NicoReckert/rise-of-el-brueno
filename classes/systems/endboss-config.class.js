@@ -210,6 +210,8 @@ export class EndbossConfig {
         this.endboss.isFly = false;
         this.endboss.isRage = false;
         this.endboss.isFireballAttack = false;
+        this.endboss.lastHurtSoundTime = 0;
+        this.endboss.hurtSoundCooldown = 250;
     }
 
     /**
@@ -246,13 +248,15 @@ export class EndbossConfig {
         this.endboss.groundSequenceShotDelay = 600;
         this.endboss.lastSequenceShotTime = 0;
         this.endboss.groundShotInProgress = false;
+        this.endboss.groundHitsTaken = 0;
+        this.endboss.groundHitsBeforeTakeoff = 3;
     }
 
     /**
      * Initializes finisher state values.
      */
     initFinisherState() {
-        this.endboss.lowEnergyThreshold = 90;
+        this.endboss.lowEnergyThreshold = 20;
         this.endboss.finisherStarted = false;
         this.endboss.finisherState = 0;
         this.endboss.finisherStartTime = 0;

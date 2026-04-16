@@ -193,6 +193,7 @@ export const townEvents_part3 = [
         step: 12,
         action: (setup) => {
             setup.world.camera_start_x = 20065;
+            setup.characters.tadeo.x = 20350;
             setup.sandstormFar.setEnabled(false);
             setup.sandstorm.setEnabled(false);
             setup.sandstormNear.setEnabled(false);

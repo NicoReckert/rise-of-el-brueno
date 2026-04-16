@@ -108,6 +108,7 @@ export class GameApp {
             (active) => this.uiManager.updateFullscreenButtonUI(active)
         );
         this.inputManager.initMoveButtonVisuals(this.uiManager.dom.touchControls);
+        this.uiManager.showMenuSystemControls();
     }
 
     /**
@@ -123,7 +124,8 @@ export class GameApp {
             this.assetLoader.levelImages,
             this.audioManager,
             this.videoManager,
-            this.gameplayInputController
+            this.gameplayInputController,
+            this.uiManager
         );
     }
 }

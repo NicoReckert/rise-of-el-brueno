@@ -24,6 +24,7 @@ export const gameAppSessionMethods = {
         this.exitFullscreenIfNeeded();
         this.resetWorldStateForMenu();
         this.uiManager.showMainMenuScreen();
+        this.uiManager.showMenuSystemControls();
         this.startMenuMusic();
     },
 

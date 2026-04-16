@@ -7,16 +7,19 @@ import { MovableObject } from '../systems/movable-object.class.js';
  */
 export class Coin extends MovableObject {
     /**
-     * Creates a new instance with randomized position and animation settings.
-     * @param {Object} entityImages - Image data containing animation frames.
+     * Creates a coin instance.
+     * @param {Object} entityImages Entity image collection.
+     * @param {number} x X position.
+     * @param {number} y Y position.
      */
-    constructor(entityImages) {
+    constructor(entityImages, x, y) {
         super();
         this.entityImages = entityImages;
         this.coinImages = entityImages.coin || [];
         this.img = this.coinImages[0];
-        this.x = 200 + Math.random() * 500;
-        this.y = 340 + Math.random() * 20;
+        this.x = x;
+        this.y = y;
+        this.width = 100;
         this.height = 100;
         this.setOffsets();
         this.frameIndex = 0;

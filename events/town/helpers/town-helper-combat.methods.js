@@ -1,3 +1,5 @@
+import { DamageText } from "../../../classes/ui/damage-text.class.js";
+
 export const townCombatHelperMethods = {
     /**
      * Handles projectile hits on the character.
@@ -8,7 +10,7 @@ export const townCombatHelperMethods = {
         const char = setup.world.character;
         if (char.isHurt) return;
         setup.state.projectiles.forEach(element => {
-            townHelper.handleProjectileHitOnCharacter(setup, char, element);
+            this.handleProjectileHitOnCharacter(setup, char, element);
         });
     },
 
@@ -25,7 +27,7 @@ export const townCombatHelperMethods = {
         const colliding = element.isColliding(
             char, { x: 0, width: 0 }, { x: 50, width: 50 }
         );
-        if (colliding) townHelper.applyProjectileHitToCharacter(setup, char, element);
+        if (colliding) this.applyProjectileHitToCharacter(setup, char, element);
     },
 
     /**
@@ -45,8 +47,11 @@ export const townCombatHelperMethods = {
     },
 
     /**
-     * Handles enemy touch damage on the character.
+     * Handles enemy touch interaction with the character.
      * @param {Object} setup Setup object.
+     * @param {Object} char Character object.
+     * @param {Object} enemy Enemy object.
+     * @param {number} now Current timestamp.
      * @returns {void}
      */
     handleEnemyTouchDamage(setup) {
@@ -54,8 +59,9 @@ export const townCombatHelperMethods = {
         const now = setup.world.timestamp;
         if (char.isHurt) return;
         setup.townLevel.enemies.forEach(enemy => {
-            townHelper.handleEnemyTouch(setup, char, enemy, now);
+            this.handleEnemyTouch(setup, char, enemy, now);
         });
+        this.handleEndbossTouchDamage(setup, char, now);
     },
 
     /**
@@ -68,11 +74,26 @@ export const townCombatHelperMethods = {
      */
     handleEnemyTouch(setup, char, enemy, now) {
         if (enemy.isDead) return;
-        const effectiveColliding = townHelper.getEffectiveEnemyTouchCollision(
+        const effectiveColliding = this.getEffectiveEnemyTouchCollision(
             setup, char, enemy, now
         );
-        const did = townHelper.applyEnemyTouchDamage(char, enemy, now, effectiveColliding);
-        if (did) townHelper.updateEnemyTouchDamageUI(setup, char);
+        const did = this.applyEnemyTouchDamage(char, enemy, now, effectiveColliding);
+        if (did) this.updateEnemyTouchDamageUI(setup, char);
+    },
+
+    /**
+     * Handles endboss touch damage on the character.
+     * @param {Object} setup Setup object.
+     * @param {Object} char Character object.
+     * @param {number} now Current timestamp.
+     * @returns {void}
+     */
+    handleEndbossTouchDamage(setup, char, now) {
+        const boss = setup.characters.endboss;
+        if (!boss || boss.isDead || !boss.isVulnerable) return;
+        const effectiveColliding = this.getEffectiveEnemyTouchCollision(setup, char, boss, now);
+        const did = this.applyEnemyTouchDamage(char, boss, now, effectiveColliding);
+        if (did) this.updateEnemyTouchDamageUI(setup, char);
     },
 
     /**
@@ -120,5 +141,62 @@ export const townCombatHelperMethods = {
         setup.state.damageTexts.push(
             new DamageText(char, char.isProtect ? 2 : 10)
         );
+    },
+
+    /**
+     * Applies a melee hit to the endboss.
+     * @param {Object} setup Setup object.
+     * @param {Object} boss Endboss object.
+     * @returns {boolean} True if the melee hit was applied, otherwise false.
+     */
+    applyMeleeHitToEndboss(setup, boss) {
+        if (!boss || boss.isDead || !boss.isVulnerable) return false;
+        this.playBossHurtSound(setup, boss);
+        this.prepareMeleeHitToEndboss(setup, boss);
+        if (boss.energy <= 0) return this.finishMeleeHitToEndboss(boss);
+        boss.combatCtrl.handleGroundHit();
+        return true;
+    },
+
+    /**
+     * Prepares a melee hit on the endboss.
+     * @param {Object} setup Setup object.
+     * @param {Object} boss Endboss object.
+     * @returns {void}
+     */
+    prepareMeleeHitToEndboss(setup, boss) {
+        boss.isHurt = true;
+        boss.frameIndex = 0;
+        boss.sheetIndex = 0;
+        boss.animationFinished = false;
+        boss.lastFrameTime = null;
+        boss.energy = Math.max(0, boss.energy - 5);
+        setup.statusBarEndboss.setPercentage(boss.energy);
+    },
+
+    /**
+     * Finishes a melee hit on the endboss.
+     * @param {Object} boss Endboss object.
+     * @returns {boolean} True.
+     */
+    finishMeleeHitToEndboss(boss) {
+        boss.isDead = true;
+        boss.frameIndex = 0;
+        return true;
+    },
+
+    /**
+     * Plays the boss hurt sound.
+     * @param {Object} setup Setup object.
+     * @param {Object} boss Endboss object.
+     * @returns {void}
+     */
+    playBossHurtSound(setup, boss) {
+        const now = setup.world.timestamp ?? performance.now();
+        const last = boss.lastHurtSoundTime ?? 0;
+        const cooldown = boss.hurtSoundCooldown ?? 250;
+        if (now - last < cooldown) return;
+        boss.lastHurtSoundTime = now;
+        setup.world.audioManager.playOneShot('bossHurtSfx', { volume: 0.6 });
     }
 };

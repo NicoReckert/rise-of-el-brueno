@@ -42,7 +42,7 @@ export class CharacterConfig {
             'determined-rise', 'determined-rise-loop', 'caress', 'caress-loop',
             'sit-down-and-play-guitar', 'play-guitar-and-sing', 'play-guitar', 'light-a-campfire',
             'meditation', 'meditation-loop', 'stand-up', 'walk-determined', 'stand-determined',
-            'stand-determined-loop', 'walk-in-storm',
+            'stand-determined-loop', 'walk-in-storm', 'idle-long',
             'collapse', 'collapse-loop', 'stand-up-after-collapse',
             'air-hit-stun', 'air-pain-stun', 'stand-up-after-pain-stun', 'throw', 'heal'
         ]);
@@ -56,7 +56,7 @@ export class CharacterConfig {
             'sit-down-and-play-guitar', 'light-a-campfire', 'attack-staff', 'attack-sword', 'attack-end-scene',
             'meditation', 'new-weapon', 'stand-up', 'stand-determined', 'duck-enter', 'duck-exit',
             'collapse', 'stand-up-after-collapse', 'protect', 'air-hit-stun', 'hurt', 'throw', 'heal',
-            'stand-up-after-pain-stun'
+            'stand-up-after-pain-stun', 'idle-long'
         ]);
     }
 
@@ -129,6 +129,7 @@ export class CharacterConfig {
      */
     initMovementImages() {
         this.char.idleWalkSheet = this.images.idleWalkSheet ?? null;
+        this.char.longIdleSheet = this.images.longIdleSheet ?? null;
         this.char.jumpSheet = this.images.jumpSheet ?? null;
         this.char.duckSheet = this.images.duckSheet ?? null;
         this.char.duckWalkSheet = this.images.duckWalkSheet ?? null;
@@ -193,7 +194,9 @@ export class CharacterConfig {
         this.char.isFlipped = false;
         this.char.isMoving = false;
         this.char.throwableBottles = 0;
-        this.isDeadFinished = false;
+        this.char.isDeadFinished = false;
+        this.char.idleStartedAt = 0;
+        this.char.longIdleDelay = 9000;
     }
 
     /**

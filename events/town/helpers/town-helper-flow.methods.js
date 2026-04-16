@@ -1,12 +1,14 @@
+import { TaskWindow } from "../../../classes/ui/task-window.class.js";
+
 export const townFlowHelperMethods = {
     /**
      * Starts the Nayeli spirit cutscene and advances the quest.
      * @param {Object} setup Setup context object.
      */
     startNayeliSpiritCutscene(setup) {
-        townHelper.prepareNayeliSpiritCutscene(setup);
-        townHelper.startNayeliSpiritAudio(setup);
-        townHelper.startNayeliSpiritVisuals(setup);
+        this.prepareNayeliSpiritCutscene(setup);
+        this.startNayeliSpiritAudio(setup);
+        this.startNayeliSpiritVisuals(setup);
         setup.world.townLevelController.questManager.advance(7);
     },
 
@@ -49,12 +51,12 @@ export const townFlowHelperMethods = {
      * @returns {void}
      */
     initializeTownQuest(setup) {
-        townHelper.setupTownAudio(setup);
-        townHelper.setupTownWorldState(setup);
-        townHelper.setupTownCharacterState(setup);
-        townHelper.setupTownUIState(setup);
+        this.setupTownAudio(setup);
+        this.setupTownWorldState(setup);
+        this.setupTownCharacterState(setup);
+        this.setupTownUIState(setup);
         if (setup.world.resumeFromTownCheckpoint && setup.world.townCheckpoint) {
-            townHelper.restoreTownCheckpoint(setup);
+            this.restoreTownCheckpoint(setup);
             setup.world.resumeFromTownCheckpoint = false;
             return;
         }
@@ -93,7 +95,9 @@ export const townFlowHelperMethods = {
         setup.world.character.isWalkDetermined = false;
         setup.characters.tadeo.updateAnimationState('idle', 1000 / 5);
         setup.world.character.speedX = 3;
-        setup.world.initTasks();
+        if (!setup.state.comeFromNayelisHouse && !setup.world.resumeFromTownCheckpoint) {
+            setup.world.initTasks();
+        }
     },
 
     /**
@@ -103,6 +107,9 @@ export const townFlowHelperMethods = {
      */
     setupTownUIState(setup) {
         setup.world.taskWindow.y = 180;
+        if (setup.state.comeFromNayelisHouse) {
+            setup.hints[0].hide();
+        }
         setup.state.comeFromNayelisHouse = false;
         setup.cutsceneIndicator.hide({ silent: true, immediate: true });
     },
@@ -113,9 +120,9 @@ export const townFlowHelperMethods = {
      * @returns {void}
      */
     playTownHealSequence(setup) {
-        townHelper.prepareTownHealSequence(setup);
-        townHelper.applyTownHealEffects(setup);
-        townHelper.storeTownHealCheckpoint(setup);
+        this.prepareTownHealSequence(setup);
+        this.applyTownHealEffects(setup);
+        this.storeTownHealCheckpoint(setup);
         setup.world.townLevelController.questManager.advance(20);
     },
 
@@ -157,7 +164,7 @@ export const townFlowHelperMethods = {
     storeTownHealCheckpoint(setup) {
         if (!setup.world.townCheckpoint) {
             const char = setup.world.character;
-            setup.world.townCheckpoint = townHelper.createTownHealCheckpoint(setup, char);
+            setup.world.townCheckpoint = this.createTownHealCheckpoint(setup, char);
         }
     },
 
@@ -169,18 +176,52 @@ export const townFlowHelperMethods = {
      */
     createTownHealCheckpoint(setup, char) {
         return {
+            ...this.createTownHealCheckpointBase(setup, char),
+            ...this.createTownHealCheckpointBars(setup, char),
+            tasks: this.createTownHealCheckpointTasks(setup)
+        };
+    },
+
+    /**
+     * Creates the base town heal checkpoint data.
+     * @param {Object} setup Setup object.
+     * @param {Object} char Character object.
+     * @returns {Object} Base town heal checkpoint data.
+     */
+    createTownHealCheckpointBase(setup, char) {
+        return {
             id: 'town_heal_step_19',
             step: 20,
             x: char.x,
             y: char.y,
             cameraX: setup.world.camera_x,
             levelStartX: 26300,
-            cameraStartX: 26100,
+            cameraStartX: 26100
+        };
+    },
+
+    /**
+     * Creates the town heal checkpoint bar data.
+     * @param {Object} setup Setup object.
+     * @param {Object} char Character object.
+     * @returns {Object} Town heal checkpoint bar data.
+     */
+    createTownHealCheckpointBars(setup, char) {
+        return {
             energy: char.energy,
             throwableBottles: char.throwableBottles ?? 0,
             coinBar: setup.coinBar?.percentage ?? 0,
             bottleBar: setup.bottleBar?.percentage ?? 0
         };
+    },
+
+    /**
+     * Creates the town heal checkpoint task data.
+     * @param {Object} setup Setup object.
+     * @returns {Object[]} Town heal checkpoint task data.
+     */
+    createTownHealCheckpointTasks(setup) {
+        return setup.world.taskWindow?.tasks.map(task => ({ ...task })) ?? [];
     },
 
     /**
@@ -193,9 +234,10 @@ export const townFlowHelperMethods = {
         if (!cp) return;
         const world = setup.world;
         const char = world.character;
-        townHelper.restoreTownCheckpointPosition(cp, world, char);
-        townHelper.restoreTownCheckpointBars(setup, cp);
-        townHelper.restoreTownCheckpointProgressState(setup);
+        this.restoreTownCheckpointPosition(cp, world, char);
+        this.restoreTownCheckpointBars(setup, cp);
+        this.restoreTownCheckpointTasks(setup, cp);
+        this.restoreTownCheckpointProgressState(setup);
         setup.world.townLevelController.questManager.step = cp.step;
     },
 
@@ -229,6 +271,24 @@ export const townFlowHelperMethods = {
     },
 
     /**
+     * Restores the town checkpoint tasks.
+     * @param {Object} setup Setup object.
+     * @param {Object} cp Checkpoint data.
+     * @returns {void}
+     */
+    restoreTownCheckpointTasks(setup, cp) {
+        const tasks = cp.tasks ?? [];
+        const texts = tasks.map(task => task.text);
+        setup.world.taskWindow = new TaskWindow(
+            setup.world.canvas,
+            setup.world.entityImages,
+            texts
+        );
+        setup.world.taskWindow.tasks = tasks.map(task => ({ ...task }));
+        setup.world.taskWindow.y = 180;
+    },
+
+    /**
      * Restores the town checkpoint progress state.
      * @param {*} setup Setup object.
      * @returns {void}
@@ -251,8 +311,8 @@ export const townFlowHelperMethods = {
      */
     clearTownCombatState(setup) {
         const now = setup.world.timestamp;
-        townHelper.clearTownEnemies(setup, now);
-        townHelper.clearTownProjectiles(setup);
+        this.clearTownEnemies(setup, now);
+        this.clearTownProjectiles(setup);
     },
 
     /**
@@ -263,7 +323,7 @@ export const townFlowHelperMethods = {
      */
     clearTownEnemies(setup, now) {
         setup.townLevel.enemies.forEach(enemy => {
-            townHelper.clearTownEnemy(enemy, now);
+            this.clearTownEnemy(enemy, now);
         });
     },
 

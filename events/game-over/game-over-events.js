@@ -13,12 +13,7 @@ export const gameOverEvents = [
             setup.video.play();
             setup.sounds.gameOverMusic.loop = true;
             setup.world.audioManager.fadeInAudio(setup.sounds.gameOverMusic, 2000, 0.8);
-            document.getElementById('game-over-actions')?.classList.remove('d-none');
-            document.getElementById('game-over-video-overlay')?.classList.remove('d-none');
-            document.getElementById('game-over-video-vignette')?.classList.remove('d-none');
-            document.getElementById('game-over-video-light')?.classList.remove('d-none');
-            const checkpointButton = document.getElementById('game-over-checkpoint-button');
-            checkpointButton?.classList.toggle('d-none', !setup.world?.townCheckpoint);
+            setup.world.uiManager.showGameOverState(!!setup.world?.townCheckpoint);
         }
     }
 ];

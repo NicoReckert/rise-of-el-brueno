@@ -311,7 +311,7 @@ export const farmEntityManifestDeferred = {
 }
 
 export const otherLevelEntityManifestLazy = {
-  sandstorm: { texture: Array.from({ length: 1 }, _ => `./assets/img/sandstorm_texture.png`) },
+  sandstorm: { texture: Array.from({ length: 1 }, _ => `./assets/img/shared_visuals/sandstorm_texture.png`) },
 
   gameOverCharacterSpirit: {
     idle: {

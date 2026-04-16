@@ -9,7 +9,7 @@ export const townBottleHitHelperMethods = {
         const bottles = setup.state.throwableObjects;
         const enemies = setup.townLevel.enemies;
         for (let i = bottles.length - 1; i >= 0; i--) {
-            townHelper.handleBottleHitsForBottle(setup, world, bottles[i], enemies);
+            this.handleBottleHitsForBottle(setup, world, bottles[i], enemies);
         }
     },
 
@@ -22,9 +22,9 @@ export const townBottleHitHelperMethods = {
      * @returns {void}
      */
     handleBottleHitsForBottle(setup, world, bottle, enemies) {
-        if (townHelper.shouldSkipBottleHitCheck(bottle)) return;
+        if (this.shouldSkipBottleHitCheck(bottle)) return;
         for (let j = 0; j < enemies.length; j++) {
-            const shouldBreak = townHelper.handleBottleHitOnEnemy(setup, world, bottle, enemies[j]);
+            const shouldBreak = this.handleBottleHitOnEnemy(setup, world, bottle, enemies[j]);
             if (shouldBreak) break;
         }
     },
@@ -52,7 +52,7 @@ export const townBottleHitHelperMethods = {
         const hit = bottle.isColliding(enemy, {}, { y: 50 });
         if (!hit) return false;
         if (bottle.isBrokenSound) return true;
-        townHelper.breakBottleAndKillEnemy(setup, world, bottle, enemy);
+        this.breakBottleAndKillEnemy(setup, world, bottle, enemy);
         return true;
     },
 
@@ -89,7 +89,7 @@ export const townBottleHitHelperMethods = {
         const bottles = setup.state.throwableObjects;
         if (!boss) return;
         for (let i = bottles.length - 1; i >= 0; i--) {
-            townHelper.handleBottleHitOnEndboss(setup, world, boss, bottles[i]);
+            this.handleBottleHitOnEndboss(setup, world, boss, bottles[i]);
         }
     },
 
@@ -102,11 +102,11 @@ export const townBottleHitHelperMethods = {
      * @returns {void}
      */
     handleBottleHitOnEndboss(setup, world, boss, bottle) {
-        if (townHelper.shouldSkipEndbossBottleHit(bottle, boss)) return;
+        if (this.shouldSkipEndbossBottleHit(bottle, boss)) return;
         const hit = bottle.isColliding(boss, {}, { x: 50 });
         if (!hit) return;
         if (bottle.isBrokenSound) return;
-        townHelper.applyBottleHitToEndboss(setup, world, boss, bottle);
+        this.applyBottleHitToEndboss(setup, world, boss, bottle);
     },
 
     /**
@@ -119,7 +119,8 @@ export const townBottleHitHelperMethods = {
         return bottle.isBroken
             || bottle.markedForRemoval
             || bottle.isBrokenAnimation
-            || boss.isDead;
+            || boss.isDead
+            || !boss.isVulnerable;
     },
 
     /**
@@ -132,6 +133,7 @@ export const townBottleHitHelperMethods = {
      */
     applyBottleHitToEndboss(setup, world, boss, bottle) {
         world.audioManager.playOneShot("bottleBreakSfx", { volume: 0.6 });
+        this.playBossHurtSound(setup, boss);
         boss.isHurt = true;
         boss.frameIndex = 0;
         bottle.isBrokenSound = true;
@@ -139,7 +141,7 @@ export const townBottleHitHelperMethods = {
         bottle.isThrow = false;
         bottle.isGravity = false;
         bottle.isBrokenAnimation = true;
-        townHelper.updateEndbossAfterBottleHit(setup, boss);
+        this.updateEndbossAfterBottleHit(setup, boss);
     },
 
     /**
@@ -149,12 +151,21 @@ export const townBottleHitHelperMethods = {
      * @returns {void}
      */
     updateEndbossAfterBottleHit(setup, boss) {
-        boss.energy -= 20;
+        this.playBossHurtSound?.(setup, boss);
+        boss.energy = Math.max(0, boss.energy - 10);
         setup.statusBarEndboss.setPercentage(boss.energy);
-        if (boss.energy <= 0) {
-            boss.isDead = true;
-            boss.frameIndex = 0;
-        }
+        if (boss.energy <= 0) return this.killEndboss(boss);
+        boss.combatCtrl.handleGroundHit();
+    },
+
+    /**
+     * Kills the endboss.
+     * @param {Object} boss Endboss object.
+     * @returns {void}
+     */
+    killEndboss(boss) {
+        boss.isDead = true;
+        boss.frameIndex = 0;
     },
 
     /**
@@ -167,7 +178,7 @@ export const townBottleHitHelperMethods = {
         const bottles = setup.state.throwableObjects;
         const groundBottomY = 680;
         for (let i = bottles.length - 1; i >= 0; i--) {
-            townHelper.handleSingleBottleGroundImpact(world, bottles[i], groundBottomY);
+            this.handleSingleBottleGroundImpact(world, bottles[i], groundBottomY);
         }
     },
 
@@ -183,7 +194,7 @@ export const townBottleHitHelperMethods = {
         const footY = bottle.y + bottle.height - (bottle.offset?.bottom ?? 0);
         if (footY < groundBottomY) return;
         bottle.y = groundBottomY - bottle.height + (bottle.offset?.bottom ?? 0);
-        if (!bottle.isBrokenSound) townHelper.breakBottleOnGround(world, bottle);
+        if (!bottle.isBrokenSound) this.breakBottleOnGround(world, bottle);
     },
 
     /**

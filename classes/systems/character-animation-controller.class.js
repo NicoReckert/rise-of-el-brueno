@@ -102,6 +102,8 @@ export class CharacterAnimationController {
         if (this.handleMusicAnimations()) return;
         if (this.handleCombatAndMeditation()) return;
         if (this.handleMovementAnimations()) return;
+        if (this.char.currentAnimation === 'idle-long') return;
+        if (this.shouldPlayLongIdle()) return this.setAnim('idle-long', 6);
         this.setAnim('idle', 2.5);
     }
 
@@ -260,6 +262,7 @@ export class CharacterAnimationController {
      */
     setAnimation(newAnimation) {
         if (this.char.currentAnimation !== newAnimation) {
+            this.updateIdleTimer(newAnimation);
             this.char.currentAnimation = newAnimation;
             this.char.frameIndex = 0;
             this.char.sheetIndex = 0;
@@ -284,8 +287,60 @@ export class CharacterAnimationController {
     syncCurrentAnimationVisual() {
         const anim = this.char.getAnimationImages(this.char.currentAnimation);
         if (!anim) return;
-
         this.char.applyFirstFrameOfSource(anim, this.char.currentAnimation);
         this.char.handleDeferredSizeUpdate();
+    }
+
+    /**
+     * Checks whether the animation is an idle animation.
+     * @param {string} anim Animation name.
+     * @returns {boolean} True if the animation is idle, otherwise false.
+     */
+    isIdleAnimation(anim) {
+        return anim === 'idle' || anim === 'idle-long';
+    }
+
+    /**
+     * Checks whether the long idle animation should be played.
+     * @returns {boolean} True if the long idle animation should be played, otherwise false.
+     */
+    shouldPlayLongIdle() {
+        if (!this.char.longIdleSheet) return false;
+        if (this.char.currentAnimation === 'idle-long') return false;
+        if (!this.char.idleStartedAt) {
+            this.char.idleStartedAt = performance.now();
+            return false;
+        }
+        return performance.now() - this.char.idleStartedAt >= this.char.longIdleDelay;
+    }
+
+    /**
+     * Updates the idle timer for an animation change.
+     * @param {string} newAnimation New animation name.
+     * @returns {void}
+     */
+    updateIdleTimer(newAnimation) {
+        const current = this.char.currentAnimation;
+        const wasIdle = this.isIdleAnimation(current);
+        const nextIsIdle = this.isIdleAnimation(newAnimation);
+        if (!wasIdle && newAnimation === 'idle') return this.startIdleTimer();
+        if (wasIdle && !nextIsIdle) return this.resetIdleTimer();
+        if (current === 'idle-long' && newAnimation === 'idle') this.startIdleTimer();
+    }
+
+    /**
+     * Starts the idle timer.
+     * @returns {void}
+     */
+    startIdleTimer() {
+        this.char.idleStartedAt = performance.now();
+    }
+
+    /**
+     * Resets the idle timer.
+     * @returns {void}
+     */
+    resetIdleTimer() {
+        this.char.idleStartedAt = 0;
     }
 }

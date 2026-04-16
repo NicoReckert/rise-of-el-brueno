@@ -7,10 +7,10 @@ export const townTadeoHelperMethods = {
     shouldTriggerTadeoWarning(setup) {
         const char = setup.world.character;
         const tadeo = setup.characters.tadeo;
-        if (!townHelper.canCheckTadeoWarning(setup, char, tadeo)) return false;
+        if (!this.canCheckTadeoWarning(setup, char, tadeo)) return false;
         const enemies = setup.townLevel?.enemies ?? [];
-        if (townHelper.hasEnemyNearTadeo(tadeo, enemies, 300)) return false;
-        return townHelper.hasEnemyNearTadeo(tadeo, enemies, 600);
+        if (this.hasEnemyNearTadeo(tadeo, enemies, 300)) return false;
+        return this.hasEnemyNearTadeo(tadeo, enemies, 600);
     },
 
     /**
@@ -38,7 +38,7 @@ export const townTadeoHelperMethods = {
     hasEnemyNearTadeo(tadeo, enemies, range) {
         const tolA = { x: -range, width: -range };
         const tolB = { x: 0, y: 0, width: 0, height: 0 };
-        return enemies.some(e => townHelper.isValidTadeoEnemyInRange(tadeo, e, tolA, tolB));
+        return enemies.some(e => this.isValidTadeoEnemyInRange(tadeo, e, tolA, tolB));
     },
 
     /**
@@ -64,11 +64,11 @@ export const townTadeoHelperMethods = {
     triggerTadeoHelp(setup) {
         const duration = 2800;
         const now = performance.now();
-        const ctx = townHelper.getTadeoHelpContext(setup, now, duration);
-        townHelper.applyTadeoHelpState(ctx);
-        townHelper.giveTadeoHelpBottles(ctx);
-        townHelper.playTadeoHelpBottleAudio(ctx.audio);
-        townHelper.startTadeoHelpBubble(ctx);
+        const ctx = this.getTadeoHelpContext(setup, now, duration);
+        this.applyTadeoHelpState(ctx);
+        this.giveTadeoHelpBottles(ctx);
+        this.playTadeoHelpBottleAudio(ctx.audio);
+        this.startTadeoHelpBubble(ctx);
     },
 
     /**
@@ -154,8 +154,8 @@ export const townTadeoHelperMethods = {
      * @returns {void}
      */
     playTadeoDialog06Sequence(setup) {
-        townHelper.prepareTadeoDialog06(setup);
-        townHelper.startTadeoDialog06(setup);
+        this.prepareTadeoDialog06(setup);
+        this.startTadeoDialog06(setup);
     },
 
     /**
@@ -180,7 +180,7 @@ export const townTadeoHelperMethods = {
     startTadeoDialog06(setup) {
         setup.sounds.voTadeoSpeak06.play();
         setup.dialogManager.startDialog('tadeo:06', setup.world.timestamp, () => {
-            townHelper.finishTadeoDialog06(setup);
+            this.finishTadeoDialog06(setup);
         });
     },
 
@@ -203,8 +203,8 @@ export const townTadeoHelperMethods = {
      * @returns {void}
      */
     playTadeoDialog07Sequence(setup) {
-        townHelper.prepareTadeoDialog07(setup);
-        townHelper.startTadeoDialog07(setup);
+        this.prepareTadeoDialog07(setup);
+        this.startTadeoDialog07(setup);
     },
 
     /**
@@ -231,7 +231,7 @@ export const townTadeoHelperMethods = {
         setup.characters.tadeo.isFlipped = true;
         setup.sounds.voTadeoSpeak07.play();
         setup.dialogManager.startDialog('tadeo:07', setup.world.timestamp, () => {
-            townHelper.finishTadeoDialog07(setup);
+            this.finishTadeoDialog07(setup);
         });
     },
 

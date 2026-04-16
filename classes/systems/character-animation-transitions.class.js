@@ -17,6 +17,7 @@ export class CharacterAnimationTransitions {
      * @param {string} anim Animation state identifier.
      */
     handleAnimationTransition(anim) {
+        if (this.handleIdleLongTransition(anim)) return;
         if (this.handleDeathTransition(anim)) return;
         if (this.handleDuckTransitions(anim)) return;
         if (this.handleDeterminedTransitions(anim)) return;
@@ -263,5 +264,16 @@ export class CharacterAnimationTransitions {
         this.animCtrl.setAnimation(name);
         if (fps) this.char.frameInterval = 1000 / fps;
         return true;
+    }
+
+    /**
+     * Handles the transition to the long idle animation.
+     * @param {string} anim Animation name.
+     * @returns {boolean} True if the transition was handled, otherwise false.
+     */
+    handleIdleLongTransition(anim) {
+        if (anim !== 'idle-long') return false;
+        this.char.idleStartedAt = performance.now();
+        return this.setTransition('idle', 2.5);
     }
 }

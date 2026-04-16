@@ -15,7 +15,7 @@ export const levelCompleteEvents =
                 setup.video.loop = true;
                 setup.video.play();
                 setup.characters.levelCompleteCharacter.isFlipped = false;
-                document.getElementById('level-complete-actions').classList.remove('d-none');
+                setup.world.uiManager.showLevelCompleteActions();
             }
         }
     ]

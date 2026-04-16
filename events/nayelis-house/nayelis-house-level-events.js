@@ -22,10 +22,6 @@ export const nayelisHouseEvents =
                 setup.video.loop = true;
                 setup.video.play();
                 setup.comeFromNewWeapon = false;
-                setup.cutsceneIndicator.hide({ silent: true, immediate: true });
-
-                // setup.world.townLevelController.questManager.advance(12); // muss wieder entfernt werden!!
-                // setup.world.nayelisHouseLevelController.questManager.advance(3); // muss wieder entfernt werden!!
             }
         },
 

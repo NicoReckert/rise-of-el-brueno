@@ -6,6 +6,7 @@ import { WorldRenderer } from './world-renderer.class.js';
 import { LevelManager } from '../systems/level-manager.class.js';
 import { WorldCleanup } from '../systems/world-cleanup.class.js';
 import { CameraController } from '../systems/camera-controller.class.js';
+import { worldIntroMethods } from './world-intro.methods.js';
 
 /**
  * Represents the game world.
@@ -21,9 +22,10 @@ export class World {
      * @param {Object} audioManager Audio manager instance.
      * @param {Object} videoManager Video manager instance.
      * @param {Object} gameplayInputController Gameplay input controller instance.
+     * @param {Object} uiManager UI manager instance.
      */
-    constructor(canvas, keyboard, characterImages, entityImages, levelImages, audioManager, videoManager, gameplayInputController) {
-        this.initCore(canvas, keyboard, characterImages, entityImages, levelImages, audioManager, videoManager, gameplayInputController);
+    constructor(canvas, keyboard, characterImages, entityImages, levelImages, audioManager, videoManager, gameplayInputController, uiManager) {
+        this.initCore(canvas, keyboard, characterImages, entityImages, levelImages, audioManager, videoManager, gameplayInputController, uiManager);
         this.initCharacterAndAudio();
         this.initSystems();
         this.initThrowAndCameraState();
@@ -44,7 +46,7 @@ export class World {
      * @param {Object} videoManager Video manager instance.
      * @param {Object} gameplayInputController Gameplay input controller instance.
      */
-    initCore(canvas, keyboard, characterImages, entityImages, levelImages, audioManager, videoManager, gameplayInputController) {
+    initCore(canvas, keyboard, characterImages, entityImages, levelImages, audioManager, videoManager, gameplayInputController, uiManager) {
         this.canvas = canvas;
         this.ctx = canvas.getContext('2d');
         this.renderer = new WorldRenderer(this.ctx);
@@ -55,6 +57,7 @@ export class World {
         this.audioManager = audioManager;
         this.videoManager = videoManager;
         this.gameplayInputController = gameplayInputController;
+        this.uiManager = uiManager;
         this.currentScene = 'farmLevel';
     }
 
@@ -91,12 +94,13 @@ export class World {
      * Initializes intro and pause state.
      */
     initIntroAndPauseState() {
-        this.intro = new IntroScreen(this.ctx, this.canvas);
+        this.intro = new IntroScreen(this.ctx, this.canvas, 'farmLevel');
         this.chapterStingSfx = this.allAudios.chapterStingSfx;
         this.isChapterStingSfxPlayed = false;
         this.isKeysStopp = false;
         this.paused = false;
         this.isRunning = true;
+        this.isSceneIntroActive = false;
     }
 
     /**
@@ -142,6 +146,7 @@ export class World {
     startGame() {
         this.currentScene = 'farmLevel';
         this.levelManager.initLevels();
+        this.startSceneIntro('farmLevel');
         this.draw();
     }
 
@@ -150,6 +155,7 @@ export class World {
      */
     startNextLevel() {
         this.currentScene = 'townLevel';
+        this.startSceneIntro('townLevel');
     }
 
     /**
@@ -215,8 +221,8 @@ export class World {
         const introActive = this.handleIntroPhase(deltaTime);
         if (!introActive) {
             this.updateCurrentScene(timestamp);
+            this.updateUI(timestamp);
         }
-        this.updateUI(timestamp);
         this.scheduleNextFrame();
     }
 
@@ -249,22 +255,6 @@ export class World {
         const deltaTime = timestamp - this.lastTime;
         this.lastTime = timestamp;
         return deltaTime;
-    }
-
-    /**
-     * Handles the intro phase rendering and updates.
-     * @param {number} deltaTime Delta time in milliseconds.
-     * @returns {boolean} True if intro is active, otherwise false.
-     */
-    handleIntroPhase(deltaTime) {
-        if (this.intro?.done) return false;
-        this.intro.update(deltaTime);
-        this.intro.draw();
-        if (!this.isChapterStingSfxPlayed) {
-            this.chapterStingSfx?.play();
-            this.isChapterStingSfxPlayed = true;
-        }
-        return true;
     }
 
     /**
@@ -405,3 +395,5 @@ export class World {
         this.cleanup.stopSound(sound);
     }
 }
+
+Object.assign(World.prototype, worldIntroMethods);

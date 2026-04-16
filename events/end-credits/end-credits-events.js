@@ -11,7 +11,7 @@ export const endCreditsEvents =
                 setup.video.currentTime = 0;
                 setup.video.loop = false;
                 setup.video.play();
-                document.getElementById('end-credits-actions').classList.remove('d-none');
+                setup.world.uiManager.showEndCreditsState();
             }
         },
 

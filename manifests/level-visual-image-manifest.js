@@ -17,28 +17,28 @@ const sharedLevelVisualImageManifest = {
 
 const farmLevelVisualImageManifest = {
     ground: {
-        grass: ['./assets/img/grass.webp'],
+        grass: ['./assets/img/shared_visuals/grass.webp'],
         town: ['./assets/img/5_background/layers/ground-town.webp'],
         town2: ['./assets/img/5_background/layers/ground-town2.webp'],
         town3: ['./assets/img/5_background/layers/ground-town3.webp']
     },
     scenery: {
-        woodenCart: ['./assets/img/wooden_cart.webp']
+        woodenCart: ['./assets/img/shared_visuals/wooden_cart.webp']
     }
 };
 
 const stableLevelVisualImageManifest = {
     ground: {
-        woodBackground: ['./assets/img/wood_background.webp']
+        woodBackground: ['./assets/img/shared_visuals/wood_background.webp']
     },
     scenery: {
-        interior: ['./assets/img/stable_interior.webp']
+        interior: ['./assets/img/shared_visuals/stable_interior.webp']
     }
 };
 
 const nayelisHouseLevelVisualImageManifest = {
     scenery: {
-        interior: ['./assets/img/house_nayeli_interior.png']
+        interior: ['./assets/img/shared_visuals/house_nayeli_interior.png']
     }
 };
 
@@ -48,13 +48,13 @@ const townLevelVisualImageManifest = {
         town2: ['./assets/img/5_background/layers/ground-town2.webp']
     },
     scenery: {
-        town1: ['./assets/img/town1.webp'],
-        town2: ['./assets/img/town2.webp'],
-        town3: ['./assets/img/town3.webp'],
-        town4: ['./assets/img/town4.webp'],
-        town5: ['./assets/img/town5.webp'],
-        town6: ['./assets/img/town6.webp'],
-        nayeliHouse: ['./assets/img/house_nayeli.png']
+        town1: ['./assets/img/shared_visuals/town1.webp'],
+        town2: ['./assets/img/shared_visuals/town2.webp'],
+        town3: ['./assets/img/shared_visuals/town3.webp'],
+        town4: ['./assets/img/shared_visuals/town4.webp'],
+        town5: ['./assets/img/shared_visuals/town5.webp'],
+        town6: ['./assets/img/shared_visuals/town6.webp'],
+        nayeliHouse: ['./assets/img/shared_visuals/house_nayeli.png']
     }
 };
 

@@ -34,7 +34,7 @@ export const townEvents_part4 = [
         area: { x: 26500, width: 50 },
         step: 19,
         action: (setup) => {
-            playTownHealSequence(setup)
+            townHelper.playTownHealSequence(setup)
         }
     },
 

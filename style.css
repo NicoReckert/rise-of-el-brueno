@@ -866,7 +866,7 @@ canvas {
   content: "";
   position: fixed;
   inset: 0;
-  background-image: url('./assets/img/ornament4.png');
+  background-image: url('./assets/img/shared_visuals/ornamentA.png');
   opacity: 0.05;
   mix-blend-mode: overlay;
   pointer-events: none;
@@ -990,7 +990,7 @@ canvas {
 }
 
 .ornament-left {
-  background: url('./assets/img/ornament4.png') no-repeat center/contain;
+  background: url('./assets/img/shared_visuals/ornamentA.png') no-repeat center/contain;
   width: 280px;
   height: 280px;
   top: -100px;
@@ -999,7 +999,7 @@ canvas {
 }
 
 .ornament-right {
-  background: url('./assets/img/ornament2.png') no-repeat center/contain;
+  background: url('./assets/img/shared_visuals/ornamentB.png') no-repeat center/contain;
   width: 250px;
   height: 250px;
   bottom: -110px;
@@ -1026,7 +1026,7 @@ canvas {
   border: 2px solid rgba(255, 220, 160, 0.6);
   border-radius: 16px;
   background:
-    url("./assets/img/card_textur_background.jpg"),
+    url("./assets/img/shared_visuals/card_textur_background.jpg"),
     radial-gradient(circle at top left, rgba(255, 255, 255, 0.25), rgba(0, 0, 0, 0.25));
   background-size: cover;
   background-blend-mode: overlay;
@@ -1278,7 +1278,7 @@ canvas {
   border: 2px solid rgba(255, 220, 160, 0.6);
   border-radius: 16px;
   background:
-    url("./assets/img/card_textur_background.jpg"),
+    url("./assets/img/shared_visuals/card_textur_background.jpg"),
     radial-gradient(circle at top left, rgba(255, 255, 255, 0.25), rgba(0, 0, 0, 0.25));
   background-size: cover;
   background-blend-mode: overlay;
@@ -1381,7 +1381,7 @@ canvas {
   border: 2px solid rgba(255, 220, 160, 0.6);
   border-radius: 16px;
   background:
-    url("./assets/img/card_textur_background.jpg"),
+    url("./assets/img/shared_visuals/card_textur_background.jpg"),
     radial-gradient(circle at top left, rgba(255, 255, 255, 0.25), rgba(0, 0, 0, 0.25));
   background-size: cover;
   background-blend-mode: overlay;
@@ -1452,7 +1452,7 @@ canvas {
 }
 
 .d-none {
-  display: none;
+  display: none !important;
 }
 
 .touch-controls-cutscene-hidden {
@@ -1471,7 +1471,25 @@ canvas {
 }
 
 
+@media only screen and (max-width: 3500px) {
+  .start-screen-header {
+    justify-content: center;
+    margin-right: 500px;
+  }
+}
+
+@media only screen and (max-width: 2000px) {
+  .start-screen-header {
+    margin-right: 600px;
+  }
+}
+
 @media only screen and (max-width: 1900px) {
+  .start-screen-header {
+    justify-content: flex-start;
+    margin-right: 0;
+  }
+
   .dragon-silhouette {
     width: 1300px;
     transform: translateX(720px);

@@ -122,19 +122,32 @@ export class EndbossFireball extends Projectile {
     }
 
     /**
-     * Applies damage to the character.
-     * @param {*} character Character reference.
-     * @param {number} timestamp Current frame timestamp.
+     * Applies hit damage to a character and updates the character bar.
+     * @param {Object} character Character object.
+     * @param {number} timestamp Current timestamp.
+     * @returns {void}
      */
     applyCharacterHitDamage(character, timestamp) {
+        const damage = character.isProtect ? 2 : 10;
         const ctrl = character.combatCtrl;
-        if (typeof ctrl.hit === "function") {
-            ctrl.hit(timestamp, this.damage);
-        } else if (typeof ctrl.hit === "function") {
-            ctrl.hit(this.damage);
-        } else if ("health" in character) {
-            character.health -= this.damage;
+        if (typeof ctrl?.hit === "function") {
+            ctrl.hit(timestamp, damage);
+        } else if ("energy" in character) {
+            character.energy -= damage;
         }
+        this.updateCharacterBar(character);
+    }
+
+    /**
+     * Updates the character status bar.
+     * @param {Object} character Character object.
+     * @returns {void}
+     */
+    updateCharacterBar(character) {
+        const statusBar =
+            this.world?.getCurrentSetup?.()?.statusBarCharacter
+            ?? this.world?.townLevelSetup?.statusBarCharacter;
+        statusBar?.setPercentage(character.energy);
     }
 
     /**

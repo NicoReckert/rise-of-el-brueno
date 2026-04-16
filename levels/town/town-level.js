@@ -4,6 +4,8 @@ import { Cloud } from '../../classes/entities/cloud.class.js';
 import { SceneryObject } from '../../classes/entities/scenery-object.class.js';
 import { Sky } from '../../classes/entities/sky.class.js';
 import { Bottle } from '../../classes/entities/bottle.class.js';
+import { Coin } from '../../classes/entities/coin.class.js';
+
 
 const TOWN_LEVEL_WIDTH = 30960;
 const CLOUD_DENSITY = 1 / 700;
@@ -39,7 +41,7 @@ function createTownLevelConfig(entityImages, levelImages) {
         grounds: createTownGrounds(levelImages),
         sceneryObjects: createTownScenery(levelImages),
         sky: new Sky({ width: 1280, height: 720, preset: "tragicDay" }),
-        coins: [],
+        coins: createTownCoins(entityImages),
         bottles: createTownBottles(entityImages)
     };
 }
@@ -156,5 +158,20 @@ function createTownBottles(entityImages) {
     return [
         new Bottle(entityImages, 1500),
         new Bottle(entityImages, 1550)
+    ];
+}
+
+/**
+ * Creates the town coin collection.
+ * @param {Object} entityImages Entity image collection.
+ * @returns {Object[]} Town coin collection.
+ */
+function createTownCoins(entityImages) {
+    return [
+        new Coin(entityImages, 2700, 320),
+        new Coin(entityImages, 3230, 350),
+        new Coin(entityImages, 8000, 320),
+        new Coin(entityImages, 11500, 400),
+        new Coin(entityImages, 12000, 320),
     ];
 }

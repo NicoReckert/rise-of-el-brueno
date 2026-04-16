@@ -5,11 +5,11 @@ export const townSpiritHelperMethods = {
      * @returns {void}
      */
     spawnTownSpirits(setup) {
-        townHelper.setupSpiritEchoAnimations(setup);
-        townHelper.setupSpiritEchoLayout(setup);
-        townHelper.setupTownSpiritAnimations(setup);
-        townHelper.setupTownSpiritLayout(setup);
-        townHelper.fadeInTownSpirits(setup);
+        this.setupSpiritEchoAnimations(setup);
+        this.setupSpiritEchoLayout(setup);
+        this.setupTownSpiritAnimations(setup);
+        this.setupTownSpiritLayout(setup);
+        this.fadeInTownSpirits(setup);
     },
 
     /**
@@ -30,9 +30,9 @@ export const townSpiritHelperMethods = {
      */
     setupSpiritEchoLayout(setup) {
         const env = setup.environment;
-        townHelper.setupNayeliSpiritEcho(env);
-        townHelper.setupSollitaSpiritEcho(env);
-        townHelper.setupTadeoSpiritEcho(env);
+        this.setupNayeliSpiritEcho(env);
+        this.setupSollitaSpiritEcho(env);
+        this.setupTadeoSpiritEcho(env);
     },
 
     /**

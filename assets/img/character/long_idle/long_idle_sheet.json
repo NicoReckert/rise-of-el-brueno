@@ -1,0 +1,16 @@
+﻿{
+    "frameHeight":  512,
+    "columns":  4,
+    "frameWidth":  512,
+    "animations":  {
+                       "idle-long":  {
+                                       "loop":  false,
+                                       "from":  0,
+                                       "to":  29,
+                                       "fps":  12
+                                   }
+                   },
+    "image":  "long_idle_sheet.webp",
+    "frames":  30,
+    "rows":  8
+}

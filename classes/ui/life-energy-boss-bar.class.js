@@ -15,7 +15,8 @@ export class LifeEnergyBossBar extends StatusBar {
         if (!spriteSheet) {
             this.statusImages = this.entityImages.lifeEnergyBoss?.status ?? [];
         }
-        this.x = 450;
+        this.x = 1020;
+        this.y = 50;
         this.setPercentage(100);
     }
 }

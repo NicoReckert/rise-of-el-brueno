@@ -15,7 +15,7 @@ export class CharacterCombatController {
     /**
      * Starts the air hit stun state.
      * @param {number} timestamp Frame timestamp.
-     * @param {number} [duration=100000] Duration in milliseconds.
+     * @param {number} [duration=70000] Duration in milliseconds.
      */
     startAirHitStun(timestamp, duration = 70000) {
         this.char.isAirHitStun = true;

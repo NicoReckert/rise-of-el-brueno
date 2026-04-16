@@ -70,6 +70,7 @@ export class Character extends MovableObject {
             case 'stand-up': return this.lightCampfireStandUpSheet;
             case 'walk-determined': return this.walkStandDeterminedSheet;
             case 'walk-in-storm': return this.walkInStormCollapseSheet;
+            case 'idle-long': return this.longIdleSheet;
         }
         return null;
     }
@@ -349,7 +350,7 @@ export class Character extends MovableObject {
             this.drawOffset = { x: 0, y: 0, flipX: -100 };
         } else if (['attack-sword', 'attack-end-scene', 'attack-end-scene-loop'].includes(anim)) {
             this.drawOffset = { x: -5, y: 0, flipX: -130 };
-        } else if (anim === 'protect' || anim === 'protect-loop') {
+        } else if (anim === 'protect' || anim === 'protect-loop' || anim === 'idle-long') {
             this.drawOffset = { x: -14, y: 0, flipX: 0 };
         } else if (anim === 'throw' || anim === 'heal' || anim === 'duck-enter' || anim === 'duck-loop' || anim === 'duck-exit' || anim === 'duck-walk') {
             this.drawOffset = { x: -14, y: 0, flipX: 0 };

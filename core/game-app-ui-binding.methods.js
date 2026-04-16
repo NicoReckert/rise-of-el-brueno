@@ -69,8 +69,8 @@ export const gameAppUiBindingMethods = {
             if (!this.world) {
                 this.initWorld();
             }
-            this.world.startGame();
             this.uiManager.showGameScreen();
+            this.world.startGame();
             this.fullscreenManager.setFullscreen(this.uiManager.dom.body);
             this.audioManager.stopTitleMusic();
         });

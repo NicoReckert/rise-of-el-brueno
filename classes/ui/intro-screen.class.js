@@ -3,17 +3,18 @@
  */
 export class IntroScreen {
     /**
-     * Creates a new prolog screen instance.
+     * Creates an intro screen instance.
      * @param {CanvasRenderingContext2D} ctx Rendering context.
      * @param {HTMLCanvasElement} canvas Canvas element.
-     * @param {string} [text="Prolog"] Display text.
+     * @param {string} [scene='farmLevel'] Initial scene name.
      */
-    constructor(ctx, canvas, text = "Prolog") {
+    constructor(ctx, canvas, scene = 'farmLevel') {
         this.ctx = ctx;
         this.canvas = canvas;
-        this.text = text;
+        this.sceneConfigs = this.getSceneConfigs();
         this.initFadeConfig();
         this.initBackgroundImage();
+        this.setScene(scene);
     }
 
     /**
@@ -203,5 +204,52 @@ export class IntroScreen {
         ctx.fillStyle = hi;
         ctx.shadowBlur = 0;
         ctx.fillText(this.text, cx, cy);
+    }
+
+    /**
+     * Gets the scene configuration map.
+     * @returns {Object} Scene configuration map.
+     */
+    getSceneConfigs() {
+        return {
+            farmLevel: {
+                text: "Prolog",
+                bgSrc: "./assets/img/shared_visuals/intro_background.webp"
+            },
+            townLevel: {
+                text: "Die Stadt",
+                bgSrc: "./assets/img/shared_visuals/intro_background_town.png"
+            }
+        };
+    }
+
+    /**
+     * Sets the active scene configuration.
+     * @param {string} scene Scene name.
+     * @returns {void}
+     */
+    setScene(scene) {
+        const config = this.sceneConfigs[scene] ?? this.sceneConfigs.farmLevel;
+        this.text = config.text;
+        this.setBackgroundImage(config.bgSrc);
+        this.reset();
+    }
+
+    /**
+     * Sets the background image source.
+     * @param {string} src Background image source.
+     * @returns {void}
+     */
+    setBackgroundImage(src) {
+        this.bgLoaded = false;
+        this.bgImage.src = src;
+    }
+
+    /**
+     * Resets the intro screen state.
+     * @returns {void}
+     */
+    reset() {
+        this.initFadeConfig();
     }
 }

@@ -9,12 +9,12 @@ export const townBottleThrowHelperMethods = {
         const world = setup.world;
         const c = world.character;
         if (!progress || progress < 0.08) return;
-        if (!townHelper.canStartBottleThrow(world, c)) {
-            townHelper.handleEmptyBottleThrow(world, c);
+        if (!this.canStartBottleThrow(world, c)) {
+            this.handleEmptyBottleThrow(world, c);
             return;
         }
-        townHelper.startBottleThrowAnimation(setup, c, progress);
-        townHelper.consumeBottleForThrow(setup, c);
+        this.startBottleThrowAnimation(setup, c, progress);
+        this.consumeBottleForThrow(setup, c);
     },
 
     /**
@@ -89,14 +89,14 @@ export const townBottleThrowHelperMethods = {
     renderBottleThrowChargeIndicator(setup) {
         const c = setup.world.character;
         const world = setup.world;
-        if (!townHelper.canRenderThrowChargeIndicator(setup, c, world)) return;
+        if (!this.canRenderThrowChargeIndicator(setup, c, world)) return;
         const p = setup.state.throwHoldProgress ?? 0;
         const ctx = world.ctx;
-        const indicator = townHelper.getThrowChargeIndicatorData(setup, c, p);
+        const indicator = this.getThrowChargeIndicatorData(setup, c, p);
         if (!indicator) return;
-        townHelper.drawThrowChargeRing(ctx, indicator, p);
-        townHelper.handleThrowChargeTick(setup, p);
-        townHelper.drawThrowChargeParticles(ctx, indicator, p);
+        this.drawThrowChargeRing(ctx, indicator, p);
+        this.handleThrowChargeTick(setup, p);
+        this.drawThrowChargeParticles(ctx, indicator, p);
     },
 
     /**
@@ -145,10 +145,10 @@ export const townBottleThrowHelperMethods = {
     drawThrowChargeRing(ctx, indicator, p) {
         const { x, y, r, pulse } = indicator;
         ctx.save();
-        townHelper.drawThrowChargeGlow(ctx, x, y, r, pulse);
-        townHelper.drawThrowChargeOutline(ctx, x, y, r);
-        townHelper.drawThrowChargeProgress(ctx, x, y, r, p, pulse);
-        townHelper.drawThrowChargeCenter(ctx, x, y);
+        this.drawThrowChargeGlow(ctx, x, y, r, pulse);
+        this.drawThrowChargeOutline(ctx, x, y, r);
+        this.drawThrowChargeProgress(ctx, x, y, r, p, pulse);
+        this.drawThrowChargeCenter(ctx, x, y);
         ctx.restore();
     },
 
@@ -258,7 +258,7 @@ export const townBottleThrowHelperMethods = {
         ctx.globalAlpha = 0.75 * indicator.pulse;
         ctx.fillStyle = "white";
         for (let i = 0; i < n; i++) {
-            townHelper.drawThrowChargeParticle(ctx, indicator, i, n, t, baseR, wobble);
+            this.drawThrowChargeParticle(ctx, indicator, i, n, t, baseR, wobble);
         }
         ctx.restore();
     },

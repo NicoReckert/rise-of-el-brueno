@@ -194,17 +194,17 @@ export const townEvents_collisionsCombat = [
         condition: (setup) => {
             const char = setup.world.character;
             const boss = setup.characters.endboss;
-            return !!char && !!boss && char.isAttack && !char.hasHitEnemyThisAttack && !boss.isDead;
+            return !!char &&
+                !!boss &&
+                char.isAttack &&
+                !char.hasHitEnemyThisAttack &&
+                !boss.isDead &&
+                boss.isVulnerable;
         },
         action: (setup, char, boss) => {
-            boss.isHurt = true;
-            boss.frameIndex = 0;
-            boss.energy -= 5;
-            setup.statusBarEndboss.setPercentage(boss.energy);
-            char.hasHitEnemyThisAttack = true;
-            if (boss.energy <= 0) {
-                boss.isDead = true;
-                boss.frameIndex = 0;
+            const hit = townHelper.applyMeleeHitToEndboss(setup, boss);
+            if (hit) {
+                char.hasHitEnemyThisAttack = true;
             }
         }
     }

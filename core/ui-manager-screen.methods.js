@@ -172,10 +172,56 @@ export const uiManagerScreenMethods = {
      * Shows the main menu screen and hides the game canvas.
      */
     showMainMenuScreen() {
+        this.hideGameControls();
         this.dom.canvas.style.display = 'none';
         this.dom.startScreenOverlay.style.display = 'flex';
         if (this.dom.introOverlay) {
             this.dom.introOverlay.style.display = 'none';
         }
+    },
+
+    /**
+     * Shows the level complete actions and hides game controls.
+     * @returns {void}
+     */
+    showLevelCompleteActions() {
+        this.hideGameControls();
+        this.dom.levelCompleteActions.classList.remove('d-none');
+    },
+
+    /**
+     * Shows the game over state and hides game controls.
+     * @param {boolean} hasCheckpoint Whether the checkpoint button should be visible.
+     * @returns {void}
+     */
+    showGameOverState(hasCheckpoint) {
+        this.hideGameControls();
+        this.dom.gameOverVideo.classList.remove('d-none');
+        this.dom.gameOverActions.classList.remove('d-none');
+        this.dom.gameOverVideoOverlay.classList.remove('d-none');
+        this.dom.gameOverVideoVignette.classList.remove('d-none');
+        this.dom.gameOverVideoLight.classList.remove('d-none');
+        this.dom.gameOverCheckpointButton?.classList.toggle('d-none', !hasCheckpoint);
+    },
+
+    /**
+     * Shows the end credits state and hides game controls.
+     * @returns {void}
+     */
+    showEndCreditsState() {
+        this.hideGameControls();
+        this.dom.endCreditsVideo.classList.remove('d-none');
+        this.dom.endCreditsActions.classList.remove('d-none');
+    },
+
+    /**
+     * Shows the system controls for menu screens.
+     * @returns {void}
+     */
+    showMenuSystemControls() {
+        this.dom.pauseToggleButton.classList.add('d-none');
+        this.dom.muteToggleButton.classList.remove('d-none');
+        this.dom.fullscreenToggleButton.classList.remove('d-none');
+        this.setMoveButtonsActive(false);
     }
 };

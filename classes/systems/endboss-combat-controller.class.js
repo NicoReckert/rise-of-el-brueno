@@ -255,6 +255,7 @@ export class EndbossCombatController {
     applyGroundPhase() {
         this.endboss.isFly = false;
         this.endboss.isVulnerable = true;
+        this.endboss.groundHitsTaken = 0;
     }
 
     /**
@@ -264,5 +265,42 @@ export class EndbossCombatController {
     applyEnragePhase() {
         this.endboss.isVulnerable = true;
         this.endboss.speedX *= 1.3;
+    }
+
+    /**
+     * Handles a ground hit for the endboss.
+     * @returns {void}
+     */
+    handleGroundHit() {
+        if (this.endboss.phase !== this.endboss.ENDBOSS_PHASE.GROUND) return;
+        if (this.endboss.isDead || this.endboss.finisherStarted) return;
+        this.endboss.groundHitsTaken = (this.endboss.groundHitsTaken ?? 0) + 1;
+        if (this.endboss.groundHitsTaken < (this.endboss.groundHitsBeforeTakeoff ?? 3)) return;
+        this.returnToAirPhase();
+    }
+
+    /**
+     * Returns the endboss to the air phase.
+     * @returns {void}
+     */
+    returnToAirPhase() {
+        this.resetGroundAttackState();
+        this.setPhase(this.endboss.ENDBOSS_PHASE.AIR_EGGS);
+        this.endboss.airPointIndex = 0;
+        this.endboss.airDropIndex = 0;
+        this.endboss.airState = this.endboss.AIR_STATE.ASCEND;
+    }
+
+    /**
+     * Resets the ground attack state.
+     * @returns {void}
+     */
+    resetGroundAttackState() {
+        this.endboss.groundHitsTaken = 0;
+        this.endboss.groundFireballSequenceActive = false;
+        this.endboss.groundShotInProgress = false;
+        this.endboss.isFireballAttack = false;
+        this.endboss.hasFiredThisAttack = false;
+        this.endboss.isHurt = false;
     }
 }

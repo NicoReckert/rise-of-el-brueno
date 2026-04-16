@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Rise of El Brünö</title>
-    <link rel="icon" type="image/png" sizes="64x64" href="./assets/img/favicon.png">
+    <link rel="icon" type="image/png" sizes="64x64" href="./assets/img/shared_visuals/favicon.png">
     <link rel="stylesheet" href="./style.css">
     <link rel="stylesheet" href="./css/font.css">
 </head>
@@ -55,7 +55,7 @@
                 <button class="menu-button next-level-button" id="next-level-button">Nächstes Level</button>
             </div>
             <div class="game-over-actions d-none" id="game-over-actions">
-                <button class="menu-button" id="game-over-checkpoint-button">Am Checkpoint starten</button>
+                <button class="menu-button d-none" id="game-over-checkpoint-button">Am Checkpoint starten</button>
                 <button class="menu-button" id="game-over-restart-button">Level neu starten</button>
                 <button class="menu-button" id="game-over-menu-button">Zum Menü</button>
             </div>
@@ -88,7 +88,7 @@
         </video>
         <div class="start-screen-header">
             <div class="dragon-img-box">
-                <img class="dragon" src="./assets/img/small_dragon.webp" alt="">
+                <img class="dragon" src="./assets/img/shared_visuals/small_dragon.webp" alt="">
             </div>
             <h1 class="title before-animation" id="game-title">RISE OF<br>EL BRÜNÖ</h1>
         </div>
@@ -99,9 +99,9 @@
                         controlslist="nodownload nofullscreen noremoteplayback"></video>
                 </div>
                 <div class="hero-character-group">
-                    <img class="chick-img" src="./assets/img/chick.webp" alt="">
-                    <img class="bruno-img" src="./assets/img/Brünö.webp" alt="">
-                    <img class="chicken-img" src="./assets/img/chicken.webp" alt="">
+                    <img class="chick-img" src="./assets/img/shared_visuals/chick.webp" alt="">
+                    <img class="bruno-img" src="./assets/img/shared_visuals/Brünö.webp" alt="">
+                    <img class="chicken-img" src="./assets/img/shared_visuals/chicken.webp" alt="">
                 </div>
                 <div class="portal-video-box">
                     <video class="portal-video" id="portal-video" loop muted playsinline disablepictureinpicture
@@ -111,8 +111,8 @@
             <div class="dragon-thunder-box">
                 <video class="thunder-video" id="thunder-video" loop muted playsinline disablepictureinpicture
                     controlslist="nodownload nofullscreen noremoteplayback"></video>
-                <img class="dragon-silhouette" src="./assets/img/black_dragon.webp" alt="">
-                <img class="dragon-silhouette red-glow" src="./assets/img/black_dragon.webp" alt="">
+                <img class="dragon-silhouette" src="./assets/img/shared_visuals/black_dragon.webp" alt="">
+                <img class="dragon-silhouette red-glow" src="./assets/img/shared_visuals/black_dragon.webp" alt="">
             </div>
             <div class="start-menu">
                 <button class="menu-button" id="start-game-button">Start</button>
@@ -144,9 +144,6 @@
             <button class="menu-button" id="close-characters-overlay-button">Back</button>
         </div>
         <h1 class="overlay-title">Characters</h1>
-        <div class="ornament-box">
-            <div class="ornament2"></div>
-        </div>
         <div class="character-list" id="character-list">
 
         </div>
