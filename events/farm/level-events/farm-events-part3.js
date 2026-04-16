@@ -65,7 +65,7 @@ export const farmEvents_part3 = [
             setup.environment.house.updateAnimationState('doorCloses');
             setup.sounds.doorCloseSfx.play();
             setup.world.taskWindow.markDone(6)
-            setup.world.audioManager.playOneShot(setup.sounds.taskCompletedSfx);
+            setup.world.audioManager.playOneShot('taskCompletedSfx');
             setup.state.popupTexts.push(new PopupText("Aufgabe erledigt!", setup.world.canvas.width / 2, 440));
             setup.cutsceneIndicator.show({ skippable: false });
             setup.world.farmLevelController.questManager.advance(13);
@@ -94,7 +94,7 @@ export const farmEvents_part3 = [
         delay: 3000,
         step: 14,
         action: (setup) => {
-            setup.sounds.yawningSfx.play();
+            setup.world.audioManager.playOneShot('yawningSfx');
         }
     },
 
@@ -106,7 +106,7 @@ export const farmEvents_part3 = [
         delay: 10000,
         step: 14,
         action: (setup) => {
-            setup.sounds.snoringSfx.play();
+            setup.world.audioManager.playOneShot('snoringSfx');
         }
     },
 
@@ -119,7 +119,7 @@ export const farmEvents_part3 = [
         delay: 15000,
         step: 14,
         action: (setup) => {
-            setup.sounds.earthquakeSfx.play();
+            setup.world.audioManager.playOneShot('earthquakeSfx');
             setup.state.earthquakeStart = true;
         }
     },
@@ -165,10 +165,16 @@ export const farmEvents_part3 = [
         type: 'quest',
         step: 15,
         action: (setup) => {
-            setup.sounds.droneIdleSfx.loop = true;
-            setup.sounds.droneIdleSfx.play();
-            setup.sounds.farmNightMusic.loop = true;
-            setup.world.audioManager.fadeInAudio(setup.sounds.farmNightMusic, 2000, 0.6);
+            const droneIdle = setup.sounds.droneIdleSfx;
+            if (droneIdle) {
+                droneIdle.loop = true;
+                droneIdle.play();
+            }
+            const farmNightMusic = setup.sounds.farmNightMusic;
+            if (farmNightMusic) {
+                farmNightMusic.loop = true;
+                setup.world.audioManager.fadeInAudio(farmNightMusic, 2000, 0.6);
+            }
         }
     },
 
@@ -181,9 +187,13 @@ export const farmEvents_part3 = [
         delay: 4000,
         step: 16,
         action: (setup) => {
-            setup.sounds.droneIdleSfx.pause();
-            setup.sounds.droneControlledSfx.loop = true;
-            setup.sounds.droneControlledSfx.play();
+            const droneIdle = setup.sounds.droneIdleSfx;
+            if (droneIdle) droneIdle.pause();
+            const droneControlled = setup.sounds.droneControlledSfx;
+            if (droneControlled) {
+                droneControlled.loop = true;
+                droneControlled.play();
+            }
             setup.characters.drone.updateAnimationState('controlled', 1000 / 7);
             setup.cutsceneActors.chickenTranced.updateAnimationState('walk', 1000 / 7);
             setup.cutsceneActors.cowTranced.updateAnimationState('walk', 1000 / 5);
@@ -218,8 +228,10 @@ export const farmEvents_part3 = [
         type: 'quest',
         step: 17,
         action: (setup) => {
-            setup.sounds.droneControlledSfx.pause();
-            setup.sounds.droneIdleSfx.play();
+            const droneControlled = setup.sounds.droneControlledSfx;
+            if (droneControlled) droneControlled.pause();
+            const droneIdle = setup.sounds.droneIdleSfx;
+            if (droneIdle) droneIdle.play();
             setup.characters.drone.updateAnimationState('idle', 1000 / 7);
         }
     },
@@ -247,9 +259,9 @@ export const farmEvents_part3 = [
         type: 'quest',
         step: 18,
         action: (setup) => {
-            setup.world.audioManager.fadeOutAudio(setup.sounds.droneIdleSfx, 4000);
-            setup.world.audioManager.fadeOutAudio(setup.sounds.farmNightMusic, 4000);
-            setup.world.audioManager.fadeOutAudio(setup.sounds.farmNightAmbience, 4000);
+            if (setup.sounds.droneIdleSfx) setup.world.audioManager.fadeOutAudio(setup.sounds.droneIdleSfx, 4000);
+            if (setup.sounds.farmNightMusic) setup.world.audioManager.fadeOutAudio(setup.sounds.farmNightMusic, 4000);
+            if (setup.sounds.farmNightAmbience) setup.world.audioManager.fadeOutAudio(setup.sounds.farmNightAmbience, 4000);
         }
     },
 

@@ -21,6 +21,9 @@ export const introAudioManifest = {
 
 export const farmAudioManifestImmediate = {
     farmDayMusic: './assets/audio/music/farm/farm-day.opus',
+    farmNightAmbience: './assets/audio/ambience/farm/night.opus',
+    sadMusic: './assets/audio/music/farm/sad.opus',
+    determinedMusic: './assets/audio/music/farm/determined.opus',
     footstepSfx: './assets/audio/sfx/movement/footstep.opus',
     jumpSfx: './assets/audio/sfx/movement/jump.opus',
     landingSfx: './assets/audio/sfx/movement/landing.opus',
@@ -33,20 +36,17 @@ export const farmAudioManifestImmediate = {
     doorOpenSfx: './assets/audio/sfx/interaction/door-open.opus',
     doorCloseSfx: './assets/audio/sfx/interaction/door-close.opus',
     chickSfx: './assets/audio/sfx/animals/chick.opus',
-    chickenSfx: './assets/audio/sfx/animals/chicken.opus'
+    chickenSfx: './assets/audio/sfx/animals/chicken.opus',
+    genericSpeechBlip: './assets/audio/text-blips/generic/speech.opus'
 }
 
 export const farmAudioManifestDeferred = {
     farmNightMusic: './assets/audio/music/farm/farm-night.opus',
-    sadMusic: './assets/audio/music/farm/sad.opus',
-    determinedMusic: './assets/audio/music/farm/determined.opus',
-    genericSpeechBlip: './assets/audio/text-blips/generic/speech.opus',
-    farmNightAmbience: './assets/audio/ambience/farm/night.opus',
-    droneIdleSfx: './assets/audio/sfx/environment/drone-idle.opus',
-    droneControlledSfx: './assets/audio/sfx/environment/drone-controlled.opus',
     yawningSfx: './assets/audio/sfx/characters/yawning.opus',
     snoringSfx: './assets/audio/sfx/characters/snoring.opus',
-    earthquakeSfx: './assets/audio/sfx/environment/earthquake.opus'
+    earthquakeSfx: './assets/audio/sfx/environment/earthquake.opus',
+    droneIdleSfx: './assets/audio/sfx/environment/drone-idle.opus',
+    droneControlledSfx: './assets/audio/sfx/environment/drone-controlled.opus'
 }
 
 export const otherLevelAudioManifestLazy = {

@@ -59,7 +59,7 @@ export class FarmLevelSetup {
      * Initializes UI-related audio and visual components.
      */
     initUIAudio() {
-        this.sounds = createFarmSounds(this.allAudios);
+        this.sounds = createFarmSounds(this.allAudios, this.world.audioManager);
         this.speechBubbles = createFarmSpeechBubbles(this.world.character, this.world.audioManager);
         this.hints = createFarmHints(this.world.character, this.characters);
     }
@@ -74,5 +74,13 @@ export class FarmLevelSetup {
         this.moonCycle = new MoonCycle(this);
         this.lyricsRenderer = new LyricsRenderer(this.world, this.sounds.happyTogetherMusic);
         this.cutsceneIndicator = new CutsceneIndicator(this.world);
+    }
+
+    /**
+     * Refreshes the sound collection.
+     * @returns {void}
+     */
+    refreshSounds() {
+        this.sounds = createFarmSounds(this.allAudios, this.world.audioManager);
     }
 }

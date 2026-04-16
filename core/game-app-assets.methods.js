@@ -25,6 +25,7 @@ export const gameAppAssetMethods = {
     async loadDeferredIntoWorld() {
         const assets = await this.assetLoader.loadDeferredManifests();
         this.applyDeferredAudios(assets.deferredAudios);
+        this.world.farmLevelSetup?.refreshSounds();
         this.applyDeferredVideos(assets.deferredVideos);
         this.applyDeferredWorldAssets(assets);
         this.applyDeferredMuteState();

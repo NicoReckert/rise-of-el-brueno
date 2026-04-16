@@ -1,26 +1,28 @@
 /**
- * Creates the farm sound map.
- * @param {Object} allAudios Audio sources.
- * @returns {Object} Farm sound map.
+ * Creates the farm sound collection.
+ * @param {Object} allAudios Audio source collection.
+ * @param {Object} audioManager Audio manager instance.
+ * @returns {Object} Farm sound collection.
  */
-export function createFarmSounds(allAudios) {
+export function createFarmSounds(allAudios, audioManager) {
     return {
-        ...createFarmMusicSounds(allAudios),
-        ...createFarmAmbientSounds(allAudios),
+        ...createFarmMusicSounds(allAudios, audioManager),
+        ...createFarmAmbientSounds(allAudios, audioManager),
         ...createFarmActionSounds(allAudios),
         ...createFarmAnimalSounds(allAudios)
     };
 }
 
 /**
- * Creates the farm music sound map.
- * @param {Object} allAudios Audio sources.
- * @returns {Object} Music sound map.
+ * Creates the farm music sound collection.
+ * @param {Object} allAudios Audio source collection.
+ * @param {Object} audioManager Audio manager instance.
+ * @returns {Object} Farm music sound collection.
  */
-function createFarmMusicSounds(allAudios) {
+function createFarmMusicSounds(allAudios, audioManager) {
     return {
         farmDayMusic: allAudios.farmDayMusic,
-        farmNightMusic: allAudios.farmNightMusic,
+        farmNightMusic: audioManager.get('farmNightMusic'),
         sadMusic: allAudios.sadMusic,
         happyTogetherMusic: allAudios.happyTogetherMusic,
         determinedMusic: allAudios.determinedMusic
@@ -28,19 +30,19 @@ function createFarmMusicSounds(allAudios) {
 }
 
 /**
- * Creates the farm ambient sound map.
- * @param {Object} allAudios Audio sources.
- * @returns {Object} Ambient sound map.
+ * Creates the farm ambient sound collection.
+ * @param {Object} allAudios Audio source collection.
+ * @param {Object} audioManager Audio manager instance.
+ * @returns {Object} Farm ambient sound collection.
  */
-function createFarmAmbientSounds(allAudios) {
+function createFarmAmbientSounds(allAudios, audioManager) {
     return {
-        droneIdleSfx: allAudios.droneIdleSfx,
-        droneControlledSfx: allAudios.droneControlledSfx,
+        droneIdleSfx: audioManager.get('droneIdleSfx'),
+        droneControlledSfx: audioManager.get('droneControlledSfx'),
         farmNightAmbience: allAudios.farmNightAmbience,
-        yawningSfx: allAudios.yawningSfx,
-        snoringSfx: allAudios.snoringSfx,
-        earthquakeSfx: allAudios.earthquakeSfx,
-        windSound: allAudios.windSound
+        yawningSfx: audioManager.get('yawningSfx'),
+        snoringSfx: audioManager.get('snoringSfx'),
+        earthquakeSfx: audioManager.get('earthquakeSfx')
     };
 }
 
