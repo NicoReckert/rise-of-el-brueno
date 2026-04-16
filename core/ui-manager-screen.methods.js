@@ -185,7 +185,7 @@ export const uiManagerScreenMethods = {
      * @returns {void}
      */
     showLevelCompleteActions() {
-        this.hideGameControls();
+        this.showOverlaySystemControls();
         this.dom.levelCompleteActions.classList.remove('d-none');
     },
 
@@ -195,7 +195,7 @@ export const uiManagerScreenMethods = {
      * @returns {void}
      */
     showGameOverState(hasCheckpoint) {
-        this.hideGameControls();
+        this.showOverlaySystemControls();
         this.dom.gameOverVideo.classList.remove('d-none');
         this.dom.gameOverActions.classList.remove('d-none');
         this.dom.gameOverVideoOverlay.classList.remove('d-none');
@@ -209,7 +209,7 @@ export const uiManagerScreenMethods = {
      * @returns {void}
      */
     showEndCreditsState() {
-        this.hideGameControls();
+        this.showOverlaySystemControls();
         this.dom.endCreditsVideo.classList.remove('d-none');
         this.dom.endCreditsActions.classList.remove('d-none');
     },
@@ -220,6 +220,17 @@ export const uiManagerScreenMethods = {
      */
     showMenuSystemControls() {
         this.dom.pauseToggleButton.classList.add('d-none');
+        this.dom.muteToggleButton.classList.remove('d-none');
+        this.dom.fullscreenToggleButton.classList.remove('d-none');
+        this.setMoveButtonsActive(false);
+    },
+
+    /**
+     * Shows the overlay system controls.
+     * @returns {void}
+     */
+    showOverlaySystemControls() {
+        this.dom.pauseToggleButton.classList.remove('d-none');
         this.dom.muteToggleButton.classList.remove('d-none');
         this.dom.fullscreenToggleButton.classList.remove('d-none');
         this.setMoveButtonsActive(false);

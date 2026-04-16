@@ -64,6 +64,16 @@ body {
   font-size: 1.2rem;
 }
 
+.loading-legal-link {
+  position: absolute;
+  right: 16px;
+  bottom: 16px;
+  color: white;
+  font-size: 14px;
+  text-decoration: underline;
+  z-index: 1001;
+}
+
 .menu-button {
   min-width: 150px;
   padding: 10px 24px;
@@ -107,6 +117,14 @@ body {
   width: 100%;
   background-color: black;
   flex: 1;
+}
+
+.content-legal-notice {
+  background-image: url('./assets/img/shared_visuals/card_textur_background.jpg');
+  background-position: center center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  padding: 48px 68px;
 }
 
 .game-stage {
@@ -1256,6 +1274,15 @@ canvas {
   text-shadow: 0 0 10px rgba(255, 230, 160, 0.6);
 }
 
+.back-link {
+  display: inline-block;
+  margin-bottom: 24px;
+  font-weight: bold;
+  color: rgb(221, 208, 187);
+  text-decoration: none;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.45);
+}
+
 .detail-card-container {
   display: flex;
   justify-content: center;
@@ -2193,6 +2220,12 @@ canvas {
   }
 }
 
+@media only screen and (max-width: 380px) and (pointer: fine) and (hover: hover) {
+  .overlay-title {
+    font-size: 35px;
+  }
+}
+
 
 @media only screen and (max-width: 1700px) {
   .detail-card {
@@ -2639,12 +2672,15 @@ canvas {
     padding: 16px 6px;
   }
 
+  .content-legal-notice h2,
+  .content-legal-notice h3,
   #credits-section h2,
   #credits-section h3 {
     font-size: 32px;
   }
 
   .credits-sub-title,
+  .content-legal-notice .credits-text,
   #credits-section .credits-text,
   .credits-links {
     font-size: 24px;
@@ -2670,16 +2706,23 @@ canvas {
     margin-left: 24px;
     margin-right: 24px;
   }
+
+  .content-legal-notice {
+    padding: 48px 24px;
+  }
 }
 
 @media only screen and (max-width: 900px) {
 
+  .content-legal-notice h2,
+  .content-legal-notice h3,
   #credits-section h2,
   #credits-section h3 {
     font-size: 24px;
   }
 
   .credits-sub-title,
+  .content-legal-notice .credits-text,
   #credits-section .credits-text,
   .credits-links {
     font-size: 20px;
@@ -2700,6 +2743,14 @@ canvas {
   #credits-section .content-card {
     margin-left: 6px;
     margin-right: 6px;
+  }
+
+  .content-legal-notice {
+    padding: 48px 12px;
+  }
+
+  .content-legal-notice .content-card__body {
+    padding: 0;
   }
 }
 
@@ -2723,6 +2774,24 @@ canvas {
   }
 }
 
+
+@media only screen and (max-width: 600px) {
+  .mute-toggle-button {
+    width: 30px;
+    height: 30px;
+    right: 6px;
+    top: 3px;
+    font-size: 16px;
+  }
+
+  .fullscreen-toggle-button {
+    width: 30px;
+    height: 30px;
+    right: 40px;
+    top: 3px;
+    font-size: 16px;
+  }
+}
 
 
 @media only screen and (pointer: coarse) {

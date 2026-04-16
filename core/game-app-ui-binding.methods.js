@@ -294,8 +294,10 @@ export const gameAppUiBindingMethods = {
         this.inputManager.listenMuteToggleButton(() => {
             const newMuted = !this.audioManager.isMuted;
             const creditsVideo = this.world?.endCreditsSetup?.video;
+            const memoryVideo = this.world?.stableLevelSetup?.video;
             this.audioManager.setMutedState(newMuted);
             if (creditsVideo) creditsVideo.muted = newMuted;
+            if (memoryVideo) memoryVideo.muted = newMuted;
         });
     }
 }

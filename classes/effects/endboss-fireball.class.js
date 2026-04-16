@@ -1,4 +1,5 @@
 import { Projectile } from '../entities/projectile.class.js';
+import { DamageText } from '../ui/damage-text.class.js';
 
 /**
  * Represents an endboss fireball projectile.
@@ -135,19 +136,21 @@ export class EndbossFireball extends Projectile {
         } else if ("energy" in character) {
             character.energy -= damage;
         }
-        this.updateCharacterBar(character);
+        this.updateCharacterUi(character, damage);
     }
 
     /**
-     * Updates the character status bar.
+     * Updates the character status bar and damage text.
      * @param {Object} character Character object.
+     * @param {number} damage Damage amount.
      * @returns {void}
      */
-    updateCharacterBar(character) {
-        const statusBar =
-            this.world?.getCurrentSetup?.()?.statusBarCharacter
-            ?? this.world?.townLevelSetup?.statusBarCharacter;
-        statusBar?.setPercentage(character.energy);
+    updateCharacterUi(character, damage) {
+        const setup =
+            this.world?.getCurrentSetup?.()
+            ?? this.world?.townLevelSetup;
+        setup?.statusBarCharacter?.setPercentage(character.energy);
+        setup?.state?.damageTexts?.push(new DamageText(character, damage));
     }
 
     /**

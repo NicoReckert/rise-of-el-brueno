@@ -1,11 +1,12 @@
 import { ImpactEffect } from './impact-effect.class.js';
+import { DamageText } from '../ui/damage-text.class.js';
 
 export const stormHazardHitMethods = {
     /**
-     * Handles hit on character.
-     * @param {*} character Character instance.
-     * @param {*} setup Setup object.
-     * @param {number} now Current time.
+     * Handles a hit on the character.
+     * @param {Object} character Character object.
+     * @param {Object} setup Setup object.
+     * @param {number} now Current timestamp.
      * @returns {void}
      */
     onHitCharacter(character, setup, now) {
@@ -15,13 +16,26 @@ export const stormHazardHitMethods = {
             return;
         }
         character.stormHazardHitUntil = now + (hit.invulnMs ?? 700);
-        this.applyCharacterDamage(character, setup, hit);
+        this.applyStormHazardHit(character, setup, hit, now);
+        this.markedForRemoval = true;
+    },
+
+    /**
+     * Applies a storm hazard hit to the character.
+     * @param {Object} character Character object.
+     * @param {Object} setup Setup object.
+     * @param {Object} hit Hit configuration.
+     * @param {number} now Current timestamp.
+     * @returns {void}
+     */
+    applyStormHazardHit(character, setup, hit, now) {
+        const damage = this.applyCharacterDamage(character, setup, hit);
+        setup.state.damageTexts.push(new DamageText(character, damage));
         this.applyCharacterHurt(character, hit, now);
         this.applyCharacterKnockback(character, hit);
         const impactAnim = this.getImpactAnim(hit, setup);
         if (impactAnim) this.spawnImpactEffect(hit, setup, impactAnim);
         setup.world.audioManager.playOneShot('explodeSfx', { volume: 0.5 });
-        this.markedForRemoval = true;
     },
 
     /**
@@ -37,6 +51,7 @@ export const stormHazardHitMethods = {
             : (hit.damage ?? 10);
         character.energy = Math.max(0, (character.energy ?? 100) - damage);
         setup.statusBarCharacter?.setPercentage(character.energy);
+        return damage;
     },
 
     /**

@@ -196,7 +196,7 @@ export class CharacterConfig {
         this.char.throwableBottles = 0;
         this.char.isDeadFinished = false;
         this.char.idleStartedAt = 0;
-        this.char.longIdleDelay = 9000;
+        this.char.longIdleDelay = 15000;
     }
 
     /**

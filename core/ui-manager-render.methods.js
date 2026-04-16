@@ -2,9 +2,9 @@ import {
     characterCardTemplate,
     characterDetailTemplate,
     storyCardTemplate,
-    controlsTemplate,
-    legalNoticeTemplate
+    controlsTemplate
 } from "../ui/menu-templates.js";
+import { legalNoticeTemplate } from "../config/legal-notice-template.js";
 
 export const uiManagerRenderMethods = {
 
@@ -57,6 +57,6 @@ export const uiManagerRenderMethods = {
     renderCreditsCard() {
         const box = this.dom.creditsSection;
         if (!box) return;
-        box.innerHTML = legalNoticeTemplate();
+        box.innerHTML = legalNoticeTemplate;
     }
 };

@@ -62,6 +62,9 @@ export class PauseManager {
         if (world.currentScene === 'endCredits') {
             world.endCreditsSetup?.video?.pause();
         }
+        if (world.currentScene === 'stableLevel') {
+            world.stableLevelSetup?.video?.pause();
+        }
     }
 
     /**
@@ -76,6 +79,9 @@ export class PauseManager {
         }
         if (world.currentScene === 'endCredits') {
             world.endCreditsSetup?.video?.play();
+        }
+        if (world.currentScene === 'stableLevel') {
+            world.stableLevelSetup?.video?.play();
         }
     }
 

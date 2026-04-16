@@ -21,7 +21,7 @@ export class EndbossCombatController {
      * @returns {void}
      */
     shootProjectile(character) {
-        const targetX = character.x + character.width * 0.5;
+        const targetX = character.x + character.width * -0.5;
         const targetY = character.y + character.height * 0.35;
         const direction = targetX > (this.endboss.x + this.endboss.width * 0.5);
         const beakX = direction

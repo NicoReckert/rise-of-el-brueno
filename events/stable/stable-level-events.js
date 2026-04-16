@@ -148,7 +148,7 @@ export const stableEvents =
             objectA: 'character',
             objectB: 'pollito',
             requireKey: 'F',
-            toleranceB: { x: -20},
+            toleranceB: { x: -20 },
             once: false,
             step: 1,
             action: (setup) => {
@@ -176,7 +176,7 @@ export const stableEvents =
             type: 'collision',
             objectA: 'character',
             objectB: 'pollito',
-            toleranceB: { x: -20},
+            toleranceB: { x: -20 },
             once: false,
             step: 1,
             condition: (setup) => setup.world.farmLevelController.questManager.step < 8,
@@ -258,7 +258,7 @@ export const stableEvents =
                 setup.world.audioManager.playOneShot('taskCompletedSfx');
                 setup.popupTexts.push(new PopupText("Aufgabe erledigt!", setup.world.canvas.width / 2, 440));
                 setup.memoryVideoStarted = true;
-                setup.video.muted = false;
+                setup.video.muted = setup.world.audioManager.isMuted;
                 setup.video.play();
                 setup.world.character.isMovingLeft = false;
                 setup.world.character.isMovingRight = false;

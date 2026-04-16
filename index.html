@@ -14,6 +14,7 @@
     <div class="loading-overlay" id="loading-overlay">
         <div class="loading-bar" id="loading-bar"></div>
         <span class="loading-text" id="loading-text">Preparing experience…</span>
+        <a class="loading-legal-link" href="./legal-notice.html">Legal Notice</a>
     </div>
     <div class="all-content" id="all-content">
         <div class="game-stage">
@@ -71,19 +72,21 @@
                     <button class="menu-button" id="pause-restart-button">Level neu starten</button>
                     <button class="menu-button" id="pause-menu-main-button">Zum Menü</button>
                 </div>
+                <a class="loading-legal-link" href="./legal-notice.html">Legal Notice</a>
             </div>
             <canvas id="canvas" width="1280" height="720"></canvas>
             <video class="game-over-video d-none" id="game-over-video" playsinline preload="none"
-                disablePictureInPicture controlsList="nodownload noremoteplayback"></video>
+                disablePictureInPicture controlsList="nodownload nofullscreen noremoteplayback"></video>
             <div class="game-over-video-overlay d-none" id="game-over-video-overlay"></div>
             <div class="game-over-video-vignette d-none" id="game-over-video-vignette"></div>
             <div class="game-over-video-light d-none" id="game-over-video-light"></div>
             <video class="end-credits-video d-none" id="end-credits-video" playsinline preload="none"
-                disablePictureInPicture controlsList="nodownload noremoteplayback"></video>
+                disablePictureInPicture controlsList="nodownload nofullscreen noremoteplayback"></video>
         </div>
     </div>
     <div class="start-screen-overlay opacity-none" id="start-screen-overlay">
-        <video muted playsinline class="background-video" id="background-video">
+        <video muted playsinline disablePictureInPicture controlsList="nodownload nofullscreen noremoteplayback"
+            class="background-video" id="background-video">
             Dein Browser unterstützt kein HTML5-Video.
         </video>
         <div class="start-screen-header">
@@ -95,8 +98,8 @@
         <div class="start-screen-content">
             <div class="start-screen-media">
                 <div class="earth-video-box">
-                    <video class="earth-video" id="earth-video" loop muted playsinline disablepictureinpicture
-                        controlslist="nodownload nofullscreen noremoteplayback"></video>
+                    <video class="earth-video" id="earth-video" loop muted playsinline disablePictureInPicture
+                        controlsList="nodownload nofullscreen noremoteplayback"></video>
                 </div>
                 <div class="hero-character-group">
                     <img class="chick-img" src="./assets/img/shared_visuals/chick.webp" alt="">
@@ -104,13 +107,13 @@
                     <img class="chicken-img" src="./assets/img/shared_visuals/chicken.webp" alt="">
                 </div>
                 <div class="portal-video-box">
-                    <video class="portal-video" id="portal-video" loop muted playsinline disablepictureinpicture
-                        controlslist="nodownload nofullscreen noremoteplayback"></video>
+                    <video class="portal-video" id="portal-video" loop muted playsinline disablePictureInPicture
+                        controlsList="nodownload nofullscreen noremoteplayback"></video>
                 </div>
             </div>
             <div class="dragon-thunder-box">
-                <video class="thunder-video" id="thunder-video" loop muted playsinline disablepictureinpicture
-                    controlslist="nodownload nofullscreen noremoteplayback"></video>
+                <video class="thunder-video" id="thunder-video" loop muted playsinline disablePictureInPicture
+                    controlsList="nodownload nofullscreen noremoteplayback"></video>
                 <img class="dragon-silhouette" src="./assets/img/shared_visuals/black_dragon.webp" alt="">
                 <img class="dragon-silhouette red-glow" src="./assets/img/shared_visuals/black_dragon.webp" alt="">
             </div>
@@ -118,8 +121,8 @@
                 <button class="menu-button" id="start-game-button">Start</button>
                 <button class="menu-button" id="open-story-button">Story</button>
                 <button class="menu-button" id="open-characters-button">Characters</button>
-                <button class="menu-button" id="open-controls-button">Steuerung</button>
-                <button class="menu-button" id="open-credits-button">Credits</button>
+                <button class="menu-button" id="open-controls-button">Controls</button>
+                <button class="menu-button" id="open-credits-button">Legal Notice</button>
             </div>
         </div>
     </div>
@@ -128,16 +131,16 @@
         <div class="intro-actions d-none" id="intro-actions">
             <button class="menu-button" id="intro-skip-button">Skip</button>
         </div>
-        <video muted loop playsinline class="opening-background-video" id="opening-background-video">
-            Dein Browser unterstützt kein HTML5-Video.
+        <video muted loop playsinline disablePictureInPicture controlsList="nodownload nofullscreen noremoteplayback"
+            class="opening-background-video" id="opening-background-video">
         </video>
-        <video muted playsinline class="intro-video opacity-none" id="intro-video">
-            Dein Browser unterstützt kein HTML5-Video.
+        <video muted playsinline disablePictureInPicture controlsList="nodownload nofullscreen noremoteplayback"
+            class="intro-video opacity-none" id="intro-video">
         </video>
+        <a class="loading-legal-link" href="./legal-notice.html">Legal Notice</a>
     </div>
-    <video muted loop playsinline disablePictureInPicture controlsList="nodownload noremoteplayback"
+    <video muted loop playsinline disablePictureInPicture controlsList="nodownload nofullscreen noremoteplayback"
         class="submenu-video" id="submenu-video">
-        Dein Browser unterstützt kein HTML5-Video.
     </video>
     <div class="page-overlay d-none" id="characters-overlay">
         <div class="overlay-back">
@@ -161,7 +164,7 @@
         <div class="overlay-back">
             <button class="menu-button" id="close-controls-overlay-button">Back</button>
         </div>
-        <h1 class="overlay-title">Steuerung</h1>
+        <h1 class="overlay-title">Controls</h1>
         <div class="ornament story-ornament-left"></div>
         <div class="ornament story-ornament-right"></div>
         <div class="controls-section" id="controls-section">
@@ -172,7 +175,7 @@
         <div class="overlay-back">
             <button class="menu-button" id="close-credits-overlay-button">Back</button>
         </div>
-        <h1 class="overlay-title">Credits</h1>
+        <h1 class="overlay-title">Legal Notice</h1>
         <div class="ornament story-ornament-left"></div>
         <div class="ornament story-ornament-right"></div>
         <div class="overlay-section" id="credits-section">
