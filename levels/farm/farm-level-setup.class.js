@@ -83,4 +83,13 @@ export class FarmLevelSetup {
     refreshSounds() {
         this.sounds = createFarmSounds(this.allAudios, this.world.audioManager);
     }
+
+    /**
+     * Refreshes the farm video reference.
+     * @returns {void}
+     */
+    refreshVideo() {
+        this.allVideos = this.world.allVideos;
+        this.video = this.allVideos.prolog ?? null;
+    }
 }

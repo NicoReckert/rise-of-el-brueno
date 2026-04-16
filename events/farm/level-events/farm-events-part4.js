@@ -50,6 +50,7 @@ export const farmEvents_part4 = [
         type: 'time',
         delay: 52000,
         step: 19,
+        condition: (setup) => !setup.state.prologVideoStarted && !!setup.video,
         action: (setup) => {
             setup.state.prologVideoStarted = true;
             setup.video.play();
@@ -89,6 +90,7 @@ export const farmEvents_part4 = [
             !setup.video.paused &&
             !setup.video.ended,
         action: (setup) => {
+            if (!setup.video) return;
             setup.video.pause();
             setup.state.prologVideoFinished = true;
         }

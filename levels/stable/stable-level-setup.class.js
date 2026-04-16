@@ -84,4 +84,13 @@ export class StableLevelSetup {
             new HollowHint("Erinnerung", this.environment.memoryLight, 100, 'default')
         ];
     }
+
+    /**
+     * Refreshes the stable video reference.
+     * @returns {void}
+     */
+    refreshVideo() {
+        this.allVideos = this.world.allVideos;
+        this.video = this.allVideos.memory ?? null;
+    }
 }

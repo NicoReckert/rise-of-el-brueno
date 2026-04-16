@@ -252,7 +252,7 @@ export const stableEvents =
             objectA: 'character',
             objectB: 'memoryLight',
             requireKey: 'F',
-            condition: (setup) => setup.world.farmLevelController.questManager.step >= 20,
+            condition: (setup) => setup.world.farmLevelController.questManager.step >= 20 && !!setup.video && !setup.memoryVideoStarted,
             action: (setup) => {
                 setup.world.taskWindow.markDone(7)
                 setup.world.audioManager.playOneShot('taskCompletedSfx');

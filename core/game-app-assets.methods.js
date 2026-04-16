@@ -27,6 +27,8 @@ export const gameAppAssetMethods = {
         this.applyDeferredAudios(assets.deferredAudios);
         this.world.farmLevelSetup?.refreshSounds();
         this.applyDeferredVideos(assets.deferredVideos);
+        this.world.farmLevelSetup?.refreshVideo();
+        this.world.stableLevelSetup?.refreshVideo();
         this.applyDeferredWorldAssets(assets);
         this.applyDeferredMuteState();
     },
