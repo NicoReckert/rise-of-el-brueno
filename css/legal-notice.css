@@ -1,0 +1,128 @@
+* {
+    box-sizing: border-box;
+    margin: 0;
+    font-family: 'Open-Sans', sans-serif;
+    scrollbar-width: thin;
+}
+
+html {
+    scroll-behavior: smooth;
+    height: 100%;
+}
+
+body {
+    scroll-behavior: smooth;
+    min-height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    overflow-x: hidden;
+}
+
+.all-content {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    background-color: black;
+    flex: 1;
+    background-image: url('../assets/img/shared_visuals/card_textur_background.webp');
+    background-position: center center;
+    background-repeat: no-repeat;
+    background-size: cover;
+    padding: 48px 68px;
+}
+
+.legal-notice__title {
+    font-size: 36px;
+    font-weight: 900;
+    color: #e0b96f;
+    font-family: 'Nunito';
+    text-shadow:
+        1px 1px 1px rgba(255, 255, 255, 0.3),
+        0 3px 5px rgba(0, 0, 0, 0.9),
+        0 0 10px rgba(255, 210, 120, 0.6);
+    -webkit-text-stroke: 0.4px rgba(40, 20, 0, 0.8);
+}
+
+.legal-notice__subtitle {
+    font-size: 28px;
+    font-family: 'Nunito';
+    color: #ddd0bb;
+    font-weight: 800;
+    text-shadow:
+        0 1px 2px rgba(0, 0, 0, 0.9),
+        0 3px 5px rgba(0, 0, 0, 0.75),
+        0 0 8px rgba(255, 210, 120, 0.16);
+    -webkit-text-stroke: 0.45px rgba(25, 12, 0, 0.9);
+}
+
+.legal-notice__text {
+    font-size: 28px;
+    font-weight: bold;
+    color: #f8e7c0;
+    font-family: 'Nunito-Italic';
+    text-shadow:
+        0 2px 2px rgba(0, 0, 0, 0.7),
+        0 0 6px rgba(255, 220, 180, 0.3);
+    -webkit-text-stroke: 0.3px rgba(0, 0, 0, 0.5);
+    filter: drop-shadow(2px 2px 3px rgb(0, 0, 0, 0.6));
+}
+
+.legal-notice__link {
+    font-size: 28px;
+    color: #e7c97a;
+    text-shadow: 0 1px 1px rgba(0, 0, 0, 0.7);
+    -webkit-text-stroke: 0.3px rgba(0, 0, 0, 0.6);
+    text-decoration: none;
+}
+
+.legal-notice__link:hover {
+    color: #fff0b5;
+    text-shadow: 0 0 10px rgba(255, 230, 160, 0.6);
+}
+
+.back-link {
+    display: inline-block;
+    margin-bottom: 24px;
+    font-weight: bold;
+    color: rgb(221, 208, 187);
+    text-decoration: none;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.45);
+}
+
+@media only screen and (max-width: 1330px) {
+    .legal-notice__title {
+        font-size: 32px;
+    }
+
+    .legal-notice__subtitle,
+    .legal-notice__text,
+    .legal-notice__link {
+        font-size: 24px;
+    }
+}
+
+@media only screen and (max-width: 1024px) {
+    .all-content {
+        padding: 48px 24px;
+    }
+}
+
+@media only screen and (max-width: 900px) {
+    .legal-notice__title {
+        font-size: 24px;
+    }
+
+    .legal-notice__subtitle,
+    .legal-notice__text,
+    .legal-notice__link {
+        font-size: 20px;
+    }
+}
+
+@media only screen and (max-width: 625px) {
+    .all-content {
+        padding: 48px 12px;
+    }
+}

@@ -218,7 +218,7 @@ export class IntroScreen {
             },
             townLevel: {
                 text: "Die Stadt",
-                bgSrc: "./assets/img/shared_visuals/intro_background_town.png"
+                bgSrc: "./assets/img/shared_visuals/intro_background_town.webp"
             }
         };
     }

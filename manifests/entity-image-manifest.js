@@ -311,7 +311,7 @@ export const farmEntityManifestDeferred = {
 }
 
 export const otherLevelEntityManifestLazy = {
-  sandstorm: { texture: Array.from({ length: 1 }, _ => `./assets/img/shared_visuals/sandstorm_texture.png`) },
+  sandstorm: { texture: Array.from({ length: 1 }, _ => `./assets/img/shared_visuals/sandstorm_texture.webp`) },
 
   gameOverCharacterSpirit: {
     idle: {
@@ -684,7 +684,7 @@ export const otherLevelEntityManifestLazy = {
   },
 
   musician: {
-    idle: Array.from({ length: 6 }, (_, i) => `./assets/img/entities/musician/idle/image_${i + 1}.png`)
+    idle: Array.from({ length: 6 }, (_, i) => `./assets/img/entities/musician/idle/image_${i + 1}.webp`)
   },
 
   sollita: {
@@ -725,7 +725,7 @@ export const otherLevelEntityManifestLazy = {
   },
 
   rockyDesertPedestal: {
-    idle: Array.from({ length: 1 }, _ => `./assets/img/entities/rocky_desert_pedestal/idle/image_1.png`)
+    idle: Array.from({ length: 1 }, _ => `./assets/img/entities/rocky_desert_pedestal/idle/image_1.webp`)
   },
 
   fire: {
@@ -808,7 +808,7 @@ export const otherLevelEntityManifestLazy = {
   },
 
   spiritEssence: {
-    idle: Array.from({ length: 8 }, (_, i) => `./assets/img/entities/spirit-essence/idle/image_${i + 1}.png`)
+    idle: Array.from({ length: 8 }, (_, i) => `./assets/img/entities/spirit-essence/idle/image_${i + 1}.webp`)
   },
 
   tumbleweed: {

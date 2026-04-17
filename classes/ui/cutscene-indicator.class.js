@@ -27,9 +27,9 @@ export class CutsceneIndicator {
      */
     initPanelIcons() {
         this.playIcon = new Image();
-        this.playIcon.src = "./assets/icons/cutscene_play.png";
+        this.playIcon.src = "./assets/icons/cutscene_play.webp";
         this.skipIcon = new Image();
-        this.skipIcon.src = "./assets/icons/skip.png";
+        this.skipIcon.src = "./assets/icons/skip.webp";
     }
 
     /**

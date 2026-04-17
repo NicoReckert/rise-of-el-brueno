@@ -119,15 +119,7 @@ body {
   flex: 1;
 }
 
-.content-legal-notice {
-  background-image: url('./assets/img/shared_visuals/card_textur_background.jpg');
-  background-position: center center;
-  background-repeat: no-repeat;
-  background-size: cover;
-  padding: 48px 68px;
-}
-
-.game-stage {
+.gamestage {
   position: relative;
   display: flex;
   justify-content: center;
@@ -884,7 +876,7 @@ canvas {
   content: "";
   position: fixed;
   inset: 0;
-  background-image: url('./assets/img/shared_visuals/ornamentA.png');
+  background-image: url('./assets/img/shared_visuals/ornamentA.webp');
   opacity: 0.05;
   mix-blend-mode: overlay;
   pointer-events: none;
@@ -1008,7 +1000,7 @@ canvas {
 }
 
 .ornament-left {
-  background: url('./assets/img/shared_visuals/ornamentA.png') no-repeat center/contain;
+  background: url('./assets/img/shared_visuals/ornamentA.webp') no-repeat center/contain;
   width: 280px;
   height: 280px;
   top: -100px;
@@ -1017,7 +1009,7 @@ canvas {
 }
 
 .ornament-right {
-  background: url('./assets/img/shared_visuals/ornamentB.png') no-repeat center/contain;
+  background: url('./assets/img/shared_visuals/ornamentB.webp') no-repeat center/contain;
   width: 250px;
   height: 250px;
   bottom: -110px;
@@ -1044,7 +1036,7 @@ canvas {
   border: 2px solid rgba(255, 220, 160, 0.6);
   border-radius: 16px;
   background:
-    url("./assets/img/shared_visuals/card_textur_background.jpg"),
+    url("./assets/img/shared_visuals/card_textur_background.webp"),
     radial-gradient(circle at top left, rgba(255, 255, 255, 0.25), rgba(0, 0, 0, 0.25));
   background-size: cover;
   background-blend-mode: overlay;
@@ -1263,7 +1255,6 @@ canvas {
 .credits-links {
   font-size: 28px;
   color: #e7c97a;
-  ;
   text-shadow: 0 1px 1px rgba(0, 0, 0, 0.7);
   -webkit-text-stroke: 0.3px rgba(0, 0, 0, 0.6);
   text-decoration: none;
@@ -1272,15 +1263,6 @@ canvas {
 .credits-links:hover {
   color: #fff0b5;
   text-shadow: 0 0 10px rgba(255, 230, 160, 0.6);
-}
-
-.back-link {
-  display: inline-block;
-  margin-bottom: 24px;
-  font-weight: bold;
-  color: rgb(221, 208, 187);
-  text-decoration: none;
-  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.45);
 }
 
 .detail-card-container {
@@ -1305,7 +1287,7 @@ canvas {
   border: 2px solid rgba(255, 220, 160, 0.6);
   border-radius: 16px;
   background:
-    url("./assets/img/shared_visuals/card_textur_background.jpg"),
+    url("./assets/img/shared_visuals/card_textur_background.webp"),
     radial-gradient(circle at top left, rgba(255, 255, 255, 0.25), rgba(0, 0, 0, 0.25));
   background-size: cover;
   background-blend-mode: overlay;
@@ -1408,7 +1390,7 @@ canvas {
   border: 2px solid rgba(255, 220, 160, 0.6);
   border-radius: 16px;
   background:
-    url("./assets/img/shared_visuals/card_textur_background.jpg"),
+    url("./assets/img/shared_visuals/card_textur_background.webp"),
     radial-gradient(circle at top left, rgba(255, 255, 255, 0.25), rgba(0, 0, 0, 0.25));
   background-size: cover;
   background-blend-mode: overlay;
@@ -2672,15 +2654,12 @@ canvas {
     padding: 16px 6px;
   }
 
-  .content-legal-notice h2,
-  .content-legal-notice h3,
   #credits-section h2,
   #credits-section h3 {
     font-size: 32px;
   }
 
   .credits-sub-title,
-  .content-legal-notice .credits-text,
   #credits-section .credits-text,
   .credits-links {
     font-size: 24px;
@@ -2706,23 +2685,16 @@ canvas {
     margin-left: 24px;
     margin-right: 24px;
   }
-
-  .content-legal-notice {
-    padding: 48px 24px;
-  }
 }
 
 @media only screen and (max-width: 900px) {
 
-  .content-legal-notice h2,
-  .content-legal-notice h3,
   #credits-section h2,
   #credits-section h3 {
     font-size: 24px;
   }
 
   .credits-sub-title,
-  .content-legal-notice .credits-text,
   #credits-section .credits-text,
   .credits-links {
     font-size: 20px;
@@ -2743,14 +2715,6 @@ canvas {
   #credits-section .content-card {
     margin-left: 6px;
     margin-right: 6px;
-  }
-
-  .content-legal-notice {
-    padding: 48px 12px;
-  }
-
-  .content-legal-notice .content-card__body {
-    padding: 0;
   }
 }
 

@@ -38,7 +38,7 @@ const stableLevelVisualImageManifest = {
 
 const nayelisHouseLevelVisualImageManifest = {
     scenery: {
-        interior: ['./assets/img/shared_visuals/house_nayeli_interior.png']
+        interior: ['./assets/img/shared_visuals/house_nayeli_interior.webp']
     }
 };
 
@@ -54,7 +54,7 @@ const townLevelVisualImageManifest = {
         town4: ['./assets/img/shared_visuals/town4.webp'],
         town5: ['./assets/img/shared_visuals/town5.webp'],
         town6: ['./assets/img/shared_visuals/town6.webp'],
-        nayeliHouse: ['./assets/img/shared_visuals/house_nayeli.png']
+        nayeliHouse: ['./assets/img/shared_visuals/house_nayeli.webp']
     }
 };
 

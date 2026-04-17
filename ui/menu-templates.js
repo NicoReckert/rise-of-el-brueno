@@ -100,7 +100,7 @@ function createControlsActionCell(control) {
 function createControlsKeyCell(control) {
     return `
         <div class="controls-grid__key">
-            <img class="controls-img" src="./assets/icons/${control.key}.png" alt="${control.key}">
+            <img class="controls-img" src="./assets/icons/${control.key}.webp" alt="${control.key}">
         </div>`;
 }
 
@@ -114,7 +114,7 @@ function createControlsMobileCell(control, mobileIconClass) {
     return `
         <div class="controls-grid__mobile">
             <div class="controls-mobile-icon-box">
-                <img class="${mobileIconClass}" src="./assets/icons/${control.mobile}.png" alt="${control.mobile}">
+                <img class="${mobileIconClass}" src="./assets/icons/${control.mobile}.webp" alt="${control.mobile}">
             </div>
         </div>`;
 }
@@ -134,7 +134,7 @@ function createControlsHeaderAction() {
 function createControlsHeaderKey() {
     return `
         <div class="controls-grid__header controls-grid__header--key">
-            <img class="controls-keyboard-img" src="./assets/icons/keyboard.png" alt="Keyboard">
+            <img class="controls-keyboard-img" src="./assets/icons/keyboard.webp" alt="Keyboard">
         </div>`;
 }
 
@@ -145,7 +145,7 @@ function createControlsHeaderKey() {
 function createControlsHeaderMobile() {
     return `
         <div class="controls-grid__header controls-grid__header--mobile">
-            <img class="controls-mobile-img" src="./assets/icons/mobile.png" alt="Mobile">
+            <img class="controls-mobile-img" src="./assets/icons/mobile.webp" alt="Mobile">
         </div>`;
 }
 

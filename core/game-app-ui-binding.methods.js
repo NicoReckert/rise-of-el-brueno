@@ -71,7 +71,6 @@ export const gameAppUiBindingMethods = {
             }
             this.uiManager.showGameScreen();
             this.world.startGame();
-            this.fullscreenManager.setFullscreen(this.uiManager.dom.body);
             this.audioManager.stopTitleMusic();
         });
     },
@@ -117,7 +116,6 @@ export const gameAppUiBindingMethods = {
     bindIntroStartButton() {
         this.inputManager.listenIntroStartButton(() => {
             this.audioManager.playClickSound()
-            this.fullscreenManager.setFullscreen(this.uiManager.dom.body);
             this.menuVisuals.startIntro();
         });
     },
@@ -129,7 +127,6 @@ export const gameAppUiBindingMethods = {
     bindIntroSkipButton() {
         this.inputManager.listenIntroSkipButton(() => {
             this.audioManager.playClickSound();
-            this.fullscreenManager.setFullscreen(this.uiManager.dom.body);
             this.menuVisuals.skipIntro();
         });
     },
