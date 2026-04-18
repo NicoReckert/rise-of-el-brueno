@@ -140,10 +140,10 @@ export class CharacterMovementController {
     }
 
     /**
-     * Moves the camera towards a target position.
-     * @param {number} targetX Target x-coordinate.
-     * @param {Object} [options={}] Movement options.
-     * @returns {boolean} True if movement is finished, otherwise false.
+     * Moves to a target X position.
+     * @param {number} targetX Target X position.
+     * @param {Object} [options={}] Move options.
+     * @returns {boolean} True if the target position was reached, otherwise false.
      */
     moveToX(targetX, options = {}) {
         const cfg = this.buildMoveToXConfig(targetX, options);
@@ -170,15 +170,9 @@ export class CharacterMovementController {
     }
 
     /**
-     * Normalizes movement options for horizontal movement.
-     * @param {Object} [options={}] Movement options.
-     * @param {number} [options.tolerance=3] Distance threshold to consider arrival.
-     * @param {boolean} [options.snap=true] Whether to snap to target on arrival.
-     * @param {number} [options.speed=5] Movement speed.
-     * @param {boolean} [options.faceTarget=true] Whether to face the target direction.
-     * @param {boolean} [options.setWalkFlag=false] Whether to set the walk state flag.
-     * @param {?Function} [options.onArrive=null] Callback invoked on arrival.
-     * @returns {Object} Normalized movement options.
+     * Normalizes move-to-X options.
+     * @param {Object} [options={}] Move options.
+     * @returns {Object} Normalized move-to-X options.
      */
     normalizeMoveToXOptions(options = {}) {
         const {
@@ -187,9 +181,10 @@ export class CharacterMovementController {
             speed = 5,
             faceTarget = true,
             setWalkFlag = false,
+            stopWalkOnArrive = true,
             onArrive = null
         } = options;
-        return { tolerance, snap, speed, faceTarget, setWalkFlag, onArrive };
+        return { tolerance, snap, speed, faceTarget, setWalkFlag, stopWalkOnArrive, onArrive };
     }
 
     /**
@@ -199,9 +194,9 @@ export class CharacterMovementController {
      */
     applyMoveToX(cfg) {
         const char = this.char;
-        const { d, targetX, tolerance, snap, speed, onArrive } = cfg;
+        const { d, targetX, tolerance, snap, speed, onArrive, stopWalkOnArrive } = cfg;
         if (Math.abs(d) <= tolerance) {
-            char.isWalk = false;
+            if (stopWalkOnArrive) char.isWalk = false;
             if (snap) char.x = targetX;
             onArrive?.();
             return true;
@@ -224,14 +219,10 @@ export class CharacterMovementController {
     }
 
     /**
-     * Builds configuration for vertical movement towards a target.
-     * @param {number} targetY Target y-coordinate.
-     * @param {Object} [options={}] Movement options.
-     * @param {number} [options.tolerance=2] Distance threshold to consider arrival.
-     * @param {boolean} [options.snap=true] Whether to snap to target on arrival.
-     * @param {number} [options.speed=1.5] Movement speed.
-     * @param {?Function} [options.onArrive=null] Callback invoked on arrival.
-     * @returns {Object} Movement configuration.
+     * Builds move-to-Y configuration.
+     * @param {number} targetY Target Y position.
+     * @param {Object} [options={}] Move options.
+     * @returns {Object} Move-to-Y configuration.
      */
     buildMoveToYConfig(targetY, options = {}) {
         const char = this.char;
@@ -239,10 +230,11 @@ export class CharacterMovementController {
             tolerance = 2,
             snap = true,
             speed = 1.5,
+            stopWalkOnArrive = false,
             onArrive = null
         } = options;
         const d = targetY - char.y;
-        return { d, targetY, tolerance, snap, speed, onArrive };
+        return { d, targetY, tolerance, snap, speed, stopWalkOnArrive, onArrive };
     }
 
     /**
@@ -252,8 +244,9 @@ export class CharacterMovementController {
      */
     applyMoveToY(cfg) {
         const char = this.char;
-        const { d, targetY, tolerance, snap, speed, onArrive } = cfg;
+        const { d, targetY, tolerance, snap, speed, stopWalkOnArrive, onArrive } = cfg;
         if (Math.abs(d) <= tolerance) {
+            if (stopWalkOnArrive) char.isWalk = false;
             if (snap) char.y = targetY;
             onArrive?.();
             return true;

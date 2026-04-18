@@ -113,6 +113,7 @@ export const farmEvents_part2 = [
         action: (setup) => {
             const arrivedXJuanito = setup.characters.juanito.moveToX(500);
             const arrivedXPollito = setup.characters.pollito.moveToX(575);
+            setup.world.character.idleStartedAt = 0;
             if (arrivedXJuanito) setup.characters.juanito.isMovingLeft = false;
             if (arrivedXPollito) setup.characters.pollito.isMovingLeft = false;
             if (arrivedXJuanito && arrivedXPollito) setup.world.farmLevelController.questManager.advance(9)

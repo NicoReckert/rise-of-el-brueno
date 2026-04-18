@@ -122,10 +122,10 @@ export const farmHelper = {
         const world = setup.world;
         const char = world.character;
         const camArrived = world.camera.moveToX(108, { speed: 6 });
-        const arrivedX = char.movementCtrl.moveToX(788, { speed: 5, faceTarget: true });
-        if (!arrivedX) return;
+        const arrivedX = char.movementCtrl.moveToX(788, { speed: 5, faceTarget: true, stopWalkOnArrive: false });
         const arrivedY = char.movementCtrl.moveToY(393, { speed: 1.5 });
-        if (!arrivedY) return;
+        if (!arrivedX || !arrivedY) return;
+        char.isWalk = false;
         if (!camArrived) return;
         farmHelper.finalizeCampfireArrival(setup, char);
     },
