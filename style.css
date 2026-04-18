@@ -733,7 +733,7 @@ canvas {
   justify-content: center;
   align-items: center;
   width: 100%;
-  gap: 22px;
+  gap: 16px;
   padding: 12px 18px;
   opacity: 0.80;
   z-index: 2;
@@ -872,7 +872,9 @@ canvas {
   flex-direction: column;
 }
 
-.page-overlay::after {
+.page-overlay::after,
+#story-overlay::after,
+#controls-overlay::after {
   content: "";
   position: fixed;
   inset: 0;
@@ -887,6 +889,11 @@ canvas {
 
 .page-overlay.blur-effect {
   filter: blur(10px);
+}
+
+#controls-overlay.overlay-opened-from-pause::after,
+#credits-overlay.overlay-opened-from-pause::after {
+  content: none;
 }
 
 .overlay-back {
@@ -1871,6 +1878,20 @@ canvas {
     width: 110px;
   }
 
+  #pause-resume-button,
+  #pause-controls-button,
+  #pause-credits-button,
+  #pause-restart-button,
+  #pause-menu-main-button,
+  #game-over-restart-button,
+  #game-over-menu-button,
+  #next-level-button,
+  #restart-level-button,
+  #level-complete-menu-button,
+  #end-credits-menu-button {
+    width: 150px;
+  }
+
   .start-menu {
     padding: 3px 3px;
   }
@@ -2028,7 +2049,7 @@ canvas {
     width: 100px;
   }
 
-  #start-game-button,
+  #play-game-button,
   #open-story-button,
   #open-characters-button,
   #open-controls-button,

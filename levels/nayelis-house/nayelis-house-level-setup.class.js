@@ -6,6 +6,7 @@ import { SpeechBubble } from '../../classes/ui/speech-bubble.class.js';
 import { DialogManager } from '../../classes/ui/dialog-manager.class.js';
 import { bubbleStep } from '../../utils/dialog-step-helpers.js';
 import { CutsceneIndicator } from '../../classes/ui/cutscene-indicator.class.js';
+import { getControlById } from '../../config/controls-config.js';
 
 /**
  * Sets up Nayeli's house level.
@@ -145,7 +146,7 @@ export class NayelisHouseLevelSetup {
      */
     createHints() {
         return [
-            new HollowHint("Verlassen", this.world.character, 100, 'desert')
+            new HollowHint("Verlassen", this.world.character, 100, 'desert', { control: getControlById('interact') })
         ];
     }
 

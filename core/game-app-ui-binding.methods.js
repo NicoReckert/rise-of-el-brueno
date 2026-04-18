@@ -16,7 +16,7 @@ export const gameAppUiBindingMethods = {
      * @returns {void}
      */
     bindMenuButtons() {
-        this.bindStartGameButton();
+        this.bindPlayGameButton();
         this.bindNextLevelButton();
         this.bindIntroStartButton();
         this.bindIntroSkipButton();
@@ -46,6 +46,8 @@ export const gameAppUiBindingMethods = {
     bindPauseControls() {
         this.bindPauseToggleButton();
         this.bindPauseResumeButton();
+        this.bindPauseControlsButton();
+        this.bindPauseCreditsButton();
         this.bindPauseKey();
     },
 
@@ -61,11 +63,11 @@ export const gameAppUiBindingMethods = {
     },
 
     /**
-     * Binds the start game button click event.
+     * Binds the play game button click event.
      * @returns {void}
      */
-    bindStartGameButton() {
-        this.inputManager.listenStartGameButton(() => {
+    bindPlayGameButton() {
+        this.inputManager.listenPlayGameButton(() => {
             if (!this.world) {
                 this.initWorld();
             }
@@ -200,6 +202,8 @@ export const gameAppUiBindingMethods = {
      */
     bindOpenControlsButton() {
         this.inputManager.listenOpenControlsButton(() => {
+            this.uiManager.resetPauseOverlayReturn();
+            this.uiManager.setControlsOverlayFromPause(false);
             this.menuAudioAndCharacters.openControlsOverlay();
         })
     },
@@ -211,6 +215,8 @@ export const gameAppUiBindingMethods = {
     bindCloseControlsOverlayButton() {
         this.inputManager.listenCloseControlsOverlayButton(() => {
             this.menuAudioAndCharacters.closeControlsOverlay();
+            this.uiManager.setControlsOverlayFromPause(false);
+            this.uiManager.restorePauseOverlayAfterSubOverlay();
         })
     },
 
@@ -220,6 +226,8 @@ export const gameAppUiBindingMethods = {
      */
     bindOpenCreditsButton() {
         this.inputManager.listenOpenCreditsButton(() => {
+            this.uiManager.resetPauseOverlayReturn();
+            this.uiManager.setCreditsOverlayFromPause(false);
             this.menuAudioAndCharacters.openCreditsOverlay();
         })
     },
@@ -231,6 +239,8 @@ export const gameAppUiBindingMethods = {
     bindCloseCreditsOverlayButton() {
         this.inputManager.listenCloseCreditsOverlayButton(() => {
             this.menuAudioAndCharacters.closeCreditsOverlay();
+            this.uiManager.setCreditsOverlayFromPause(false);
+            this.uiManager.restorePauseOverlayAfterSubOverlay();
         })
     },
 
@@ -295,6 +305,32 @@ export const gameAppUiBindingMethods = {
             this.audioManager.setMutedState(newMuted);
             if (creditsVideo) creditsVideo.muted = newMuted;
             if (memoryVideo) memoryVideo.muted = newMuted;
+        });
+    },
+
+    /**
+     * Binds the pause controls button.
+     * @returns {void}
+     */
+    bindPauseControlsButton() {
+        this.inputManager.listenPauseControlsButton(() => {
+            this.uiManager.setPauseOverlayReturn(true);
+            this.uiManager.setControlsOverlayFromPause(true);
+            this.uiManager.hidePauseOverlay();
+            this.menuAudioAndCharacters.openControlsOverlay();
+        });
+    },
+
+    /**
+     * Binds the pause credits button.
+     * @returns {void}
+     */
+    bindPauseCreditsButton() {
+        this.inputManager.listenPauseCreditsButton(() => {
+            this.uiManager.setPauseOverlayReturn(true);
+            this.uiManager.setCreditsOverlayFromPause(true);
+            this.uiManager.hidePauseOverlay();
+            this.menuAudioAndCharacters.openCreditsOverlay();
         });
     }
 }

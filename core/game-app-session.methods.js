@@ -33,12 +33,15 @@ export const gameAppSessionMethods = {
      * @returns {void}
      */
     resetSessionUiState() {
+        this.uiManager.resetPauseOverlayReturn?.();
         this.uiManager.hideLevelCompleteActions();
         this.uiManager.hideGameOverActions();
         this.uiManager.hideGameOverVideoAndEffects();
         this.uiManager.hideEndCreditsActions();
         this.uiManager.hideEndCreditsVideo();
         this.uiManager.hidePauseOverlay();
+        this.uiManager.setControlsOverlayFromPause(false);
+        this.uiManager.setCreditsOverlayFromPause(false);
     },
 
     /**

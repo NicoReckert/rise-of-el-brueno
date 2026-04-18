@@ -1,3 +1,5 @@
+import { dialogManagerControlMethods } from './dialog-manager-control.methods.js';
+
 /**
  * Manages dialog state and dialog interactions.
  */
@@ -330,3 +332,8 @@ export class DialogManager {
         }
     }
 }
+
+/**
+ * Assigns control-related methods to the dialog manager prototype.
+ */
+Object.assign(DialogManager.prototype, dialogManagerControlMethods);

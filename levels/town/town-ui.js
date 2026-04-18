@@ -5,6 +5,7 @@ import { BottleBar } from '../../classes/ui/bottle-bar.class.js';
 import { DialogManager } from '../../classes/ui/dialog-manager.class.js';
 import { HollowHint } from '../../classes/ui/hollow-hint.class.js';
 import { CutsceneIndicator } from '../../classes/ui/cutscene-indicator.class.js';
+import { getControlById } from '../../config/controls-config.js';
 import {
     createTownSpeechBubblesCharacter,
     createTownSpeechBubblesNayeliSpirit,
@@ -117,7 +118,7 @@ function createTownSpeechBubblesSpiritGroup(setup) {
 function createTownHollowHints(setup) {
     return {
         hints: [
-            new HollowHint("Betreten", setup.world.character, 100, 'desert'),
+            new HollowHint("Betreten", setup.world.character, 100, 'desert', { control: getControlById('interact') }),
             new HollowHint("Folgen", setup.characters.tadeo, 100, 'desert'),
             new HollowHint("Checkpoint", setup.world.character, 100, 'desert')
         ]

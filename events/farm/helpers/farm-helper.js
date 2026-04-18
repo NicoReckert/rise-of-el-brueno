@@ -1,3 +1,5 @@
+import { PopupText } from "../../../classes/ui/popup-text.class.js";
+
 export const farmHelper = {
     /**
      * Handles stable door trigger logic based on character position.
@@ -302,5 +304,98 @@ export const farmHelper = {
         const { ctx, canvas } = setup.world;
         ctx.fillStyle = `rgba(10,10,40,${setup.state.darknessLevel})`;
         ctx.fillRect(0, 0, canvas.width, canvas.height);
+    },
+
+    /**
+     * Skips the farmhouse cutscene to the post-prolog state.
+     * @param {Object} setup Setup object.
+     * @returns {void}
+     */
+    skipFarmHouseCutsceneToPostProlog(setup) {
+        const world = setup.world;
+        const char = world.character;
+        setup.dialogManager?.stopAllDialogs?.();
+        this.resetFarmHouseCutsceneVideo(setup);
+        this.fadeOutFarmHouseCutsceneAudio(setup, world);
+        this.resetFarmHouseCutsceneFlags(setup, char, world);
+        this.resetFarmHouseCutsceneControls(setup, world, char);
+        this.finishFarmHouseCutsceneSkip(setup, world);
+    },
+
+    /**
+     * Resets the farmhouse cutscene video.
+     * @param {Object} setup Setup object.
+     * @returns {void}
+     */
+    resetFarmHouseCutsceneVideo(setup) {
+        setup.video?.pause();
+        if (setup.video) setup.video.currentTime = 0;
+    },
+
+    /**
+     * Fades out the farmhouse cutscene audio.
+     * @param {Object} setup Setup object.
+     * @param {Object} world World object.
+     * @returns {void}
+     */
+    fadeOutFarmHouseCutsceneAudio(setup, world) {
+        world.audioManager.fadeOutAudio(setup.sounds.droneIdleSfx, 300);
+        world.audioManager.fadeOutAudio(setup.sounds.droneControlledSfx, 300);
+        world.audioManager.fadeOutAudio(setup.sounds.farmNightMusic, 300);
+        world.audioManager.fadeOutAudio(setup.sounds.farmNightAmbience, 300);
+        world.audioManager.fadeOutAudio(setup.sounds.sadMusic, 300);
+    },
+
+    /**
+     * Resets the farmhouse cutscene flags.
+     * @param {Object} setup Setup object.
+     * @param {Object} char Character object.
+     * @param {Object} world World object.
+     * @returns {void}
+     */
+    resetFarmHouseCutsceneFlags(setup, char, world) {
+        setup.state.isNight = false;
+        setup.state.darknessLevel = 0;
+        setup.state.lastDarknessTimestamp = world.timestamp;
+        setup.state.earthquakeStart = false;
+        setup.state.prologVideoStarted = false;
+        setup.state.prologVideoFinished = false;
+        char.isKneelAndCry = false;
+        char.isStandUpAndLookDetermined = false;
+        char.isLookDeterminedAndStandUp = false;
+        world.camera_x = 800;
+    },
+
+    /**
+     * Resets the farmhouse cutscene controls.
+     * @param {Object} setup Setup object.
+     * @param {Object} world World object.
+     * @param {Object} char Character object.
+     * @returns {void}
+     */
+    resetFarmHouseCutsceneControls(setup, world, char) {
+        char.isMovingLeft = false;
+        char.isMovingRight = false;
+        char.isWalk = false;
+        char.isStandUp = false;
+        setup.environment.house.updateAnimationState('doorCloses');
+        setup.cutsceneIndicator.hide();
+        world.isKeysStopp = false;
+        world.keyboard.X = false;
+    },
+
+    /**
+     * Finishes the farmhouse cutscene skip.
+     * @param {Object} setup Setup object.
+     * @param {Object} world World object.
+     * @returns {void}
+     */
+    finishFarmHouseCutsceneSkip(setup, world) {
+        if (!world.taskWindow.tasks[7]) {
+            world.taskWindow.addTask('8. Besuche nochmal den Stall', { active: true });
+            setup.sounds.newTaskSfx.play();
+            setup.state.popupTexts.push(new PopupText("Neue Aufgabe im Log!", world.canvas.width / 2, 400));
+        }
+        world.farmLevelController.questManager.advance(20);
     }
 }

@@ -3,6 +3,7 @@ import { HollowHint } from '../../classes/ui/hollow-hint.class.js';
 import { createStableLevel } from './stable-level.js'
 import { stableEvents } from '../../events/stable/stable-level-events.js';
 import { CutsceneIndicator } from '../../classes/ui/cutscene-indicator.class.js';
+import { getControlById } from '../../config/controls-config.js';
 
 /**
  * Sets up the stable level including characters, environment, sounds, and UI elements.
@@ -78,10 +79,10 @@ export class StableLevelSetup {
      */
     createHints() {
         return [
-            new HollowHint("Streicheln", this.characters.juanito, 100, 'rose'),
-            new HollowHint("Streicheln", this.characters.pollito, 100, 'rose'),
-            new HollowHint("Verlassen", this.world.character, 100, 'desert'),
-            new HollowHint("Erinnerung", this.environment.memoryLight, 100, 'default')
+            new HollowHint("Streicheln", this.characters.juanito, 100, 'rose', { control: getControlById('interact') }),
+            new HollowHint("Streicheln", this.characters.pollito, 100, 'rose', { control: getControlById('interact') }),
+            new HollowHint("Verlassen", this.world.character, 100, 'desert', { control: getControlById('interact') }),
+            new HollowHint("Erinnerung", this.environment.memoryLight, 100, 'default', { control: getControlById('interact') })
         ];
     }
 

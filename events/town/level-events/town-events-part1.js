@@ -22,6 +22,7 @@ export const townEvents_part1 = [
         objectA: 'character',
         step: 11,
         once: false,
+        condition: (setup) => setup.state.isTadeoArrivedNayelisHouse,
         action: (setup) => {
             setup.hints[0].show();
         },
@@ -213,6 +214,7 @@ export const townEvents_part1 = [
         type: "position",
         area: { x: 20275, width: 95 },
         requireKey: "F",
+        condition: (setup) => setup.state.isTadeoArrivedNayelisHouse,
         action: (setup) => {
             setup.hints[0].hide();
             setup.world.audioManager.fadeOutAudio(setup.sounds.tadeoHoldStoneMusic, 1000);

@@ -48,7 +48,7 @@ export const uiManagerDomMethods = {
         return {
             introStartButton: document.getElementById('intro-start-button'),
             introSkipButton: document.getElementById('intro-skip-button'),
-            startGameButton: document.getElementById('start-game-button'),
+            playGameButton: document.getElementById('play-game-button'),
             openCharactersButton: document.getElementById('open-characters-button'),
             openStoryButton: document.getElementById('open-story-button'),
             openControlsButton: document.getElementById('open-controls-button'),
@@ -113,7 +113,9 @@ export const uiManagerDomMethods = {
             restartLevelButton: document.getElementById('restart-level-button'),
             gameOverRestartButton: document.getElementById('game-over-restart-button'),
             pauseRestartButton: document.getElementById('pause-restart-button'),
-            pauseMenuMainButton: document.getElementById('pause-menu-main-button')
+            pauseMenuMainButton: document.getElementById('pause-menu-main-button'),
+            pauseControlsButton: document.getElementById('pause-controls-button'),
+            pauseCreditsButton: document.getElementById('pause-credits-button')
         };
     },
 

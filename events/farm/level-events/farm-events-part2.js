@@ -14,7 +14,7 @@ export const farmEvents_part2 = [
         step: 7,
         once: false,
         action: (setup) => {
-            setup.hints[1].hide();
+            setup.hints[2].hide();
             const cow = setup.characters.cow
             const arrivedX = cow.moveToX(500);
             if (!arrivedX) {
@@ -28,7 +28,7 @@ export const farmEvents_part2 = [
             }
         },
         onLeave: (setup) => {
-            setup.hints[1].show();
+            setup.hints[2].show();
             setup.characters.cow.updateAnimationState('afraid', 1000 / 5);
             setup.characters.cow.isMovingLeft = false;
         }

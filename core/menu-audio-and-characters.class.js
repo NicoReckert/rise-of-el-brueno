@@ -236,11 +236,15 @@ export class MenuAudioAndCharacters {
      * @returns {void}
      */
     openControlsOverlay() {
-        const submenuBg = this.prepareSubmenuBg(this.uiManager.dom.controlsOverlay);
-        if (!submenuBg) return;
+        const fromPause = this.uiManager.returnToPauseOverlay;
+        if (!fromPause) {
+            const submenuBg = this.prepareSubmenuBg(this.uiManager.dom.controlsOverlay);
+            if (!submenuBg) return;
+            this.startSubmenuMusic();
+
+        }
         this.uiManager.showControlsOverlay();
         this.uiManager.renderControlsCard(controls);
-        this.startSubmenuMusic();
     }
 
     /**
@@ -248,8 +252,10 @@ export class MenuAudioAndCharacters {
      * @returns {void}
      */
     closeControlsOverlay() {
-        this.pauseSubmenuBg();
+        const fromPause = this.uiManager.returnToPauseOverlay;
+        if (!fromPause) this.pauseSubmenuBg();
         this.uiManager.hideControlsOverlay();
+        if (fromPause) return;
         this.returnToTitleLoop();
     }
 
@@ -258,11 +264,15 @@ export class MenuAudioAndCharacters {
      * @returns {void}
      */
     openCreditsOverlay() {
-        const submenuBg = this.prepareSubmenuBg(this.uiManager.dom.creditsOverlay);
-        if (!submenuBg) return;
+        const fromPause = this.uiManager.returnToPauseOverlay;
+        if (!fromPause) {
+            const submenuBg = this.prepareSubmenuBg(this.uiManager.dom.creditsOverlay);
+            if (!submenuBg) return;
+            this.startSubmenuMusic();
+
+        }
         this.uiManager.showCreditsOverlay();
         this.uiManager.renderCreditsCard();
-        this.startSubmenuMusic();
     }
 
     /**
@@ -270,8 +280,10 @@ export class MenuAudioAndCharacters {
      * @returns {void}
      */
     closeCreditsOverlay() {
-        this.pauseSubmenuBg();
+        const fromPause = this.uiManager.returnToPauseOverlay;
+        if (!fromPause) this.pauseSubmenuBg();
         this.uiManager.hideCreditsOverlay();
+        if (fromPause) return;
         this.returnToTitleLoop();
     }
 

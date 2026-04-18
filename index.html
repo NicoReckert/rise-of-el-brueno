@@ -50,29 +50,30 @@
             </div>
             <div class="level-complete-actions d-none" id="level-complete-actions">
                 <div class="level-complete-actions__secondary">
-                    <button class="menu-button" id="level-complete-menu-button">Zum Menü</button>
-                    <button class="menu-button" id="restart-level-button">Level neu starten</button>
+                    <button class="menu-button" id="level-complete-menu-button">Main Menu</button>
+                    <button class="menu-button" id="restart-level-button">Restart Level</button>
                 </div>
-                <button class="menu-button next-level-button" id="next-level-button">Nächstes Level</button>
+                <button class="menu-button next-level-button" id="next-level-button">Next Level</button>
             </div>
             <div class="game-over-actions d-none" id="game-over-actions">
-                <button class="menu-button d-none" id="game-over-checkpoint-button">Am Checkpoint starten</button>
-                <button class="menu-button" id="game-over-restart-button">Level neu starten</button>
-                <button class="menu-button" id="game-over-menu-button">Zum Menü</button>
+                <button class="menu-button d-none" id="game-over-checkpoint-button">Start at Checkpoint</button>
+                <button class="menu-button" id="game-over-restart-button">Restart Level</button>
+                <button class="menu-button" id="game-over-menu-button">Main Menu</button>
             </div>
             <div class="end-credits-actions d-none" id="end-credits-actions">
-                <button class="menu-button" id="end-credits-menu-button">Zum Menü</button>
+                <button class="menu-button" id="end-credits-menu-button">Main Menu</button>
             </div>
             <button class="pause-toggle-button d-none" id="pause-toggle-button">II</button>
             <button class="mute-toggle-button d-none" id="mute-toggle-button">🔇</button>
             <button class="fullscreen-toggle-button d-none" id="fullscreen-toggle-button">⛶</button>
             <div class="pause-overlay d-none" id="pause-overlay">
                 <div class="pause-menu">
-                    <button class="menu-button" id="pause-resume-button">Weiter</button>
-                    <button class="menu-button" id="pause-restart-button">Level neu starten</button>
-                    <button class="menu-button" id="pause-menu-main-button">Zum Menü</button>
+                    <button class="menu-button" id="pause-resume-button">Resume</button>
+                    <button class="menu-button" id="pause-controls-button">Controls</button>
+                    <button class="menu-button" id="pause-credits-button">Legal Notice</button>
+                    <button class="menu-button" id="pause-restart-button">Restart Level</button>
+                    <button class="menu-button" id="pause-menu-main-button">Main Menu</button>
                 </div>
-                <a class="loading-legal-link" href="./legal-notice.html">Legal Notice</a>
             </div>
             <canvas id="canvas" width="1280" height="720"></canvas>
             <video class="game-over-video d-none" id="game-over-video" playsinline preload="none"
@@ -118,7 +119,7 @@
                 <img class="dragon-silhouette red-glow" src="./assets/img/shared_visuals/black_dragon.webp" alt="">
             </div>
             <div class="start-menu">
-                <button class="menu-button" id="start-game-button">Start</button>
+                <button class="menu-button" id="play-game-button">Play</button>
                 <button class="menu-button" id="open-story-button">Story</button>
                 <button class="menu-button" id="open-characters-button">Characters</button>
                 <button class="menu-button" id="open-controls-button">Controls</button>

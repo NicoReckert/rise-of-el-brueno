@@ -121,5 +121,61 @@ export const uiManagerOverlayMethods = {
      */
     hideCreditsOverlay() {
         this.hideElement(this.dom.creditsOverlay);
+    },
+
+    /**
+     * Sets the pause overlay return state.
+     * @param {boolean} active Whether the pause overlay return state is active.
+     * @returns {void}
+     */
+    setPauseOverlayReturn(active) {
+        this.returnToPauseOverlay = active;
+    },
+
+    /**
+     * Resets the pause overlay return state.
+     * @returns {void}
+     */
+    resetPauseOverlayReturn() {
+        this.returnToPauseOverlay = false;
+    },
+
+    /**
+     * Restores the pause overlay after a sub-overlay.
+     * @returns {void}
+     */
+    restorePauseOverlayAfterSubOverlay() {
+        if (!this.returnToPauseOverlay) return;
+        this.showPauseOverlay();
+        this.resetPauseOverlayReturn();
+    },
+
+    /**
+     * Sets whether an overlay was opened from the pause overlay.
+     * @param {HTMLElement} overlay Overlay element.
+     * @param {boolean} active Whether the state is active.
+     * @returns {void}
+     */
+    setOverlayOpenedFromPause(overlay, active) {
+        if (!overlay) return;
+        overlay.classList.toggle('overlay-opened-from-pause', active);
+    },
+
+    /**
+     * Sets whether the controls overlay was opened from the pause overlay.
+     * @param {boolean} active Whether the state is active.
+     * @returns {void}
+     */
+    setControlsOverlayFromPause(active) {
+        this.setOverlayOpenedFromPause(this.dom.controlsOverlay, active);
+    },
+
+    /**
+     * Sets whether the credits overlay was opened from the pause overlay.
+     * @param {boolean} active Whether the state is active.
+     * @returns {void}
+     */
+    setCreditsOverlayFromPause(active) {
+        this.setOverlayOpenedFromPause(this.dom.creditsOverlay, active);
     }
 };

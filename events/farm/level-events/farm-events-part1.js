@@ -189,7 +189,7 @@ export const farmEvents_part1 = [
         step: 3,
         once: false,
         action: (setup) => {
-            setup.hints[1].hide()
+            setup.hints[2].hide()
             const cow = setup.characters.cow
             const arrivedX = cow.moveToX(5300);
             if (!arrivedX) {
@@ -197,7 +197,7 @@ export const farmEvents_part1 = [
             } else setup.world.farmLevelController.questManager.advance(4)
         },
         onLeave: (setup) => {
-            setup.hints[1].show()
+            setup.hints[2].show()
             setup.characters.cow.isMovingRight = false;
             setup.characters.cow.updateAnimationState('afraid', 1000 / 5)
         }
@@ -225,7 +225,7 @@ export const farmEvents_part1 = [
         type: 'quest',
         step: 4,
         action: (setup) => {
-            setup.hints[1].hide();
+            setup.hints[2].hide();
             setup.world.taskWindow.markDone(2);
             setup.state.popupTexts.push(new PopupText("Aufgabe Erledigt!", setup.world.canvas.width / 2, 400));
             setup.sounds.taskCompletedSfx.play();
@@ -243,7 +243,7 @@ export const farmEvents_part1 = [
         delay: 3000,
         step: 4,
         action: (setup) => {
-            setup.hints[2].show();
+            setup.hints[3].show();
             setup.world.taskWindow.addTask('4. Warte bis Lola fertig ist', { active: true });
             setup.sounds.newTaskSfx.play();
             setup.state.popupTexts.push(new PopupText("Neue Aufgabe im Log!", setup.world.canvas.width / 2, 400));
@@ -277,7 +277,7 @@ export const farmEvents_part1 = [
         delay: 15000,
         step: 4,
         action: (setup) => {
-            setup.hints[2].hide();
+            setup.hints[3].hide();
             setup.world.taskWindow.markDone(3)
             setup.sounds.taskCompletedSfx.play()
             setup.state.popupTexts.push(new PopupText("Aufgabe erledigt!", setup.world.canvas.width / 2, 400))
@@ -293,7 +293,7 @@ export const farmEvents_part1 = [
         delay: 18000,
         step: 4,
         action: (setup) => {
-            setup.hints[3].show();
+            setup.hints[4].show();
             setup.world.taskWindow.addTask('5. Belohne Lola', { active: true })
             setup.sounds.newTaskSfx.play()
             setup.state.popupTexts.push(new PopupText("Neue Aufgabe im Log!", setup.world.canvas.width / 2, 400))
@@ -364,7 +364,7 @@ export const farmEvents_part1 = [
         delay: 6000,
         step: 6,
         action: (setup) => {
-            setup.hints[3].hide();
+            setup.hints[4].hide();
             setup.world.taskWindow.markDone(4);
             setup.sounds.taskCompletedSfx.play();
             setup.state.popupTexts.push(new PopupText("Aufgabe erledigt!", setup.world.canvas.width / 2, 400));

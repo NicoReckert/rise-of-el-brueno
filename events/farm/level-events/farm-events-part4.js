@@ -76,27 +76,6 @@ export const farmEvents_part4 = [
     },
 
     /**
-     * Input-based event that pauses the prolog video
-     * and marks it as finished while it is playing.
-     */
-    {
-        type: 'input',
-        key: 'X',
-        step: 19,
-        condition: (setup) =>
-            setup.state.prologVideoStarted &&
-            setup.video &&
-            setup.video.readyState >= 2 &&
-            !setup.video.paused &&
-            !setup.video.ended,
-        action: (setup) => {
-            if (!setup.video) return;
-            setup.video.pause();
-            setup.state.prologVideoFinished = true;
-        }
-    },
-
-    /**
      * Quest event that restores input, hides the cutscene indicator,
      * adds a new task, shows feedback, and advances the quest
      * after the prolog video has finished.
@@ -128,10 +107,10 @@ export const farmEvents_part4 = [
         condition: (setup) => !setup.world.taskWindow.tasks[7].done,
         once: false,
         action: (setup) => {
-            setup.hints[5].show();
+            setup.hints[6].show();
         },
         onLeave: (setup) => {
-            setup.hints[5].hide();
+            setup.hints[6].hide();
         }
     },
 

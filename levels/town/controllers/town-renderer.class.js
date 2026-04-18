@@ -277,7 +277,6 @@ export class TownRenderer {
         this.addObject(this.setup.townLevel.bottles);
         this.addObject(this.setup.state.projectiles);
         this.addToWorld(this.setup.endbossAttack);
-        this.addObject(this.setup.state.throwableObjects);
     }
 
     /**
@@ -287,6 +286,7 @@ export class TownRenderer {
     renderTownFrontActors() {
         this.addToWorld(this.setup.characters.soul);
         this.addToWorld(this.setup.characters.endboss);
+        this.addObject(this.setup.state.throwableObjects);
     }
 
     /**

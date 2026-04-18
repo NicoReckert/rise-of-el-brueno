@@ -11,12 +11,12 @@ export const inputManagerButtonMethods = {
     },
 
     /**
-     * Registers a click listener for the start game button.
+     * Registers a click listener for the play game button.
      * @param {Function} onStartGame Click handler.
      * @returns {void}
      */
-    listenStartGameButton(onStartGame) {
-        this.bindClick(this.uiManager.dom.startGameButton, onStartGame);
+    listenPlayGameButton(onStartGame) {
+        this.bindClick(this.uiManager.dom.playGameButton, onStartGame);
     },
 
     /**
@@ -229,5 +229,23 @@ export const inputManagerButtonMethods = {
      */
     listenMuteToggleButton(onToggle) {
         this.bindClick(this.uiManager.dom.muteToggleButton, onToggle);
-    }
+    },
+
+    /**
+     * Listens to the pause controls button.
+     * @param {Function} onClick Click handler.
+     * @returns {void}
+     */
+    listenPauseControlsButton(onClick) {
+        this.bindClick(this.uiManager.dom.pauseControlsButton, onClick);
+    },
+
+    /**
+     * Listens to the pause credits button.
+     * @param {Function} onClick Click handler.
+     * @returns {void}
+     */
+    listenPauseCreditsButton(onClick) {
+        this.bindClick(this.uiManager.dom.pauseCreditsButton, onClick);
+    },
 }

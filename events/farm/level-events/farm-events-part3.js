@@ -1,4 +1,5 @@
 import { PopupText } from "../../../classes/ui/popup-text.class.js";
+import { farmHelper } from "../helpers/farm-helper.js";
 
 export const farmEvents_part3 = [
     /**
@@ -38,10 +39,10 @@ export const farmEvents_part3 = [
         step: 12,
         once: false,
         action: (setup) => {
-            setup.hints[4].show();
+            setup.hints[5].show();
         },
         onLeave: (setup) => {
-            setup.hints[4].hide();
+            setup.hints[5].hide();
         }
     },
 
@@ -61,14 +62,30 @@ export const farmEvents_part3 = [
             setup.world.character.isMovingRight = false;
             setup.world.isKeysStopp = true;
             setup.world.character.isFlipped = false;
-            setup.hints[4].hide();
+            setup.hints[5].hide();
             setup.environment.house.updateAnimationState('doorCloses');
             setup.sounds.doorCloseSfx.play();
             setup.world.taskWindow.markDone(6)
             setup.world.audioManager.playOneShot('taskCompletedSfx');
             setup.state.popupTexts.push(new PopupText("Aufgabe erledigt!", setup.world.canvas.width / 2, 440));
-            setup.cutsceneIndicator.show({ skippable: false });
+            setup.cutsceneIndicator.show({ skippable: true });
             setup.world.farmLevelController.questManager.advance(13);
+        }
+    },
+
+    /**
+     * Input event that skips the farmhouse cutscene
+     * to the post-prolog state.
+     */
+    {
+        type: 'input',
+        key: 'X',
+        condition: (setup) => {
+            const step = setup.world.farmLevelController.questManager.step;
+            return step >= 13 && step <= 19 && setup.world.isKeysStopp;
+        },
+        action: (setup) => {
+            farmHelper.skipFarmHouseCutsceneToPostProlog(setup);
         }
     },
 
